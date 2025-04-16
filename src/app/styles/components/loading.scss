@@ -1,0 +1,25 @@
+// src/app/components/LoadingSpinner.scss
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  width: 100%;
+  height: 100%;
+  background-color: #1b1b1b;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading-box {
+  text-align: center;
+  font-weight: 500;
+
+  p {
+    margin-top: 1rem;
+    font-size: 18px;
+    color: #ffffff;
+  }
+}

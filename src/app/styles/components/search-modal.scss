@@ -1,0 +1,219 @@
+.search-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.25s ease-in-out;
+  backdrop-filter: blur(3px);
+}
+
+.search-modal {
+  background: #16161a;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 900px;
+  color: #fff;
+  box-shadow: 0 0 15px rgba(255, 45, 100, 0.2);
+}
+
+.search-modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.search-modal-input {
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.05rem;
+  background: #1f1f24;
+  color: #fff;
+  outline: none;
+  transition: 0.2s ease;
+  border: 1px solid #2d2d35;
+}
+
+.search-modal-input:focus {
+  border-color: #ff2e63;
+  box-shadow: 0 0 4px rgba(255, 45, 100, 0.4);
+}
+
+.search-results {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 420px;
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: #ff2e63 #222;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #111;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #ff2e63;
+    border-radius: 10px;
+    border: 2px solid #111;
+  }
+}
+
+.anime-card {
+  display: flex;
+  background: #1f1f24;
+  border-radius: 10px;
+  padding: 0.65rem;
+  transition: 0.2s ease;
+  cursor: pointer;
+  border: 1px solid transparent;
+
+  &:hover {
+    background: #2c2c35;
+    border-color: rgba(255, 45, 100, 0.3);
+  }
+
+  .anime-card-search-img {
+    border-radius: 6px;
+    object-fit: cover;
+    width: 75px !important;
+    height: 110px !important;
+  }
+
+  .anime-card-info {
+    margin-left: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .anime-title {
+      margin-left: -0.63rem;
+      font-size: 1rem;
+      color: #ff2e63;
+
+      .anime-episodes {
+        color: #fbc531;
+        margin-left: -0.3rem;
+        font-size: 0.85rem;
+      }
+    }
+
+    .anime-meta {
+      font-size: 0.8rem;
+      color: #aaa;
+    }
+
+    .anime-description {
+      font-size: 0.75rem;
+      color: #777;
+    }
+  }
+}
+
+.loading-text {
+  color: #aaa;
+  font-size: 0.85rem;
+  text-align: center;
+  padding-top: 1rem;
+}
+
+
+.search-results::-webkit-scrollbar {
+  width: 8px;
+}
+
+.search-results::-webkit-scrollbar-track {
+  background: #111;
+  border-radius: 10px;
+}
+
+.search-results::-webkit-scrollbar-thumb {
+  background-color: #ff2e63;
+  border-radius: 10px;
+  border: 2px solid #111;
+}
+
+.anime-card-search {
+  display: flex;
+  background: #1e1e24;
+  border-radius: 10px;
+  padding: 0.75rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: 1px solid transparent;
+
+  &:hover {
+    background: #282832;
+    border-color: rgba(255, 45, 100, 0.35);
+    transform: scale(1.01);
+  }
+}
+
+.anime-search-image {
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.anime-search-info {
+  margin-left: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.anime-search-title {
+  font-size: 1.1rem;
+  color: #ff2e63;
+  margin-bottom: 0.35rem;
+}
+
+.anime-search-episodes {
+  font-size: 0.85rem;
+  color: #fbc531;
+}
+
+.anime-search-meta {
+  font-size: 0.85rem;
+  color: #aaa;
+}
+
+.anime-search-description {
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: 0.5rem;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: #ff2e63;
+  font-size: 1.5rem;
+  cursor: pointer;
+  align-self: flex-end;
+  transition: 0.2s ease;
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

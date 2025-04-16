@@ -1,0 +1,160 @@
+
+
+@import './components/header';
+@import './components/footer';
+@import './components/animes-containers';
+@import './components/auth';
+@import './components/anime-page';
+@import './components/profile_page';
+@import './components/settings_page';
+@import './components/my_colletion';
+@import './components/loading';
+@import './components/anime-player';
+@import './components/episode-audio-selector';
+@import './components/profile-modal';
+@import './components/profile-page-old';
+@import './components/profile-collection-old';
+@import './components/search-modal';
+@import './components/searchloader';
+@import './components/admin-panel';
+
+
+
+/* Глобальные стили */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  overflow-x: hidden;
+  margin-top: 93px;
+  font-family: 'Arial', sans-serif;
+  background-color: #1b1b1b;
+  color: #fff;
+}
+
+a {
+  text-decoration: none;
+}
+
+h1 {
+  color: #ffffff;
+  margin-bottom: 0.7rem;
+  font-size: 30px;
+}
+.categories {
+  padding: 20px;
+
+  h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #fff;
+  }
+}
+
+/* Убираем зум и анимации при наведении на кнопки управления */
+.plyr__control {
+  transform: none !important;
+  transition: none !important;
+  background-color: transparent !important;
+}
+
+/* Делаем кнопки управления красными */
+.plyr__control svg {
+  fill: red !important; /* Изменяем цвет иконок на красный */
+}
+
+/* Убираем анимацию при наведении на кнопки */
+.plyr__control:hover {
+  transform: none !important;
+}
+
+/* Кнопка воспроизведения */
+.plyr__control.plyr__control--overlaid {
+  visibility: visible !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+/* Кнопка воспроизведения при наведении */
+.plyr__control--overlaid:hover svg {
+  fill: darkred !important; /* Кнопка воспроизведения становится темно-красной при наведении */
+}
+
+/* Убираем эффекты и фоны на кнопках */
+.plyr__control--play:hover,
+.plyr__control--rewind:hover,
+.plyr__control--fast-forward:hover {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Можно сделать кнопки не выделяющимися */
+.plyr__control:focus {
+  outline: none !important;
+}
+
+/* Меню настроек */
+.plyr__menu__container {
+  background-color: rgba(255, 0, 0, 0.71) !important;
+  transition: background-color 0.3s ease !important;
+}
+
+/* Меню настроек при наведении */
+.plyr__menu__container:hover {
+  background-color: #ff0000 !important; /* Меню становиться красным при наведении */
+}
+
+/* Убираем анимацию для пунктов меню */
+.plyr__menu .plyr__control {
+  transition: none !important;
+}
+
+/* Иконки в меню настроек и громкости при наведении */
+.plyr__control--volume:hover,
+.plyr__control--settings:hover {
+  fill: #ff3d3d !important; /* Иконки в меню и громкости красные при наведении */
+  background-color: transparent !important;
+}
+
+/* Убираем фон и эффекты для кнопок управления громкостью */
+.plyr__control--volume:hover,
+.plyr__control--mute:hover {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Кнопка громкости */
+.plyr__control--volume svg {
+  fill: red !important; /* Иконка громкости красная */
+}
+
+/* Сайдбар и панель управления */
+.plyr__control--volume,
+.plyr__control--settings {
+  background-color: red !important;
+}
+
+/* Кнопки управления громкостью, настройки и другие элементы панелей при наведении */
+.plyr__control--volume:hover,
+.plyr__control--settings:hover {
+  background-color: red !important; /* Красный фон при наведении */
+  box-shadow: none !important;
+}
+
+/* Убираем анимации и стили для слайдера громкости */
+.plyr--full-ui input[type=range] {
+  color: red !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Красный фон для кнопки воспроизведения при наведении */
+.plyr--full-ui.plyr--video .plyr__control--overlaid:hover svg {
+  fill: red !important; /* Иконка воспроизведения красная при наведении */
+}

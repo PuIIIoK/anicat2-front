@@ -1,0 +1,518 @@
+.anime-page {
+  background-color: #232323;
+  color: #ffffff;
+  font-family: 'Arial', sans-serif;
+  padding: 40px 160px;
+
+  .anime-content {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 30px;
+
+    @media (min-width: 768px) {
+      flex-direction: row;
+    }
+
+    .anime-cover {
+      position: relative;
+      width: 200px;
+      height: 300px;
+      border-radius: 20px;
+      margin: 0 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+      box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2); /* расплывчатая тень */
+      flex: 0 0 auto;
+      background: rgb(41, 41, 41);
+
+      @media (min-width: 768px) {
+        margin-right: 20px;
+        margin-bottom: 0;
+      }
+
+      .cover-image {
+        border-radius: 12px;
+        border: 2px solid #ff0000; /* Красная рамка для обложки */
+        max-width: 100%;
+      }
+    }
+
+    .anime-info-page {
+      position: relative;
+      max-width: 100%;
+
+      @media (min-width: 768px) {
+        max-width: 60%;
+        text-align: left;
+      }
+
+      .anime-title-page {
+        font-size: 32px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        color: #ff0000;
+      }
+
+      .anime-details {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        p {
+          font-size: 16px;
+          margin: 0;
+
+          strong {
+            color: #ff0000;
+          }
+        }
+      }
+    }
+  }
+
+  .anime-header {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 30px;
+    gap: 10px; /* Расстояние между элементами */
+    width: 100%; /* Заполнение доступной ширины */
+
+    .anime-title-page {
+      font-size: 25px;
+      width: 80%;
+      font-family: "Corbel Light";
+      font-weight: bold;
+      color: #ffffff;
+      flex-grow: 1; /* Позволяет занять доступное пространство */
+      min-width: 0; /* Чтобы текст не выталкивал элементы */
+      overflow: hidden; /* Скрывает текст, который не помещается */
+      text-overflow: ellipsis; /* Добавляет троеточие при переполнении */
+    }
+    .anime-title-alt-page
+    {
+      position: relative;
+      font-size: 13px;
+      padding: 0;
+      color: #707070;
+      top: -10px;
+      display: flex;
+      align-items: center;
+    }
+    .anime-title-alt-info {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 5px; /* Расстояние между элементами */
+    }
+    .anime-rating-page {
+      position: relative;
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 5px;
+      background-color: #000000;
+      border-radius: 10px;
+      padding: 4px;
+      flex-shrink: 0; /* Запрещает сужаться этим элементам */
+      transform: translateX(-20%) translateY(-40%); /* Сдвиг элемента влево */
+      max-width: calc(100% - 20px); /* Ограничение максимальной ширины */
+      white-space: nowrap; /* Предотвращает перенос текста */
+      overflow: hidden; /* Скрывает переполнение */
+      text-overflow: ellipsis; /* Троеточие при переполнении */
+    }
+
+    .anime-info-page
+    {
+      position: relative;
+      top: -15px;
+    }
+    .anime-episodes-page-current {
+      position: relative;
+      justify-content: center;
+      align-items: center;
+      display: inline-flex;
+      padding: 6px;
+      font-size: 13px;
+      border-radius: 10px;
+      background-color: #c10000;
+      transform: translateX(6%) translateY(-10%);
+      max-width: calc(100% - 20px); /* Ограничение максимальной ширины */
+      white-space: nowrap; /* Предотвращает перенос текста */
+      overflow: hidden; /* Скрывает лишний текст, если он не помещается */
+      text-overflow: ellipsis; /* Добавляет троеточие при переполнении */
+    }
+    .anime-info-page-title {
+      margin: 20px 0;
+      font-size: 16px;
+      p {
+        font-size: 16px;
+        margin: 5px 0;
+      }
+      strong {
+        color: #ff0000;
+      }
+      .anime-info-page-title-info
+      {
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+    }
+    .anime-cover {
+      position: relative;
+      width: 200px;
+      height: 300px;
+      border-radius: 20px;
+      margin: 0 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+      box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2); /* расплывчатая тень */
+      flex: 0 0 auto;
+      background: rgb(41, 41, 41);
+    }
+  }
+
+  .anime-description-page {
+    position: relative;
+    margin: 20px 0;
+    font-size: 16px;
+    text-align: justify;
+    line-height: 1.6;
+    padding-left: 10px;
+  }
+
+  .anime-screenshots {
+    position: relative;
+    top: -10px;
+
+    h2 {
+      position: relative;
+      font-size: 20px;
+      margin-bottom: 20px;
+      margin-left: 10px;
+    }
+
+    .screenshots-gallery {
+      display: flex;
+      gap: 10px;
+
+      .screenshot {
+        border-radius: 12px;
+        margin: 0 10px;
+        width: 270px;
+        height: 160px;
+        transition: transform 0.3s;
+
+      }
+    }
+  }
+
+  .anime-player {
+    margin: 10px auto;
+    max-width: 800px;
+
+    video {
+      width: 100%;
+      border-radius: 12px;
+      border: 2px solid #ff0000; /* Красная рамка для видео */
+    }
+  }
+}
+
+.tab-player-content-selector
+{
+  position: relative;
+  display: flex;
+  padding-top: 20px;
+}
+.anime-episodes-page {
+  padding-right:10px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+  border-radius: 8px;
+  text-align: center;
+  max-height: 300px;
+  overflow-y: auto; // Скролл, если список серий или озвучек переполняется
+
+  /* Стилизация скролла */
+  &::-webkit-scrollbar {
+    width: 6px; /* Ширина скролл-бара */
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #000000; /* Цвет фона скролл-трека */
+    border-radius: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #f44336; /* Красный цвет для скролл-лайнера */
+    border-radius: 8px;
+    border: 2px solid #000000; /* Окаймление скролл-лайнера */
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #d32f2f; /* Тёмный красный цвет при наведении */
+  }
+
+  h2 {
+    margin-bottom: 7.5px;
+    font-size: 20px;
+    color: #ff0000; /* Красный текст заголовка */
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  li {
+    margin: 0;
+  }
+
+  button {
+    background-color: #1a1a1a; /* Темный фон кнопки */
+    color: #ffffff; /* Белый текст */
+    border: 2px solid #ff0000; /* Красная рамка */
+    border-radius: 6px;
+    font-size: 14px;
+    padding: 5px 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Плавные эффекты */
+    outline: none;
+
+    &:hover {
+      background-color: #ff0000; /* Красный фон при наведении */
+      color: #1a1a1a; /* Черный текст при наведении */
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.6); /* Подсветка активной кнопки */
+      transform: none; /* Убираем увеличение (zoom) */
+    }
+
+    &.active {
+      background-color: #ff0000; /* Красный фон для активной кнопки */
+      color: #1a1a1a; /* Черный текст для активной кнопки */
+      border: 2px solid #ffffff; /* Белая рамка для активной кнопки */
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.6); /* Подсветка активной кнопки */
+    }
+  }
+}
+
+.anime-player-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  margin-top: 20px;
+
+  .anime-player {
+    flex: 2; // Занимает большую часть ширины
+  }
+
+  .audio-selector {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 10px;
+    border: 2px solid #ff0000; /* Красная рамка */
+    flex: 1; // Занимает оставшуюся часть ширины
+    padding: 10px;
+    background-color: #222; // Темный фон для блока
+    border-radius: 8px;
+    max-height: 300px;
+    overflow-y: auto; // Скролл, если список серий или озвучек переполняется
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+
+    /* Стилизация скролла */
+    &::-webkit-scrollbar {
+      width: 6px; /* Ширина скролл-бара */
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #000000; /* Цвет фона скролл-трека */
+      border-radius: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #f44336; /* Красный цвет для скролл-лайнера */
+      border-radius: 8px;
+      border: 2px solid #000000; /* Окаймление скролл-лайнера */
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: #d32f2f; /* Тёмный красный цвет при наведении */
+    }
+
+    .audio-selector-item
+    {
+      padding: 6px;
+      max-height: 300px;
+      overflow-y: auto; // Скролл, если список серий или озвучек переполняется
+      position: relative;
+    }
+    h3 {
+      align-content: center;
+      position: relative;
+      display: flex;
+      font-size: 18px;
+      color: #fff;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      li {
+        margin-bottom: 10px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+
+      button {
+        width: 100%;
+        padding: 10px 15px;
+        font-size: 16px;
+        color: #fff;
+        background-color: #333; // Фон кнопки
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+
+        &:hover {
+          background-color: #444; // Более светлый фон при наведении
+        }
+
+        &.active {
+          background-color: #f44336; // Активная кнопка — красная
+          color: #fff;
+        }
+      }
+    }
+  }
+}
+
+/* Стиль для уведомлений об ошибке */
+.error-toast {
+  background-color: #e74c3c; /* Красный цвет для фона */
+  color: #fff; /* Белый цвет для текста */
+  border-radius: 8px; /* Округлые углы */
+  padding: 15px;
+  font-size: 16px;
+  font-family: 'Roboto', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  animation: fadeInOut 5s ease-out;
+
+  /* Стиль для кнопки закрытия */
+  .close-toast {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+    transition: color 0.3s;
+
+    &:hover {
+      color: #f1c40f; /* Желтый цвет при наведении */
+    }
+  }
+}
+
+.Toastify__toast-theme--light, .Toastify__toast-theme--colored.Toastify__toast--default
+{
+  background-color: #1a1a1a !important;
+}
+
+/* Стили для переключателя */
+.toggle-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.toggle-switch {
+  display: flex;
+  background: #222;
+  border-radius: 25px;
+  padding: 5px;
+  width: 200px;
+  position: relative;
+}
+
+.toggle-switch button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+}
+
+.toggle-switch .active {
+  font-weight: bold;
+}
+
+.toggle-switch::before {
+  content: '';
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  left: 5px;
+  width: 90px;
+  background: red;
+  border-radius: 20px;
+  transition: transform 0.3s ease;
+}
+
+.toggle-switch.audio::before {
+  transform: translateX(100%);
+}
+
+.audio-selector {
+  text-align: center;
+  display: flex;
+  background: #333;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.audio-selector h3 {
+  color: white;
+  margin-bottom: 10px;
+}
+
+.audio-selector ul {
+  list-style: none;
+  padding: 0;
+}
+
+.audio-selector li {
+  margin: 5px 0;
+}
+
+.audio-selector button {
+  background: #444;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.audio-selector button.active {
+  background: red;
+}
+

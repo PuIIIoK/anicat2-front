@@ -1,0 +1,144 @@
+.auth-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #1c1c1c, #e50914);
+  color: #fff;
+}
+
+.auth-container {
+  background: #1c1c1c;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.7);
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+h1 {
+  color: #e50914;
+  margin-bottom: 1.5rem;
+}
+
+.input-group {
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: #ddd;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #444;
+  background: #333;
+  color: #fff;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.input-group input:focus {
+  border-color: #e50914;
+}
+
+.checkbox-group {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.checkbox-group .checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.checkbox-button {
+  background: #333;
+  border: 2px solid #e50914;
+  border-radius: 8px;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.checkbox-button:hover {
+  background: #e50914;
+  border-color: #ff4d4d;
+}
+
+.captcha-container {
+  margin: 1.5rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #333;
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.captcha-display {
+  color: #fff;
+  font-weight: bold;
+}
+
+.refresh-captcha {
+  background: none;
+  border: 2px solid #e50914;
+  color: #e50914;
+  cursor: pointer;
+  padding: 0.3rem 0.7rem;
+  border-radius: 8px;
+  transition: background 0.3s, color 0.3s;
+}
+
+.refresh-captcha:hover {
+  background: #e50914;
+  color: #fff;
+}
+
+.submit-button {
+  background: #e50914;
+  color: #fff;
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s;
+  margin-top: 1rem;
+}
+
+.submit-button:hover {
+  background: #b20710;
+}
+
+.auth-links {
+  margin-top: 1rem;
+}
+
+.auth-links a {
+  color: #e50914;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.auth-links a:hover {
+  text-decoration: underline;
+}
+
+/*# sourceMappingURL=auth.css.map */

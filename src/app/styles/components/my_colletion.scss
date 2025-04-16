@@ -1,0 +1,35 @@
+.collection-selector
+{
+  position: relative;
+  display: flex;
+  padding-top: 20px;
+  align-content: center;
+  justify-content: center;
+}
+
+.collection-selector-button
+{
+  background-color: #7544b2;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-family: Montserrat, sans-serif;
+  font-size: 1em;
+  font-weight: 700;
+  transition: all .2s ease-in-out;
+  background-color: hsla(0, 0%, 100%, .137);
+  border-radius: 60px;
+  color: #fff;
+  margin: 0 5px;
+  padding: 12px 20px;
+}
+
+.collection-anime
+{
+  position: relative;
+  margin-top: 28px;
+  grid-gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  justify-items: center;
+}

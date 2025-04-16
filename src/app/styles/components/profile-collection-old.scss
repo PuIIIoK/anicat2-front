@@ -1,0 +1,122 @@
+.fake-collection-page {
+  position: relative;
+  min-height: 100vh;
+  background-color: #0d0d0d;
+  padding: 2rem 3rem;
+  overflow: hidden; // отключает прокрутку
+
+
+  .center-coming-soon {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    background: rgba(25, 25, 25, 0.9);
+    padding: 2rem 2.5rem;
+    border-radius: 16px;
+    max-width: 700px;
+    text-align: center;
+    box-shadow: 0 0 25px rgba(255, 0, 60, 0.3);
+
+    h1 {
+      font-size: 3rem;
+      color: #ff4e7b;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: #ccc;
+    }
+  }
+
+  .blur-background {
+    margin-top: 3rem;
+    filter: blur(6px);
+    opacity: 0.7;
+    pointer-events: none;
+    user-select: none;
+
+    .collection-grid-fake {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 2rem;
+      padding: 4rem 2rem;
+    }
+
+    .anime-card-fake {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+      transition: 0.3s ease;
+
+      .anime-image {
+        border-radius: 16px;
+        width: 100%;
+        height: auto;
+      }
+
+      .anime-card-overlay {
+        display: flex;
+        justify-content: flex-end;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 0.6rem;
+        color: white;
+
+        .rating-label {
+          background: #444;
+          padding: 0.3rem 0.6rem;
+          border-radius: 6px;
+          font-size: 0.85rem;
+          float: right;
+        }
+
+        .anime-title {
+          position: absolute;
+
+          bottom: -14rem;
+          color: #ff0000;
+          left: 0.6rem;
+          font-size: 1rem;
+          font-weight: 600;
+          text-shadow: 1px 1px 4px #000;
+        }
+      }
+    }
+  }
+}
+
+.collection-tabs {
+  display: flex;
+  gap: 1.2rem;
+  padding-top: 2rem;
+  padding-bottom: 1.5rem;
+
+  .collection-tab {
+    background: #222;
+    color: #eee;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    border-radius: 999px;
+    cursor: default;
+    transition: all 0.2s ease-in-out;
+
+    &.active {
+      background: #ff003f;
+      color: #fff;
+      box-shadow: 0 0 10px #ff4e7b88;
+    }
+  }
+}
+
+
+.no-scroll {
+  overflow: hidden !important;
+  height: 100vh !important;
+}

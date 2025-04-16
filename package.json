@@ -1,0 +1,39 @@
+{
+  "name": "service-centre",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "chart.js": "^4.4.7",
+    "js-cookie": "^3.0.5",
+    "next": "15.0.3",
+    "plyr": "^3.7.8",
+    "plyr-react": "^5.3.0",
+    "react": "19.0.0-rc-66855b96-20241106",
+    "react-chartjs-2": "^5.3.0",
+    "react-dom": "19.0.0-rc-66855b96-20241106",
+    "react-icons": "^5.4.0",
+    "react-plyr": "^2.2.0",
+    "react-spinners": "^0.15.0",
+    "react-toastify": "^11.0.3",
+    "sass": "^1.81.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.3",
+    "@types/js-cookie": "^3.0.6",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^8",
+    "eslint-config-next": "15.0.3",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.1.3",
+    "typescript": "^5"
+  }
+}
