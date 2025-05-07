@@ -1,0 +1,44 @@
+.admin-category-container {
+  padding: 20px;
+  background: #111;
+  border-radius: 12px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.admin-category-title {
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: #ffffff;
+}
+
+.admin-category-block {
+  background: #5e5e5e;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+}
+
+.admin-category-name {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #5a4ebd;
+}
+
+.admin-category-empty {
+  font-style: italic;
+  color: #ffffff;
+}
+
+.admin-category-anime-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  color: #040404;
+}
+
+.admin-category-anime-item {
+  padding: 20px 0;
+  border-bottom: 1px dashed #ffffff;
+  color: #ffffff;
+}
