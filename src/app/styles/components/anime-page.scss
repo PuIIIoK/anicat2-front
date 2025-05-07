@@ -1,0 +1,402 @@
+.anime-page {
+  background-color: #1f1f1f;
+  color: #ffffff;
+  font-family: 'Segoe UI', sans-serif;
+  padding: 40px 60px;
+  margin-top: 93px;
+
+  @media (max-width: 768px) {
+    padding: 20px;
+  }
+
+  .anime-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+
+    @media (min-width: 1024px) {
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 60px; // равномерное расстояние между левой и правой частью
+    }
+
+    .anime-cover {
+      width: 260px;
+      height: 380px;
+      border-radius: 15px;
+      overflow: hidden;
+      background: #2e2e2e;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      flex-shrink: 0;
+
+      .anime-thumbnail {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 12px;
+        border: 2px solid #ff0000;
+      }
+
+      p {
+        text-align: center;
+        padding: 20px;
+      }
+    }
+
+    .anime-info-page-title {
+      flex: 1;
+      max-width: 401px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-left: 0;
+
+      .anime-info-page-title-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+
+        .anime-title-page {
+          font-size: 28px;
+          font-weight: bold;
+          color: #ff3c3c;
+          margin: 0;
+          flex-grow: 1;
+        }
+
+        .anime-episodes-page-current {
+          background-color: #c10000;
+          color: #fff;
+          padding: 6px 10px;
+          font-size: 14px;
+          border-radius: 10px;
+          font-weight: 500;
+          white-space: nowrap;
+        }
+      }
+
+      .anime-title-alt-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: -5px;
+
+        .anime-title-alt-page {
+          font-size: 14px;
+          color: #aaaaaa;
+        }
+
+        .anime-rating-page {
+          background-color: #000000;
+          border-radius: 10px;
+          padding: 4px 8px;
+          font-size: 12px;
+          white-space: nowrap;
+          color: #ffffff;
+          border: 1px solid #ff0000;
+        }
+      }
+
+      .anime-info-page {
+        background-color: #2a2a2a;
+        padding: 15px 10px;
+        border-radius: 12px;
+        box-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
+        font-size: 15px;
+        line-height: 1.6;
+
+        p {
+          margin: 4px 0;
+
+          strong {
+            color: #ff0000;
+          }
+        }
+      }
+    }
+
+    .anime-description-page {
+      flex: 1;
+      max-width: 600px;
+      background-color: #292929;
+      padding: 25px 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      font-size: 15.5px;
+      line-height: 1.7;
+      text-align: justify;
+
+      h2 {
+        font-size: 20px;
+        color: #ff0000;
+        margin-bottom: 12px;
+      }
+    }
+  }
+
+
+  .anime-screenshots {
+    margin-top: 50px;
+
+    h2 {
+      font-size: 20px;
+      margin-bottom: 15px;
+      color: #ff0000;
+    }
+
+    .screenshots-gallery {
+      display: flex;
+      overflow-x: auto;
+      gap: 15px;
+      padding-bottom: 10px;
+
+      .screenshot {
+        width: 304px;
+        height: 175px;
+        border-radius: 10px;
+        object-fit: cover;
+        flex-shrink: 0;
+        box-shadow: 0 0 8px rgba(255, 0, 0, 0.2);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+        &:hover {
+          transform: translateY(2px); // сдвиг вниз
+        }
+      }
+
+      p {
+        color: #ccc;
+      }
+    }
+  }
+}
+
+//АДАПТАЦИЯ
+
+// 📱 Адаптивность для страницы аниме
+
+@media (max-width: 1024px) {
+  .anime-page {
+    padding: 30px 20px;
+
+    .anime-header {
+      gap: 30px;
+
+      .anime-cover {
+        width: 220px;
+        height: 320px;
+
+        .anime-thumbnail {
+          border-radius: 10px;
+        }
+      }
+
+      .anime-info-page-title {
+        max-width: 100%;
+        padding-left: 0;
+
+        .anime-info-page-title-info {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+
+          .anime-title-page {
+            font-size: 24px;
+          }
+        }
+
+        .anime-title-alt-info {
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+      }
+
+      .anime-description-page {
+        max-width: 100%;
+        padding: 20px;
+      }
+    }
+
+    .anime-screenshots {
+      margin-top: 40px;
+
+      .screenshots-gallery {
+        gap: 10px;
+
+        .screenshot {
+          width: 250px;
+          height: 145px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .anime-page {
+    padding: 20px 10px;
+
+    .anime-header {
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+
+      .anime-cover {
+        width: 180px;
+        height: 260px;
+      }
+
+      .anime-info-page-title {
+        align-items: center;
+        text-align: center;
+
+        .anime-info-page-title-info {
+          align-items: center;
+        }
+
+        .anime-title-page {
+          font-size: 22px;
+        }
+
+        .anime-title-alt-page {
+          font-size: 13px;
+        }
+
+        .anime-rating-page {
+          font-size: 11px;
+        }
+
+        .anime-info-page {
+          font-size: 14px;
+          text-align: center;
+        }
+      }
+
+      .anime-description-page {
+        padding: 15px;
+        font-size: 14px;
+        text-align: center;
+
+        h2 {
+          font-size: 18px;
+        }
+      }
+    }
+
+    .anime-screenshots {
+      h2 {
+        font-size: 18px;
+      }
+
+      .screenshots-gallery {
+        .screenshot {
+          width: 200px;
+          height: 120px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .anime-page {
+    padding: 15px 5px;
+
+    .anime-header {
+      .anime-cover {
+        width: 150px;
+        height: 220px;
+      }
+
+      .anime-info-page-title {
+        .anime-title-page {
+          font-size: 20px;
+        }
+
+        .anime-info-page {
+          font-size: 13.5px;
+        }
+      }
+
+      .anime-description-page {
+        padding: 10px;
+        font-size: 13px;
+
+        h2 {
+          font-size: 16px;
+        }
+      }
+    }
+
+    .anime-screenshots {
+      .screenshots-gallery {
+        .screenshot {
+          width: 160px;
+          height: 100px;
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 1440px) {
+  .anime-page {
+    padding: 50px 100px;
+
+    .anime-header {
+      gap: 80px;
+
+      .anime-cover {
+        width: 280px;
+        height: 400px;
+      }
+
+      .anime-info-page-title {
+        max-width: 500px;
+
+        .anime-title-page {
+          font-size: 30px;
+        }
+      }
+
+      .anime-description-page {
+        max-width: 700px;
+        font-size: 16px;
+      }
+    }
+
+    .anime-screenshots {
+      .screenshots-gallery {
+        .screenshot {
+          width: 320px;
+          height: 180px;
+        }
+      }
+    }
+  }
+}
+
+.screenshots-gallery::-webkit-scrollbar {
+  height: 8px; /* Высота горизонтального скролла */
+}
+
+.screenshots-gallery::-webkit-scrollbar-track {
+  background: #1a1a1a; /* Фон под скроллбаром */
+  border-radius: 8px;
+}
+
+.screenshots-gallery::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #ff2e63, #ff6b6b); /* Градиент ползунка */
+  border-radius: 8px;
+  transition: background 0.3s;
+}
+
+.screenshots-gallery::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(90deg, #ff6b6b, #ff2e63); /* Градиент при наведении */
+}
+
+/* Для Firefox */
+.screenshots-gallery {
+  scrollbar-width: thin;
+  scrollbar-color: #ff2e63 #1a1a1a;
+}

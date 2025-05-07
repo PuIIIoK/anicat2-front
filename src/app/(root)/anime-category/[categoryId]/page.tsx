@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState, useEffect, use } from 'react';
-import { fetchCategoryById } from '../../../component/category-data';
-import { AnimeInfo } from '../../../component/anime-data-info';
-import AnimeCard from '../../../component/anime-cards';
+import { fetchCategoryById } from '../../../component/anime-structure/category-data';
+import { AnimeInfo } from '../../../component/anime-structure/anime-data-info';
+import AnimeCard from '../../../component/anime-structure/anime-cards';
+import {API_SERVER} from "../../../../tools/constants";
 
 const AnimeCategoryPage = ({ params }: { params: Promise<{ categoryId: string }> }) => {
     const { categoryId } = use(params);
@@ -24,7 +25,7 @@ const AnimeCategoryPage = ({ params }: { params: Promise<{ categoryId: string }>
             const animeList = await Promise.all(
                 category.animeIds.map(async (animeId) => {
                     try {
-                        const res = await fetch(`http://localhost:8080/api/anime/get-anime/${animeId}`);
+                        const res = await fetch(`${API_SERVER}/api/anime/get-anime/${animeId}`);
                         if (!res.ok) throw new Error('Ошибка при получении аниме');
                         return await res.json();
                     } catch (err) {
@@ -41,7 +42,7 @@ const AnimeCategoryPage = ({ params }: { params: Promise<{ categoryId: string }>
     }, [categoryId]);
 
     return (
-        <div>
+        <div className="category-list-container">
             <h1 className="categoryname">{categoryName || 'Загрузка...'}</h1>
             <div className="anime-list">
                 {animeInCategory.length > 0 ? (

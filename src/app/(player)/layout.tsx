@@ -1,8 +1,6 @@
 'use client';
 
 import { ReactNode } from 'react';
-import Header from '../component/header';
-import Footer from '../component/footer';
 import '../styles/index.scss';
 import LoadingPage from '../component/LoadingPage'
 
@@ -20,9 +18,7 @@ const RootLayout: React.FC<LayoutProps> = ({ children }) => {
         </head>
         <body>
         <LoadingPage />
-        <Header />
-        <main className="main">{children}</main>
-        <Footer />
+        <main className="main-player">{children}</main>
         </body>
         </html>
     );

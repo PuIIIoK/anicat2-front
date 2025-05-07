@@ -1,0 +1,80 @@
+.test-page {
+  background-color: #0d0d0d;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  margin-bottom: 93px;
+}
+
+.test-container {
+  display: flex;
+  gap: 2rem;
+  max-width: 1200px;
+  width: 100%;
+  color: #ffffff;
+  background: #1a1a1a;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+}
+
+.test-image-wrapper {
+  flex: 0 0 400px;
+  position: relative;
+}
+
+.test-image {
+  border-radius: 0;
+  object-fit: cover;
+}
+
+.test-content {
+  padding: 2rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.test-title {
+  font-size: 3rem;
+  color: #e50914;
+  margin-bottom: 1rem;
+}
+
+.test-genres {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+.test-genres span {
+  background: #e50914;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+}
+
+.test-description {
+  font-size: 1.2rem;
+  color: #bbbbbb;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.test-watch-button {
+  background-color: #e50914;
+  color: #fff;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1.4rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.test-watch-button:hover {
+  background-color: #ff1f30;
+}
+
+/*# sourceMappingURL=test-profile-page-anime-page.css.map */

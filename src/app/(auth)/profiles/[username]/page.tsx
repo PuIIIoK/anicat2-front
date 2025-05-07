@@ -22,7 +22,7 @@ export default function Page() {
             if (!token) return;
 
             try {
-                const res = await fetch(`${API_SERVER}/api/profiles/get-profile/${username}`, {
+                const res = await fetch(`${API_SERVER}/api/profiles/get-profile?username=${username}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 

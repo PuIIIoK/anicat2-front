@@ -228,3 +228,108 @@
     }
   }
 }
+
+@media (max-width: 768px) {
+  .header {
+    padding: 10px 12px;
+
+    .logo {
+      left: 5px; // Уменьшить отступ слева
+    }
+
+    .search-bar-anime {
+      width: 180px;
+      padding: 8px 12px;
+      margin: 0 8px;
+
+      .search-placeholder {
+        font-size: 14px;
+      }
+
+      .search-icon-button {
+        font-size: 16px;
+      }
+    }
+
+    .profile {
+      .profile-icon {
+        width: 36px;
+        height: 36px;
+        object-fit: cover;
+      }
+    }
+  }
+}
+
+.profile-search-card {
+  display: flex;
+  align-items: center;
+  background: #1a1a1a;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    background: #292929;
+    transform: translateY(-1px);
+  }
+
+  .profile-avatar {
+    border-radius: 50%;
+    margin-right: 10px;
+    object-fit: cover;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+  }
+
+  .profile-info {
+    display: flex;
+    flex-direction: column;
+
+    h4 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+
+      .username {
+        font-size: 13px;
+        font-weight: 400;
+        color: #aaa;
+        margin-left: 6px;
+      }
+    }
+
+    .profile-bio {
+      font-size: 13px;
+      color: #bbb;
+      margin-top: 2px;
+      line-height: 1.2;
+    }
+  }
+}
+.search-mode-toggle {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+
+  button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    background: #2e2e2e;
+    color: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s ease;
+
+    &.active {
+      background: #d42a2a;
+    }
+
+    &:hover {
+      background: #444;
+    }
+  }
+}

@@ -1,0 +1,811 @@
+.add-anime-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: #1b1b2f;
+  color: #fff;
+  font-family: 'Segoe UI', sans-serif;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  margin-top: 93px;
+}
+
+.add-anime-page .title {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: #ff9f1c;
+  text-align: center;
+}
+
+.message-box {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background-color: #323248;
+  border-left: 5px solid #ff9f1c;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.form-grid label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #eeeeee;
+}
+
+.form-grid input,
+.form-grid textarea {
+  margin-top: 0.4rem;
+  padding: 0.6rem;
+  background: #2d2d44;
+  border: 1px solid #444;
+  border-radius: 6px;
+  color: #fff;
+  resize: vertical;
+}
+
+.form-grid textarea {
+  min-height: 100px;
+}
+
+.buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+button {
+  padding: 0.6rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  background-color: #ff9f1c;
+  color: #1b1b2f;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button.danger {
+  background-color: #e63946;
+  color: #fff;
+}
+
+button.danger:hover {
+  background-color: #ff4d5a;
+}
+
+//Основная инфа
+
+.form-admin-block {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 2rem;
+  background-color: #1a1a2e;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+
+  h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1.4rem;
+    color: #ffcb6b;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+
+    label {
+      display: flex;
+      flex-direction: column;
+      font-weight: 500;
+      color: #ccc;
+
+      input, select {
+        margin-top: 0.4rem;
+        padding: 0.6rem 0.8rem;
+        background: #252547;
+        border: 1px solid #444;
+        border-radius: 6px;
+        color: #fff;
+        font-size: 1rem;
+
+        &:focus {
+          border-color: #7f5af0;
+          outline: none;
+        }
+      }
+    }
+  }
+
+  .form-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    label {
+      display: flex;
+      flex-direction: column;
+      font-weight: 500;
+      color: #ccc;
+
+      input, select, textarea {
+        margin-top: 0.4rem;
+        padding: 0.6rem 0.8rem;
+        background: #252547;
+        border: 1px solid #444;
+        border-radius: 6px;
+        color: #fff;
+        font-size: 1rem;
+
+        &:focus {
+          border-color: #7f5af0;
+          outline: none;
+        }
+      }
+
+      textarea {
+        min-height: 120px;
+        resize: vertical;
+      }
+    }
+  }
+}
+
+////Добавлеение обложки и скриншотов
+
+.admin-file-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  .image-upload-row {
+    display: flex;
+    gap: 24px;
+  }
+
+  .cover-upload {
+    margin: 20px 0;
+    padding: 16px;
+    background: #1e1e2f;
+    border: 1px solid #333;
+    border-radius: 12px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+    color: #fff;
+
+    h3 {
+      font-size: 1.4rem;
+      margin-bottom: 12px;
+      color: #57c7ff; // акцент цвета — как "прохладная" обложка
+    }
+
+    input[type="file"] {
+      display: block;
+      margin-bottom: 12px;
+      color: #ddd;
+      cursor: pointer;
+
+      &::file-selector-button {
+        background: #ff0000;
+        border: none;
+        color: #fff;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-weight: bold;
+        transition: 0.3s;
+      }
+
+      &::file-selector-button:hover {
+        background: #ff6a6a;
+      }
+    }
+
+    .cover-preview {
+      position: relative;
+      width: 180px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid #444;
+
+      img {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+        object-fit: cover;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+        transition: transform 0.3s ease;
+      }
+
+      &:hover img {
+        transform: scale(1.03);
+      }
+
+      .cover-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.6);
+        padding: 6px 10px;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        color: #fff;
+        font-size: 0.85rem;
+
+        p {
+          margin: 0;
+          font-weight: 500;
+          font-size: 0.8rem;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 120px;
+        }
+
+        .remove {
+          background: #f44336;
+          border: none;
+          padding: 4px 8px;
+          border-radius: 5px;
+          color: white;
+          cursor: pointer;
+          font-weight: bold;
+          transition: background 0.3s ease;
+
+          &:hover {
+            background: #d32f2f;
+          }
+        }
+      }
+    }
+
+    .no-cover {
+      font-style: italic;
+      color: #aaa;
+      font-size: 0.95rem;
+      margin-top: 8px;
+    }
+  }
+  .screenshot-upload {
+    margin: 20px 0;
+    padding: 16px;
+    background: #1e1e2f;
+    border: 1px solid #333;
+    border-radius: 12px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+    color: #fff;
+
+    h3 {
+      font-size: 1.4rem;
+      margin-bottom: 12px;
+      color: #ffb347; // акцент под стиль галереи
+    }
+
+    input[type="file"] {
+      display: block;
+      margin-bottom: 12px;
+      color: #ddd;
+      cursor: pointer;
+
+      &::file-selector-button {
+        background: #ffb347;
+        border: none;
+        color: #fff;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-weight: bold;
+        transition: 0.3s;
+      }
+
+      &::file-selector-button:hover {
+        background: #f39c3e;
+      }
+    }
+
+    .screenshot-preview {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr); // 3 колонки
+      gap: 16px;
+      margin-top: 12px;
+
+      .screenshot-item {
+        position: relative;
+        border: 1px solid #444;
+        border-radius: 10px;
+        overflow: hidden;
+        background: #2b2b3d;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease;
+
+        img {
+          width: 100%;
+          height: 100px;
+          object-fit: cover;
+          display: block;
+        }
+
+        .remove {
+          position: absolute;
+          top: 6px;
+          right: 6px;
+          background: rgba(255, 69, 58, 0.9);
+          border: none;
+          color: white;
+          padding: 2px 6px;
+          border-radius: 4px;
+          font-size: 14px;
+          cursor: pointer;
+          z-index: 1;
+
+          &:hover {
+            background: rgba(220, 30, 30, 0.95);
+          }
+        }
+
+        p {
+          padding: 8px;
+          margin: 0;
+          font-size: 0.85rem;
+          text-align: center;
+          color: #ddd;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+
+    .no-shots {
+      font-style: italic;
+      color: #aaa;
+      font-size: 0.95rem;
+      margin-top: 8px;
+    }
+  }
+
+
+}
+
+.episode-section {
+  background: #121212;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(229, 57, 53, 0.3);
+  margin-top: 2rem;
+  animation: fadeIn 0.5s ease;
+
+  h3 {
+    color: #e53935;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+  }
+
+  .episode-block {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 4px 15px rgba(229, 57, 53, 0.26);
+    }
+
+    input[type='text'], input[type='file'] {
+      width: 100%;
+      padding: 0.5rem;
+      background: #202020;
+      border: 1px solid #444;
+      color: #eee;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+      transition: border-color 0.2s ease;
+
+      &:focus {
+        border-color: #e53935;
+        outline: none;
+      }
+    }
+
+    button {
+      margin-top: 0.5rem;
+      background: #e53935;
+      color: white;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s ease;
+
+      &:hover {
+        background: #d32f2f;
+      }
+
+      &.danger {
+        background: #b71c1c;
+
+        &:hover {
+          background: #c62828;
+        }
+      }
+
+      &.small {
+        padding: 0.2rem 0.5rem;
+        font-size: 0.85rem;
+      }
+    }
+
+    .audio-block {
+      background: #161616;
+      padding: 0.8rem;
+      border: 1px solid #333;
+      border-radius: 6px;
+      margin-top: 0.5rem;
+
+      p {
+        font-size: 0.9rem;
+        color: #ccc;
+        margin: 0.5rem 0 0;
+      }
+    }
+  }
+
+  > button {
+    margin-top: 1rem;
+    background: #388e3c;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: #2e7d32;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+////стилизация инуптов
+
+.episode-upload-first {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background-color: #1a1a1a;
+  border: 1px solid #e53935;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+  &::placeholder {
+    color: #888;
+    font-style: italic;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #ff6f61;
+    box-shadow: 0 0 0 2px rgba(229, 57, 53, 0.4);
+  }
+
+  &:hover {
+    border-color: #ff6f61;
+  }
+
+  &.error {
+    border-color: #ff1744;
+    box-shadow: 0 0 0 2px rgba(255, 23, 68, 0.4);
+  }
+}
+
+.save-add-anime
+{
+  position: relative;
+  top:20px;
+}
+
+.cancel-add-anime
+{
+  position: relative;
+  top: 20px;
+}
+
+//progress-bar
+
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid #00bfff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+///Адаптация
+// Твой основной код (как ты прислал) — без изменений.
+
+// ➡ Адаптивность:
+
+@media (max-width: 768px) {
+  .add-anime-page {
+    padding: 1rem;
+    margin-top: 80px;
+  }
+
+  .form-admin-block {
+    padding: 1rem;
+  }
+
+  .admin-file-upload {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* Баннер — во всю ширину */
+  .banner-upload {
+    width: 100%;
+  }
+
+  /* Обложка и скриншоты в одной строке */
+  .image-upload-row {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap; // адаптивно для мобильных
+  }
+
+  /* Ограничим размеры */
+  .cover-upload {
+    flex: 0 0 180px;
+  }
+
+  /* Скриншоты займут оставшееся место */
+  .screenshot-upload {
+    flex: 1;
+    min-width: 250px;
+  }
+
+
+  .cover-upload,
+  .screenshot-upload {
+    width: 100%;
+  }
+
+  .buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .save-add-anime,
+  .cancel-add-anime {
+    width: 100%;
+    top: 0;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-admin-block .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .episode-section {
+    padding: 1rem;
+  }
+
+  .episode-section h3 {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+
+  .episode-section .episode-block input[type='text'],
+  .episode-section .episode-block input[type='file'] {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .add-anime-page .title {
+    font-size: 1.5rem;
+  }
+
+  .message-box {
+    font-size: 0.9rem;
+    padding: 0.8rem;
+  }
+
+  button {
+    font-size: 0.95rem;
+    padding: 0.5rem 1.2rem;
+  }
+
+  .admin-file-upload .cover-upload h3,
+  .admin-file-upload .screenshot-upload h3 {
+    font-size: 1.2rem;
+  }
+
+  .cover-preview img,
+  .screenshot-preview .screenshot-item {
+    max-width: 100px;
+  }
+
+  .episode-section .episode-block {
+    padding: 0.8rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .add-anime-page {
+    max-width: 1100px;
+    padding: 2.5rem;
+  }
+
+  .form-admin-block {
+    padding: 2.5rem;
+  }
+
+  .episode-section {
+    padding: 2.5rem;
+  }
+}
+
+.toast-message {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-weight: bold;
+  animation: fadeIn 0.3s ease-out;
+  box-shadow: 0 0 8px rgba(0,0,0,0.2);
+}
+
+.toast-message.success {
+  background-color: #4caf50;
+  color: white;
+}
+
+.toast-message.error {
+  background-color: #f44336;
+  color: white;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.banner-upload {
+  margin: 20px 0;
+  padding: 16px;
+  background: #1e1e2f;
+  border: 1px solid #333;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+  color: #fff;
+
+  h3 {
+    font-size: 1.4rem;
+    margin-bottom: 12px;
+    color: #ff4b69; // акцент как у аниме сайта
+  }
+
+  input[type="file"] {
+    display: block;
+    margin-bottom: 12px;
+    color: #ddd;
+    cursor: pointer;
+
+    &::file-selector-button {
+      background: #ff4b69;
+      border: none;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    &::file-selector-button:hover {
+      background: #e03b5f;
+    }
+  }
+
+  .banner-preview {
+    position: relative;
+    border: 1px solid #444;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #1a1a2d;
+    max-height: 300px; // можно настроить под желаемую высоту
+
+    img {
+      width: 100%;
+      height: 350px; // зафиксированная высота баннера
+      object-fit: cover; // 💡 ключ: обрезает лишнее, оставляя "вписанную" часть
+      display: block;
+      border-radius: 10px;
+    }
+
+    .banner-actions {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      padding: 8px 12px;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+
+      p {
+        margin: 0;
+        font-size: 0.9rem;
+        font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .remove {
+        background: #ff4b69;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+        font-weight: bold;
+
+        &:hover {
+          background: #e03b5f;
+        }
+      }
+    }
+  }
+
+
+
+  .no-banner {
+    font-style: italic;
+    color: #aaa;
+    font-size: 0.95rem;
+    margin-top: 8px;
+  }
+}

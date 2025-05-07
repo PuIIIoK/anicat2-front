@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Plyr from 'plyr-react';
 import 'plyr-react/plyr.css';
 import KinescopePlayer from '@kinescope/react-kinescope-player';
-import { KINESCOPE_API_BASE, KINESCOPE_API_TOKEN } from '../../tools/constants'; // 👈 импорт токена и API URL
+import { KINESCOPE_API_BASE, KINESCOPE_API_TOKEN } from '../../../tools/constants'; // 👈 импорт токена и API URL
 
 interface AnimePlayerProps {
     title: string;

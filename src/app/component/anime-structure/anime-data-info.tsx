@@ -1,6 +1,6 @@
 'use client';
 
-import { API_SERVER } from "../../tools/constants";
+import { API_SERVER } from "../../../tools/constants";
 
 export interface AnimeEpisode {
     title: string; // Название эпизода
@@ -30,6 +30,8 @@ export interface AnimeInfo {
     kinescopeVideoId?: string; // ← добавь эту строку
     alias: string;
     kodik: string;
+    coverUrl: string;
+    bannerUrl: string;
 }
 
 interface RawAnime {
@@ -50,10 +52,12 @@ interface RawAnime {
     realesed_for: string;
     alias: string;
     kodik: string;
+    coverUrl: string;
+    bannerUrl: string;
     cover: { id: number; name: string }; // ✅ теперь cover берётся отсюда
 }
 
-import { fetchCoverUrl } from './fetch-cover-url';
+import { fetchCoverUrl } from '../fetch-cover-url';
 
 // Обновленная версия с обязательными значениями для animeInfo
 export const fetchAllAnime = async (): Promise<AnimeInfo[]> => {
@@ -97,6 +101,8 @@ export const fetchAllAnime = async (): Promise<AnimeInfo[]> => {
                 screenshots: [],
                 alias: anime.alias || '',
                 kodik: anime.kodik || '',
+                coverUrl: anime.coverUrl || '',
+                bannerUrl: anime.bannerUrl || '',
             } as AnimeInfo;
         })
     );

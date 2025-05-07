@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { AnimePlayerProps } from "../../utils/player/types";
-import { useAnimePlayer } from "../../hooks/anicat-player";
+import { AnimePlayerProps } from "../../../utils/player/types";
+import { useAnimePlayer } from "../../../hooks/anicat-player";
 
 const AnimePlayer: React.FC<AnimePlayerProps> = ({ animeId }) => {
     const {

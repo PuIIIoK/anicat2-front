@@ -3,10 +3,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
-import { fetchAllAnime, AnimeInfo } from './anime-data-info';
+import { fetchAllAnime, AnimeInfo } from '../anime-structure/anime-data-info';
 import { Play} from 'lucide-react';
-import {API_SERVER} from "../../tools/constants";
-import {AnimeEpisode, fetchAnimeEpisodes} from "./anime-episode-data";
+import {API_SERVER} from "../../../tools/constants";
+import {AnimeEpisode, fetchAnimeEpisodes} from "../anime-structure/anime-episode-data";
 import { useRouter } from 'next/navigation';
 
 //const statusOptions = [
@@ -30,6 +30,9 @@ const AnimePageTest: React.FC = () => {
     const [, setEpisodes] = useState<AnimeEpisode[]>([]);
     const [screenshotUrls, setScreenshotUrls] = useState<string[]>([]);
     const [coverUrl, setCoverUrl] = useState<string | null>(null);
+    const [bannerUrl, setBannerUrl] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
     const router = useRouter();
 
     useEffect(() => {
@@ -80,7 +83,6 @@ const AnimePageTest: React.FC = () => {
                 const allAnime = await fetchAllAnime();
                 const selectedAnime = allAnime.find((anime) => anime.id === Number(animeId));
 
-
                 if (selectedAnime) {
                     setAnime(selectedAnime);
                     const episodesFromApi = await fetchAnimeEpisodes(Number(animeId));
@@ -98,6 +100,13 @@ const AnimePageTest: React.FC = () => {
                     );
                     setScreenshotUrls(urls);
 
+                    const bannerResp = await fetch(`${API_SERVER}/api/stream/${animeId}/banner-direct`);
+                    if (bannerResp.ok) {
+                        const bannerBlob = await bannerResp.blob();
+                        const bannerObjectUrl = URL.createObjectURL(bannerBlob);
+                        setBannerUrl(bannerObjectUrl);
+                    }
+
                     const coverResp = await fetch(`${API_SERVER}/api/stream/${animeId}/cover`);
                     if (coverResp.ok) {
                         const blob = await coverResp.blob();
@@ -107,13 +116,16 @@ const AnimePageTest: React.FC = () => {
                 }
             } catch (error) {
                 console.error('Ошибка при загрузке данных аниме:', error);
+            } finally {
+                // ✅ Завершаем загрузку в любом случае
+                setIsLoading(false);
             }
         };
 
         loadAnimeData();
     }, [animeId]);
 
- ///   const markAsWatched = (id: number) => {
+    ///   const markAsWatched = (id: number) => {
    //    setEpisodes(prev => prev.map(ep => (ep.id === id ? { ...ep, watched: true } : ep)));
   //  };
 
@@ -132,13 +144,26 @@ const AnimePageTest: React.FC = () => {
     //const handleMenuToggle = (id: number) => {
     //    setOpenMenuId(prev => (prev === id ? null : id));
    // };
-    if (!anime) return <div>Загрузка аниме...</div>;
+    if (isLoading || !anime) {
+        return (
+            <div className="anime-loading-screen">
+                <div className="spinner"></div>
+                <p className="loading-text">
+                    Загрузка аниме{anime?.title ? `: ${anime.title}` : '...'}
+                </p>
+            </div>
+        );
+    }
 
     return (
         <div className="test-anime-page">
             <div className="test-top-section">
                 <div className="test-background">
-                    <Image src="/" alt="Фон" fill className="test-background-image" />
+                    {bannerUrl ? (
+                        <Image src={bannerUrl} alt="Фон" fill className="test-background-image" />
+                    ) : (
+                        <div style={{ width: '100%', height: '100%' }}>Загрузка баннера...</div>
+                    )}
                     <div className="test-background-overlay"></div>
                 </div>
 

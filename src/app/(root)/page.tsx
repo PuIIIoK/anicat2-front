@@ -2,8 +2,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import Category from '../component/category-structure'; // Подключаем компонент Category
-import CategoryData, { Category as CategoryType } from '../component/category-data';
+import Category from '../component/anime-structure/category-structure'; // Подключаем компонент Category
+import CategoryData, { Category as CategoryType } from '../component/anime-structure/category-data';
 import { PulseLoader } from 'react-spinners'; // Импортируем спиннер
 
 const CategoryList: React.FC = () => {

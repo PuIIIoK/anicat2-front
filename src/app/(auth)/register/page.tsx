@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import {API_SERVER} from "../../../tools/constants";
 
 const RegisterPage: React.FC = () => {
     const [username, setUsername] = useState('');
@@ -11,7 +12,7 @@ const RegisterPage: React.FC = () => {
         e.preventDefault();
 
         try {
-            const response = await fetch('http://localhost:8080/api/auth/register', {
+            const response = await fetch(`${API_SERVER}/api/auth/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

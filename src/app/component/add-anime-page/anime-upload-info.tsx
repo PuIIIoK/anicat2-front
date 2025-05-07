@@ -122,8 +122,8 @@ const AnimeMainInfo: React.FC<Props> = ({
                         <option value="Декабрь">Декабрь</option>
                     </select>
                 </label>
-                <label>Сезон (число):
-                    <input value={season} onChange={(e) => setSeason(e.target.value)} placeholder="например, 1"/>
+                <label>Сезон (указывать номер + сезон):
+                    <input value={season} onChange={(e) => setSeason(e.target.value)} placeholder="например, 1 сезон"/>
                 </label>
                 <label>Год:
                     <input value={year} onChange={(e) => setYear(e.target.value)} placeholder="например, 2024"/>

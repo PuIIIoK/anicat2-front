@@ -146,7 +146,7 @@
   .anime-title-text-info
   {
     position: relative;
-    font-size: 17px;
+    font-size: 14.5px;
     color: rgb(250, 255, 177);
     font-weight: bold;
   }
@@ -240,13 +240,13 @@
 {
   position: relative;
   padding: 10px;
-  margin-left: 15px;
+  font-size: 28px;
+  margin-left: 30px;
 }
 
 .anime-list {
   display: grid;
   margin-left: 20px;
-  gap: 11px;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
 
@@ -254,8 +254,6 @@
 
 .anime-thumbnail {
   position: relative;
-  width: 200px;
-  height: 300px;
   border-radius: 10px;
   overflow: hidden;
 
@@ -292,3 +290,151 @@
   }
 }
 
+//АДАПТАЦИЯ
+
+// 📱 Адаптивность для мобильных, планшетов и больших экранов
+
+@media (max-width: 1024px) {
+  .category {
+    margin: 15px 0 0 40px;
+  }
+
+  .anime-title {
+    gap: 10px;
+    padding: 0 0 0 5px;
+  }
+
+  .anime-title-card {
+    width: 160px;
+    height: 240px;
+    margin: 0 8px 20px 8px;
+  }
+
+  .anime-line-container {
+    padding-top: 15px;
+  }
+
+  .anime-info .anime-title-text,
+  .anime-info .anime-title-text-no-season {
+    font-size: 14px;
+  }
+
+  .view-all-button {
+    padding-left: 40px;
+    padding-bottom: 40px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .category {
+    margin-left: 20px;
+  }
+
+  .category-title,
+  .categoryname {
+    font-size: 24px;
+    margin-left: 20px;
+  }
+
+  .anime-title-card {
+    width: 140px;
+    height: 210px;
+    margin: 0 6px 16px 6px;
+    border-radius: 15px;
+  }
+
+  .anime-info {
+    padding: 8px;
+  }
+
+  .anime-info .anime-title-text,
+  .anime-info .anime-title-text-no-season,
+  .anime-info .anime-hover-text {
+    font-size: 13px;
+  }
+
+  .anime-info .season-text {
+    font-size: 16px;
+  }
+
+  .view-all-button {
+    padding-left: 30px;
+    padding-bottom: 30px;
+    font-size: 13px;
+  }
+
+  .anime-list {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    margin-left: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .category {
+    margin: 10px 0 0 30px;
+  }
+
+  .category-title,
+  .categoryname {
+    font-size: 20px;
+    margin-left: 10px;
+  }
+
+  .anime-title {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 0 10px;
+  }
+
+  .anime-title-card {
+    width: 120px;
+    height: 180px;
+    margin: 0 5px 15px 5px;
+  }
+
+  .anime-info {
+    padding: 6px;
+  }
+
+  .anime-info .anime-title-text,
+  .anime-info .anime-title-text-no-season,
+  .anime-info .anime-hover-text {
+    font-size: 12px;
+  }
+
+  .anime-info .season-text {
+    font-size: 14px;
+  }
+
+  .view-all-button {
+    padding-left: 20px;
+    padding-bottom: 20px;
+    font-size: 12px;
+  }
+
+  .anime-list {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    margin-left: 0;
+    padding: 0 5px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .container-wrapper {
+    padding-top: 50px;
+  }
+
+  .anime-info .anime-title-text,
+  .anime-info .anime-title-text-no-season {
+    font-size: 18px;
+  }
+
+  .anime-info .anime-hover-text {
+    font-size: 20px;
+  }
+
+  .anime-line-container {
+    padding-top: 25px;
+  }
+}

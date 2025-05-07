@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { AnimeInfo } from './anime-data-info';
-import {API_SERVER} from "../../tools/constants";
+import {API_SERVER} from "../../../tools/constants";
 
 interface AnimeCardProps {
     anime: AnimeInfo;

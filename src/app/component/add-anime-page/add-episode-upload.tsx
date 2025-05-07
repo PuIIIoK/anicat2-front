@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { EpisodeEntry } from "../../utils/anime";
-import { API_SERVER } from "../../tools/constants";
+import { EpisodeEntry } from "../../../utils/anime";
+import { API_SERVER } from "../../../tools/constants";
 
 interface Props {
     animeId: string | null;

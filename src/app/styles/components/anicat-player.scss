@@ -1,0 +1,899 @@
+
+.video-player {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: black;
+  overflow-x: hidden; // ✅ Только по горизонтали
+
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; // или contain, если не хочешь обрезания
+    display: block;
+    background: black;
+  }
+
+  .center-controls {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    gap: 16px;
+    z-index: 15;
+
+    button {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      padding: 10px;
+      border-radius: 50%;
+      color: white;
+      transition: background 0.2s;
+      cursor: pointer;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: default;
+      }
+
+      &.play-pause {
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .spinner {
+        animation: spin 1s linear infinite;
+      }
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  }
+
+
+  .controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+
+    .progress-container {
+      position: absolute;
+      bottom: 110px;  // Поднимаем над панелью
+      left: 50%;  // Центрируем по горизонтали
+      width: 100%;  // Устанавливаем ширину на 60% от ширины плеера
+      height: 5px;  // Уменьшаем высоту прогресс-бара
+      cursor: pointer;
+      background: transparent;
+      transition: height 0.2s ease;
+      z-index: 25;
+      transform: translateX(-50%); // Смещаем на 50%, чтобы прогресс-бар был по центру
+
+      .progress-track {
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        position: relative;
+        overflow: hidden;
+
+        .progress-buffered {
+          position: absolute;
+          top: 0;
+          left: 0;
+          height: 100%;
+          background: rgba(255, 255, 255, 0.3);
+          z-index: 1;
+        }
+
+        .progress-filled {
+          position: absolute;
+          top: 0;
+          left: 0;
+          height: 100%;
+          background: crimson;
+          z-index: 2;
+        }
+      }
+
+      .progress-tooltip {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        bottom: 130%;  // оставляем, чтобы тултип был немного выше
+        left: 50%;     // центрируем по горизонтали
+        transform: translateX(80%);  // сдвигаем на 50% от своего размера, чтобы быть по центру
+        background: #ff5454;
+        color: #fff;
+
+        padding: 2px 6px;
+        font-size: 12px;
+        border-radius: 4px;
+        white-space: nowrap;
+        z-index: 5;
+        pointer-events: none;
+        opacity: 0.9;
+
+        // Добавим правки, чтобы тултип не выходил за пределы экрана
+        max-width: 80px;  // Ограничиваем ширину
+        text-overflow: ellipsis;  // Если текст слишком длинный, будет показываться многоточие
+        overflow: hidden;  // Обрезаем лишнее
+      }
+
+      // 👉 Увеличиваем при наведении
+      &:hover {
+        height: 12px;
+
+        .progress-track {
+          border-radius: 6px;
+        }
+      }
+    }
+
+    .bottom-controls {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 15, 15, 0.85);
+      backdrop-filter: blur(8px);
+      border-radius: 14px;
+      padding: 12px 24px;
+      display: flex;
+
+      align-items: center;
+      justify-content: space-between;
+      gap: 28px;
+      min-width: 600px;
+      width: 95%; // 👈 почти вся ширина плеера
+      max-width: 1700px; // 👈 чтобы не растягивалось на очень широких экранах
+      z-index: 20;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.45);
+      transition: all 0.3s ease;
+
+      .left,
+      .center,
+      .right {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex: 1;
+      }
+
+      .center {
+        justify-content: center;
+      }
+
+      .right {
+        justify-content: flex-end;
+      }
+
+      button {
+        width: 42px;
+        height: 42px;
+        background: rgba(255, 255, 255, 0.05);
+        border: none;
+        border-radius: 10px;
+        padding: 0;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s ease, transform 0.2s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.12);
+          transform: translateY(-2px);
+        }
+
+        svg {
+          width: 20px;
+          height: 20px;
+        }
+      }
+
+      .time {
+        font-size: 13px;
+        color: white;
+        font-weight: 500;
+        white-space: nowrap;
+      }
+
+      input[type='range'] {
+        width: 90px;
+        accent-color: #e50914;
+        height: 4px;
+
+        &::-webkit-slider-thumb {
+          appearance: none;
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background: #e50914;
+          cursor: pointer;
+        }
+
+        &::-moz-range-thumb {
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background: #e50914;
+          cursor: pointer;
+        }
+      }
+    }
+
+
+    @keyframes fadeInUp {
+      from {
+        transform: translate(-50%, 30px);
+        opacity: 0;
+      }
+      to {
+        transform: translate(-50%, 0);
+        opacity: 1;
+      }
+    }
+
+  }
+
+  .playlist-menu-floating {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    background: #111;
+    border: 1px solid #f33;
+    padding: 12px 16px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 20;
+    max-height: 400px;
+    overflow-y: auto;
+    min-width: 200px;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #f33;
+      border-radius: 4px;
+    }
+
+    button {
+      background: #222;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      text-align: left;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+
+      &.active {
+        background: #f33;
+        color: white;
+        font-weight: bold;
+        box-shadow: 0 0 8px rgba(255, 51, 51, 0.6); // 🔥 светящийся эффект для активной
+      }
+
+      &:hover {
+        background: #333;
+        transform: translateX(2px);
+        box-shadow: 0 0 6px rgba(255, 51, 51, 0.4);
+      }
+    }
+  }
+
+
+  .settings-dropdown {
+    position: relative;
+
+    .settings-menu {
+      position: absolute;
+      bottom: 170%;
+      right: 0;
+      background: #111;
+      color: #ffffff;
+      border-radius: 12px;
+      border: 1px solid #333;
+      padding: 16px 20px;
+      min-width: 270px;
+      max-width: 290px;
+      z-index: 999;
+      font-size: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+
+      .close-button, .back-button {
+        background: none;
+        border: none;
+        color: #ff0000;
+        padding: 0px 40px;
+        text-align: left;
+        font-weight: bold;
+        font-size: 14px;
+        cursor: pointer;
+
+        &:hover {
+          opacity: 0.8;
+        }
+      }
+
+      .settings-option {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: default;
+
+        &.clickable {
+          cursor: pointer;
+
+          &:hover {
+            color: #acacac;
+          }
+        }
+      }
+
+      .settings-category {
+        font-size: 11px;
+        opacity: 0.5;
+        margin-top: 8px;
+        text-transform: uppercase;
+      }
+
+      .switch-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .custom-toggle {
+          position: relative;
+          width: 34px;
+          height: 18px;
+
+          input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+          }
+
+          .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #444;
+            border-radius: 20px;
+            transition: .2s;
+
+            &::before {
+              content: "";
+              position: absolute;
+              height: 14px;
+              width: 14px;
+              left: 2px;
+              bottom: 2px;
+              background-color: white;
+              border-radius: 50%;
+              transition: .2s;
+            }
+          }
+
+          input:checked + .slider {
+            background-color: crimson;
+          }
+
+          input:checked + .slider::before {
+            transform: translateX(16px);
+          }
+        }
+      }
+
+      .settings-submenu {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        button {
+          background: #222;
+          border: none;
+          border-radius: 6px;
+          padding: 6px 110px;
+          display: flex;
+          color: white;
+          text-align: left;
+
+          &.active {
+            background: crimson;
+          }
+
+          &:hover {
+            background: #333;
+          }
+        }
+      }
+    }
+
+  }
+}
+
+.center-controls {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  grid-template-columns: auto auto auto;
+  align-items: center;
+  gap: 24px;
+  z-index: 15;
+
+  button {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    transition: background 0.2s;
+    cursor: pointer;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    &.play-pause {
+      width: 50px;
+      height: 50px;
+    }
+
+    .spinner {
+      animation: spin 1s linear infinite;
+      width: 28px;
+      height: 28px;
+      stroke-width: 2.5;
+    }
+    .spinner.red {
+      color: #e50914; // Netflix-style красный
+    }
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+}
+
+.play-pause.buffering {
+  background: transparent;
+  border: none;
+  cursor: default;
+  box-shadow: none;
+}
+
+.pure-spinner {
+  aspect-ratio: 1 / 1; // 👈 гарантирует КРУГ
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(229, 9, 20, 0.2); // полупрозрачный фон круга
+  border-top: 3px solid #e50914;          // активный цвет
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto;
+  box-sizing: border-box; // 👈 важно
+}
+
+@keyframes spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.bottom-controls-centered {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 20px;
+  z-index: 10;
+
+  button {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    svg {
+      width: 22px;
+      height: 22px;
+    }
+  }
+}
+.autoplay-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #111;
+    border: 1px solid #444;
+    padding: 6px 10px;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+
+    input[type='checkbox'] {
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid crimson;
+      border-radius: 4px;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+
+      &:checked {
+        background-color: crimson;
+      }
+    }
+
+    span {
+      color: white;
+      font-size: 13px;
+    }
+  }
+}
+
+body
+{
+  margin-top: 0px !important;
+}
+
+.video-player {
+  --transition-speed: 0.3s;
+
+  &.no-effects {
+    --transition-speed: 0s;
+  }
+
+  .controls {
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 12px;
+    backdrop-filter: blur(8px);
+    transition: background var(--transition-speed), transform var(--transition-speed);
+
+  }
+
+  button {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    transition: background var(--transition-speed), transform var(--transition-speed);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.05);
+    }
+  }
+
+  .progress-container {
+    transition: height var(--transition-speed);
+    border-radius: 6px;
+
+    &:hover {
+      height: 10px;
+    }
+  }
+}
+
+// 🔻 Мобильные устройства (до 600px)
+@media (max-width: 600px) {
+  .video-player {
+    .bottom-controls {
+      flex-direction: column;
+      gap: 12px;
+      min-width: auto;
+      padding: 10px 14px;
+      width: 100%;
+
+      .left, .center, .right {
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      button {
+        width: 36px;
+        height: 36px;
+
+        svg {
+          width: 18px;
+          height: 18px;
+        }
+      }
+
+      .time {
+        font-size: 12px;
+      }
+
+      input[type='range'] {
+        width: 70px;
+      }
+    }
+
+    .playlist-menu-floating {
+      top: auto;
+      bottom: 60px;
+      left: 8px;
+      transform: none;
+      min-width: 160px;
+      max-height: 250px;
+    }
+
+    .settings-dropdown .settings-menu {
+      min-width: 220px;
+      padding: 12px 14px;
+    }
+
+    .center-controls {
+      gap: 12px;
+
+      button {
+        width: 36px;
+        height: 36px;
+      }
+    }
+  }
+}
+
+// 🔻 Планшеты и маленькие ноутбуки (600px–1024px)
+@media (max-width: 1024px) {
+  .video-player {
+    .bottom-controls {
+      padding: 10px 20px;
+      min-width: auto;
+      max-width: 95%;
+
+      button {
+        width: 38px;
+        height: 38px;
+
+        svg {
+          width: 18px;
+          height: 18px;
+        }
+      }
+
+      .time {
+        font-size: 12px;
+      }
+
+      input[type='range'] {
+        width: 80px;
+      }
+    }
+
+    .playlist-menu-floating {
+      min-width: 180px;
+    }
+
+    .settings-dropdown .settings-menu {
+      font-size: 13px;
+    }
+  }
+}
+
+// 🔺 Очень широкие мониторы (4K и выше)
+@media (min-width: 1920px) {
+  .video-player {
+    .bottom-controls {
+      max-width: 1400px;
+    }
+
+    .playlist-menu-floating {
+      min-width: 220px;
+    }
+
+    .settings-dropdown .settings-menu {
+      max-width: 320px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .bottom-controls-centered {
+    gap: 14px;
+
+    button {
+      width: 36px;
+      height: 36px;
+
+      svg {
+        width: 18px;
+        height: 18px;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .bottom-controls-centered {
+    gap: 10px;
+
+    button {
+      width: 32px;
+      height: 32px;
+
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+    }
+  }
+}
+
+@media (max-width: 360px) {
+  .bottom-controls-centered {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+}
+
+@media (max-height: 500px) and (max-width: 950px) {
+  .bottom-controls-centered {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    bottom: 10px;
+    margin-left: -100px;
+    padding: 4px 0;
+
+    button {
+      width: 34px;
+      height: 34px;
+      border-radius: 6px;
+
+      svg {
+        width: 18px;
+        height: 18px;
+      }
+    }
+  }
+}
+
+// Горизонтальный режим мобильников
+@media (max-height: 500px) and (max-width: 950px) {
+  .settings-dropdown .settings-menu {
+    position: fixed !important;
+    top: -210% !important;
+    left: 85% !important;
+    bottom: auto !important;
+    right: auto !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 30 !important;
+
+    width: 90vw;
+    max-width: 360px;
+    max-height: 90vh;
+    padding: 20px;
+    border-radius: 14px;
+    background: #111;
+    font-size: 15px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+    overflow-y: auto;
+  }
+  .video-player.settings-open {
+
+    .progress-container {
+      display: none !important;
+    }
+
+    .center-controls {
+      display: none !important;
+    }
+  }
+}
+
+.player-selector {
+  position: absolute;
+  top: 10px;
+  right: 50px; // адаптировано под левый верх
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #fff;
+  backdrop-filter: blur(4px);
+
+  select {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-weight: 600;
+    font-size: inherit;
+    cursor: pointer;
+
+    option {
+      background: #1a1a1a;
+      color: #fff;
+    }
+  }
+
+  // 📱 Мобильные устройства (до 600px)
+  @media (max-width: 600px) {
+    font-size: 12px;
+    padding: 5px 8px;
+
+    select {
+      font-size: 12px;
+    }
+  }
+
+  // 💻 Планшеты и ноутбуки (600px - 1024px)
+  @media (min-width: 601px) and (max-width: 1024px) {
+    font-size: 13px;
+    padding: 6px 9px;
+  }
+
+  // 🖥️ Большие экраны (больше 1440px)
+  @media (min-width: 1440px) {
+    font-size: 16px;
+    padding: 8px 12px;
+  }
+}

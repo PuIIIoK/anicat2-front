@@ -1,9 +1,9 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import AnimeCard from '../component/anime-cards';
+import AnimeCard from './anime-cards';
 import { AnimeInfo } from './anime-data-info';
 import Link from 'next/link';
-import {API_SERVER} from "../../tools/constants";
+import {API_SERVER} from "../../../tools/constants";
 
 interface Category {
     id: string;

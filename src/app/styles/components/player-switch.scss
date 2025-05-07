@@ -1,0 +1,273 @@
+.anime-player-and-switch-container {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  margin-top: 32px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+
+  .anime-player-block {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .anime-switch-sidebar {
+    width: 300px;
+    background: linear-gradient(145deg, #1a1a1a, #222);
+    border-radius: 16px;
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
+    color: #f5f5f5;
+    transition: all 0.3s ease;
+
+    .switch-title {
+      font-weight: 700;
+      font-size: 18px;
+      color: #ff5c93;
+      margin-bottom: 6px;
+      text-shadow: 0 0 5px rgba(255, 92, 147, 0.3);
+      letter-spacing: 0.5px;
+      position: relative;
+
+      &::before {
+        content: '🎮';
+        margin-right: 8px;
+      }
+    }
+
+  }
+}
+
+.switch-toggle {
+  background-color: #1c1c1c;
+  border-radius: 999px;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(255, 0, 75, 0.15);
+  position: relative;
+
+  .switch-btn1,
+  .switch-btn2 {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    color: #ccc;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+
+    &:hover {
+      background-color: rgba(255, 46, 99, 0.1);
+      color: #fff;
+    }
+
+    &.active {
+      background-color: #ff2e63;
+      color: #fff;
+      box-shadow: 0 0 8px rgba(255, 0, 100, 0.6);
+    }
+  }
+}
+
+.switch-label
+{
+  position: relative;
+  margin-bottom: 15px;
+}
+.switch-btn3 {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: #ccc;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+
+  &.active {
+    background-color: #9b59b6;
+    color: #fff;
+    box-shadow: 0 0 8px rgba(155, 89, 182, 0.6);
+  }
+
+  &:hover {
+    color: #fff;
+    background-color: rgba(155, 89, 182, 0.1);
+  }
+}
+
+
+//АДАПТАЦИЯ
+
+// 📱 Адаптивность для блока плеера и сайдбара
+
+@media (max-width: 1024px) {
+  .anime-player-and-switch-container {
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+
+    .anime-switch-sidebar {
+      width: 100%;
+      max-width: 400px;
+      padding: 18px 14px;
+      border-radius: 14px;
+      font-size: 15px;
+    }
+  }
+
+  .switch-toggle {
+    padding: 5px;
+
+    .switch-btn1,
+    .switch-btn2 {
+      padding: 7px 14px;
+      font-size: 13px;
+    }
+  }
+
+  .switch-btn3 {
+    padding: 7px 14px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 768px) {
+  .anime-player-and-switch-container {
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+
+    .anime-switch-sidebar {
+      width: 100%;
+      max-width: 350px;
+      padding: 16px 12px;
+      font-size: 14px;
+    }
+  }
+
+  .switch-toggle {
+    padding: 4px;
+
+    .switch-btn1,
+    .switch-btn2 {
+      padding: 6px 12px;
+      font-size: 12.5px;
+    }
+  }
+
+  .switch-btn3 {
+    padding: 6px 12px;
+    font-size: 12.5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .anime-player-and-switch-container {
+    flex-direction: column;
+    gap: 14px;
+    align-items: center;
+
+    .anime-switch-sidebar {
+      width: 100%;
+      max-width: 300px;
+      padding: 14px 10px;
+      font-size: 13px;
+    }
+  }
+
+  .switch-toggle {
+    flex-direction: column;
+    padding: 3px;
+    gap: 4px;
+
+    .switch-btn1,
+    .switch-btn2 {
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+  }
+
+  .switch-btn3 {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .anime-player-and-switch-container {
+    gap: 32px;
+
+    .anime-switch-sidebar {
+      width: 320px;
+      padding: 24px 20px;
+      font-size: 17px;
+    }
+  }
+
+  .switch-toggle {
+    padding: 8px;
+
+    .switch-btn1,
+    .switch-btn2 {
+      padding: 10px 18px;
+      font-size: 15px;
+    }
+  }
+
+  .switch-btn3 {
+    padding: 10px 18px;
+    font-size: 15px;
+  }
+}
+
+// 📱 Адаптивность плеера под мобильные устройства
+
+@media (max-width: 768px) {
+  .anime-player-and-switch-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .anime-player-block {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .anime-switch-sidebar {
+    width: 100%;
+    max-width: 100%;
+    padding: 16px 12px;
+    border-radius: 14px;
+  }
+
+  .video-wrapper, video, .custom-player {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 9/16; // ⚡ вертикальный формат на мобиле
+    border-radius: 12px;
+    overflow: hidden;
+  }
+}
+
+@media (max-width: 480px) {
+  .anime-player-block {
+    width: 100%;
+  }
+
+  .video-wrapper, video, .custom-player {
+    aspect-ratio: 9/16;
+    border-radius: 10px;
+  }
+}

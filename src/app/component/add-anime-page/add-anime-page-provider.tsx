@@ -2,10 +2,13 @@
 
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
-import AnimeMainInfo from '../component/anime-upload-info';
-import AnimeFileAndEpisode from "../component/add-upload-upload";
-import { API_SERVER } from "../../tools/constants";
-
+import AnimeMainInfo from './anime-upload-info';
+import AnimeFileAndEpisode from "./add-upload-upload";
+import { API_SERVER } from "../../../tools/constants";
+const getTokenFromCookie = () => {
+    const match = document.cookie.match(/(?:^|; )token=([^;]*)/);
+    return match ? decodeURIComponent(match[1]) : null;
+};
 const AddAnimePage = () => {
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -29,7 +32,7 @@ const AddAnimePage = () => {
     const [cover, setCover] = useState<File | null>(null);
     const [screenshots, setScreenshots] = useState<File[]>([]);
     const [saving, setSaving] = useState(false);
-    const [message, setMessage] = useState<string | null>(null);
+    const [message, ] = useState<string | null>(null);
     const [alias, setAlias] = useState('');
     const [kodik, setKodik] = useState('');
     const [banner, setBanner] = useState<File | null>(null);
@@ -38,22 +41,32 @@ const AddAnimePage = () => {
 
 
     const handleCoverUpload = async () => {
+        const token = getTokenFromCookie();
+        if (!token) throw new Error('Токен не найден');
         if (!cover || !animeId) return;
         const formData = new FormData();
         formData.append('file', cover);
         await fetch(`${API_SERVER}/api/admin/upload-cover/${animeId}`, {
             method: 'POST',
             body: formData,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
         });
     };
 
     const handleScreenshotUpload = async () => {
+        const token = getTokenFromCookie();
+        if (!token) throw new Error('Токен не найден');
         if (!screenshots.length || !animeId) return;
         const formData = new FormData();
         screenshots.forEach((file) => formData.append('files', file));
         await fetch(`${API_SERVER}/api/admin/upload-screenshots/${animeId}`, {
             method: 'POST',
             body: formData,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
         });
     };
     const showToast = (msg: string, type: 'success' | 'error') => {
@@ -67,10 +80,12 @@ const AddAnimePage = () => {
     };
 
     const handleInfoUpload = async () => {
+        const token = getTokenFromCookie();
+        if (!token) throw new Error('Токен не найден');
         if (!animeId) return;
         await fetch(`${API_SERVER}/api/admin/upload-info/${animeId}`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' , 'Authorization': `Bearer ${token}`,},
             body: JSON.stringify({
                 title,
                 alttitle,
@@ -95,6 +110,7 @@ const AddAnimePage = () => {
     const handleSave = async () => {
         setSaving(true);
         try {
+            await handleBannerUpload();
             await handleCoverUpload();
             await handleScreenshotUpload();
             await handleInfoUpload();
@@ -110,16 +126,40 @@ const AddAnimePage = () => {
             setSaving(false);
         }
     };
+    const handleBannerUpload = async () => {
+        const token = getTokenFromCookie();
+        if (!token) throw new Error('Токен не найден');
+        if (!banner || !animeId) return;
+        const formData = new FormData();
+        formData.append('file', banner);
+        const res = await fetch(`${API_SERVER}/api/admin/upload-banner/${animeId}`, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        if (!res.ok) {
+            const errText = await res.text();
+            throw new Error(errText || 'Ошибка загрузки баннера');
+        }
+    };
 
     const handleCancel = async () => {
+        const token = getTokenFromCookie();
+        if (!token) throw new Error('Токен не найден');
         if (!animeId) return;
-        await fetch(`${API_SERVER}/api/admin/delete-anime/${animeId}`, { method: 'DELETE' });
+        await fetch(`${API_SERVER}/api/admin/delete-anime/${animeId}`,
+            { method: 'DELETE' ,headers: {
+                    'Authorization': `Bearer ${token}`,
+                },});
         router.push('/admin_panel');
     };
 
     return (
         <div className="add-anime-page">
-            <h1 className="title">Добавление Аниме #{animeId}</h1>
+            <h1 className="title">Добавление аниме: #{animeId}</h1>
 
             {message && <div className="message-box">{message}</div>}
             {toastMessage && (

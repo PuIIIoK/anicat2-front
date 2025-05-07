@@ -1,6 +1,6 @@
 // src/pages/api/kinescope-search.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { KINESCOPE_API_TOKEN, KINESCOPE_API_BASE } from '../../tools/constants';
+import { KINESCOPE_API_TOKEN, KINESCOPE_API_BASE } from '../../../tools/constants';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { title } = req.query;

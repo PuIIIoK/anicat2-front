@@ -1,17 +1,19 @@
 // src/hooks/anicat-player.ts
+
 "use client"
 
 import { useState, useEffect } from 'react';
+import { fetchEpisodes, fetchKodikPlayerData } from '../utils/player/api';
 import Hls from 'hls.js';
-import { Episode } from './player/types'; // Путь к типам
-import { fetchEpisodes } from './player/api'; // Путь к функции для получения эпизодов
+import {Episode} from "../utils/player/types"; // Импортируем функции для получения данных
 
-// Экспортируем хук
 export const useAnimePlayer = (animeId: string) => {
-    const [episodes, setEpisodes] = useState<Episode[]>([]);
-    const [selectedEpisode, setSelectedEpisode] = useState<Episode | null>(null);
-    const [selectedQuality, setSelectedQuality] = useState<'480' | '720' | '1080'>('720');
-    const [videoSrc, setVideoSrc] = useState<string>('');
+    const [episodes, setEpisodes] = useState<Episode[]>([]); // Стейт для эпизодов
+    const [selectedEpisode, setSelectedEpisode] = useState<Episode | null>(null); // Стейт для выбранного эпизода
+    const [selectedQuality, setSelectedQuality] = useState<'480' | '720' | '1080'>('720'); // Стейт для качества
+    const [videoSrc, setVideoSrc] = useState<string>(''); // Стейт для ссылки на видео
+    const [selectedPlayer, setSelectedPlayer] = useState<string>('my-player'); // Стейт для выбранного плеера
+    const [kodikIframeUrl, setKodikIframeUrl] = useState<string>(''); // Стейт для URL плеера Kodik
 
     // Загружаем данные эпизодов при изменении animeId
     useEffect(() => {
@@ -22,7 +24,6 @@ export const useAnimePlayer = (animeId: string) => {
                 setSelectedEpisode(data[0]); // Выбираем первый эпизод по умолчанию
             }
         };
-
         fetchData();
     }, [animeId]);
 
@@ -58,12 +59,29 @@ export const useAnimePlayer = (animeId: string) => {
         }
     }, [videoSrc]);
 
+    // Загружаем данные для плеера Kodik, если выбран плеер Kodik
+    useEffect(() => {
+        if (selectedPlayer === 'kodik') {
+            const fetchKodik = async () => {
+                const link = await fetchKodikPlayerData(animeId);
+                if (link) {
+                    setKodikIframeUrl(link); // Устанавливаем ссылку для Kodik
+                }
+            };
+            fetchKodik();
+        }
+    }, [selectedPlayer, animeId]);
+
     const handleQualityChange = (quality: '480' | '720' | '1080') => {
-        setSelectedQuality(quality);
+        setSelectedQuality(quality); // Меняем качество
     };
 
     const handleEpisodeChange = (episode: Episode) => {
-        setSelectedEpisode(episode);
+        setSelectedEpisode(episode); // Меняем эпизод
+    };
+
+    const handlePlayerChange = (player: string) => {
+        setSelectedPlayer(player); // Меняем плеер
     };
 
     return {
@@ -71,7 +89,10 @@ export const useAnimePlayer = (animeId: string) => {
         selectedEpisode,
         selectedQuality,
         videoSrc,
+        selectedPlayer,
+        kodikIframeUrl,
         handleQualityChange,
         handleEpisodeChange,
+        handlePlayerChange,
     };
 };

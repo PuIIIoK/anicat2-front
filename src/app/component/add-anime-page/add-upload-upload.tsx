@@ -77,6 +77,29 @@ const AnimeFileAndEpisode: React.FC<Props> = ({
 
     return (
         <div className="admin-file-upload">
+            <div className="banner-upload">
+                <h3>Баннер</h3>
+                <input
+                    ref={bannerInputRef}
+                    type="file"
+                    accept="image/webp,image/png,image/jpeg"
+                    onChange={(e) => setBanner(e.target.files?.[0] || null)}
+                />
+                {banner ? (
+                    <div className="banner-preview">
+                        <img src={URL.createObjectURL(banner)} alt="Предосмотр баннера"/>
+                        <div className="banner-actions">
+                            <p>{banner.name}</p>
+                            <button className="remove" onClick={handleBannerRemove}>Удалить баннер</button>
+                        </div>
+                    </div>
+                ) : (
+                    <p className="no-banner">
+                        {bannerDeleteCountdown !== null ? `Файл ${bannerDeleteCountdown}...` : 'Баннер не выбран'}
+                    </p>
+                )}
+            </div>
+            <div className="image-upload-row">
             <div className="cover-upload">
                 <h3>Обложка</h3>
                 <input
@@ -87,7 +110,7 @@ const AnimeFileAndEpisode: React.FC<Props> = ({
                 />
                 {cover ? (
                     <div className="cover-preview">
-                        <img src={URL.createObjectURL(cover)} alt="Предосмотр обложки" />
+                        <img src={URL.createObjectURL(cover)} alt="Предосмотр обложки"/>
                         <div className="cover-actions">
                             <p>{cover.name}</p>
                             <button className="remove" onClick={handleCoverRemove}>Удалить обложку</button>
@@ -100,28 +123,6 @@ const AnimeFileAndEpisode: React.FC<Props> = ({
                 )}
             </div>
 
-            <div className="banner-upload">
-                <h3>Баннер</h3>
-                <input
-                    ref={bannerInputRef}
-                    type="file"
-                    accept="image/webp,image/png,image/jpeg"
-                    onChange={(e) => setBanner(e.target.files?.[0] || null)}
-                />
-                {banner ? (
-                    <div className="banner-preview">
-                        <img src={URL.createObjectURL(banner)} alt="Предосмотр баннера" />
-                        <div className="banner-actions">
-                            <p>{banner.name}</p>
-                            <button className="remove" onClick={handleBannerRemove}>Удалить баннер</button>
-                        </div>
-                    </div>
-                ) : (
-                    <p className="no-banner">
-                        {bannerDeleteCountdown !== null ? `Файл ${bannerDeleteCountdown}...` : 'Баннер не выбран'}
-                    </p>
-                )}
-            </div>
 
             <div className="screenshot-upload">
                 <h3>Скриншоты</h3>
@@ -136,7 +137,7 @@ const AnimeFileAndEpisode: React.FC<Props> = ({
                     {screenshots.length > 0 ? (
                         screenshots.map((file, index) => (
                             <div key={index} className="screenshot-item">
-                                <img src={URL.createObjectURL(file)} alt={`Скриншот ${index + 1}`} />
+                                <img src={URL.createObjectURL(file)} alt={`Скриншот ${index + 1}`}/>
                                 <button className="remove" onClick={() => handleScreenshotRemove(index)}>✖</button>
                                 <p>{file.name}</p>
                             </div>
@@ -147,6 +148,7 @@ const AnimeFileAndEpisode: React.FC<Props> = ({
                         </p>
                     )}
                 </div>
+            </div>
             </div>
         </div>
     );

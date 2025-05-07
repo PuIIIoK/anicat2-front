@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react'
-import {API_SERVER} from "../../tools/constants";
+import {API_SERVER} from "../../../tools/constants";
 
 interface Anime {
     id: number
