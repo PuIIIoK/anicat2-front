@@ -1,8 +1,10 @@
 'use client';
 
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import '../styles/index.scss';
-import LoadingPage from '../component/LoadingPage'
+import CustomTitleBar from "../component/CustomTitleBar";
+import DiscordStatusTracker from "../component/DiscordStatusTracker";
+import ElectronBodyClass from "../component/ElectronBodyClass";
 
 type LayoutProps = {
     children: ReactNode;
@@ -17,7 +19,9 @@ const RootLayout: React.FC<LayoutProps> = ({ children }) => {
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         </head>
         <body>
-        <LoadingPage />
+        <ElectronBodyClass />
+        <CustomTitleBar />
+        <DiscordStatusTracker />
         <main className="main-player">{children}</main>
         </body>
         </html>

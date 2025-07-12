@@ -1,37 +1,38 @@
-'use client';
-
-import React from 'react';
-import { useEffect, useState } from 'react';
-import {API_SERVER} from "../../../tools/constants";
+// category-data.tsx
+import { API_SERVER } from "../../../tools/constants";
+import { AnimeInfo } from './anime-data-info';
 
 export interface Category {
-    name: string;
     id: string;
+    name: string;
     animeIds: string[];
     link: string;
     position: number;
+    animeList?: AnimeInfo[];
 }
 
-// ✅ Первый запрос — получить все категории
 export const fetchAllCategories = async (): Promise<Category[]> => {
-    try {
-        const response = await fetch(`${API_SERVER}/api/anime/category/get-category`);
-        if (!response.ok) throw new Error('Не удалось загрузить категории');
-
-        const data = await response.json();
-        return data.categories || [];
-    } catch (error) {
-        console.error('Ошибка при загрузке категорий:', error);
-        return [];
-    }
+    const response = await fetch(`${API_SERVER}/api/anime/category/get-category`);
+    if (!response.ok) throw new Error('Не удалось загрузить категории');
+    const data = await response.json();
+    return data.categories || [];
 };
 
-// ✅ Второй запрос — получить подробности одной категории
+export const fetchCategoryAnimeList = async (animeIds: string[]): Promise<AnimeInfo[]> => {
+    const animeData = await Promise.all(
+        animeIds.map(async (id) => {
+            const res = await fetch(`${API_SERVER}/api/anime/get-anime/${id}`);
+            if (!res.ok) return null;
+            return await res.json();
+        })
+    );
+    return animeData.filter((item): item is AnimeInfo => item !== null);
+};
+
 export const fetchCategoryById = async (categoryId: string): Promise<Category | null> => {
     try {
         const response = await fetch(`${API_SERVER}/api/anime/category/get-category/${categoryId}`);
         if (!response.ok) throw new Error(`Ошибка при загрузке категории ${categoryId}`);
-
         return await response.json();
     } catch (error) {
         console.error('Ошибка при загрузке категории:', error);
@@ -39,43 +40,21 @@ export const fetchCategoryById = async (categoryId: string): Promise<Category | 
     }
 };
 
-// Компонент (если нужен)
-const CategoryData = ({ onCategoriesLoaded }: { onCategoriesLoaded: (categories: Category[]) => void }) => {
-    const [categories, setCategories] = useState<Category[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                setLoading(true);
+export const loadCategoriesWithAnime = async (): Promise<Category[]> => {
+    const cached = sessionStorage.getItem('anicat_categories');
+    if (cached) {
+        return JSON.parse(cached);
+    }
 
-                const baseCategories = await fetchAllCategories();
+    const baseCategories = await fetchAllCategories();
+    const categoriesWithAnime = await Promise.all(
+        baseCategories.map(async (cat) => {
+            const animeList = await fetchCategoryAnimeList(cat.animeIds);
+            return { ...cat, animeList };
+        })
+    );
 
-                const detailedCategories = await Promise.all(
-                    baseCategories.map(async (cat) => {
-                        const detail = await fetchCategoryById(cat.id);
-                        return detail ? { ...cat, ...detail } : cat;
-                    })
-                );
-
-                setCategories(detailedCategories);
-                onCategoriesLoaded(detailedCategories);
-            } catch {
-                setError('Ошибка при загрузке данных');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        if (categories.length === 0) {
-            fetchCategories();
-        }
-    }, [categories, onCategoriesLoaded]);
-
-    if (loading) return <p>Загрузка...</p>;
-    if (error) return <p>{error}</p>;
-    return null;
+    sessionStorage.setItem('anicat_categories', JSON.stringify(categoriesWithAnime));
+    return categoriesWithAnime;
 };
-
-export default CategoryData;

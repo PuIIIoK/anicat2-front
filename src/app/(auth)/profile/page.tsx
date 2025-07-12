@@ -2,47 +2,43 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import ProfileMainInfo from '../../component/profile-page-old/profile-page-provider';
 import { API_SERVER } from '../../../tools/constants';
 
 export default function Page() {
     const router = useRouter();
 
-    const getToken = () => {
-        const match = document.cookie.match(/token=([^;]+)/);
-        return match ? match[1] : '';
-    };
-
     useEffect(() => {
-        const checkProfileBeta = async () => {
-            const token = getToken();
-            if (!token) return;
+        // Получаем токен из куки
+        const token = document.cookie.match(/token=([^;]+)/)?.[1];
+        if (!token) {
+            router.replace('/login');
+            return;
+        }
 
-            try {
-                const res = await fetch(`${API_SERVER}/api/auth/get-profile`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-
-                if (!res.ok) return;
-
-                const data = await res.json();
-
-                // Теперь наоборот: если включено тестирование профиля, редиректим на новую страницу
-                if (data.profilePageBeta) {
-                    router.replace('/test-profile-page'); // перекидываем на новую страницу профиля
+        // Запрашиваем профиль
+        fetch(`${API_SERVER}/api/auth/get-profile`, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+            .then(res => res.json())
+            .then(data => {
+                // Если нет username — редирект на /auth
+                if (!data?.username) {
+                    router.replace('/login');
+                    return;
                 }
-                // иначе (если profilePageBeta false) — остаемся на текущей
-            } catch (error) {
-                console.error('Ошибка проверки профиля:', error);
-            }
-        };
-
-        checkProfileBeta();
+                // Если есть бета-страница профиля
+                if (data.profilePageBeta) {
+                    router.replace('/test-profile-page');
+                    return;
+                }
+                // Редиректим на /profile/{username}
+                router.replace(`/profile/${data.username}`);
+            })
+            .catch(() => {
+                // Ошибка запроса — тоже на /auth
+                router.replace('/login');
+            });
     }, [router]);
 
-    return (
-        <div>
-            <ProfileMainInfo />
-        </div>
-    );
+    return <div>Загрузка...</div>;
 }

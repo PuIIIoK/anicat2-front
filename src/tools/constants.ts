@@ -1,5 +1,5 @@
-export const API_SERVER = 'https://server.anicat.fun'; // 'https://server.anicat.fun';
-//export const API_SERVER = 'http://localhost:8080'; // 'https://server.anicat.fun';
+//export const API_SERVER = 'https://server.anicat.fun'; // 'https://server.anicat.fun';
+export const API_SERVER = 'http://localhost:8080'; // 'https://server.anicat.fun';
 export const FRONTEND_URL = 'https://anicat.fun';
 export const CDN_URL = 'https://storage.yandexcloud.net/anicat2';
 export const S3_ENDPOINT = 'https://storage.yandexcloud.net/anicat2';

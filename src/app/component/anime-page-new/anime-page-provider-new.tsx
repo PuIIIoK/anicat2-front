@@ -4,36 +4,90 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import { fetchAllAnime, AnimeInfo } from '../anime-structure/anime-data-info';
-import { Play} from 'lucide-react';
+import {Calendar, Check, Heart, Pause, Play, Share2, X} from 'lucide-react';
 import {API_SERVER} from "../../../tools/constants";
 import {AnimeEpisode, fetchAnimeEpisodes} from "../anime-structure/anime-episode-data";
 import { useRouter } from 'next/navigation';
+import Head from "next/head";
+import DiscordStatusTracker from "../DiscordStatusTracker";
 
-//const statusOptions = [
- //   { label: 'Запланировано', icon: <Calendar size={18} />, value: 'planned' },
-  //  { label: 'Смотрю', icon: <Play size={18} />, value: 'watching' },
-  ///  { label: 'Просмотрено', icon: <Check size={18} />, value: 'completed' },
-///{ label: 'Отложено', icon: <Pause size={18} />, value: 'paused' },
- //   { label: 'Брошено', icon: <X size={18} />, value: 'dropped' },
-//];
+const statusOptions = [
+    { label: 'Не выбрано', icon: <X size={18} />, value: 'none' }, // 👈 новый пункт
+    { label: 'Запланировано', icon: <Calendar size={18} />, value: 'planned' },
+    { label: 'Смотрю', icon: <Play size={18} />, value: 'watching' },
+    { label: 'Просмотрено', icon: <Check size={18} />, value: 'completed' },
+    { label: 'Отложено', icon: <Pause size={18} />, value: 'paused' },
+    { label: 'Брошено', icon: <X size={18} />, value: 'dropped' },
+];
+
+
+interface Collection {
+    collectionId: number;
+    collectionType: string;  // Пример типа, можно использовать ENUM, если значения фиксированы
+    anime: {
+        id: number;
+        title: string;
+        // и другие поля из объекта anime
+    };
+    addedAt: string;
+}
+
+
 
 const AnimePageTest: React.FC = () => {
     const params = useParams();
     const animeId = Array.isArray(params?.id) ? params.id[0] : params?.id as string;
 
-   // const [openMenuId, setOpenMenuId] = useState<number | null>(null);
-    const [, setFavorites] = useState(false);
-    const [, setSelectedStatus] = useState<string>('planned');
-    const [, ] = useState(false);
+ //  const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+    const [favorites, setFavorites] = useState(false);
+    const [selectedStatus, setSelectedStatus] = useState<string>('none');
+    const [showStatusDropdown, setShowStatusDropdown] = useState(false);
     const [isAccessible, setIsAccessible] = useState<boolean | null>(null);
     const [anime, setAnime] = useState<AnimeInfo | undefined>(undefined);
     const [, setEpisodes] = useState<AnimeEpisode[]>([]);
+    const [isSavingStatus, setIsSavingStatus] = useState(false);
     const [screenshotUrls, setScreenshotUrls] = useState<string[]>([]);
+    const [notification, setNotification] = useState<string | null>(null);
     const [coverUrl, setCoverUrl] = useState<string | null>(null);
     const [bannerUrl, setBannerUrl] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     const router = useRouter();
+   // const sampleEpisodes: AnimeEpisode[] = [
+    //    {
+    //        id: 1,
+    //        title: 'Встреча с судьбой',
+     //       duration: '24:00',
+    //        watched: false,
+      //      url: '/watch/1',
+     //       availableLanguages: [],
+    //        language: 'ja',
+     //   },
+     //   {
+    //        id: 2,
+    //        title: 'Первый бой',
+       //     duration: '23:45',
+     //       watched: false,
+      //      url: '/watch/2',
+       //     availableLanguages: [],
+      //      language: 'ja',
+       // },
+       // {
+       //     id: 3,
+       //     title: 'Новый союзник',
+      //      duration: '24:10',
+       //     watched: false,
+      //      url: '/watch/3',
+      //      availableLanguages: [],
+       //     language: 'ja',
+     //   },
+  //  ];
+    useEffect(() => {
+        if (anime) {
+            const season = anime.season ? `${anime.season}` : '';
+            document.title = `${anime.title}${season ? ` | ${season}` : ''} | AniCat`;
+        }
+    }, [anime]);
 
     useEffect(() => {
         if (!animeId) {
@@ -48,7 +102,7 @@ const AnimePageTest: React.FC = () => {
             })
             .catch(err => {
                 console.error('Ошибка при получении доступности аниме:', err);
-                setIsAccessible(true);
+                setIsAccessible(true); // Если ошибка, считаем, что доступно
             });
     }, [animeId]);
 
@@ -58,24 +112,92 @@ const AnimePageTest: React.FC = () => {
         fetchAllAnime()
             .then((all) => {
                 const found = all.find(a => a.id === Number(animeId));
-                if (found) setAnime(found);
+                if (found) {
+                    setAnime(found);
+
+                    // Новый код для проверки статуса коллекции
+                    const loadCollectionStatus = async () => {
+                        try {
+                            const token = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*=\s*([^;]*).*$)|^.*$/, "$1");
+
+                            const res = await fetch(`${API_SERVER}/api/collection/my`, {
+                                headers: {
+                                    Authorization: `Bearer ${token}`,
+                                },
+                            });
+                            const collectionsData: Collection[] = await res.json();
+
+                            // Найдем коллекцию для этого аниме
+                            const current = collectionsData.find((collection) => collection.anime.id === Number(animeId));
+
+                            if (current) {
+                                // Установить статус из найденной коллекции
+                                setSelectedStatus(current.collectionType.toLowerCase()); // 'PLANNED', 'COMPLETED', и т.д.
+                            } else {
+                                // Если аниме нет в коллекции, установить статус "не выбрано"
+                                setSelectedStatus('none');
+                            }
+
+                            // Новый код для проверки, есть ли аниме в избранном
+                            const isFavorite = collectionsData.some((collection) => collection.collectionType === "FAVORITE" && collection.anime.id === Number(animeId));
+                            setFavorites(isFavorite); // Обновляем состояние для кнопки избранного
+                        } catch (e) {
+                            console.error('Ошибка при получении статуса коллекции:', e);
+                            setSelectedStatus('none'); // В случае ошибки, выставляем статус 'none'
+                            setFavorites(false); // Если ошибка, считаем, что аниме не в избранном
+                        }
+                    };
+
+                    loadCollectionStatus(); // Вызовем функцию после того как аниме найдено
+                }
             })
             .catch(console.error);
-    }, [animeId]);
+    }, [animeId]);  // Это отслеживает изменения в animeId и перезапускает запрос при его изменении
 
-    useEffect(() => {
-        const savedFavorite = localStorage.getItem('favorite_witchwatch');
-        if (savedFavorite === 'true') setFavorites(true);
 
-        const savedStatus = localStorage.getItem('anime_collection_status');
-        if (savedStatus) setSelectedStatus(savedStatus);
-    }, []);
 
-  //  const toggleFavorite = () => {
-      //  const newFavorite = !favorites;
-    //    setFavorites(newFavorite);
- //       localStorage.setItem('favorite_witchwatch', newFavorite.toString());
- //   };
+    const toggleFavorite = async () => {
+        const token = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*=\s*([^;]*).*$)|^.*$/, "$1");
+        const newFavorite = !favorites;
+        setFavorites(newFavorite);
+
+        try {
+            if (newFavorite) {
+                // Добавить в избранное
+                const res = await fetch(`${API_SERVER}/api/collection/favorite/add`, {
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        animeId: animeId.toString(),
+                    }),
+                });
+
+                if (!res.ok) throw new Error('Ошибка при добавлении в избранное');
+                setNotification('❤️ Добавлено в избранное');
+            } else {
+                // Удалить из избранного
+                const res = await fetch(`${API_SERVER}/api/collection/favorite/remove?animeId=${animeId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                if (!res.ok) throw new Error('Ошибка при удалении из избранного');
+                setNotification('🗑️ Удалено из избранного');
+            }
+
+            setTimeout(() => setNotification(null), 3000);
+        } catch (error) {
+            console.error('Ошибка избранного:', error);
+            setNotification('⚠️ Ошибка при изменении избранного');
+            setFavorites(!newFavorite);
+            setTimeout(() => setNotification(null), 3000);
+        }
+    };
 
     useEffect(() => {
         const loadAnimeData = async () => {
@@ -85,9 +207,11 @@ const AnimePageTest: React.FC = () => {
 
                 if (selectedAnime) {
                     setAnime(selectedAnime);
+
                     const episodesFromApi = await fetchAnimeEpisodes(Number(animeId));
                     setEpisodes(episodesFromApi);
 
+                    // Проверим ответы от сервера на ошибки в JSON
                     const screenshotIdsResponse = await fetch(`${API_SERVER}/api/stream/anime/${animeId}/screenshots`);
                     const ids: { id: number }[] = await screenshotIdsResponse.json();
 
@@ -125,25 +249,81 @@ const AnimePageTest: React.FC = () => {
         loadAnimeData();
     }, [animeId]);
 
-    ///   const markAsWatched = (id: number) => {
-   //    setEpisodes(prev => prev.map(ep => (ep.id === id ? { ...ep, watched: true } : ep)));
-  //  };
+   // const markAsWatched = (id: number) => {
+  // setEpisodes(prev => prev.map(ep => (ep.id === id ? { ...ep, watched: true } : ep)));
+ // };
 
-   // const unmarkAsWatched = (id: number) => {
-   //     setEpisodes(prev => prev.map(ep => (ep.id === id ? { ...ep, watched: false } : ep)));
-  //  };
+  // const unmarkAsWatched = (id: number) => {
+   //    setEpisodes(prev => prev.map(ep => (ep.id === id ? { ...ep, watched: false } : ep)));
+//  };
 
-    //const handleStatusSelect = (value: string) => {
-       // setSelectedStatus(value);
-     //   localStorage.setItem('anime_collection_status', value);
-  //      setShowStatusDropdown(false);
- //   };
+    const handleStatusSelect = async (value: string) => {
+        setIsSavingStatus(true);
 
- //   const currentStatus = statusOptions.find(opt => opt.value === selectedStatus);
+        try {
+            const token = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*=\s*([^;]*).*$)|^.*$/, "$1");
+
+            // 1. Получаем все коллекции пользователя
+            const response = await fetch(`${API_SERVER}/api/collection/my`, {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            const collectionsData = await response.json();
+
+            // 2. Находим текущую коллекцию с этим аниме
+            const currentCollection = collectionsData.find((collection: Collection) => collection.anime.id === Number(animeId));
+
+            if (currentCollection) {
+                // 3. Если аниме уже в коллекции, удаляем его из старой коллекции
+                const resRemove = await fetch(`${API_SERVER}/api/collection/remove?animeId=${animeId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                if (!resRemove.ok) throw new Error('Ошибка при удалении из предыдущей коллекции');
+
+                // Уведомление при удалении из коллекции
+                setNotification('Аниме удалено из вашей коллекции');
+            }
+
+            // 4. Добавляем аниме в новую коллекцию
+            const resAdd = await fetch(`${API_SERVER}/api/collection/set`, {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    animeId: animeId.toString(),
+                    type: value.toUpperCase(),
+                }),
+            });
+
+            if (!resAdd.ok) throw new Error('Ошибка при добавлении в коллекцию');
+
+            // Уведомление при добавлении в коллекцию
+            setNotification(`Аниме добавлено в коллекцию "${value}"`);
+
+            setSelectedStatus(value); // Обновляем статус в локальном состоянии
+
+        } catch (err) {
+            console.error('Ошибка при обновлении коллекции:', err);
+            setNotification('⚠️ Ошибка при обновлении коллекции');
+        } finally {
+            setIsSavingStatus(false);
+        }
+    };
+
+    const currentStatus = statusOptions.find(opt => opt.value === selectedStatus);
 
     //const handleMenuToggle = (id: number) => {
-    //    setOpenMenuId(prev => (prev === id ? null : id));
-   // };
+     //setOpenMenuId(prev => (prev === id ? null : id));
+   //};
     if (isLoading || !anime) {
         return (
             <div className="anime-loading-screen">
@@ -156,6 +336,21 @@ const AnimePageTest: React.FC = () => {
     }
 
     return (
+        <>
+            <DiscordStatusTracker status={`На странице аниме ${anime.title}`} />
+            <Head>
+                <title>{anime.title} | {anime.mouth_season} сезон | AniCat</title>
+                <meta name="description" content={`${anime.title} — ${anime.type}. Жанры: ${anime.genres}. ${anime.description?.substring(0, 160)}...`} />
+
+                {/* Open Graph / Telegram preview */}
+                <meta property="og:type" content="website" />
+                <meta property="og:title" content={`${anime.title} | ${anime.mouth_season} сезон | ${anime.type}`} />
+                <meta property="og:description" content={anime.description?.substring(0, 160)} />
+                {coverUrl && <meta property="og:image" content={coverUrl} />}
+                <meta property="og:url" content={`https://anicat.ru/anime/${anime.id}`} />
+                {bannerUrl && <meta property="og:image:alt" content={`Баннер ${anime.title}`} />}
+                <meta name="keywords" content={`${anime.genres}, аниме, смотреть аниме, ${anime.title}`} />
+            </Head>
         <div className="test-anime-page">
             <div className="test-top-section">
                 <div className="test-background">
@@ -180,9 +375,11 @@ const AnimePageTest: React.FC = () => {
 
                         <div className="test-header-block">
                             <div className="test-header-title-row">
+                                <div className="test-title-wrapper">
                                 <h1 className="test-title">{anime.title}</h1>
                                 <span
                                     className="test-episode-progress">{anime.current_episode} из {anime.episode_all}</span>
+                                </div>
                             </div>
                             <div className="test-alt-title">
                                 {anime.alttitle}
@@ -197,53 +394,79 @@ const AnimePageTest: React.FC = () => {
 
                         <div className="test-rating">Рейтинг: Скоро...</div>
 
-                        <div className="test-buttons">
-                            <div className="test-watch-button-wrapper">
+                        <div className="test-buttons-wrapper">
+                            <div className="test-buttons">
                                 <button
-                                    className="test-watch-button"
-                                    onClick={() => router.push(`/watch/anime/${animeId}`)}  // Передаем animeId
+                                    className={`test-watch-button ${!isAccessible ? 'disabled' : ''}`}
+                                    onClick={() => {
+                                        if (isAccessible) {
+                                            router.push(`/watch/anime/${animeId}`);
+                                        }
+                                    }}
+                                    disabled={!isAccessible}
                                 >
                                     <Play size={20} style={{marginRight: '8px'}}/>
                                     Смотреть
                                 </button>
 
-                                {/* <div className="test-episode-status">Добавлена серия 3</div>*/}
-                            </div>
+                                <div className="collection-status-wrapper">
+                                    <button
+                                        className={`collection-status-button ${isSavingStatus ? 'loading' : ''}`}
+                                        onClick={() => setShowStatusDropdown(prev => !prev)}
+                                        disabled={isSavingStatus}
+                                    >
+                                        {isSavingStatus ? (
+                                            <span className="loader-mini"></span> // Добавь spinner или индикатор
+                                        ) : (
+                                            <>
+                                                {currentStatus?.icon}
+                                                <span>{currentStatus?.label}</span>
+                                                <svg className="arrow" width="16" height="16" viewBox="0 0 24 24">
+                                                    <path fill="currentColor" d="M7 10l5 5 5-5z"/>
+                                                </svg>
+                                            </>
+                                        )}
+                                    </button>
 
-                            {/*   <div className="collection-status-wrapper">
-                                <button className="collection-status-button"
-                                        onClick={() => setShowStatusDropdown(prev => !prev)}>
-                                {currentStatus?.icon}
-                                    <span>{currentStatus?.label}</span>
-                                    <svg className="arrow" width="16" height="16" viewBox="0 0 24 24">
-                                        <path fill="currentColor" d="M7 10l5 5 5-5z"/>
-                                    </svg>
-                                </button>
-
-                                {showStatusDropdown && (
-                                    <div className="collection-status-dropdown">
-                                        {statusOptions.map(option => (
-                                            <div
-                                                key={option.value}
-                                                className={`collection-status-item ${selectedStatus === option.value ? 'active' : ''}`}
-                                                onClick={() => handleStatusSelect(option.value)}
-                                            >
-                                                {option.icon}
-                                                <span>{option.label}</span>
-                                            </div>
-                                        ))}
+                                    {showStatusDropdown && (
+                                        <div className="collection-status-dropdown">
+                                            {statusOptions.map(option => (
+                                                <div
+                                                    key={option.value}
+                                                    className={`collection-status-item ${selectedStatus === option.value ? 'active' : ''}`}
+                                                    onClick={() => handleStatusSelect(option.value)}
+                                                >
+                                                    {option.icon}
+                                                    <span>{option.label}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                                {notification && (
+                                    <div className="collection-notification">
+                                        {notification}
                                     </div>
                                 )}
-                            </div>
-*/}
-                            {/* <button className={`test-favorite-button ${favorites ? 'active' : ''}`}
-                                    onClick={toggleFavorite}>
-                                <Heart size={20} fill={favorites ? '#e50914' : 'none'} stroke="#fff"/>
-                            </button>*/}
 
-                            {/* <button className="test-share-button">
-                                <Share2 size={20} />
-                            </button> */}
+                                <button
+                                    className={`test-favorite-button ${favorites ? 'active' : ''}`}
+                                    onClick={toggleFavorite}
+                                >
+                                    <Heart size={20} fill={favorites ? '#e50914' : 'none'} stroke="#fff"/>
+                                </button>
+
+                                <button className="test-share-button">
+                                    <Share2 size={20}/>
+                                </button>
+                            </div>
+
+                            {anime.zametka && (
+                                <div className="test-episode-status">
+                                    {anime.zametka}
+                                </div>
+                            )}
+
                         </div>
 
 
@@ -288,46 +511,12 @@ const AnimePageTest: React.FC = () => {
                     </div>
                 </div>
 
-                {/* <div className="test-episodes-section">
-                    <h2>Эпизоды</h2>
-                    <div className="test-episodes-list">
-                        {episodes.map((episode) => (
-                            <div key={episode.id} className="test-episode-card">
-                                <div className="test-episode-thumbnail">
-                                    <Image src="/episode-thumbnail.jpg" alt={`Эпизод ${episode.id}`} width={90} height={50} />
-                                    <span className="test-episode-duration">{episode.duration}</span>
-                                </div>
-
-                                <div className="test-episode-info">
-                                    <strong>{episode.id} эпизод</strong> {episode.title}
-                                    <div className="test-episode-subtitle">{episode.subtitle}</div>
-                                </div>
-
-                                <div className="test-episode-actions">
-                                    <button className="test-episode-menu-button" onClick={() => handleMenuToggle(episode.id)}>⋮</button>
-                                    {openMenuId === episode.id && (
-                                        <div className="test-episode-dropdown">
-                                            <div className="test-episode-dropdown-item" onClick={() => markAsWatched(episode.id)}>
-                                                <Check size={16} /> Отметить как просмотренный
-                                            </div>
-                                            <div className="test-episode-dropdown-item" onClick={() => unmarkAsWatched(episode.id)}>
-                                                <X size={16} /> Снять отметку о просмотре
-                                            </div>
-                                            <div className="test-episode-dropdown-item" onClick={() => window.open('/player', '_blank')}>
-                                                <ExternalLink size={16} /> Открыть в новой вкладке
-                                            </div>
-                                            <div className="test-episode-dropdown-item">
-                                                <Plus size={16} /> Добавить в очередь
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div> */}
+                <div className="test-episodes-section">
+                    <h2>Скоро...</h2>
+                </div>
             </div>
         </div>
+            </>
     );
 };
 

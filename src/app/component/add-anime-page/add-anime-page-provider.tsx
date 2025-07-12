@@ -106,6 +106,22 @@ const AddAnimePage = () => {
             }),
         });
     };
+    const addAnimeToAllCategory = async () => {
+        const token = getTokenFromCookie();
+        if (!token || !animeId) return;
+
+        const response = await fetch(`${API_SERVER}/api/admin/add-to-all-category/${animeId}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            const text = await response.text();
+            console.error("⚠️ Ошибка добавления в категорию 'все аниме':", text);
+        }
+    };
 
     const handleSave = async () => {
         setSaving(true);
@@ -114,6 +130,8 @@ const AddAnimePage = () => {
             await handleCoverUpload();
             await handleScreenshotUpload();
             await handleInfoUpload();
+            await addAnimeToAllCategory();
+
             showToast('✅ Аниме успешно сохранено', 'success');
 
             setTimeout(() => {
@@ -126,6 +144,7 @@ const AddAnimePage = () => {
             setSaving(false);
         }
     };
+
     const handleBannerUpload = async () => {
         const token = getTokenFromCookie();
         if (!token) throw new Error('Токен не найден');

@@ -108,18 +108,10 @@ const AnimeMainInfo: React.FC<Props> = ({
                 <label>Месяц сезона:
                     <select value={mouthSeason} onChange={(e) => setMouthSeason(e.target.value)}>
                         <option value="" disabled>Выберите месяц</option>
-                        <option value="Январь">Январь</option>
-                        <option value="Февраль">Февраль</option>
-                        <option value="Март">Март</option>
-                        <option value="Апрель">Апрель</option>
-                        <option value="Май">Май</option>
-                        <option value="Июнь">Июнь</option>
-                        <option value="Июль">Июль</option>
-                        <option value="Август">Август</option>
-                        <option value="Сентябрь">Сентябрь</option>
-                        <option value="Октябрь">Октябрь</option>
-                        <option value="Ноябрь">Ноябрь</option>
-                        <option value="Декабрь">Декабрь</option>
+                        <option value="Зима">Зима</option>
+                        <option value="Лето">Лето</option>
+                        <option value="Весна">Весна</option>
+                        <option value="Осень">Осень</option>
                     </select>
                 </label>
                 <label>Сезон (указывать номер + сезон):

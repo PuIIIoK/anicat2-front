@@ -1,0 +1,515 @@
+.admin-section {
+  padding: 20px;
+
+  h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #fff;
+  }
+
+  .user-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .user-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #1f1f1f;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #555;
+  }
+
+  .user-meta {
+    p {
+      margin: 3px 0;
+      color: #ccc;
+    }
+  }
+
+  .user-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #333;
+      color: #fff;
+      transition: 0.2s ease;
+
+      &:hover {
+        background: #444;
+      }
+
+      &.danger {
+        background: #b00020;
+
+        &:hover {
+          background: #d00030;
+        }
+      }
+
+      &.danger-outline {
+        background: transparent;
+        color: #b00020;
+        border: 1px solid #b00020;
+
+        &:hover {
+          background: rgba(176, 0, 32, 0.1);
+        }
+      }
+    }
+  }
+}
+
+.edit-user-section {
+  max-width: 700px;
+  margin: 40px auto 80px;
+  padding: 32px;
+  background-color: #1c1b22;
+  border-radius: 16px;
+  box-shadow: 0 0 16px rgba(0, 0, 0, 0.4);
+  color: #fff;
+  font-family: 'Segoe UI', sans-serif;
+  margin-top: 5rem;
+}
+
+.edit-user-section h2 {
+  font-size: 24px;
+  margin-bottom: 24px;
+  font-weight: bold;
+  text-align: left;
+}
+
+.edit-user-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.edit-user-field label {
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  color: #ccc;
+}
+
+.edit-user-field input,
+.edit-user-field textarea,
+.edit-user-field select {
+  background-color: #2a2a34;
+  color: #fff;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 14px;
+  resize: vertical;
+}
+
+.edit-user-field textarea {
+  min-height: 80px;
+}
+
+.edit-user-roles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.role-button {
+  background-color: #2d2d38;
+  color: #ddd;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.role-button.active {
+  background-color: #ff6060;
+  color: #fff;
+  border-color: #ff4a4a;
+}
+
+
+.edit-user-buttons {
+  display: flex;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.edit-user-save-button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.edit-user-cancel-button {
+  background-color: transparent;
+  color: #bbb;
+  border: 1px solid #555;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.edit-user-cancel-button:hover {
+  background-color: #2d2d38;
+}
+
+@media (max-width: 768px) {
+  .admin-section {
+    padding: 16px;
+
+
+    .user-card {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .user-info {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .user-actions {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 8px;
+
+      button {
+        font-size: 13px;
+        padding: 6px 10px;
+      }
+    }
+  }
+
+  .edit-user-section {
+    margin-top: 4rem;
+    max-width: 100%;
+    padding: 20px;
+    border-radius: 12px;
+  }
+
+  .edit-user-section h2 {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .edit-user-field input,
+  .edit-user-field textarea {
+    font-size: 13px;
+    padding: 8px 10px;
+  }
+
+  .edit-user-field label {
+    font-size: 14px;
+  }
+
+  .edit-user-roles {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .role-button {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .ban-toggle,
+  .mute-toggle {
+    width: 100%;
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .edit-user-buttons {
+    flex-direction: column;
+    gap: 12px;
+
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 15px;
+    }
+  }
+}
+.admin-section {
+  .search-sort {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    gap: 10px;
+    flex-wrap: wrap;
+
+    input[type="text"] {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid #444;
+      background-color: #2a2a34;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    button {
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: 1px solid #4a4a4a;
+      background-color: #333;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.2s ease;
+
+      &:hover {
+        background-color: #444;
+      }
+    }
+  }
+
+  .pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+
+    button {
+      padding: 8px 14px;
+      background-color: #2a2a34;
+      color: #fff;
+      border: 1px solid #555;
+      border-radius: 6px;
+      cursor: pointer;
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+.ban-toggle {
+  background-color: #444;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+
+  &.banned {
+    background-color: crimson;
+  }
+
+  &.not-banned {
+    background-color: #666;
+  }
+}
+
+.mute-toggle {
+  background-color: #444;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+
+  &.muted {
+    background-color: orange;
+  }
+
+  &.not-muted {
+    background-color: #666;
+  }
+}
+
+.admin-desktop-user {
+  display: block;
+
+  @media (max-width: 767px) {
+    display: none; // Скрыть на мобилках
+  }
+}
+
+.admin-mobile-user {
+  display: none;
+
+  @media (max-width: 767px) {
+    display: block;
+    padding: 1rem;
+
+    .search-sort {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+
+      input {
+        padding: 10px;
+        font-size: 14px;
+      }
+
+      button {
+        padding: 8px;
+        font-size: 14px;
+        background-color: #333;
+        color: white;
+        border: none;
+        border-radius: 6px;
+      }
+    }
+
+    .user-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .user-card {
+      background-color: #222;
+      padding: 1rem;
+      width: 135%;
+      margin-left: -30px;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+
+      .user-info {
+        display: flex;
+        gap: 1rem;
+
+        .avatar {
+          border-radius: 50%;
+        }
+
+        .user-meta {
+          font-size: 13px;
+          color: #ccc;
+
+          p {
+            margin: 3px 0;
+            word-break: break-word;
+          }
+        }
+      }
+
+      .user-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+
+        button {
+          flex: 1 1 calc(50% - 4px);
+          background-color: #444;
+          color: #fff;
+          padding: 6px;
+          border: none;
+          border-radius: 5px;
+          font-size: 13px;
+
+          &.danger-outline {
+            background-color: transparent;
+            border: 1px solid crimson;
+            color: crimson;
+          }
+        }
+      }
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+
+      button {
+        background-color: #333;
+        color: white;
+        padding: 6px 12px;
+        border: none;
+        border-radius: 4px;
+      }
+
+      span {
+        font-size: 10px;
+      }
+    }
+  }
+}
+
+
+//ЛОГИ
+.admin-logs-desktop {
+  display: block;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.admin-logs-mobile {
+  display: none;
+
+  @media (max-width: 768px) {
+    display: block;
+    padding: 0.5rem 1rem;
+
+    ul.log-list {
+      list-style: none;
+      width: 150%;
+      padding: 0;
+      margin-left: -50px;
+
+      li {
+        display: flex;
+        flex-direction: column;
+        font-size: 12px;
+        padding: 6px 0;
+        border-bottom: 1px solid #333;
+
+        span {
+          margin: 2px 0;
+          color: #ccc;
+
+          b {
+            color: #f0f0f0;
+            margin-right: 4px;
+          }
+        }
+      }
+    }
+  }
+}

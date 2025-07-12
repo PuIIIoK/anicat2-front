@@ -18,6 +18,7 @@ export interface AnimeInfo {
     rating: string;
     image_url: { url: string }; // ✅ теперь это объект с полем `url`
     type: string;
+    collectionType: string;
     season: string;
     genres: string;
     year: string;
@@ -32,6 +33,7 @@ export interface AnimeInfo {
     kodik: string;
     coverUrl: string;
     bannerUrl: string;
+    zametka: string;
 }
 
 interface RawAnime {
@@ -50,10 +52,12 @@ interface RawAnime {
     mouth_season: string;
     studio: string;
     realesed_for: string;
+    collectionType: string;
     alias: string;
     kodik: string;
     coverUrl: string;
     bannerUrl: string;
+    zametka: string;
     cover: { id: number; name: string }; // ✅ теперь cover берётся отсюда
 }
 
@@ -103,6 +107,8 @@ export const fetchAllAnime = async (): Promise<AnimeInfo[]> => {
                 kodik: anime.kodik || '',
                 coverUrl: anime.coverUrl || '',
                 bannerUrl: anime.bannerUrl || '',
+                zametka: anime.zametka || '',
+                collectionType: anime.collectionType || '',
             } as AnimeInfo;
         })
     );

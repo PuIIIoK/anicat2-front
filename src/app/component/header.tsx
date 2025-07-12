@@ -32,6 +32,7 @@ interface ProfileInfo {
 
 const Header: React.FC = () => {
     const router = useRouter();
+
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isSearchModalVisible, setSearchModalVisible] = useState(false);
     const [searchMode, setSearchMode] = useState<'anime' | 'profile'>('anime');
@@ -180,118 +181,129 @@ const Header: React.FC = () => {
 
     const handleProfileClick = (username: string) => {
         closeSearchModal();
-        router.push(`/profiles/${username}`);
+        router.push(`/profile/${username}`);
     };
 
     return (
-        <header className="header">
-            <div className="logo">
-                <Image src="/logo.png" alt="Logo" className="logo-img" width={65} height={65} />
-                <div className="logo-dropdown">
-                    <ul>
-                        <li><Link href="/">Главная</Link></li>
-                        <li><Link href="/leaderboard">Лидеборд</Link></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div className="search-bar-anime" onClick={openSearchModal}>
-                <span className="search-placeholder">Поиск аниме...</span>
-                <button className="search-icon-button">🔍</button>
-            </div>
-
-            <div className="profile">
-                <Image src="/profile.png" alt="Профиль" width={50} height={50} className="profile-icon" />
-                <div className="profile-dropdown">
-                    <ul>
-                        {isAuthenticated ? (
-                            <>
-                                <li><Link href="/profile">Мой профиль</Link></li>
-                                <li><Link href="/profile/collection">Коллекции</Link></li>
-                                <li><Link href="/profile/settings">Настройки</Link></li>
-                                <li><button onClick={handleLogout}>Выйти</button></li>
-                                {['MODERATOR', 'ADMIN', 'SUPER_ADMIN'].some(role => userRoles.includes(role)) && (
-                                    <li><Link href="/admin_panel">Админ панель</Link></li>
-                                )}
-                            </>
-                        ) : (
-                            <>
-                                <li><Link href="/login">Войти</Link></li>
-                                <li><Link href="/register">Регистрация</Link></li>
-                            </>
-                        )}
-                    </ul>
-                </div>
-            </div>
-
-            {isSearchModalVisible && (
-                <div className="search-modal-overlay">
-                    <div className="search-modal">
-                        <div className="search-modal-content">
-                            <button className="close-button" onClick={closeSearchModal}>✖</button>
-
-                            <div className="search-mode-toggle">
-                                <button className={searchMode === 'anime' ? 'active' : ''} onClick={() => setSearchMode('anime')}>Аниме</button>
-                                <button className={searchMode === 'profile' ? 'active' : ''} onClick={() => setSearchMode('profile')}>Профили</button>
+                <header className="header">
+                    <div className="logo">
+                        <div className="logo-left">
+                            <div className="logo-img-wrapper">
+                                <Image
+                                    src="/logo_auth.png"
+                                    alt="Logo"
+                                    className="logo-img"
+                                    fill
+                                    style={{objectFit: 'contain'}}
+                                />
                             </div>
-
-                            <input
-                                type="text"
-                                value={searchQuery}
-                                onChange={handleSearchInputChange}
-                                placeholder="🔍 Введите запрос..."
-                                className="search-modal-input"
-                            />
-
-                            <div className="search-results">
-                                {isLoading ? (
-                                    <p className="loading-text">Загрузка...</p>
-                                ) : errorMessage ? (
-                                    <p className="loading-text">{errorMessage}</p>
-                                ) : searchMode === 'anime' && searchResults.length > 0 ? (
-                                    searchResults.map(anime => (
-                                        <div key={anime.id} className="anime-card" onClick={() => handleAnimeClick(anime.id)}>
-                                            {coverUrls[anime.id] && (
-                                                <Image className="anime-card-search-img" src={coverUrls[anime.id]} alt={anime.title} width={75} height={110} />
-                                            )}
-                                            <div className="anime-card-info">
-                                                <h3 className="anime-title">{anime.title} [{anime.season}]<span className="anime-episodes">{anime.current_episode} из {anime.episode_all}</span></h3>
-                                                <p className="anime-meta">{anime.type} • {anime.year} • {anime.genres.split(',').join(' • ')}</p>
-                                                <p className="anime-description">{anime.description}</p>
-                                            </div>
-                                        </div>
-                                    ))
-                                ) : searchMode === 'profile' && profileResults.length > 0 ? (
-                                    <>
-                                        <h3 className="search-section-title">Профили</h3>
-                                        {profileResults.map(profile => (
-                                            <div key={`profile-${profile.id}`} className="profile-search-card" onClick={() => handleProfileClick(profile.username)}>
-                                                {avatarUrls[profile.username] && (
-                                                    <Image
-                                                        className="profile-avatar"
-                                                        src={avatarUrls[profile.username]}
-                                                        alt={profile.nickname || 'Аватар'}
-                                                        width={50}
-                                                        height={50}
-                                                        unoptimized
-                                                    />
-                                                )}
-                                                <div className="profile-info">
-                                                    <h4>{profile.nickname} <span className="username">@{profile.username}</span></h4>
-                                                    <p className="profile-bio">{profile.bio}</p>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </>
-                                ) : (
-                                    <p className="loading-text">Ничего не найдено</p>
-                                )}
+                            <div className="logo-dropdown">
+                                <ul>
+                                    <li><Link href="/">Главная</Link></li>
+                                    <li><Link href="/leaderboard">Лидеборд</Link></li>
+                                    <li><Link href="/shop">Магазин</Link></li>
+                                </ul>
                             </div>
                         </div>
                     </div>
-                </div>
-            )}
-        </header>
+
+                    <div className="search-bar-anime" onClick={openSearchModal}>
+                        <span className="search-placeholder">Поиск аниме...</span>
+                    </div>
+
+                    <div className="profile">
+                        <Image src="/profile.png" alt="Профиль" width={50} height={50} className="profile-icon"/>
+                        <div className="profile-dropdown">
+                            <ul>
+                                {isAuthenticated ? (
+                                    <>
+                                        <li><Link href="/profile">Мой профиль</Link></li>
+                                        <li><Link href="/profile/collection">Коллекции</Link></li>
+                                        <li><Link href="/profile/settings">Настройки</Link></li>
+                                        <li><button onClick={handleLogout}>Выйти</button></li>
+                                        {['MODERATOR', 'ADMIN', 'SUPER_ADMIN'].some(role => userRoles.includes(role)) && (
+                                            <li><Link href="/admin_panel">Админ панель</Link></li>
+                                        )}
+                                    </>
+                                ) : (
+                                    <>
+                                        <li><Link href="/login">Войти</Link></li>
+                                        <li><Link href="/register">Регистрация</Link></li>
+                                    </>
+                                )}
+                            </ul>
+                        </div>
+                    </div>
+
+                    {isSearchModalVisible && (
+                        <div className="search-modal-overlay">
+                            <div className="search-modal">
+                                <div className="search-modal-content">
+                                    <button className="close-button" onClick={closeSearchModal}>✖</button>
+
+                                    <div className="search-mode-toggle">
+                                        <button className={searchMode === 'anime' ? 'active' : ''} onClick={() => setSearchMode('anime')}>Аниме</button>
+                                        <button className={searchMode === 'profile' ? 'active' : ''} onClick={() => setSearchMode('profile')}>Профили</button>
+                                    </div>
+
+                                    <input
+                                        type="text"
+                                        value={searchQuery}
+                                        onChange={handleSearchInputChange}
+                                        placeholder=" Введите запрос..."
+                                        className="search-modal-input"
+                                    />
+
+                                    <div className="search-results">
+                                        {isLoading ? (
+                                            <p className="loading-text">Загрузка...</p>
+                                        ) : errorMessage ? (
+                                            <p className="loading-text">{errorMessage}</p>
+                                        ) : searchMode === 'anime' && searchResults.length > 0 ? (
+                                            searchResults.map(anime => (
+                                                <div key={anime.id} className="anime-card-search" onClick={() => handleAnimeClick(anime.id)}>
+                                                    {coverUrls[anime.id] && (
+                                                        <Image className="anime-card-search-img" src={coverUrls[anime.id]} alt={anime.title} width={75} height={110} />
+                                                    )}
+                                                    <div className="anime-card-info-search">
+                                                        <h3 className="anime-title-search">{anime.title} [{anime.season}]<span className="anime-episodes-search">{anime.current_episode} из {anime.episode_all}</span></h3>
+                                                        <p className="anime-meta-search">{anime.type} • {anime.year} • {anime.genres.split(',').join(' • ')}</p>
+                                                        <p className="anime-description-search">{anime.description}</p>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        ) : searchMode === 'profile' && profileResults.length > 0 ? (
+                                            <>
+                                                <h3 className="search-section-title">Профили</h3>
+                                                {profileResults.map(profile => (
+                                                    <div key={`profile-${profile.id}`} className="profile-search-card" onClick={() => handleProfileClick(profile.username)}>
+                                                        {avatarUrls[profile.username] && (
+                                                            <Image
+                                                                className="profile-avatar"
+                                                                src={avatarUrls[profile.username]}
+                                                                alt={profile.nickname || 'Аватар'}
+                                                                width={50}
+                                                                height={50}
+                                                                unoptimized
+                                                            />
+                                                        )}
+                                                        <div className="profile-info">
+                                                            <h4>{profile.nickname} <span className="username">@{profile.username}</span></h4>
+                                                            <p className="profile-bio">{profile.bio}</p>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </>
+                                        ) : (
+                                            <p className="loading-text">Ничего не найдено</p>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </header>
+
     );
 };
 

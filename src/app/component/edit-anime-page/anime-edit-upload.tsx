@@ -13,7 +13,6 @@ interface Props {
     screenshotPreviews: string[];
     keepScreenshotIds: number[];
     setKeepScreenshotIds: React.Dispatch<React.SetStateAction<number[]>>;
-
     deletedCover: boolean;
     setDeletedCover: React.Dispatch<React.SetStateAction<boolean>>;
     deletedBanner: boolean;
@@ -23,30 +22,73 @@ interface Props {
 const AnimeFileAndEpisode: React.FC<Props> = ({
                                                   cover, banner, screenshots,
                                                   setCover, setBanner, setScreenshots,
-                                                  coverPreview, bannerPreview, screenshotPreviews = []
+                                                  coverPreview, bannerPreview, screenshotPreviews = [],
+                                                  deletedCover, setDeletedCover,
+                                                  deletedBanner, setDeletedBanner
                                               }) => {
     const coverInputRef = useRef<HTMLInputElement>(null);
     const bannerInputRef = useRef<HTMLInputElement>(null);
-    const screenshotsInputRef = useRef<HTMLInputElement>(null);
+    const screenshotInputRef = useRef<HTMLInputElement>(null);
 
-    const [deletedPreviews, setDeletedPreviews] = useState<number[]>([]); // удалённые старые
-    const [deletedCover, setDeletedCover] = useState(false);
-    const [deletedBanner, setDeletedBanner] = useState(false);
+    const [deletedPreviews, setDeletedPreviews] = useState<number[]>([]);
+    const [showSaveCancelButtons, setShowSaveCancelButtons] = useState(false);
+    const [tempDeletedScreenshot, setTempDeletedScreenshot] = useState<number | null>(null);
+    const [showModal, setShowModal] = useState(false);
+    const [isAgreed, setIsAgreed] = useState(false);
+    const [tempScreenshots, setTempScreenshots] = useState<File[]>([]); // Сохраняем состояние скриншотов перед удалением
 
-    const handleAddScreenshots = (files: FileList | null) => {
+    const handleRemovePreview = (index: number) => {
+        setTempDeletedScreenshot(index);
+        setTempScreenshots(screenshots); // Сохраняем текущее состояние скриншотов
+        setShowSaveCancelButtons(true);
+    };
+
+    const handleAddScreenshot = (files: FileList | null) => {
         if (files) {
             setScreenshots([...screenshots, ...Array.from(files)]);
+            setShowSaveCancelButtons(true);
         }
     };
 
-    const handleRemoveScreenshotFile = (index: number) => {
-        const updated = [...screenshots];
-        updated.splice(index, 1);
-        setScreenshots(updated);
+    const handleSaveDeletion = () => {
+        if (tempDeletedScreenshot !== null) {
+            setDeletedPreviews(prev => [...prev, tempDeletedScreenshot]);
+            const updated = screenshots.filter((_, index) => index !== tempDeletedScreenshot);
+            setScreenshots(updated);
+        }
+        setShowSaveCancelButtons(false);
+        setShowModal(true);
     };
 
-    const handleRemovePreview = (index: number) => {
-        setDeletedPreviews(prev => [...prev, index]);
+    const handleCancelDeletion = () => {
+        setTempDeletedScreenshot(null);
+        setShowSaveCancelButtons(false);
+    };
+
+    const handleModalConfirm = () => {
+        if (isAgreed) {
+            // Подтверждение удаления
+            setTempDeletedScreenshot(null);
+            setTempScreenshots([]); // Очищаем временное состояние
+            setShowModal(false);
+            setIsAgreed(false);
+        }
+    };
+
+    const handleModalCancel = () => {
+        if (tempDeletedScreenshot !== null) {
+            // Восстанавливаем скриншоты
+            setScreenshots(tempScreenshots);
+            setDeletedPreviews(prev => prev.filter(i => i !== tempDeletedScreenshot));
+        }
+        setTempDeletedScreenshot(null);
+        setTempScreenshots([]);
+        setShowModal(false);
+        setIsAgreed(false);
+    };
+
+    const handleAgreementChange = () => {
+        setIsAgreed(!isAgreed);
     };
 
     return (
@@ -112,15 +154,14 @@ const AnimeFileAndEpisode: React.FC<Props> = ({
                 <div className="screenshot-upload">
                     <h3>Скриншоты</h3>
                     <input
-                        ref={screenshotsInputRef}
+                        ref={screenshotInputRef}
                         type="file"
-                        multiple
                         accept="image/webp,image/png,image/jpeg"
-                        onChange={(e) => handleAddScreenshots(e.target.files)}
+                        multiple
+                        onChange={(e) => handleAddScreenshot(e.target.files)}
                     />
-
                     <div className="screenshot-preview">
-                        {/* Старые */}
+                        {/* Старые скриншоты */}
                         {screenshotPreviews.map((src, i) =>
                                 !deletedPreviews.includes(i) && (
                                     <div key={`preview-${i}`} className="screenshot-item">
@@ -131,11 +172,11 @@ const AnimeFileAndEpisode: React.FC<Props> = ({
                                 )
                         )}
 
-                        {/* Новые */}
+                        {/* Новые скриншоты */}
                         {screenshots.map((file, index) => (
                             <div key={`file-${index}`} className="screenshot-item">
                                 <img src={URL.createObjectURL(file)} alt={`Скриншот #${index + 1}`} />
-                                <button className="remove" onClick={() => handleRemoveScreenshotFile(index)}>✖</button>
+                                <button className="remove" onClick={() => handleRemovePreview(index)}>✖</button>
                                 <p>{file.name}</p>
                             </div>
                         ))}
@@ -146,6 +187,42 @@ const AnimeFileAndEpisode: React.FC<Props> = ({
                         )}
                     </div>
                 </div>
+
+                {/* Кнопки Сохранить и Отмена */}
+                {showSaveCancelButtons && (
+                    <div className="save-cancel-buttons">
+                        <button className="save" onClick={handleSaveDeletion}>Сохранить</button>
+                        <button className="cancel" onClick={handleCancelDeletion}>Отмена</button>
+                    </div>
+                )}
+
+                {/* Модальное окно с предупреждением */}
+                {showModal && (
+                    <div className="modal-overlay">
+                        <div className="modal">
+                            <p>❗️ Внимание: Вы пытаетесь удалить скриншот. При подтверждении изменения будут необратимы.</p>
+                            <label>
+                                <input type="checkbox" checked={isAgreed} onChange={handleAgreementChange} />
+                                Я согласен с данными последствиями
+                            </label>
+                            <div>
+                                <button
+                                    onClick={handleModalConfirm}
+                                    disabled={!isAgreed}
+                                    className={`confirm-btn ${isAgreed ? 'enabled' : 'disabled'}`}
+                                >
+                                    Подтвердить
+                                </button>
+                                <button
+                                    onClick={handleModalCancel}
+                                    className="cancel-btn"
+                                >
+                                    Отмена
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

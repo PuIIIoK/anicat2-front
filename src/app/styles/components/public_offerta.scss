@@ -1,0 +1,68 @@
+.shop-terms-doc {
+  margin-top: 5rem;
+  background: #100b0d;
+  min-height: 100vh;
+  padding: 40px 20px;
+  color: #e2dcdc;
+  font-family: "Noto Sans", sans-serif;
+
+  .doc-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #181113;
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: 0 0 30px rgba(255, 0, 0, 0.05);
+    border: 1px solid #2a1a1d;
+
+    h1 {
+      font-size: 26px;
+      color: #ff5555;
+      margin-bottom: 24px;
+    }
+
+    h2 {
+      font-size: 20px;
+      color: #ff6b6b;
+      margin-top: 32px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 0, 0, 0.1);
+      padding-bottom: 6px;
+    }
+
+    p {
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 14px;
+      color: #ccc;
+    }
+
+    ul {
+      padding-left: 20px;
+      margin-bottom: 20px;
+
+      li {
+        margin-bottom: 8px;
+        color: #ccc;
+        list-style: disc;
+      }
+    }
+
+    a {
+      color: #ff8585;
+      text-decoration: underline;
+
+      &:hover {
+        color: #ffa0a0;
+      }
+    }
+
+    .footer-note {
+      margin-top: 40px;
+      font-size: 13px;
+      color: #888;
+      text-align: right;
+      font-style: italic;
+    }
+  }
+}

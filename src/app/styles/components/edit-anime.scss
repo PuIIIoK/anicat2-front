@@ -1,6 +1,6 @@
 .edit-anime-page {
   position: relative;
-  max-width: 900px;
+  max-width: 1600px;
   margin: 0 auto;
   top: 90px;
   padding: 2rem;
@@ -8,8 +8,29 @@
   border-radius: 12px;
   color: #ffffff;
   font-family: 'Segoe UI', sans-serif;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 
-  h1.title {
+  @media screen and (max-width: 1024px) {
+    padding: 1.5rem;
+    border-radius: 10px;
+  }
+
+  @media screen and (max-width: 768px) {
+    top: 70px;
+    padding: 1.2rem;
+    border-radius: 8px;
+  }
+
+  @media screen and (max-width: 480px) {
+    top: 60px;
+    width: 480px;
+    padding: 1rem;
+    margin: 0 8px;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+
+h1.title {
     font-size: 2rem;
     margin-bottom: 2rem;
     text-align: center;
@@ -129,11 +150,112 @@
     }
 
     button:not(.danger) {
-      background-color: #00cec9;
       color: #1e1e1e;
       &:hover {
-        background-color: #00b894;
+        background-color: rgba(255, 71, 71, 0.79);
       }
     }
   }
+}
+
+.save-cancel-buttons {
+  display: flex;
+  gap: 10px;
+  position: fixed;
+  bottom: 20px; /* Расположим кнопки снизу */
+  right: 20px; /* Кнопки будут справа */
+  opacity: 0; /* Изначально кнопки скрыты */
+  animation: fadeIn 0.5s forwards; /* Плавное появление */
+  z-index: 10000;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px); /* Плавно поднимем кнопки снизу */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0); /* Кнопки станут на место */
+  }
+}
+
+.save, .cancel {
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, transform 0.3s ease; /* Плавный переход для фона и трансформации */
+}
+
+.save {
+  background-color: #4CAF50; /* Зеленый для кнопки Сохранить */
+}
+
+.cancel {
+  background-color: #f44336; /* Красный для кнопки Отмена */
+}
+
+.save:hover {
+  background-color: #45a049; /* Тёмно-зеленый при наведении */
+  transform: scale(1.05); /* Немного увеличиваем кнопку */
+}
+
+.cancel:hover {
+  background-color: #e53935; /* Темно-красный при наведении */
+  transform: scale(1.05); /* Немного увеличиваем кнопку */
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.modal button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.confirm-btn {
+  padding: 10px 20px;
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+.confirm-btn.enabled {
+  opacity: 1;
+}
+
+.confirm-btn.disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+label {
+  display: block;
+  margin-top: 10px;
 }

@@ -1,0 +1,33 @@
+.title-bar {
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  background-color: #1e1e1e;
+  color: #ccc;
+  -webkit-app-region: drag;
+  user-select: none;
+  height: 32px;
+}
+.title-bar .controls, .title-bar .right {
+  display: flex;
+  gap: 6px;
+  -webkit-app-region: no-drag;
+}
+.title-bar .url {
+  flex: 1;
+  text-align: center;
+  font-size: 12px;
+  opacity: 0.5;
+}
+.title-bar button {
+  background: transparent;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 14px;
+}
+.title-bar button:hover {
+  color: white;
+}
+
+/*# sourceMappingURL=custom-titile-bar.css.map */

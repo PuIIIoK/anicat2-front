@@ -1,0 +1,71 @@
+.admin-section {
+  padding: 20px;
+}
+.admin-section h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #fff;
+}
+.admin-section .user-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.admin-section .user-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #1f1f1f;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+.admin-section .user-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.admin-section .avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #555;
+}
+.admin-section .user-meta p {
+  margin: 3px 0;
+  color: #ccc;
+}
+.admin-section .user-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.admin-section .user-actions button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #333;
+  color: #fff;
+  transition: 0.2s ease;
+}
+.admin-section .user-actions button:hover {
+  background: #444;
+}
+.admin-section .user-actions button.danger {
+  background: #b00020;
+}
+.admin-section .user-actions button.danger:hover {
+  background: #d00030;
+}
+.admin-section .user-actions button.danger-outline {
+  background: transparent;
+  color: #b00020;
+  border: 1px solid #b00020;
+}
+.admin-section .user-actions button.danger-outline:hover {
+  background: rgba(176, 0, 32, 0.1);
+}
+
+/*# sourceMappingURL=admin-users.css.map */

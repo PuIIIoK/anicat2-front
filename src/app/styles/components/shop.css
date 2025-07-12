@@ -1,0 +1,84 @@
+.balance-page {
+  background: #0b0b0b;
+  color: #fff;
+  min-height: 100vh;
+  padding: 2rem;
+}
+.balance-page .balance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.balance-page .balance-info {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.balance-page .balance-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.balance-page .balance-item .icon {
+  width: 20px;
+  height: 20px;
+}
+.balance-page .balance-item .star {
+  color: #facc15;
+}
+.balance-page .balance-item .coin {
+  color: #f97316;
+}
+.balance-page .top-up-button {
+  background: #f97316;
+  color: #fff;
+  padding: 0.6rem 1.4rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.balance-page .top-up-button:hover {
+  background: #fb923c;
+}
+.balance-page .category-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+.balance-page .category-tabs .tab-button {
+  background: #1f1f1f;
+  color: #ccc;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.balance-page .category-tabs .tab-button.active {
+  background: #fff;
+  color: #000;
+  font-weight: bold;
+}
+.balance-page .category-tabs .tab-button:hover {
+  background: #333;
+  color: #fff;
+}
+.balance-page .shop-content {
+  background: #1a1a1a;
+  padding: 2rem;
+  border-radius: 1rem;
+}
+.balance-page .shop-content h2 {
+  margin-bottom: 1rem;
+}
+.balance-page .shop-content p {
+  color: #aaa;
+}
+
+/*# sourceMappingURL=shop.css.map */

@@ -34,7 +34,6 @@ const Page = () => {
     const [profile, setProfile] = useState<Profile | null>(null);
     const [animePageEnabled, setAnimePageEnabled] = useState(false);
     const [profilePageEnabled, setProfilePageEnabled] = useState(false);
-    const [allTestingEnabled, setAllTestingEnabled] = useState(false);
 
     const isTester = profile?.roles.includes('TESTER') || profile?.roles.includes('MODERATOR') || profile?.roles.includes('ADMIN');
 
@@ -158,7 +157,6 @@ const Page = () => {
             setProfile(data);
             setAnimePageEnabled(data.animePageBeta ?? false);
             setProfilePageEnabled(data.profilePageBeta ?? false);
-            setAllTestingEnabled((data.animePageBeta ?? false) && (data.profilePageBeta ?? false));
         };
 
         fetchProfile();
@@ -220,57 +218,7 @@ const Page = () => {
                             <>
                                 <h1 className="tab-title">Страница тестирования</h1>
                                 <div className="testing-options">
-                                    <div className="switch-row">
-                                        <label className="custom-switch">
-                                            <input
-                                                type="checkbox"
-                                                checked={animePageEnabled}
-                                                onChange={async () => {
-                                                    const newAnimeValue = !animePageEnabled;
-                                                    const currentProfileValue = profilePageEnabled;
-                                                    setAnimePageEnabled(newAnimeValue);
-                                                    await saveTestSettings(newAnimeValue, currentProfileValue);
-                                                }}
-                                            />
-                                            <span className="custom-slider"></span>
-                                        </label>
-                                        <span className="switch-label">Новая страница аниме</span>
-                                    </div>
-
-                                    <div className="switch-row">
-                                        <label className="custom-switch">
-                                            <input
-                                                type="checkbox"
-                                                checked={profilePageEnabled}
-                                                onChange={async () => {
-                                                    const newProfileValue = !profilePageEnabled;
-                                                    const currentAnimeValue = animePageEnabled;
-                                                    setProfilePageEnabled(newProfileValue);
-                                                    await saveTestSettings(currentAnimeValue, newProfileValue);
-                                                }}
-                                            />
-                                            <span className="custom-slider"></span>
-                                        </label>
-                                        <span className="switch-label">Новая страница профиля</span>
-                                    </div>
-
-                                    <div className="switch-row">
-                                        <label className="custom-switch">
-                                            <input
-                                                type="checkbox"
-                                                checked={allTestingEnabled}
-                                                onChange={async () => {
-                                                    const newAllValue = !allTestingEnabled;
-                                                    setAllTestingEnabled(newAllValue);
-                                                    setAnimePageEnabled(newAllValue);
-                                                    setProfilePageEnabled(newAllValue);
-                                                    await saveTestSettings(newAllValue, newAllValue);
-                                                }}
-                                            />
-                                            <span className="custom-slider"></span>
-                                        </label>
-                                        <span className="switch-label">Включить всё тестирование</span>
-                                    </div>
+                                    Пока-что нету функций для тестирования.
                                 </div>
                             </>
                         ) : (

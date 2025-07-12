@@ -23,3 +23,107 @@
     color: #ffffff;
   }
 }
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  background: #111;
+}
+
+.loading-box {
+  text-align: center;
+  color: #fff;
+}
+
+.progress-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 600px;
+  padding: 1rem 1.5rem;
+  background: #1a1a1a;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
+  color: #f0f0f0;
+}
+
+.progress-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  color: #36d7b7;
+}
+
+.progress-bar-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-width: 300px;
+}
+
+.progress-bar {
+  flex: 1 1 auto; // запрет на сжатие
+  height: 10px;
+  background-color: #2c2c2c;
+  border-radius: 4px;
+  overflow: hidden;
+  min-width: 200px; // минимальная ширина, чтобы не сжимался
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff2929, #810000);
+  transition: width 0.4s ease;
+}
+
+.progress-percent {
+  min-width: 40px;
+  font-weight: bold;
+  text-align: right;
+  color: #ffffffcc;
+}
+
+.progress-detail {
+  font-style: italic;
+  font-size: 0.8rem; // уменьшено
+  opacity: 0.8;
+  color: #aaaaaa;
+}
+
+.retry-text {
+  color: #ff5c5c;
+  font-weight: 500;
+  font-size: 0.75rem; // уменьшено
+  margin-top: 0.25rem;
+}
+
+.server-reconnect-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  color: #fff;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+.server-reconnect-box h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.reconnect-text {
+  margin-top: 1rem;
+  font-size: 1rem;
+  opacity: 0.8;
+}
+

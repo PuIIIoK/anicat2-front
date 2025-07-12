@@ -52,27 +52,45 @@ const AdminLogs = () => {
 
     return (
         <div className="admin-section">
-            <h2>📜 Логи действий</h2>
-            <div className="admin-table">
-                <div className="admin-table-header">
-                    <span>ID</span>
-                    <span>Действие</span>
-                    <span>Событие</span>
-                    <span>Кто</span>
-                    <span>Когда</span>
-                </div>
-                {logs.map((log) => (
-                    <div className="admin-table-row" key={log.id}>
-                        <span>{log.id}</span>
-                        <span>{log.action}</span>
-                        <span>{log.target}</span>
-                        <span>{log.performedBy}</span>
-                        <span>{new Date(log.timestamp).toLocaleString()}</span>
+            {/* Десктопная версия */}
+            <div className="admin-logs-desktop">
+                <div className="admin-table">
+                    <div className="admin-table-header">
+                        <span>ID</span>
+                        <span>Действие</span>
+                        <span>Событие</span>
+                        <span>Кто</span>
+                        <span>Когда</span>
                     </div>
-                ))}
+                    {logs.map((log) => (
+                        <div className="admin-table-row" key={log.id}>
+                            <span>{log.id}</span>
+                            <span>{log.action}</span>
+                            <span>{log.target}</span>
+                            <span>{log.performedBy}</span>
+                            <span>{new Date(log.timestamp).toLocaleString()}</span>
+                        </div>
+                    ))}
+                </div>
             </div>
+
+            {/* Мобильная версия */}
+            <div className="admin-logs-mobile">
+            <ul className="log-list">
+                {logs.map((log) => (
+                    <li key={log.id}>
+                        <span><b>ID:</b> {log.id}</span>
+                        <span><b>Действие:</b> {log.action}</span>
+                        <span><b>Событие:</b> {log.target}</span>
+                        <span><b>Кто:</b> {log.performedBy}</span>
+                        <span><b>Когда:</b> {new Date(log.timestamp).toLocaleString()}</span>
+                    </li>
+                ))}
+            </ul>
         </div>
-    );
+</div>
+)
+    ;
 };
 
 export default AdminLogs;

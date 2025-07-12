@@ -1,96 +1,98 @@
 'use client';
 
-import React, {useEffect} from 'react';
-import Image from 'next/image';
+import React, { useEffect, useState } from 'react';
+import { API_SERVER } from '../../../../tools/constants';
+import { AnimeInfo } from '../../../component/anime-structure/anime-data-info';
+import AnimeCard from '../../../component/anime-structure/anime-cards';
 
-const FakeCollectionPage = () => {
-    const tabs = ['Смотрю', 'Запланированно', 'Просмотренно', 'Отложено', 'Брошено'];
-    const activeTab = 'Просмотренно';
+interface AnimeCollectionItem {
+    collectionId: number;
+    collectionType: string;
+    addedAt: string;
+    anime: AnimeInfo;
+}
 
-    const fakeCollections = [
-        {
-            title: 'Магическая битва',
-            rating: 9.3,
-            image: '/anime-cover-default.jpg',
-            labelColor: '#ffc107',
-        },
-        {
-            title: 'Клятвенный поцелуй',
-            rating: 6.8,
-            image: '/anime-cover-default.jpg',
-            labelColor: '#90caf9',
-        },
-        {
-            title: 'Прощай, Армагеддон',
-            rating: 6.7,
-            image: '/anime-cover-default.jpg',
-            labelColor: '#90caf9',
-        },
-        {
-            title: 'Темнее чёрного',
-            rating: 8.0,
-            image: '/anime-cover-default.jpg',
-            labelColor: '#f06292',
-        },
-        {
-            title: 'Эльфийская песнь',
-            rating: 7.5,
-            image: '/anime-cover-default.jpg',
-            labelColor: '#ff9800',
-        },
-    ];
+const tabMap: { [key: string]: string } = {
+    'Избранное': 'FAVORITE',
+    'Смотрю': 'WATCHING',
+    'В планах': 'PLANNED',
+    'Просмотрено': 'COMPLETED',
+    'Отложено': 'PAUSED',
+    'Брошено': 'DROPPED',
+};
+
+const collectionTypeMap: { [key: string]: string } = {
+    FAVORITE: 'Избранное',
+    WATCHING: 'Смотрю',
+    PLANNED: 'В планах',
+    COMPLETED: 'Просмотрено',
+    PAUSED: 'Отложено',
+    DROPPED: 'Брошено',
+};
+
+
+const CollectionPage = () => {
+    const tabs = Object.keys(tabMap);
+    const [activeTab, setActiveTab] = useState('Просмотрено');
+    const [collections, setCollections] = useState<AnimeCollectionItem[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    const fetchCollection = async (type: string) => {
+        setLoading(true);
+        try {
+            const res = await fetch(`${API_SERVER}/api/collection/my?type=${type}`, {
+                headers: {
+                    Authorization: `Bearer ${document.cookie.replace(/(?:(?:^|.*;\s*)token\s*=\s*([^;]*).*$)|^.*$/, "$1")}`,
+                },
+            });
+
+            if (!res.ok) throw new Error(`Ошибка ${res.status}`);
+
+            const data: AnimeCollectionItem[] = await res.json();
+            setCollections(data);
+        } catch (err) {
+            console.error('Ошибка загрузки:', err);
+            setCollections([]);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        document.body.classList.add('no-scroll');
-        return () => {
-            document.body.classList.remove('no-scroll');
-        };
-    }, []);
-
+        fetchCollection(tabMap[activeTab]);
+    }, [activeTab]);
 
     return (
-        <div className="fake-collection-page">
-            <div className="center-coming-soon">
-                <h1>Скоро будет</h1>
-                <p>На данный момент команда уже ими заниматься и в ближайшее время они появятся, пока без них(</p>
+        <div className="collection-page">
+            <div className="tabs-container">
+                {tabs.map((tab) => (
+                    <button
+                        key={tab}
+                        className={`tab-button ${tab === activeTab ? 'active' : ''}`}
+                        onClick={() => setActiveTab(tab)}
+                    >
+                        {tab}
+                    </button>
+                ))}
             </div>
 
-            <div className="blur-background">
-                {/* Таб меню */}
-                <div className="collection-tabs">
-                    {tabs.map((tab) => (
-                        <button
-                            key={tab}
-                            className={`collection-tab ${tab === activeTab ? 'active' : ''}`}
-                        >
-                            {tab}
-                        </button>
-                    ))}
-                </div>
-
-                {/* Карточки */}
-                <div className="collection-grid-fake">
-                    {fakeCollections.map((anime, index) => (
-                        <div key={index} className="anime-card-fake">
-                            <Image
-                                src={anime.image}
-                                alt={anime.title}
-                                width={200}
-                                height={300}
-                                className="anime-image"
-                            />
-                            <div className="anime-card-overlay">
-                                <span className="rating-label" style={{ backgroundColor: anime.labelColor }}>
-                                    ⭐ {anime.rating}
-                                </span>
-                                <h3 className="anime-title">{anime.title}</h3>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+            <div className="collection-grid">
+                {loading ? (
+                    <p className="loading-text">Загрузка...</p>
+                ) : collections.length === 0 ? (
+                    <p className="empty-text">Вы еще не добавили аниме в эту коллекцию)</p>
+                ) : (
+                    collections.map((item) => (
+                        <AnimeCard
+                            key={item.collectionId}
+                            anime={item.anime}
+                            collectionType={collectionTypeMap[item.collectionType] || item.collectionType}
+                        />
+                    ))
+                )}
             </div>
         </div>
     );
 };
 
-export default FakeCollectionPage;
+export default CollectionPage;

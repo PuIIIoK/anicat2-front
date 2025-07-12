@@ -1,0 +1,253 @@
+.category-navbar {
+  margin-top: 60px;
+  margin-bottom: 60px;
+  padding: 10px 15px;
+  background-color: #1c1c1c;
+  border-bottom: 1px solid #333;
+}
+
+.category-navbar-items {
+  position: relative;
+  right: 15px;
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.category-navbar-item {
+  flex: 0 0 auto;
+  background: #2a2a2a;
+  border-radius: 12px;
+  padding: 6px 14px;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+  transition: background 0.3s;
+  white-space: nowrap;
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+}
+
+/* ===========================
+   📱 Мобильный стиль навбара категорий
+   =========================== */
+@media (max-width: 768px) {
+  .category-navbar {
+    position: relative;
+    padding: 0px 16px 0;
+    top: -2rem;
+    background-color: #111;
+    border-bottom: 1px solid #333;
+    overflow-x: auto;
+  }
+
+  .logo
+  {
+    display: none;
+  }
+  .logo-left
+  {
+    display: none !important;
+  }
+
+  .profile
+  {
+    display: none;
+  }
+
+  .search-bar-anime {
+    width: 300px !important;
+    height: 40px;
+    padding: 8px 12px;
+    margin: 0 8px;
+
+    .search-placeholder {
+      font-size: 12px;
+    }
+
+    .search-icon-button {
+      font-size: 16px;
+    }
+  }
+
+  .category-navbar-items {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 6px 0;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .category-navbar-item {
+    position: relative;
+    flex: 0 0 auto;
+    padding: 8px 14px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #ccc;
+    border-radius: 20px;
+    background: transparent;
+    transition: all 0.2s ease-in-out;
+    white-space: nowrap;
+    cursor: pointer;
+
+    &:hover {
+      color: #fff;
+    }
+
+    &.active {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    &.active::after {
+      content: '';
+      position: absolute;
+      left: 20%;
+      bottom: -2px;
+      width: 60%;
+      height: 3px;
+      background-color: #ff2e2e;
+      border-radius: 2px;
+    }
+  }
+}
+
+
+// по умолчанию скрываем мобильную версию
+.mobile-only {
+  display: none;
+}
+
+.desktop-only {
+  display: block;
+  margin-bottom: 5rem;
+}
+
+// на мобильных — наоборот
+@media (max-width: 768px) {
+  .mobile-only {
+    display: block;
+  }
+
+  .desktop-only {
+    display: none;
+  }
+}
+
+
+.anime-grid {
+  position: relative;
+  right: 33px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 5px;
+  padding: 10px 20px;
+}
+
+@media (max-width: 480px) {
+  .anime-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .anime-title-card {
+    width: 105px !important;
+    height: 150px !important;
+    margin: 0 5px 15px !important;
+  }
+  .anime-title-text
+  {
+    font-size: 9px !important;
+  }
+}
+@media (min-width: 481px) and (max-width: 768px) {
+  .anime-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (min-width: 769px) {
+  .anime-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border-left-color: #e63946;
+  animation: spin 1s ease infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner-text {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  text-align: center;
+}
+
+.spinner-subtext {
+  font-size: 14px;
+  color: #777;
+}
+
+.logout-btn {
+  position: relative;
+  width: 290px;
+  display: inline-block;
+  padding: 12px 30px;
+  top: -13px;
+  background-color: #ff2e2e;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease; /* Плавный переход */
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Тень для кнопки */
+}
+
+/* Эффект при наведении */
+.logout-btn:hover {
+  background-color: #d32f2f; /* Более темный красный при наведении */
+  transform: scale(1.05); /* Легкое увеличение */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* Более выраженная тень */
+}
+
+/* Адаптация для мобильных устройств */
+@media (max-width: 768px) {
+  .logout-btn {
+    font-size: 0.9rem; /* Уменьшаем шрифт для мобильных устройств */
+    padding: 10px 25px; /* Уменьшаем отступы */
+  }
+}

@@ -27,6 +27,16 @@
 @import './components/anicat-player';
 @import './components/test-anime-page';
 @import './components/anicat-player-new';
+@import './components/shop';
+@import "./components/anicat-player-new2";
+@import "./components/privacy_policy";
+@import "./components/public_offerta";
+@import "./components/navbar";
+@import "./components/bottom-navbar";
+@import "./components/admin-users";
+@import "./components/new-profile-page";
+@import "./components/custom-titile-bar";
+@import "./components/branches";
 
 
 
@@ -38,31 +48,79 @@ $enable-animations: true; // 👈 можно переключать из JS че
   padding: 0;
   box-sizing: border-box;
 }
+.hide-while-loading {
+  display: none !important;
+}
+
+body.electron {
+  header {
+    margin-top: 32px; // сдвигаем вниз
+  }
+
+  .main {
+    padding-top: 32px; // тоже можно
+  }
+}
 
 body {
+  margin: 0;
+  padding: 0;
   overflow-x: hidden;
   margin-top: 93px;
-  font-family: 'Arial', sans-serif;
-  background-color: #1b1b1b;
-  color: #fff;
+  font-family: 'Rubik', sans-serif; // основной читаемый шрифт
+  background-color: #111111; // тёмный, но не угольно-чёрный
+  color: #e0e0e0;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 a {
+  font-family: 'M PLUS 1p', sans-serif; // аниме-UI стиль: современный и читаемый
+  font-weight: 500;
+  font-size: 14.5px;
+  letter-spacing: 0.3px;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+ul, ol, li {
+  font-family: 'Rubik', sans-serif; // списки
   text-decoration: none;
 }
 
-h1 {
-  color: #ffffff;
-  margin-bottom: 0.7rem;
-  font-size: 30px;
+span {
+  font-family: 'Rubik', sans-serif; // базовые текстовые вкрапления
+  text-decoration: none;
 }
-.categories {
-  padding: 20px;
 
-  h2 {
-    text-align: center;
-    font-size: 2rem;
-    margin-bottom: 20px;
-    color: #fff;
-  }
+strong, b {
+  font-family: 'Rubik', sans-serif;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Zen Tokyo Zoo', cursive; // декоративный аниме-стиль заголовков
+  text-decoration: none;
+}
+
+/* Минималистичный скроллбар как в Discord */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1); // почти невидимый
+  border-radius: 10px;
+  transition: background 0.3s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.25);
 }

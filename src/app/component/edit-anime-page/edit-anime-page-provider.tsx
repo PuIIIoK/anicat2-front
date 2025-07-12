@@ -48,6 +48,7 @@ const EditAnimePage = () => {
     const [bannerPreview, setBannerPreview] = useState('');
     const [screenshotPreviews, setScreenshotPreviews] = useState<string[]>([]);
     const [keepScreenshotIds, setKeepScreenshotIds] = useState<number[]>([]);
+
     const [deletedCover, setDeletedCover] = useState(false);
     const [deletedBanner, setDeletedBanner] = useState(false);
 
@@ -152,11 +153,21 @@ const EditAnimePage = () => {
 
             // COVER
             if (deletedCover) {
+                // Удаление обложки, если она была удалена
                 await fetch(`${API_SERVER}/api/admin/delete-cover/${animeId}`, {
                     method: 'DELETE',
                     headers: { 'Authorization': `Bearer ${token}` },
                 });
             } else if (cover !== null) {
+                // Защита от дубликатов: проверка на существующую обложку
+                const existingCover = await fetch(`${API_SERVER}/api/stream/${animeId}/cover`);
+                if (existingCover.ok) {
+                    await fetch(`${API_SERVER}/api/admin/delete-cover/${animeId}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${token}` },
+                    });
+                }
+
                 const formData = new FormData();
                 formData.append('file', cover);
                 await fetch(`${API_SERVER}/api/admin/edit-cover/${animeId}`, {
@@ -168,11 +179,21 @@ const EditAnimePage = () => {
 
             // BANNER
             if (deletedBanner) {
+                // Удаление баннера, если он был удалён
                 await fetch(`${API_SERVER}/api/admin/delete-banner/${animeId}`, {
                     method: 'DELETE',
                     headers: { 'Authorization': `Bearer ${token}` },
                 });
             } else if (banner !== null) {
+                // Защита от дубликатов: проверка на существующий баннер
+                const existingBanner = await fetch(`${API_SERVER}/api/stream/${animeId}/banner`);
+                if (existingBanner.ok) {
+                    await fetch(`${API_SERVER}/api/admin/delete-banner/${animeId}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${token}` },
+                    });
+                }
+
                 const formData = new FormData();
                 formData.append('file', banner);
                 await fetch(`${API_SERVER}/api/admin/edit-banner/${animeId}`, {
@@ -199,7 +220,6 @@ const EditAnimePage = () => {
             showToast('❌ Ошибка при обновлении', 'error');
         }
     };
-
 
     const showToast = (msg: string, type: 'success' | 'error') => {
         setToastMessage(msg);
@@ -232,7 +252,6 @@ const EditAnimePage = () => {
                 setDeletedCover={setDeletedCover}
                 setDeletedBanner={setDeletedBanner}
             />
-
 
             <AnimeMainInfo
                 title={title}

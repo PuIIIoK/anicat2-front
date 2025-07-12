@@ -1,5 +1,5 @@
 .add-anime-page {
-  max-width: 900px;
+  max-width: 1700px;
   margin: 0 auto;
   padding: 2rem;
   background: #1b1b2f;
@@ -62,25 +62,6 @@
   justify-content: center;
 }
 
-button {
-  padding: 0.6rem 1.5rem;
-  border: none;
-  border-radius: 6px;
-  background-color: #ff9f1c;
-  color: #1b1b2f;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-button.danger {
-  background-color: #e63946;
-  color: #fff;
-}
-
-button.danger:hover {
-  background-color: #ff4d5a;
-}
 
 //Основная инфа
 
@@ -175,6 +156,7 @@ button.danger:hover {
 
   .cover-upload {
     margin: 20px 0;
+    width: 300px;
     padding: 16px;
     background: #1e1e2f;
     border: 1px solid #333;
@@ -277,6 +259,7 @@ button.danger:hover {
   }
   .screenshot-upload {
     margin: 20px 0;
+    width: 760px;
     padding: 16px;
     background: #1e1e2f;
     border: 1px solid #333;
@@ -417,34 +400,7 @@ button.danger:hover {
       }
     }
 
-    button {
-      margin-top: 0.5rem;
-      background: #e53935;
-      color: white;
-      border: none;
-      padding: 0.4rem 0.8rem;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background 0.2s ease;
 
-      &:hover {
-        background: #d32f2f;
-      }
-
-      &.danger {
-        background: #b71c1c;
-
-        &:hover {
-          background: #c62828;
-        }
-      }
-
-      &.small {
-        padding: 0.2rem 0.5rem;
-        font-size: 0.85rem;
-      }
-    }
 
     .audio-block {
       background: #161616;
@@ -671,10 +627,6 @@ button.danger:hover {
 }
 
 @media (min-width: 1200px) {
-  .add-anime-page {
-    max-width: 1100px;
-    padding: 2.5rem;
-  }
 
   .form-admin-block {
     padding: 2.5rem;
@@ -753,13 +705,12 @@ button.danger:hover {
     border: 1px solid #444;
     border-radius: 10px;
     overflow: hidden;
+    width: 400px;
     background: #1a1a2d;
-    max-height: 300px; // можно настроить под желаемую высоту
 
     img {
       width: 100%;
-      height: 350px; // зафиксированная высота баннера
-      object-fit: cover; // 💡 ключ: обрезает лишнее, оставляя "вписанную" часть
+      height: auto;
       display: block;
       border-radius: 10px;
     }

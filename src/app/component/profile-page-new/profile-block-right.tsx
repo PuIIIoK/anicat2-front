@@ -49,6 +49,45 @@ const ProfileRightBlock = () => (
                                 <button className="watch-btn">▶ Continue Watching</button>
                             </div>
                         </div>
+                        <div className="watching-card">
+                            <div className="cover-container">
+                                <img src="/anime-cover-default.jpg" alt="Chainsaw Man" className="cover-img"/>
+                            </div>
+                            <div className="info">
+                                <h4 className="title">Ванпис [1 сезон]</h4>
+                                <div className="progress-bar">
+                                    <div className="progress-fill" style={{width: '66%'}}></div>
+                                </div>
+                                <p className="progress-text">Progress: 8 / 12</p>
+                                <button className="watch-btn">▶ Continue Watching</button>
+                            </div>
+                        </div>
+                        <div className="watching-card">
+                            <div className="cover-container">
+                                <img src="/anime-cover-default.jpg" alt="Chainsaw Man" className="cover-img"/>
+                            </div>
+                            <div className="info">
+                                <h4 className="title">Ванпис [1 сезон]</h4>
+                                <div className="progress-bar">
+                                    <div className="progress-fill" style={{width: '66%'}}></div>
+                                </div>
+                                <p className="progress-text">Progress: 8 / 12</p>
+                                <button className="watch-btn">▶ Continue Watching</button>
+                            </div>
+                        </div>
+                        <div className="watching-card">
+                            <div className="cover-container">
+                                <img src="/anime-cover-default.jpg" alt="Chainsaw Man" className="cover-img"/>
+                            </div>
+                            <div className="info">
+                                <h4 className="title">Ванпис [1 сезон]</h4>
+                                <div className="progress-bar">
+                                    <div className="progress-fill" style={{width: '66%'}}></div>
+                                </div>
+                                <p className="progress-text">Progress: 8 / 12</p>
+                                <button className="watch-btn">▶ Continue Watching</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -67,7 +106,7 @@ const ProfileRightBlock = () => (
                         </div>
                     </li>
                     <li className="activity-item">
-                        <span className="icon">🎬</span>
+                    <span className="icon">🎬</span>
                         <div className="activity-content">
                             <div className="text">Просмотрел все серии аниме <strong>«Ангел по
                                 соседству»</strong></div>

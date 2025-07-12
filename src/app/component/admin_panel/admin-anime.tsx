@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, {ReactNode, useEffect, useState} from 'react';
 import { API_SERVER } from '../../../tools/constants';
 import { useRouter } from 'next/navigation';
+import {CheckCircle, XCircle} from "lucide-react";
 
 interface Anime {
     id: number;
@@ -12,7 +13,7 @@ interface Anime {
 }
 
 interface Props {
-    setNotification: (msg: string | null) => void;
+    setNotification: (msg: ReactNode | null) => void;
 }
 
 const PAGE_SIZE = 15;
@@ -78,17 +79,31 @@ const AdminAnime: React.FC<Props> = ({ setNotification }) => {
             if (!res.ok) throw new Error('Ошибка при создании аниме');
 
             const animeId = await res.json();
-            setNotification('✅ Аниме создано успешно');
+
+            setNotification(
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <CheckCircle size={18} color="#22c55e" />
+                    <span style={{ color: '#e0e0e0' }}>Аниме создано успешно</span>
+                </div>
+            );
+
             setTimeout(() => {
                 setNotification(null);
                 router.push(`/admin_panel/add-anime?id=${animeId}`);
-            }, 1000);
+            }, 1500);
+
         } catch (e) {
             console.error('Ошибка создания аниме:', e);
-            setNotification('❌ Ошибка при создании аниме');
-            setTimeout(() => setNotification(null), 3000);
+            setNotification(
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <XCircle size={18} color="crimson" />
+                    <span style={{ color: '#e0e0e0' }}>Ошибка при создании аниме</span>
+                </div>
+            );
+            setTimeout(() => setNotification(null), 1500);
         }
     };
+
 
     const handleDeleteAnime = async (id: number) => {
         if (!confirm(`Вы уверены, что хотите удалить аниме #${id}?`)) return;
@@ -122,65 +137,109 @@ const AdminAnime: React.FC<Props> = ({ setNotification }) => {
 
     return (
         <section className="admin-section">
-            <h2>🎬 Аниме</h2>
-
-            <div className="admin-actions">
-                <input
-                    type="text"
-                    placeholder="Поиск по названию..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="search-input"
-                />
-                <button className="add-button" onClick={handleCreateAnime}>
-                    + Добавить аниме
-                </button>
-            </div>
-
             {loading ? (
                 <div className="spinner-container">
-                    <p className="spinner-anime-text">Загрузка списка аниме...</p>
                     <div className="spinner-anime" />
                 </div>
             ) : (
                 <>
-                    <div className="admin-table">
-                        <div className="admin-table-header">
-                            <span>ID</span>
-                            <span>Название</span>
-                            <span>Тип</span>
-                            <span>Год</span>
-                            <span>Действия</span>
+                    {/* Десктопная версия */}
+                    <div className="desktop-only-admin-anime">
+                        <div className="admin-actions">
+                            <input
+                                type="text"
+                                placeholder="Поиск по названию..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="search-input"
+                            />
+                            {totalPages > 1 && (
+                                <div className="pagination-anime">
+                                    {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+                                        <button
+                                            key={page}
+                                            className={`page-button-anime ${currentPage === page ? 'active' : ''}`}
+                                            onClick={() => setCurrentPage(page)}
+                                        >
+                                            {page}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                            <button className="add-button" onClick={handleCreateAnime}>
+                                + Добавить аниме
+                            </button>
                         </div>
 
-                        {currentItems.map((anime) => (
-                            <div className="admin-table-row" key={anime.id}>
-                                <span>{anime.id}</span>
-                                <span>{anime.title}</span>
-                                <span>{anime.type}</span>
-                                <span>{anime.year}</span>
-                                <span className="admin-table-actions">
+                        <div className="admin-table">
+                            <div className="admin-table-header">
+                                <span>ID</span>
+                                <span>Название</span>
+                                <span>Тип</span>
+                                <span>Год</span>
+                                <span>Действия</span>
+                            </div>
+
+                            {currentItems.map((anime) => (
+                                <div className="admin-table-row" key={anime.id}>
+                                    <span>{anime.id}</span>
+                                    <span>{anime.title}</span>
+                                    <span>{anime.type}</span>
+                                    <span>{anime.year}</span>
+                                    <span className="admin-table-actions">
                                     <button onClick={() => router.push(`/admin_panel/edit-anime?id=${anime.id}`)}>Редактировать</button>
                                     <button onClick={() => router.push(`/anime-page/${anime.id}`)}>Посмотреть</button>
                                     <button className="danger" onClick={() => handleDeleteAnime(anime.id)}>Удалить</button>
                                 </span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Мобильная версия */}
+                    <div className="mobile-only-admin-anime">
+                        <div className="admin-actions-mobile">
+                            <input
+                                type="text"
+                                placeholder="Поиск по названию..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="search-input"
+                            />
+                            {totalPages > 1 && (
+                                <div className="pagination-anime">
+                                    {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+                                        <button
+                                            key={page}
+                                            className={`page-button-anime ${currentPage === page ? 'active' : ''}`}
+                                            onClick={() => setCurrentPage(page)}
+                                        >
+                                            {page}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                            <button className="add-button" onClick={handleCreateAnime}>
+                                + Добавить аниме
+                            </button>
+                        </div>
+
+                        {currentItems.map((anime) => (
+                            <div className="admin-card" key={anime.id}>
+                                <div className="admin-card-info">
+                                    <div><strong>ID:</strong> {anime.id}</div>
+                                    <div><strong>Название:</strong> {anime.title}</div>
+                                    <div><strong>Тип:</strong> {anime.type}</div>
+                                    <div><strong>Год:</strong> {anime.year}</div>
+                                </div>
+                                <div className="admin-card-actions">
+                                    <button onClick={() => router.push(`/admin_panel/edit-anime?id=${anime.id}`)}>Редактировать</button>
+                                    <button onClick={() => router.push(`/anime-page/${anime.id}`)}>Посмотреть</button>
+                                    <button className="danger" onClick={() => handleDeleteAnime(anime.id)}>Удалить</button>
+                                </div>
                             </div>
                         ))}
                     </div>
-
-                    {totalPages > 1 && (
-                        <div className="pagination">
-                            {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
-                                <button
-                                    key={page}
-                                    className={`page-button ${currentPage === page ? 'active' : ''}`}
-                                    onClick={() => setCurrentPage(page)}
-                                >
-                                    {page}
-                                </button>
-                            ))}
-                        </div>
-                    )}
                 </>
             )}
         </section>

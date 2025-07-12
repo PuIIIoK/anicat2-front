@@ -1,36 +1,182 @@
-.collection-selector
-{
-  position: relative;
-  display: flex;
-  padding-top: 20px;
-  align-content: center;
-  justify-content: center;
-
+.collection-page {
+  padding: 2rem;
+  color: white;
+  margin-top: 5rem;
+  margin-bottom: 2rem;
 }
 
-.collection-selector-button
-{
-  background-color: #7544b2;
-  border: none;
-  color: #fff;
-  cursor: pointer;
-  font-family: Montserrat, sans-serif;
-  font-size: 1em;
-  font-weight: 700;
-  transition: all .2s ease-in-out;
-  background-color: hsla(0, 0%, 100%, .137);
-  border-radius: 60px;
-  color: #fff;
-  margin: 0 5px;
-  padding: 12px 20px;
+.collection-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
 }
-
-.collection-anime
-{
+.collection-grid {
   position: relative;
-  margin-top: 28px;
-  grid-gap: 20px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-  justify-items: center;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 5px;
+  width: 80%;
+}
+
+.tabs-container {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  z-index: 1;
+  position: relative;
+
+  overflow-x: visible;
+  white-space: normal;
+  padding: 0;
+  top: 0;
+  left: 0;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+.tab-button {
+  flex: 0 0 auto;
+  font-size: 0.85rem;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background-color: #1b1b1b;
+  transition: background-color 0.3s ease, border-bottom 0.3s ease; /* Добавим плавное изменение границы */
+  color: white;
+  position: relative;
+}
+
+.tab-button::after {
+  content: ''; /* Псевдоэлемент для полоски */
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 3px; /* Толщина полоски */
+  background-color: #5e4f4f; /* Цвет полоски */
+  transform: scaleX(0); /* Изначально скрытая полоска */
+  transform-origin: bottom right;
+}
+
+.tab-button:hover::after {
+  transform: scaleX(1); /* Когда наводим, полоска появляется */
+  transform-origin: bottom left;
+}
+
+.tab-button.active::after {
+  transform: scaleX(1); /* Для активных кнопок полоска всегда видна */
+  transform-origin: bottom left;
+}
+
+@media (max-width: 768px) {
+  .tabs-container {
+    overflow-x: auto;
+    white-space: nowrap;
+    flex-wrap: nowrap;
+    padding: 4px 12px;
+    margin: 0 0 1.5rem;
+    gap: 8px;
+    top: -40px;
+    left: -35px;
+    width: 100vw;
+    box-sizing: border-box;
+  }
+  .anime-title-card {
+    width: 105px;
+    height: 150px;
+    margin: 0 5px 15px;
+  }
+
+
+  /* Адаптация для мобильных устройств: 3 колонки */
+  .collection-grid {
+    position: relative;
+    right: 28px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+    width: 80%;
+    margin-top: -3rem;
+  }
+
+  .collection-title {
+    display: none;
+  }
+
+  .tab-button {
+    flex: 0 0 auto;
+    font-size: 0.85rem;
+    padding: 6px 14px;
+    border-radius: 20px;
+    background-color: #1b1b1b;
+    transition: background-color 0.3s ease, border-bottom 0.3s ease; /* Добавим плавное изменение границы */
+    color: white;
+    position: relative;
+  }
+
+  .tab-button::after {
+    content: ''; /* Псевдоэлемент для полоски */
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 3px; /* Толщина полоски */
+    background-color: #5e4f4f; /* Цвет полоски */
+    transform: scaleX(0); /* Изначально скрытая полоска */
+    transform-origin: bottom right;
+  }
+
+  .tab-button:hover::after {
+    transform: scaleX(1); /* Когда наводим, полоска появляется */
+    transform-origin: bottom left;
+  }
+
+  .tab-button.active::after {
+    transform: scaleX(1); /* Для активных кнопок полоска всегда видна */
+    transform-origin: bottom left;
+  }
+
+}
+
+/* Общие стили для карточек */
+.anime-card-fake {
+  position: relative;
+  width: 100%; /* Сделаем ширину 100% на мобильных */
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #1a1a1a;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.anime-image {
+  border-radius: 12px 12px 0 0;
+  object-fit: cover;
+  width: 100%;
+  height: auto;
+}
+
+.anime-card-overlay {
+  padding: 10px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.anime-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  word-wrap: break-word;
+  line-height: 1.2;
+}
+
+.collection-type-label {
+  font-size: 0.7rem;
+  background-color: #7c3aed;
+  padding: 3px 8px;
+  border-radius: 6px;
+  align-self: flex-start;
+  opacity: 0.9;
 }

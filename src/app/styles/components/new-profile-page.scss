@@ -1,0 +1,1490 @@
+// Ниже 900px — планшеты, ниже 600px — мобилки
+$breakpoint-tablet: 900px;
+$breakpoint-mobile: 600px;
+
+
+.profile-container {
+  display: flex;
+  gap: 40px;
+  margin-top: 30px;
+  align-items: flex-start;
+  padding: 0 20px;
+  color: #fff;
+}
+
+.profile-layout {
+  flex: 0 0 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+
+  .profile-sidebar {
+    padding: 30px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    max-width: 450px;
+
+    .profile-block {
+      background: #111;
+      border-radius: 18px;
+      padding: 20px;
+      color: white;
+      box-shadow: 0 0 0 1px #1c1c1c;
+
+      h2 {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 16px;
+      }
+    }
+
+    // ==== ДРУЗЬЯ ====
+    .friends {
+      .friend-card {
+        position: relative;
+        margin-bottom: 14px;
+        border-radius: 14px;
+        overflow: hidden;
+        background: #1b1b1b;
+
+        .friend-bg {
+          height: 84px;
+          background-size: cover;
+          background-position: center;
+          filter: brightness(0.5);
+        }
+
+        .friend-info {
+          position: relative;
+          padding: 10px 12px;
+          z-index: 2;
+
+          .friend-top {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+
+            .friend-name {
+              font-weight: 700;
+              font-size: 14px;
+            }
+
+            .friend-rank {
+              font-size: 11px;
+              color: #aaa;
+            }
+          }
+
+          .friend-quote {
+            font-size: 12px;
+            margin-top: 2px;
+            color: #ccc;
+          }
+
+          .friend-avatar {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            border-radius: 50%;
+            border: 2px solid white;
+          }
+        }
+      }
+    }
+
+    // ==== СТАТИСТИКА ====
+    .stats-chart-container {
+      background: #1a1a1a;
+      padding: 16px;
+      border-radius: 12px;
+      color: #fff;
+      h2 {
+        font-size: 20px;
+        margin-bottom: 12px;
+      }
+
+      .stats-list {
+        margin-top: 16px;
+        .stat-line {
+          display: flex;
+          justify-content: space-between;
+          padding: 4px 0;
+          font-size: 14px;
+          span:first-child {
+            font-weight: 600;
+          }
+        }
+      }
+    }
+
+
+    // ==== ДОСТИЖЕНИЯ ====
+    .achievements {
+      .achievements-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+
+        .achievement {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          font-size: 13px;
+          text-align: center;
+          background: #1a1a1a;
+          border-radius: 12px;
+          padding: 10px 4px;
+          transition: all 0.2s ease;
+
+          img {
+            border-radius: 8px;
+            margin-bottom: 6px;
+          }
+
+          .achievement-title {
+            font-weight: 600;
+            font-size: 12px;
+            margin-bottom: 4px;
+          }
+
+          .stars {
+            font-size: 13px;
+            &.yellow { color: #f1c40f; }
+            &.blue { color: #3498db; }
+            &.green { color: #2ecc71; }
+          }
+
+          &.add-more {
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 500;
+            background: #222;
+            cursor: pointer;
+          }
+        }
+      }
+
+      .add-more-label {
+        text-align: center;
+        margin-top: 12px;
+        font-size: 13px;
+        color: #bbb;
+      }
+    }
+  }
+}
+
+.profile-main-content-container {
+  width: 1000px; // или нужное тебе значение
+  max-width: 100%; // чтобы не выходил за контейнер
+  padding: 0 20px;
+  margin-top: 32px;
+
+  .now-watching {
+    flex: 0 0 auto; // не позволяет растягиваться
+    width: 100%; // можно указать фиксированную или адаптивную ширину
+    max-width: 960px; // ограничение по максимуму
+    margin: 0 auto; // по центру
+    padding: 24px 28px 36px;
+    border-radius: 20px;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05);
+    color: #fff;
+    margin-bottom: 24px;
+
+    .watching-list-container {
+      width: 900px;
+      padding-top: 20px;
+      display: flex;
+      overflow-x: auto;
+      overflow-y: hidden;
+      gap: 20px;
+      max-width: 1200px; // 3 карточки по 200px + отступы
+      padding-bottom: 8px; // для возможной полосы прокрутки
+      &::-webkit-scrollbar {
+        height: 6px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+      }
+
+      &::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(255, 255, 255, 0.3);
+      }
+    }
+
+
+    .watching-list {
+      display: flex;
+      gap: 30px;
+      min-width: max-content; // чтобы карточки не сжимались
+    }
+
+    .watching-card {
+      width: 200px;
+      flex-shrink: 0;
+      background: #0b0b0b;
+      border-radius: 8px;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .watching-text {
+        margin-top: 5px;
+        display: flex;
+        justify-content: space-between;
+        padding: 8px;
+
+        .title {
+          font-weight: 700;
+          font-size: 16px;
+          margin-bottom: 4px;
+        }
+
+        .year, .episodes {
+          font-size: 12px;
+          color: #999;
+        }
+      }
+    }
+  }
+  .scroll-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-20%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 2;
+    svg {
+      width: 32px;
+      height: 32px;
+      color: #fff;
+    }
+
+    &.left {
+      left: 40rem; // или 0, если стрелки должны быть внутри
+    }
+    &.right {
+      right: 1rem;
+    }
+  }
+  .watch-history {
+    border-radius: 20px;
+    padding: 24px 28px 36px;
+    color: #fff;
+    margin-bottom: 24px;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05);
+
+    h2 {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+
+    .history-day {
+      margin-bottom: 28px;
+
+      .history-date {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 12px;
+      }
+
+      .episode-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+
+        .episode-card {
+          position: relative;
+          width: 150px;
+          border-radius: 12px;
+          overflow: hidden;
+          background: #000;
+
+          img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+          }
+
+          .episode-overlay {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            padding: 8px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+            color: #fff;
+
+            .anime-title {
+              font-size: 11px;
+              opacity: 0.9;
+            }
+
+            .episode-number {
+              font-size: 14px;
+              font-weight: bold;
+              margin-top: 2px;
+            }
+          }
+        }
+
+        .load-more {
+          align-self: flex-end;
+          font-weight: 600;
+          font-size: 15px;
+          padding: 10px;
+          color: #fff;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+  .show-more-btn {
+    margin-top: 12px;
+    cursor: pointer;
+    color: #ff7a7a;
+    font-weight: bold;
+    text-align: center;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .recent-activity {
+    margin-top: 40px;
+    background: #111;
+    padding: 20px 24px;
+    border-radius: 16px;
+    border: 1px solid #222;
+
+    h2 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #fff;
+    }
+
+    .activity-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      li {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid #222;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        .icon {
+          font-size: 18px;
+          margin-top: 2px;
+        }
+
+        .text {
+          color: #ccc;
+          font-size: 15px;
+          line-height: 1.4;
+          position: relative;
+
+          strong {
+            color: #fff;
+          }
+
+          a {
+            color: #facc15;
+            text-decoration: none;
+
+            &:hover {
+              text-decoration: underline;
+            }
+          }
+
+          .time {
+            display: block;
+            font-size: 12px;
+            color: #888;
+            margin-top: 4px;
+          }
+        }
+      }
+    }
+  }
+  .favorites-block {
+    margin-top: 40px;
+
+    h2 {
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+
+    .favorites-grid {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .anime-card {
+      background: #181818;
+      border-radius: 16px;
+      overflow: hidden;
+      width: 160px;
+      transition: transform 0.2s;
+
+      &:hover {
+        transform: scale(1.03);
+      }
+
+      img {
+        width: 100%;
+        height: 240px;
+        object-fit: cover;
+        border-radius: 16px 16px 0 0;
+      }
+
+      .anime-info {
+        padding: 10px;
+
+        h3 {
+          font-size: 15px;
+          font-weight: 700;
+          color: #fff;
+          margin-bottom: 4px;
+        }
+
+        .meta {
+          font-size: 12px;
+          color: #aaa;
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+        }
+      }
+    }
+  }
+  .user-reviews-block {
+ margin-bottom: 40px;
+    margin-top: 40px;
+
+    h2 {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+
+    .reviews-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .review-card {
+      background: #1a1a1a;
+      border-radius: 12px;
+      padding: 16px;
+      color: #ddd;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+
+      .anime-header-review {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 10px;
+
+        img {
+          width: 64px;
+          height: 90px;
+          object-fit: cover;
+          border-radius: 8px;
+        }
+
+        .anime-info-review {
+          h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            margin: 0;
+          }
+
+          .rating {
+            font-size: 13px;
+            color: #aaa;
+            margin-top: 4px;
+          }
+        }
+      }
+
+      .review-text {
+        font-size: 14px;
+        line-height: 1.5;
+        margin-bottom: 8px;
+        color: #ccc;
+      }
+
+      .timestamp {
+        font-size: 12px;
+        color: #666;
+      }
+    }
+  }
+}
+.load-more {
+  margin-top: 20px;
+  text-align: center;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  padding: 10px;
+  background: #2a2a2a;
+  border-radius: 8px;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #444;
+  }
+}
+.load-more-reviews {
+  margin-top: 20px;
+  text-align: center;
+  padding: 10px 16px;
+  background-color: #1e1e1e;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background-color: #2c2c2c;
+  }
+
+  &:active {
+    background-color: #3a3a3a;
+  }
+}
+
+//TOP PROFILE
+.profile-header {
+  position: relative;
+  height: 300px;
+  border-radius: 0 0 32px 32px;
+  overflow: hidden;
+  color: white;
+
+  .profile-banner {
+    z-index: 1;
+    filter: brightness(0.85);
+  }
+
+  .profile-header-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2;
+    padding: 20px 40px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.65), transparent 60%);
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+
+    .profile-avatar-block {
+      flex-shrink: 0;
+
+      .profile-avatar {
+        border-radius: 50%;
+        border: 4px solid white;
+      }
+    }
+
+    .profile-info-block {
+      display: flex;
+      flex-direction: column;
+
+      .nickname-line {
+        display: flex;
+        align-items: flex-end;
+        flex-wrap: wrap;
+        gap: 8px;
+
+        .nickname-block {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .nickname-icons {
+          display: flex;
+          gap: 4px;
+          margin-bottom: 2px;
+
+          img {
+            width: 18px;
+            height: 18px;
+            object-fit: contain;
+          }
+        }
+
+        .nickname {
+          font-size: 20px;
+          font-weight: 700;
+          color: #fff;
+        }
+
+        .role-badge {
+          padding: 2px 6px;
+          font-size: 12px;
+          border-radius: 6px;
+          font-weight: bold;
+
+          &.admin {
+            background-color: #d33232;
+            color: white;
+          }
+
+          &.moderator {
+            background-color: #325ed3;
+            color: white;
+          }
+
+          &.uploader {
+            background-color: #32d38c;
+            color: white;
+          }
+        }
+
+        .leaderboard-text {
+          font-size: 13px;
+          font-weight: 600;
+          color: #ccc;
+          margin-left: auto;
+        }
+      }
+
+      .bio-line {
+        margin-top: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 14px;
+        color: #e0e0e0;
+      }
+
+      .status-text {
+        font-size: 12px;
+        color: #ccc;
+        margin-top: 4px;
+        opacity: 0.7;
+      }
+    }
+  }
+}
+
+//MOBILE ADAPTIVE
+.profile-mobile-wrapper {
+  width: 100vw;
+  min-height: 100vh;
+  background: #15151a;
+  color: #fff;
+  font-family: 'Inter', Arial, sans-serif;
+  position: relative;
+  overflow-x: hidden;
+}
+.profile-mobile-banner {
+  width: 100vw;
+  height: 190px;
+  position: relative;
+  background: #232323;
+  .banner-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    color: #ccc;
+    font-size: 20px;
+    background: #222;
+  }
+  img, .banner-placeholder {
+    border-radius: 0 0 20px 20px;
+    object-fit: cover;
+  }
+}
+.profile-mobile-avatar-block {
+  position: absolute;
+  left: 50%;
+  top: 130px; // Сдвиг вниз — зависит от высоты баннера!
+  transform: translateX(-50%);
+  z-index: 5;
+  width: 96px;
+  height: 96px;
+  display: flex; justify-content: center; align-items: center;
+
+  .profile-mobile-avatar {
+    border-radius: 50%;
+    border: 3px solid #fff;
+    width: 96px;
+    height: 96px;
+    object-fit: cover;
+    background: #191919;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.16);
+  }
+}
+.profile-mobile-tabs-bar {
+  display: flex;
+  overflow-x: auto;
+  padding: 0 10px;
+  margin: 14px 0 8px 0;
+  gap: 10px;
+  white-space: nowrap;
+  border-bottom: 1px solid #232323;
+  /* Скрываем скроллбар на всех платформах */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+
+  &::-webkit-scrollbar {
+    display: none; /* Safari, Chrome */
+    height: 0;
+    width: 0;
+    background: transparent;
+  }
+  .profile-mobile-tab-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    padding: 10px 10px 7px 10px;
+    border-radius: 7px 7px 0 0;
+    opacity: 0.7;
+    transition: 0.1s;
+    cursor: pointer;
+    &.active {
+      font-weight: bold;
+      color: #ff7070;
+      opacity: 1;
+      border-bottom: 2px solid #ff7070;
+      background: #181820;
+    }
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+//profile us and role
+.profile-mobile-tabs-content {
+  padding: 18px 10px 60px 10px;
+  min-height: 220px;
+}
+.profile-mobile-bio {
+  margin-top: 10px; // Чтобы табы и био были под аватаром
+  text-align: center;
+  font-size: 15px;
+  color: #eee;
+  padding: 0 16px;
+  word-break: break-word;
+  opacity: 0.96;
+}
+
+.profile-mobile-username-block {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1px;
+
+  .profile-mobile-badges {
+    display: flex;
+    gap: 7px;
+    margin-bottom: 2px;
+    img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 8px #0004);
+    }
+  }
+  .profile-mobile-username {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 3px;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+  .profile-mobile-roles {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 2px;
+
+    .role-badge {
+      padding: 2px 9px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      background: #232323;
+      &.admin { background: #d33232; }
+      &.moderator { background: #325ed3; }
+      &.checker { background: #35c685; }
+    }
+  }
+}
+
+//friends
+.profile-block.friends {
+  padding: 12px 8px;
+  background: #18181d;
+  border-radius: 12px;
+  margin-bottom: 18px;
+
+  h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.01em;
+    padding-left: 2px;
+  }
+
+  .friend-card {
+    display: flex;
+    align-items: flex-start;
+    background: #19191e;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    min-height: 68px;
+    position: relative;
+
+    // Фон баннера
+    .friend-bg {
+      min-width: 56px;
+      width: 56px;
+      height: 68px;
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.6);
+      border-radius: 10px 0 0 10px;
+      flex-shrink: 0;
+    }
+
+    .friend-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      flex: 1 1 auto;
+      padding: 10px 10px 10px 12px;
+      min-width: 0;
+      position: relative;
+
+      .friend-top {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 5px 8px;
+        .friend-name {
+          font-weight: 700;
+          font-size: 15px;
+          color: #fff;
+          max-width: 120px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        .friend-rank {
+          font-size: 11px;
+          color: #bbb;
+          font-weight: 500;
+        }
+      }
+      .friend-quote {
+        font-size: 12px;
+        color: #ffb6b6;
+        opacity: 0.8;
+        margin-top: 1px;
+        font-style: italic;
+        line-height: 1.3;
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .friend-avatar {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        width: 32px !important;
+        height: 32px !important;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        background: #232329;
+        box-shadow: 0 2px 6px 0 rgba(0,0,0,0.09);
+      }
+    }
+  }
+}
+
+//stat
+.stats-chart-container {
+  background: #181820;
+  border-radius: 16px;
+  padding: 16px 8px 12px 8px;
+  color: #fff;
+  margin: 18px 0 0 0;
+  box-shadow: 0 2px 8px 0 #00000018;
+  width: 100%;
+  max-width: 480px;
+
+  h2 {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    text-align: center;
+    letter-spacing: 0.1em;
+    color: #ff7070;
+  }
+
+  .recharts-responsive-container {
+    width: 100% !important;
+    height: 170px !important;
+    min-width: 0;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .recharts-wrapper {
+    position: relative !important;
+    top: -8rem;
+    left: -10rem;
+
+    min-width: 0;
+    margin: 0 auto;
+  }
+
+  .stats-list {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-top: 16px;
+    width: 100%;
+
+    .stat-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px 12px;
+      font-size: 14px;
+      border-radius: 8px;
+      background: #15151a;
+      color: #fff;
+      box-shadow: 0 1px 2px #00000008;
+
+      span:first-child {
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+//historywatch
+.now-watching {
+  margin: 18px 0;
+  background: #181820;
+  border-radius: 18px;
+  padding: 16px 0 10px 0;
+  color: #fff;
+  box-shadow: 0 2px 8px 0 #00000012;
+
+  h2 {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 13px;
+    text-align: center;
+    color: #ff7070;
+  }
+
+  .watching-list {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 5px;
+    // Скрываем скроллбар
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar { display: none; }
+
+    .watching-list-container {
+      display: flex;
+      flex-direction: row;
+      gap: 13px;
+      padding: 2px 10px 2px 10px;
+      min-width: max-content;
+    }
+
+    .watching-card {
+      min-width: 112px;
+      max-width: 112px;
+      flex-shrink: 0;
+      background: #23232b;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px #0000000e;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: box-shadow 0.2s;
+
+      img {
+        width: 100%;
+        height: 155px;
+        object-fit: cover;
+        border-radius: 12px 12px 0 0;
+        background: #181820;
+      }
+
+      .watching-text {
+        width: 100%;
+        padding: 7px 7px 5px 7px;
+        display: flex;
+        justify-content: space-between;
+        gap: 6px;
+
+        .watching-left {
+          display: flex;
+          flex-direction: column;
+          .title {
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 2px;
+            color: #fff;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            max-width: 75px;
+          }
+          .year {
+            font-size: 11px;
+            color: #aaa;
+          }
+        }
+        .watching-right {
+          .episodes {
+            font-size: 8px;
+            color: #ff7070;
+            text-align: right;
+            font-weight: 600;
+          }
+        }
+      }
+    }
+  }
+
+  .show-more-btn {
+    margin: 15px auto 0 auto;
+    display: block;
+    width: 90%;
+    background: #23232b;
+    color: #ff7070;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 10px;
+    font-size: 15px;
+    padding: 12px 0 10px 0;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    transition: background 0.13s;
+
+    &:hover {
+      background: #202027;
+    }
+  }
+}
+
+//history_ep
+.watch-history {
+  padding: 18px 8px 32px 8px;
+  background: #18181d;
+  border-radius: 18px;
+  margin-bottom: 20px;
+  color: #fff;
+
+  h2 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    padding-left: 2px;
+  }
+
+  .history-day {
+    margin-bottom: 18px;
+
+    .history-date {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #f8e4aa;
+      padding-left: 2px;
+    }
+
+    .episode-list {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      .episode-card {
+        min-width: 90px;
+        max-width: 110px;
+        border-radius: 10px;
+        overflow: hidden;
+        background: #111;
+        box-shadow: 0 1px 7px #0002;
+        position: relative;
+        margin-right: 2px;
+
+        img {
+          width: 100%;
+          height: 65px;
+          object-fit: cover;
+          border-radius: 10px 10px 0 0;
+          display: block;
+        }
+
+        .episode-overlay {
+          padding: 6px 4px 4px 4px;
+          background: #16161b;
+          border-radius: 0 0 10px 10px;
+          font-size: 12px;
+
+          .anime-title {
+            color: #ffd97a;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 1px;
+          }
+
+          .episode-number {
+            color: #b6b6b6;
+            font-size: 12px;
+            font-weight: 400;
+            margin-top: 2px;
+          }
+        }
+      }
+    }
+  }
+
+  .load-more {
+    margin-top: 8px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 15px;
+    color: #ff7272;
+    cursor: pointer;
+    padding: 8px 0;
+    border-radius: 8px;
+
+    &:active {
+      background: #23232c;
+    }
+  }
+}
+
+//activity
+.recent-activity {
+  margin-top: 20px;
+  background: #18181d;
+  border-radius: 14px;
+  padding: 16px 10px 18px 10px;
+  color: #fff;
+  box-shadow: 0 1px 7px #0001;
+
+  h2 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #fff;
+    padding-left: 2px;
+  }
+
+  .activity-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      padding: 10px 0;
+      border-bottom: 1px solid #23232c;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .icon {
+        font-size: 18px;
+        margin-top: 3px;
+        min-width: 20px;
+        text-align: center;
+      }
+
+      .text {
+        color: #ececec;
+        font-size: 14px;
+        line-height: 1.35;
+        position: relative;
+
+        strong {
+          color: #fff;
+        }
+
+        a {
+          color: #ffdf74;
+          text-decoration: none;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+
+        .time {
+          display: block;
+          font-size: 11px;
+          color: #b4b4b4;
+          margin-top: 3px;
+        }
+      }
+    }
+  }
+}
+
+//favorites
+.favorites-block {
+  margin-top: 22px;
+
+  h2 {
+    font-size: 18px;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 14px;
+    padding-left: 2px;
+  }
+
+  .favorites-grid {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .anime-card {
+    background: #18181d;
+    border-radius: 13px;
+    overflow: hidden;
+    width: 110px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 7px #0002;
+    transition: transform 0.13s;
+
+    &:active {
+      transform: scale(0.98);
+    }
+
+    img {
+      width: 100%;
+      height: 155px;
+      object-fit: cover;
+      border-radius: 13px 13px 0 0;
+      display: block;
+      background: #23232a;
+    }
+
+    .anime-info {
+      padding: 8px 7px 11px 7px;
+
+      h3 {
+        font-size: 14px;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 3px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .meta {
+        font-size: 11px;
+        color: #bababa;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+    }
+  }
+}
+
+//reviews
+.user-reviews-block {
+  margin: 26px 0 18px 0;
+
+  h2 {
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 13px;
+    color: #fff;
+    padding-left: 2px;
+  }
+
+  .reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .review-card {
+    background: #19191d;
+    border-radius: 13px;
+    padding: 13px 11px 11px 11px;
+    color: #eee;
+    box-shadow: 0 1px 6px #0001;
+
+    .anime-header-review {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 6px;
+
+      img {
+        width: 40px;
+        height: 56px;
+        object-fit: cover;
+        border-radius: 7px;
+        background: #262630;
+      }
+
+      .anime-info-review {
+        h3 {
+          font-size: 14px;
+          font-weight: 700;
+          color: #fff;
+          margin: 0;
+        }
+        .rating {
+          font-size: 12px;
+          color: #b3ffbe;
+          margin-top: 2px;
+        }
+      }
+    }
+
+    .review-text {
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 6px;
+      color: #d0d0d0;
+    }
+
+    .timestamp {
+      font-size: 11px;
+      color: #888;
+    }
+  }
+
+  .load-more-reviews {
+    margin-top: 12px;
+    text-align: center;
+    padding: 8px 0;
+    background-color: #191921;
+    color: #fff;
+    font-weight: 600;
+    font-size: 13px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.16s;
+
+    &:hover {
+      background-color: #23232b;
+    }
+    &:active {
+      background-color: #35353a;
+    }
+  }
+}
+
+
+//utils
+.profile-mobile-utils {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+
+  .utils-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #22222b;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 14px 0 14px 20px;
+    box-shadow: 0 2px 8px #0002;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    .icon {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      img {
+        width: 22px;
+        height: 22px;
+        object-fit: contain;
+        opacity: 0.82;
+      }
+    }
+
+    &.logout { color: #ff8a8a; }
+    &.admin { color: #7ac3ff; }
+    &.old-site { color: #ffa95f; }
+    &:active { background: #23232c; }
+    &:hover { background: #282834; }
+  }
+}
+
