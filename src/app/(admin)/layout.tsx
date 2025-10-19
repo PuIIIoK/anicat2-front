@@ -16,7 +16,7 @@ const RootLayout: React.FC<LayoutProps> = ({ children }) => {
   return (
       <html lang="ru">
       <head>
-        <title>Anicat</title>
+        <title>Yumeko | Admin_Panel</title>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>

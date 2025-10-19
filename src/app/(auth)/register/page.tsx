@@ -291,7 +291,7 @@ const RegisterPage: React.FC = () => {
                         ))}
                     </div>
 
-                    <div className="divider">или создать аккаунт AniCat</div>
+                    <div className="divider">или создать аккаунт Yumeko</div>
 
                     <form onSubmit={handleRegister} className="register-form">
                         <div className="input-group">

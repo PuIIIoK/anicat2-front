@@ -312,8 +312,8 @@ const Header: React.FC = () => {
                         <div className="logo">
                             <div className="logo-left">
                                 <Image 
-                                    src="/logo_auth.png" 
-                                    alt="Logo" 
+                                    src="/yumeko_logo_index.png" 
+                                    alt="Yumeko Logo" 
                                     className="logo-img" 
                                     width={150} 
                                     height={80}

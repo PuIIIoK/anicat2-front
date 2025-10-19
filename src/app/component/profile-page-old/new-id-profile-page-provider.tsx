@@ -202,7 +202,7 @@ const ProfileMainInfo: React.FC<ProfileMainInfoProps> = ({ username }) => {
     // Обновляем title, когда реально загрузился userName
     useEffect(() => {
         if (userName && userName !== 'Загрузка...') {
-            document.title = `${userName} | AniCat`;
+            document.title = `${userName} | Yumeko`;
         }
     }, [userName]);
 
@@ -343,10 +343,10 @@ const ProfileMainInfo: React.FC<ProfileMainInfoProps> = ({ username }) => {
     return (
         <>
             <Head>
-                <title>Ваш профиль | AniCat</title>
+                <title>Ваш профиль | Yumeko</title>
                 <meta name="description" content="Ваш профиль, где показаны ваши достижения, награды, роли и личная информация. Управляйте своими коллекциями и настройками аккаунта." />
-                <meta name="keywords" content="AniCat, Профиль, Аниме, Коллекции, Награды, Роли" />
-                <meta property="og:title" content="Ваш профиль | AniCat" />
+                <meta name="keywords" content="Yumeko, Профиль, Аниме, Коллекции, Награды, Роли" />
+                <meta property="og:title" content="Ваш профиль | Yumeko" />
                 <meta property="og:description" content="Ваш профиль, где показаны ваши достижения, награды, роли и личная информация. Управляйте своими коллекциями и настройками аккаунта." />
                 <meta property="og:image" content="https://anicat.fun/logo-cover.jpg" />
                 <meta property="og:type" content="website" />

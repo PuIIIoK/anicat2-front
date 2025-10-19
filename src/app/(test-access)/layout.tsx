@@ -42,7 +42,7 @@ const RootLayout: React.FC<LayoutProps> = ({ children }) => {
     return (
         <html lang="ru">
         <head>
-            <title>Anicat - Твой аниме сайт!</title>
+            <title>Yumeko - Твой аниме сайт!</title>
             <meta charSet="UTF-8" />
             <meta
                 name="viewport"

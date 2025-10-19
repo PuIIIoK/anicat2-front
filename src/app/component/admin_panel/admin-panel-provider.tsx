@@ -97,6 +97,21 @@ const AdminPanelPage = () => {
         checkAdminAccess();
     }, [router]);
 
+    // Обновляем тайтл страницы в зависимости от активной вкладки
+    useEffect(() => {
+        const titles: Record<typeof activeTab, string> = {
+            'anime': 'Редактирование аниме | Yumeko',
+            'users': 'Редактирование пользователей | Yumeko',
+            'categories': 'Редактирование категорий | Yumeko',
+            'apps': 'Просмотр приложений | Yumeko',
+            'logs': 'Просмотр логов | Yumeko',
+            'testing': 'Тестирование | Yumeko',
+            'site-updates': 'Обновления сайта | Yumeko',
+        };
+        
+        document.title = titles[activeTab] || 'Yumeko | Admin_Panel';
+    }, [activeTab]);
+
     const changeTab = (tab: typeof activeTab) => {
         setActiveTab(tab);
         const param = {

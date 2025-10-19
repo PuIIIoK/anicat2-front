@@ -551,7 +551,7 @@ export default function MobileSettings() {
         }
     };
 
-    const title = view === 'group' ? 'Настройки AniCat' : view === 'profile' ? 'Профиль' : 'Аккаунт';
+    const title = view === 'group' ? 'Настройки Yumeko' : view === 'profile' ? 'Профиль' : 'Аккаунт';
 
     const onBack = () => {
         if (view === 'group') {

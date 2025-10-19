@@ -35,8 +35,8 @@
 
   .logo {
     position: relative;
-    width: 200px;          // ширина логотипа
-    height: 40px;          // высота логотипа
+    width: 145px;          // ширина логотипа
+    height: 60px;          // высота логотипа
     display: flex;
     align-items: center;
     justify-content: center;
@@ -50,6 +50,7 @@
       object-fit: contain;     // сохраняет пропорции
       pointer-events: none;    // логотип не перехватывает клики
       user-select: none;       // запрет выделения
+      border-radius: 30%;      // круглая форма
     }
 
 
@@ -663,8 +664,6 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-    height: 50px;
-    width: 50px;
   }
 
   .logo-text {

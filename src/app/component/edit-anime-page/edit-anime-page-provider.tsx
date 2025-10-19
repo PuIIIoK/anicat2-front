@@ -9,7 +9,7 @@ import UploadProgressModal from "../admin_panel/UploadProgressModalAnime";
 import EditSectionNavigation from "./EditSectionNavigation";
 import EditFloatingActionButtons from "./EditFloatingActionButtons";
 import FranchiseChainManager from "../franchise-chains/FranchiseChainManager";
-import { CheckCircle, FileEdit, ImageUp, Edit3, XCircle, RefreshCw, ImagePlus, RotateCcw, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { CheckCircle, FileEdit, ImageUp, Edit3, XCircle, RefreshCw, ImagePlus, RotateCcw, AlertTriangle, CheckCircle2, BarChart3, GitCompare, Clock } from "lucide-react";
 import { AnimeInfo } from "../anime-structure/anime-data-info";
 
 type ScreenshotData = {
@@ -34,6 +34,110 @@ interface AnimeEditData extends AnimeInfo {
 const getTokenFromCookie = () => {
     const match = document.cookie.match(/(?:^|; )token=([^;]*)/);
     return match ? decodeURIComponent(match[1]) : null;
+};
+
+// Компонент статистики изменений
+const EditStatsPanel = ({ originalData, currentData }: any) => {
+    const countChanges = () => {
+        if (!originalData) return { modified: 0, total: 5 };
+        let modified = 0;
+        const fields = ['title', 'description', 'genres', 'type', 'status'];
+        fields.forEach(field => {
+            if (originalData[field] !== currentData[field]) modified++;
+        });
+        return { modified, total: fields.length };
+    };
+    
+    const stats = countChanges();
+    
+    return (
+        <div className="edit-stats-panel">
+            <div className="panel-header">
+                <BarChart3 />
+                <h3>Статистика</h3>
+            </div>
+            <div className="stats-grid">
+                <div className="stat-card">
+                    <Edit3 className="stat-icon" />
+                    <div className="stat-value">{stats.modified}</div>
+                    <div className="stat-label">Изменено</div>
+                </div>
+                <div className="stat-card">
+                    <CheckCircle2 className="stat-icon" />
+                    <div className="stat-value">{stats.total - stats.modified}</div>
+                    <div className="stat-label">Без изменений</div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// Тип для изменений
+type ChangeItem = {
+    field: string;
+    oldValue: string;
+    newValue: string;
+    type: 'added' | 'removed' | 'modified';
+};
+
+// Компонент сравнения изменений
+const ChangesComparisonPanel = ({ originalData, currentData }: any) => {
+    const getChanges = (): ChangeItem[] => {
+        if (!originalData) return [];
+        const changes: ChangeItem[] = [];
+        const fields = {
+            title: 'Название',
+            alttitle: 'Альт. название',
+            description: 'Описание',
+            genres: 'Жанры',
+            type: 'Тип',
+            status: 'Статус',
+            rating: 'Рейтинг',
+            episodeAll: 'Всего эпизодов',
+            currentEpisode: 'Текущий эпизод'
+        };
+        
+        Object.entries(fields).forEach(([key, label]) => {
+            const oldValue = originalData[key];
+            const newValue = currentData[key];
+            if (oldValue !== newValue && newValue !== undefined) {
+                changes.push({
+                    field: label,
+                    oldValue: oldValue || '(пусто)',
+                    newValue: newValue || '(пусто)',
+                    type: !oldValue ? 'added' : !newValue ? 'removed' : 'modified'
+                });
+            }
+        });
+        
+        return changes;
+    };
+    
+    const changes = getChanges();
+    
+    return (
+        <div className="changes-comparison-panel">
+            <div className="panel-header">
+                <GitCompare />
+                <h3>Изменения</h3>
+            </div>
+            <div className="changes-list">
+                {changes.length > 0 ? (
+                    changes.map((change, index) => (
+                        <div key={index} className={`change-item ${change.type}`}>
+                            <div className="change-field">{change.field}</div>
+                            <div className="change-values">
+                                <div className="old-value">{String(change.oldValue).substring(0, 30)}{String(change.oldValue).length > 30 ? '...' : ''}</div>
+                                <div className="new-value">{String(change.newValue).substring(0, 30)}{String(change.newValue).length > 30 ? '...' : ''}</div>
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <div className="no-changes">Изменений пока нет</div>
+                )}
+            </div>
+        </div>
+    );
 };
 
 const EditAnimePage = () => {
@@ -147,6 +251,15 @@ const EditAnimePage = () => {
         } catch (err) {
             console.log('Нет баннера или ошибка загрузки:', err);
             setBannerPreview('');
+        }
+    }, [animeId]);
+
+    // Устанавливаем заголовок страницы
+    useEffect(() => {
+        if (animeId) {
+            document.title = `Редактирование аниме (${animeId}) | Yumeko`;
+        } else {
+            document.title = 'Редактирование аниме | Yumeko';
         }
     }, [animeId]);
 
@@ -549,6 +662,9 @@ const EditAnimePage = () => {
 
             showToast('Аниме успешно обновлено', 'success', <CheckCircle2 size={20} />);
 
+            // Обновляем title мгновенно
+            document.title = 'Yumeko | Admin_Panel';
+
             setTimeout(() => {
                 router.push('/admin_panel');
             }, 1500);
@@ -598,6 +714,9 @@ const EditAnimePage = () => {
         setKeepScreenshotIds(originalKeepScreenshotIds);
 
         showToast('Изменения отменены', 'info', <RotateCcw size={20} />);
+
+        // Обновляем title мгновенно
+        document.title = 'Yumeko | Admin_Panel';
 
         setTimeout(() => {
             router.push('/admin_panel');
@@ -650,7 +769,7 @@ const EditAnimePage = () => {
                 <h1 className="page-title">Редактирование аниме <span className="anime-id">#{animeId}</span></h1>
             </div>
 
-            {/* Основной контент - двухколоночная структура */}
+            {/* Основной контент - трёхколоночная структура */}
             <div className="main-content-layout">
                 
                 {/* Левая колонка - Медиа файлы */}
@@ -681,8 +800,8 @@ const EditAnimePage = () => {
                     </div>
                 </div>
 
-                {/* Правая колонка - Информация */}
-                <div className="right-column">
+                {/* Средняя колонка - Информация */}
+                <div className="middle-column">
                     <AnimeMainInfo
                         title={title}
                         alttitle={alttitle}
@@ -729,6 +848,24 @@ const EditAnimePage = () => {
                         setOpened={setOpened}
                         setCountries={setCountries}
                         setZametka_blocked={setZametka_blocked}
+                    />
+                </div>
+
+                {/* Правая колонка - Дополнительные фичи */}
+                <div className="right-column">
+                    {/* Панель статистики изменений */}
+                    <EditStatsPanel 
+                        originalData={originalData}
+                        currentData={{title, description, genres, type, status}}
+                    />
+                    
+                    {/* Панель сравнения изменений */}
+                    <ChangesComparisonPanel 
+                        originalData={originalData}
+                        currentData={{
+                            title, alttitle, description, genres, type, 
+                            status, rating, episodeAll, currentEpisode
+                        }}
                     />
                 </div>
 

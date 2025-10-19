@@ -71,8 +71,8 @@
   },
   "build": {
     "appId": "com.anicat.desktop",
-    "productName": "AniCat",
-    "copyright": "Copyright © 2025 AniCat",
+    "productName": "Yumeko",
+    "copyright": "Copyright © 2025 Yumeko",
     "files": [
       "dist/**/*",
       "dist-electron/main.js",

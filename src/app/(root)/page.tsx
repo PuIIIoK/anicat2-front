@@ -22,7 +22,7 @@ const CategoryList: React.FC = () => {
 
     // Установка title при заходе на страницу, чтобы точно обновить вкладку браузера
     useEffect(() => {
-        document.title = 'AniCat | Главная Страница';
+        document.title = 'Yumeko | Главная Страница';
         
         // Проверяем сообщение о блокировке доступа к админке
         const adminAccessDenied = sessionStorage.getItem('adminAccessDenied');
@@ -92,12 +92,12 @@ const CategoryList: React.FC = () => {
     return (
         <>
             <Head>
-                <title>AniCat | Главная | Аниме-платформа</title>
+                <title>Yumeko | Главная | Аниме-платформа</title>
                 <meta
                     name="description"
                     content="На данной странице главной вы найдете: Категории, Новые аниме, оцени пользователей, а так-же новости и возможность зайти в свой профиль!"
                 />
-                <meta property="og:title" content="AniCat | Главная | Аниме-платформа" />
+                <meta property="og:title" content="Yumeko | Главная | Аниме-платформа" />
                 <meta
                     property="og:description"
                     content="На данной странице главной вы найдете: Категории, Новые аниме, оцени пользователей, а так-же новости и возможность зайти в свой профиль!"
@@ -105,7 +105,7 @@ const CategoryList: React.FC = () => {
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content="https://anicat.ru/" />
                 <meta property="og:image" content="https://anicat.ru/logo-cover.jpg" />
-                <meta property="og:image:alt" content="AniCat Главная страница" />
+                <meta property="og:image:alt" content="Yumeko Главная страница" />
             </Head>
 
             {adminAccessMessage && (

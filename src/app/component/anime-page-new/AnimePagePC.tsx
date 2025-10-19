@@ -122,7 +122,7 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
     // Устанавливаем title и meta теги через useEffect (всегда вызываем до early return)
     useEffect(() => {
         if (!anime) {
-            document.title = 'AniCat';
+            document.title = 'Yumeko';
             return;
         }
 
@@ -131,13 +131,13 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
         const seasonText = anime.season 
             ? (anime.season.toLowerCase().includes('сезон') ? ` ${anime.season}` : ` ${anime.season}`)
             : (anime.mouthSeason ? ` ${anime.mouthSeason}` : '');
-        const pageTitle = `${anime.title}${seasonText} | AniCat`;
+        const pageTitle = `${anime.title}${seasonText} | Yumeko`;
         
         const pageDescription = [
             `${anime.title}${seasonText}${anime.year ? `, ${anime.year}` : ''}${anime.type ? `, ${anime.type}` : ''}`,
             anime.description || '',
             anime.genres ? `Жанры: ${anime.genres}` : '',
-            'Смотреть на AniCat!'
+            'Смотреть на Yumeko!'
         ].filter(Boolean).join('. ');
 
         const ogTitle = `${anime.title}${seasonText}`;
@@ -145,7 +145,7 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
             `${anime.year || ''} ${anime.type || ''}`.trim(),
             anime.description || '',
             anime.genres ? `Жанры: ${anime.genres}` : '',
-            'Смотреть на AniCat!'
+            'Смотреть на Yumeko!'
         ].filter(Boolean).join('\n');
 
         // Устанавливаем title
@@ -176,7 +176,7 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
         setMetaTag('og:type', 'video.tv_show');
         setMetaTag('og:url', `https://anicat.fun/anime-page/${anime.id}`);
         if (anime.coverUrl) setMetaTag('og:image', anime.coverUrl);
-        setMetaTag('og:site_name', 'AniCat');
+        setMetaTag('og:site_name', 'Yumeko');
         
         // Twitter Card
         const setTwitterTag = (name: string, content: string) => {

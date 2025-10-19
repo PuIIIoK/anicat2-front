@@ -1,7 +1,7 @@
 'use client';
 
 import { useSearchParams, useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AnimeMainInfo from './anime-upload-info';
 import AnimeFileAndEpisode from "./add-upload-upload";
 import { API_SERVER } from "../../../tools/constants";
@@ -10,10 +10,126 @@ import SectionNavigation from "./SectionNavigation";
 import FloatingActionButtons from "./FloatingActionButtons";
 import AddAnimeNotification from "./AddAnimeNotification";
 import FranchiseChainManager from "../franchise-chains/FranchiseChainManager";
-import {CheckCircle, FileEdit, FolderPlus, ImagePlus, ImageUp, UploadCloud, XCircle} from "lucide-react";
+import {CheckCircle, FileEdit, FolderPlus, ImagePlus, ImageUp, UploadCloud, XCircle, Activity, Lightbulb, Keyboard, CheckCircle2} from "lucide-react";
+
 const getTokenFromCookie = () => {
     const match = document.cookie.match(/(?:^|; )token=([^;]*)/);
     return match ? decodeURIComponent(match[1]) : null;
+};
+
+// Компонент панели прогресса заполнения
+const CompletionProgressPanel = ({ title, description, genres, type, status, cover, banner }: any) => {
+    const calculateProgress = () => {
+        const fields = {
+            title: Boolean(title && title.trim()),
+            description: Boolean(description && description.trim()),
+            genres: Boolean(genres && genres.trim()),
+            type: Boolean(type && type.trim()),
+            status: Boolean(status && status.trim()),
+            cover: Boolean(cover),
+            banner: Boolean(banner),
+        };
+        
+        const completed = Object.values(fields).filter(Boolean).length;
+        const total = Object.keys(fields).length;
+        return Math.round((completed / total) * 100);
+    };
+    
+    const progress = calculateProgress();
+    const completed = Math.round((progress / 100) * 7);
+    const pending = 7 - completed;
+    
+    return (
+        <div className="completion-progress-panel">
+            <div className="panel-header">
+                <Activity />
+                <h3>Прогресс заполнения</h3>
+            </div>
+            <div className="progress-circle">
+                <div className="circle-progress" style={{ '--progress': `${progress}%` } as React.CSSProperties}>
+                    <div className="progress-text">{progress}%</div>
+                </div>
+            </div>
+            <div className="progress-stats">
+                <div className="stat-item">
+                    <span className="stat-label">Заполнено</span>
+                    <span className="stat-value completed">{completed}/7</span>
+                </div>
+                <div className="stat-item">
+                    <span className="stat-label">Осталось</span>
+                    <span className="stat-value pending">{pending}</span>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// Компонент подсказок
+const TipsPanel = () => {
+    return (
+        <div className="tips-panel">
+            <div className="panel-header">
+                <Lightbulb />
+                <h3>Советы</h3>
+            </div>
+            <div className="tips-list">
+                <div className="tip-item">
+                    <Lightbulb className="tip-icon" />
+                    <div className="tip-content">
+                        <div className="tip-title">Описание</div>
+                        <p className="tip-text">Добавьте подробное описание для лучшей индексации</p>
+                    </div>
+                </div>
+                <div className="tip-item">
+                    <Lightbulb className="tip-icon" />
+                    <div className="tip-content">
+                        <div className="tip-title">Жанры</div>
+                        <p className="tip-text">Указывайте жанры через запятую</p>
+                    </div>
+                </div>
+                <div className="tip-item">
+                    <Lightbulb className="tip-icon" />
+                    <div className="tip-content">
+                        <div className="tip-title">Медиа</div>
+                        <p className="tip-text">Рекомендуется загружать минимум 3 скриншота</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// Компонент горячих клавиш
+const ShortcutsPanel = () => {
+    return (
+        <div className="shortcuts-panel">
+            <div className="panel-header">
+                <Keyboard />
+                <h3>Горячие клавиши</h3>
+            </div>
+            <div className="shortcuts-list">
+                <div className="shortcut-item">
+                    <span className="shortcut-action">Сохранить</span>
+                    <div className="shortcut-keys">
+                        <span className="key">Ctrl</span>
+                        <span className="key">S</span>
+                    </div>
+                </div>
+                <div className="shortcut-item">
+                    <span className="shortcut-action">Отменить</span>
+                    <div className="shortcut-keys">
+                        <span className="key">Esc</span>
+                    </div>
+                </div>
+                <div className="shortcut-item">
+                    <span className="shortcut-action">Наверх</span>
+                    <div className="shortcut-keys">
+                        <span className="key">Home</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
 };
 const AddAnimePage = () => {
     const searchParams = useSearchParams();
@@ -57,7 +173,14 @@ const AddAnimePage = () => {
     // Ref для функции валидации блокировки
     const [validateBlockingFn, setValidateBlockingFn] = useState<(() => void) | null>(null);
 
-    
+    // Устанавливаем заголовок страницы
+    useEffect(() => {
+        if (animeId) {
+            document.title = `Добавление аниме (${animeId}) | Yumeko`;
+        } else {
+            document.title = 'Добавление аниме | Yumeko';
+        }
+    }, [animeId]);
 
     const handleCoverUpload = async () => {
         const token = getTokenFromCookie();
@@ -192,6 +315,9 @@ const AddAnimePage = () => {
                 message: 'Аниме успешно сохранено'
             });
 
+            // Обновляем title мгновенно
+            document.title = 'Yumeko | Admin_Panel';
+
             setTimeout(() => {
                 router.push('/admin_panel?admin_panel=edit-anime');
             }, 1500);
@@ -271,6 +397,9 @@ const AddAnimePage = () => {
                 message: 'Добавление аниме отменено'
             });
             
+            // Обновляем title мгновенно
+            document.title = 'Yumeko | Admin_Panel';
+            
             setTimeout(() => {
                 router.push('/admin_panel');
             }, 1500);
@@ -305,7 +434,7 @@ const AddAnimePage = () => {
                 <h1 className="page-title">Добавление аниме <span className="anime-id">#{animeId}</span></h1>
             </div>
 
-            {/* Основной контент - двухколоночная структура */}
+            {/* Основной контент - трёхколоночная структура */}
             <div className="main-content-layout">
                 
                 {/* Левая колонка - Медиа файлы */}
@@ -326,8 +455,8 @@ const AddAnimePage = () => {
                     </div>
                 </div>
 
-                {/* Правая колонка - Информация */}
-                <div className="right-column">
+                {/* Средняя колонка - Информация */}
+                <div className="middle-column">
                     <AnimeMainInfo
                         title={title}
                         alttitle={alttitle}
@@ -375,6 +504,26 @@ const AddAnimePage = () => {
                         setCountries={setCountries}
                         setZametka_blocked={setZametka_blocked}
                     />
+                </div>
+
+                {/* Правая колонка - Дополнительные фичи */}
+                <div className="right-column">
+                    {/* Панель прогресса заполнения */}
+                    <CompletionProgressPanel 
+                        title={title}
+                        description={description}
+                        genres={genres}
+                        type={type}
+                        status={status}
+                        cover={cover}
+                        banner={banner}
+                    />
+                    
+                    {/* Советы и подсказки */}
+                    <TipsPanel />
+                    
+                    {/* Горячие клавиши */}
+                    <ShortcutsPanel />
                 </div>
 
             </div>

@@ -9,7 +9,7 @@ const Footer: React.FC = () => {
             <div className="footer-wrapper">
                 {/* Слева — Название и права */}
                 <div className="footer-column left">
-                    <p className="footer-logo">© 2024 - 2025 <strong>AniCat</strong></p>
+                    <p className="footer-logo">© 2024 - 2025 <strong>Yumeko</strong></p>
                     <p className="footer-sub">Все права защищены.</p>
                 </div>
 

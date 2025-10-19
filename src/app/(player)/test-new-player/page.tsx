@@ -94,15 +94,15 @@ function AnimePlayerInner() {
         ? (animeMeta.season.toLowerCase().includes('сезон') ? ` ${animeMeta.season}` : ` ${animeMeta.season}`)
         : '';
     const playerTitle = animeMeta 
-        ? `Смотрит ${animeMeta.title}${seasonText} | AniCat`
-        : 'Плеер | AniCat';
+        ? `Смотрит ${animeMeta.title}${seasonText} | Yumeko`
+        : 'Плеер | Yumeko';
 
     // Устанавливаем title через useEffect
     useEffect(() => {
         document.title = playerTitle;
         
         if (animeMeta) {
-            const description = `Смотреть ${animeMeta.title}${seasonText} онлайн на AniCat`;
+            const description = `Смотреть ${animeMeta.title}${seasonText} онлайн на Yumeko`;
             
             // Meta description
             let metaDescription = document.querySelector('meta[name="description"]');
