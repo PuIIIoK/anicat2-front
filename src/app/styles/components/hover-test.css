@@ -1,0 +1,10 @@
+@charset "UTF-8";
+/* Стили для тестового hover компонента */
+.hover-test-card {
+  position: relative;
+}
+.hover-test-card:hover .anime-hover-card {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateX(0) !important;
+}/*# sourceMappingURL=hover-test.css.map */

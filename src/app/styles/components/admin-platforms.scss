@@ -1,0 +1,41 @@
+.admin-panel-platforms {
+  .admin-panel-platforms-tabs {
+    display: flex; gap: 8px; margin-bottom: 14px;
+    .tab { background:#2a2a2a; border:1px solid #333; color:#ddd; padding:8px 12px; border-radius:8px; cursor:pointer; }
+    .tab.active { background:#ff4d88; border-color:#ff4d88; color:#fff; }
+  }
+
+  .admin-panel-platforms-section {
+    border-radius:10px; padding:14px;
+    margin-left: 20px;
+  }
+  .admin-panel-platforms-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+  .admin-panel-platforms-add { background:#e91e63; color:#fff; padding:8px 12px; border-radius:8px; text-decoration:none; }
+  .admin-panel-platforms-loading { color:#aaa; }
+  .admin-panel-platforms-table { display:flex; flex-direction:column; gap:6px; }
+  .admin-panel-platforms-table .row { display:grid; grid-template-columns: 1fr 1fr 3fr 1fr 0.6fr; gap:10px; background:#222; padding:10px; border-radius:8px; }
+  .admin-panel-platforms-table .row.head { background:#252525; font-weight:600; }
+  .admin-panel-platforms-notes-btn { background:#333; color:#fff; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; }
+  .admin-panel-platforms-notes-btn:hover { background:#444; }
+  .admin-panel-platforms-delete-btn { background:#8b1a1a; color:#fff; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; }
+  .admin-panel-platforms-delete-btn:hover { background:#a32222; }
+
+  /* modal */
+  .admin-panel-platforms-notes-modal { position:fixed; inset:0; background:rgba(0,0,0,.6); display:flex; align-items:center; justify-content:center; z-index:2000; }
+  .admin-panel-platforms-notes-content { width:min(720px, 92vw); max-height:80vh; background:#1b1b1b; border:1px solid #333; border-radius:12px; padding:14px; overflow:auto; }
+  .admin-panel-platforms-notes-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+  .admin-panel-platforms-notes-header h3 { margin:0; color:#ff4d88; }
+  .admin-panel-platforms-notes-header button { background:none; color:#fff; border:none; cursor:pointer; font-size:18px; }
+  .admin-panel-platforms-notes-pre { white-space:pre-wrap; color:#ddd; }
+}
+
+.admin-panel-platforms-subnav {
+  width: 100%;
+  display: flex; flex-direction: column; gap: 6px; padding-left: 10px; margin-top: -6px; margin-bottom: 8px;
+}
+.admin-panel-platforms-subbutton {
+  background: none; border: none; color: #bbb; padding: 6px 8px; text-align: left; border-left: 3px solid transparent; border-radius: 6px; cursor: pointer; width: 90%;
+}
+.admin-panel-platforms-subbutton:hover { background:#252525; color:#fff; }
+
+

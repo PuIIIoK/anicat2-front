@@ -1,0 +1,1031 @@
+// === МИНИМАЛИСТИЧНАЯ МОБИЛЬНАЯ АДМИН ПАНЕЛЬ ===
+
+// Базовые стили для мобильных устройств
+@media (max-width: 768px) {
+  
+  // === ОБЩИЕ КОНТЕЙНЕРЫ ===
+  .admin-panel {
+    .admin-content {
+      padding-bottom: 80px; // Место для нижнего навбара
+      
+      // Убираем лишние эффекты и тени
+      * {
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+      }
+    }
+  }
+
+  // === АДМИН АНИМЕ (МОБИЛЬНАЯ ВЕРСИЯ) ===
+  .admin-anime-container {
+    padding: 0;
+    min-height: calc(100vh - 140px);
+    
+    // Заголовок с количеством
+    .mobile-anime-header {
+      padding: 16px;
+      
+      .anime-count {
+        color: #e5e7eb;
+        font-size: 15px;
+        font-weight: 600;
+        text-align: center;
+        
+        strong {
+          color: #3b82f6;
+        }
+      }
+    }
+    
+    // Поиск и фильтры
+    .mobile-search-section {
+      padding: 12px 16px;
+      
+      .mobile-search-wrapper {
+        position: relative;
+        margin-bottom: 12px;
+        
+        .search-icon {
+          position: absolute;
+          left: 12px;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 16px;
+          height: 16px;
+          opacity: 0.6;
+          z-index: 2;
+        }
+        
+        .mobile-search-input {
+          width: 100%;
+          border: none;
+          border-radius: 8px;
+          padding: 12px 12px 12px 40px;
+          color: #e5e7eb;
+          font-size: 14px;
+          background: transparent;
+          
+          &::placeholder {
+            color: #9ca3af;
+          }
+          
+          &:focus {
+            outline: none;
+          }
+        }
+      }
+      
+      .mobile-filter-wrapper {
+        .mobile-filter-select {
+          width: 100%;
+          background: transparent;
+          border: none;
+          border-radius: 8px;
+          padding: 12px 16px;
+          color: #e5e7eb;
+          font-size: 14px;
+          appearance: none;
+          cursor: pointer;
+          
+          &:focus {
+            outline: none;
+          }
+        }
+      }
+    }
+    
+    // Список аниме
+    .mobile-anime-list {
+      padding: 8px 16px 100px 16px;
+      
+      .mobile-no-anime {
+        text-align: center;
+        padding: 40px 20px;
+        color: #9ca3af;
+        font-size: 14px;
+        
+        p {
+          margin: 0;
+        }
+      }
+      
+      .mobile-anime-card {
+        background: linear-gradient(145deg, #1a1a1a, #1f1f1f);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        padding: 16px;
+        margin-bottom: 12px;
+        position: relative;
+        overflow: hidden;
+        
+        // Тонкий акцент
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 2px;
+          background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+          opacity: 0.7;
+        }
+        
+        .mobile-anime-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          margin-bottom: 12px;
+          
+          .mobile-anime-info {
+            flex: 1;
+            min-width: 0;
+            
+            .mobile-anime-title {
+              color: #f9fafb;
+              font-size: 16px;
+              font-weight: 700;
+              line-height: 1.3;
+              margin: 0 0 6px 0;
+              letter-spacing: -0.01em;
+            }
+            
+            .mobile-anime-meta {
+              display: flex;
+              gap: 12px;
+              
+              .mobile-meta-item {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                color: #9ca3af;
+                font-size: 12px;
+                font-weight: 500;
+                
+                .meta-label {
+                  opacity: 0.7;
+                }
+                
+                .meta-value {
+                  color: #d1d5db;
+                  font-weight: 600;
+                }
+              }
+            }
+          }
+          
+          .mobile-anime-id {
+            background: rgba(59, 130, 246, 0.15);
+            color: #93c5fd;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+          }
+        }
+        
+        .mobile-anime-actions {
+          display: flex;
+          gap: 8px;
+          
+          .mobile-action-btn {
+            flex: 1;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: none;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 36px;
+            
+            &.view {
+              background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
+              color: #10b981;
+              border: 1px solid rgba(16, 185, 129, 0.3);
+              
+              &:active {
+                background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.2));
+                transform: scale(0.98);
+              }
+            }
+            
+            &.edit {
+              background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.1));
+              color: #3b82f6;
+              border: 1px solid rgba(59, 130, 246, 0.3);
+              
+              &:active {
+                background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.2));
+                transform: scale(0.98);
+              }
+            }
+            
+            &.delete {
+              background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1));
+              color: #ef4444;
+              border: 1px solid rgba(239, 68, 68, 0.3);
+              
+              &:active {
+                background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0.2));
+                transform: scale(0.98);
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    // Floating кнопка добавления
+    .mobile-add-anime-btn {
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      border: none;
+      border-radius: 20px;
+      color: white;
+      font-size: 24px;
+      font-weight: 300;
+      cursor: pointer;
+      box-shadow: 
+        0 8px 32px rgba(59, 130, 246, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+      z-index: 999;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      
+      &:active {
+        transform: scale(0.95);
+        box-shadow: 
+          0 4px 16px rgba(59, 130, 246, 0.3),
+          0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+      }
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 
+          0 12px 48px rgba(59, 130, 246, 0.5),
+          0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+      }
+    }
+    
+    // Пагинация сверху после поиска
+    .mobile-pagination-top {
+      margin: 12px 16px;
+      
+      .mobile-pagination-card {
+        border-radius: 8px;
+        padding: 8px 12px;
+        
+        .mobile-pagination-controls {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 4px;
+          
+          .mobile-page-btn {
+            min-width: 28px;
+            height: 28px;
+            background: transparent;
+           border: none;
+            border-radius: 6px;
+            color: #9ca3af;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            &:disabled {
+              opacity: 0.3;
+              cursor: not-allowed;
+            }
+            
+            &.active {
+              color: #3b82f6;
+              font-weight: bold;
+            }
+          }
+        }
+      }
+    }
+    
+    // Старая пагинация внизу (удаляем)
+    .mobile-pagination-wrapper {
+      display: none;
+      
+      .mobile-pagination-card {
+        background: rgba(31, 31, 31, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 12px 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        
+        .mobile-pagination-controls {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 6px;
+          
+          .mobile-page-btn {
+            min-width: 32px;
+            height: 32px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #9ca3af;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            
+            &:disabled {
+              opacity: 0.3;
+              cursor: not-allowed;
+            }
+            
+            &.active {
+              background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+              color: white;
+              border-color: transparent;
+              box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            }
+            
+            &:not(:disabled):not(.active):active {
+              background: rgba(255, 255, 255, 0.1);
+              transform: scale(0.95);
+            }
+          }
+          
+          .mobile-pagination-info {
+            color: #6b7280;
+            font-size: 11px;
+            margin: 0 8px;
+            font-weight: 500;
+          }
+        }
+      }
+    }
+  }
+  
+  // === АДМИН ЛОГИ (МОБИЛЬНАЯ ВЕРСИЯ) ===
+  .admin-logs-container {
+    padding: 8px;
+    
+    .logs-table-container {
+      // Заменяем таблицу на карточки
+      .logs-table {
+        display: none;
+      }
+      
+      .mobile-logs-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        
+        .mobile-log-card {
+          background: #1f1f1f;
+          border: 1px solid #2a2a2a;
+          border-radius: 8px;
+          padding: 12px;
+          
+          .log-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+            
+            .log-id {
+              background: #2a2a2a;
+              color: #9ca3af;
+              padding: 2px 6px;
+              border-radius: 4px;
+              font-size: 11px;
+              font-weight: 600;
+            }
+            
+            .log-time {
+              color: #6b7280;
+              font-size: 11px;
+            }
+          }
+          
+          .log-action {
+            color: #e5e7eb;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 4px;
+          }
+          
+          .log-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            
+            .log-target {
+              color: #9ca3af;
+              font-size: 12px;
+              flex: 1;
+            }
+            
+            .log-user {
+              background: rgba(59, 130, 246, 0.2);
+              color: #3b82f6;
+              padding: 2px 6px;
+              border-radius: 4px;
+              font-size: 11px;
+              font-weight: 500;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  // === АДМИН КАТЕГОРИИ (МОБИЛЬНАЯ ВЕРСИЯ) ===
+  .admin-categories-container {
+    padding: 8px;
+    
+    .mobile-categories-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+      
+      .mobile-category-card {
+        background: #1f1f1f;
+        border: 1px solid #2a2a2a;
+        border-radius: 8px;
+        padding: 12px;
+        
+        .mobile-category-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 8px;
+          
+          .mobile-category-name {
+            color: #e5e7eb;
+            font-size: 14px;
+            font-weight: 600;
+          }
+          
+          .mobile-category-count {
+            background: #2a2a2a;
+            color: #9ca3af;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+          }
+        }
+        
+        .mobile-category-actions {
+          display: flex;
+          gap: 6px;
+          
+          .mobile-action-btn {
+            flex: 1;
+            padding: 6px 8px;
+            border-radius: 6px;
+            border: none;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            
+            &.edit {
+              background: rgba(59, 130, 246, 0.2);
+              color: #3b82f6;
+              
+              &:active {
+                background: rgba(59, 130, 246, 0.3);
+              }
+            }
+            
+            &.delete {
+              background: rgba(239, 68, 68, 0.2);
+              color: #ef4444;
+              
+              &:active {
+                background: rgba(239, 68, 68, 0.3);
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    .mobile-create-category-btn {
+      width: 100%;
+      background: #3b82f6;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      
+      &:active {
+        background: #2563eb;
+        transform: scale(0.98);
+      }
+    }
+  }
+  
+  // === АДМИН ТЕСТИРОВАНИЕ (МОБИЛЬНАЯ ВЕРСИЯ) ===
+  .admin-testing-container {
+    padding: 8px;
+    
+    .mobile-testing-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      
+      .mobile-testing-card {
+        background: #1f1f1f;
+        border: 1px solid #2a2a2a;
+        border-radius: 8px;
+        padding: 12px 16px;
+        text-decoration: none;
+        
+        &:active {
+          background: #2a2a2a;
+          transform: scale(0.98);
+        }
+        
+        .mobile-testing-content {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          
+          .mobile-testing-title {
+            color: #e5e7eb;
+            font-size: 14px;
+            font-weight: 500;
+          }
+          
+          .mobile-testing-arrow {
+            color: #3b82f6;
+            font-size: 16px;
+            font-weight: 600;
+          }
+        }
+      }
+    }
+  }
+  
+  // === АДМИН ПОЛЬЗОВАТЕЛИ (МОБИЛЬНАЯ ВЕРСИЯ) ===
+  .admin-users-container {
+    padding: 8px;
+    
+    .mobile-controls {
+      background: #1f1f1f;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+      border: 1px solid #2a2a2a;
+      
+      .mobile-search-container {
+        position: relative;
+        margin-bottom: 8px;
+        
+        .search-icon {
+          position: absolute;
+          left: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 16px;
+          height: 16px;
+          fill: #666;
+        }
+        
+        .mobile-search-input {
+          width: 100%;
+          background: #2a2a2a;
+          border: 1px solid #3a3a3a;
+          border-radius: 6px;
+          padding: 8px 8px 8px 32px;
+          color: #e5e7eb;
+          font-size: 14px;
+          
+          &::placeholder {
+            color: #9ca3af;
+          }
+        }
+      }
+      
+      .mobile-sort-button {
+        background: #2a2a2a;
+        border: 1px solid #3a3a3a;
+        border-radius: 6px;
+        color: #e5e7eb;
+        padding: 6px 12px;
+        font-size: 12px;
+        cursor: pointer;
+        
+        &:active {
+          background: #3a3a3a;
+        }
+      }
+    }
+    
+    .mobile-users-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 80px; // Место для пагинации
+      
+      .mobile-user-card {
+        background: #1f1f1f;
+        border: 1px solid #2a2a2a;
+        border-radius: 8px;
+        padding: 12px;
+        
+        .mobile-user-header {
+          display: flex;
+          gap: 8px;
+          margin-bottom: 8px;
+          
+          .mobile-avatar-container {
+            position: relative;
+            flex-shrink: 0;
+            
+            .mobile-user-avatar {
+              width: 40px;
+              height: 40px;
+              border-radius: 8px;
+              object-fit: cover;
+              border: 1px solid #2a2a2a;
+            }
+            
+            .mobile-user-avatar-placeholder {
+              width: 40px;
+              height: 40px;
+              border-radius: 8px;
+              background: #2a2a2a;
+              border: 1px solid #3a3a3a;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              color: #e5e7eb;
+              font-size: 16px;
+              font-weight: 600;
+            }
+            
+            .mobile-status-indicators {
+              position: absolute;
+              top: -4px;
+              right: -4px;
+              display: flex;
+              flex-direction: column;
+              gap: 2px;
+              
+              .mobile-status-badge {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                
+                &.banned {
+                  background: #ef4444;
+                }
+                
+                &.muted {
+                  background: #f59e0b;
+                }
+              }
+            }
+          }
+          
+          .mobile-user-info {
+            flex: 1;
+            min-width: 0;
+            
+            .mobile-user-name-container {
+              margin-bottom: 4px;
+              
+              .mobile-display-name {
+                font-size: 14px;
+                font-weight: 600;
+                color: #e5e7eb;
+                margin: 0;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                
+                .mobile-verified-badge {
+                  flex-shrink: 0;
+                  filter: drop-shadow(0 0 2px rgba(29, 161, 242, 0.5));
+                }
+              }
+              
+              .mobile-username-secondary {
+                font-size: 12px;
+                color: #666;
+                margin: 0;
+              }
+            }
+            
+            .mobile-roles {
+              display: flex;
+              gap: 4px;
+              
+              .mobile-role-badge {
+                background: #2a2a2a;
+                color: #9ca3af;
+                padding: 2px 4px;
+                border-radius: 4px;
+                font-size: 10px;
+                font-weight: 600;
+                
+                &.admin {
+                  background: #dc2626;
+                  color: white;
+                }
+                
+                &.moderator {
+                  background: #3b82f6;
+                  color: white;
+                }
+              }
+            }
+          }
+          
+          .mobile-quick-status {
+            flex-shrink: 0;
+            
+            .status-ok {
+              color: #10b981;
+              font-size: 16px;
+            }
+            
+            .status-banned {
+              color: #ef4444;
+              font-size: 16px;
+            }
+            
+            .status-muted {
+              font-size: 14px;
+            }
+          }
+        }
+        
+        .mobile-user-actions {
+          display: flex;
+          gap: 6px;
+          
+          .mobile-action-btn {
+            flex: 1;
+            padding: 6px 8px;
+            border-radius: 6px;
+            border: none;
+            font-size: 11px;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 32px;
+            
+            &.view {
+              background: rgba(16, 185, 129, 0.2);
+              color: #10b981;
+              
+              &:active {
+                background: rgba(16, 185, 129, 0.3);
+              }
+            }
+            
+            &.edit {
+              background: rgba(59, 130, 246, 0.2);
+              color: #3b82f6;
+              
+              &:active {
+                background: rgba(59, 130, 246, 0.3);
+              }
+            }
+            
+            &.delete {
+              background: rgba(239, 68, 68, 0.2);
+              color: #ef4444;
+              
+              &:active {
+                background: rgba(239, 68, 68, 0.3);
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    .mobile-pagination {
+      background: #1f1f1f;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      
+      .mobile-pagination-btn {
+        background: #2a2a2a;
+        border: 1px solid #3a3a3a;
+        border-radius: 6px;
+        color: #e5e7eb;
+        padding: 4px 8px;
+        font-size: 12px;
+        cursor: pointer;
+        min-width: 32px;
+        
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+        
+        &:active:not(:disabled) {
+          background: #3a3a3a;
+        }
+      }
+      
+      .mobile-page-info {
+        color: #9ca3af;
+        font-size: 12px;
+      }
+    }
+  }
+
+  // === АДМИН ПЛАТФОРМЫ (МОБИЛЬНАЯ ВЕРСИЯ) ===
+  .admin-platforms-container {
+    padding: 8px;
+    
+    .mobile-platform-header {
+      background: #1f1f1f;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      h2 {
+        color: #e5e7eb;
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0;
+      }
+      
+      .mobile-add-version-btn {
+        background: #3b82f6;
+        border: none;
+        border-radius: 6px;
+        color: white;
+        padding: 6px 10px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        
+        &:active {
+          background: #2563eb;
+          transform: scale(0.95);
+        }
+      }
+    }
+    
+    .mobile-platforms-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      
+      .mobile-platform-card {
+        background: #1f1f1f;
+        border: 1px solid #2a2a2a;
+        border-radius: 8px;
+        padding: 12px;
+        
+        .mobile-platform-info {
+          .mobile-version-info {
+            margin-bottom: 8px;
+            
+            .mobile-version {
+              display: block;
+              color: #e5e7eb;
+              font-size: 13px;
+              font-weight: 600;
+              margin-bottom: 2px;
+            }
+            
+            .mobile-build {
+              display: block;
+              color: #9ca3af;
+              font-size: 12px;
+            }
+          }
+          
+          .mobile-platform-actions {
+            display: flex;
+            gap: 6px;
+            
+            .mobile-platform-btn {
+              flex: 1;
+              padding: 6px 8px;
+              border-radius: 6px;
+              border: none;
+              font-size: 11px;
+              font-weight: 500;
+              cursor: pointer;
+              text-decoration: none;
+              text-align: center;
+              
+              &.notes {
+                background: rgba(59, 130, 246, 0.2);
+                color: #3b82f6;
+                
+                &:active {
+                  background: rgba(59, 130, 246, 0.3);
+                }
+              }
+              
+              &.download {
+                background: rgba(16, 185, 129, 0.2);
+                color: #10b981;
+                
+                &:active {
+                  background: rgba(16, 185, 129, 0.3);
+                }
+              }
+              
+              &.delete {
+                background: rgba(239, 68, 68, 0.2);
+                color: #ef4444;
+                
+                &:active {
+                  background: rgba(239, 68, 68, 0.3);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // === ОБЩИЕ ЗАГРУЗОЧНЫЕ СОСТОЯНИЯ ===
+  .mobile-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    color: #9ca3af;
+    font-size: 14px;
+  }
+  
+  .mobile-error {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 8px;
+    padding: 12px;
+    margin: 16px 8px;
+    color: #ef4444;
+    font-size: 14px;
+    text-align: center;
+  }
+  
+  // === СКРЫТЬ ДЕСКТОПНЫЕ ЭЛЕМЕНТЫ ===
+  .desktop-only {
+    display: none !important;
+  }
+  
+  .mobile-only {
+    display: block !important;
+  }
+  
+  // Принудительное отображение мобильной версии аниме
+  .mobile-only-admin-anime {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  .mobile-anime-list {
+    display: block !important;
+  }
+  
+  .mobile-anime-card {
+    display: block !important;
+    visibility: visible !important;
+  }
+}

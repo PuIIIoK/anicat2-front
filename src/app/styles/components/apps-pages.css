@@ -1,0 +1,1484 @@
+.android-page {
+  min-height: 100vh;
+  background: #0B0C0F;
+  color: #ffffff;
+  padding-top: 80px;
+}
+.android-page .android-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+.android-page .android-container .hero-section {
+  text-align: center;
+  padding: 4rem 0 6rem;
+}
+.android-page .android-container .hero-section .hero-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+.android-page .android-container .hero-section .hero-content .app-icon-large {
+  margin-bottom: 2rem;
+}
+.android-page .android-container .hero-section .hero-content .app-icon-large svg {
+  transition: transform 0.3s ease;
+}
+.android-page .android-container .hero-section .hero-content .app-icon-large svg:hover {
+  transform: scale(1.05);
+}
+.android-page .android-container .hero-section .hero-content .app-title {
+  font-size: 4rem;
+  font-weight: 900;
+  margin-bottom: 0.5rem;
+  color: #FF8C00;
+  letter-spacing: -2px;
+  text-shadow: 0 0 20px rgba(255, 140, 0, 0.3);
+}
+.android-page .android-container .hero-section .hero-content .app-subtitle {
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: #9CA3AF;
+  margin-bottom: 2rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.android-page .android-container .hero-section .hero-content .app-description {
+  font-size: 1.3rem;
+  line-height: 1.6;
+  color: #D1D5DB;
+  font-weight: 400;
+  max-width: 500px;
+  margin: 0 auto;
+}
+.android-page .android-container .features-section {
+  padding: 4rem 0;
+}
+.android-page .android-container .features-section .section-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 3rem;
+  color: #ffffff;
+}
+.android-page .android-container .features-section .features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+.android-page .android-container .features-section .features-grid .feature-card {
+  background: #1A1D29;
+  border-radius: 12px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  border: 1px solid #2A2E3A;
+}
+.android-page .android-container .features-section .features-grid .feature-card:hover {
+  transform: translateY(-5px);
+  background: #232633;
+  border-color: #FF8C00;
+  box-shadow: 0 10px 30px rgba(255, 140, 0, 0.15);
+}
+.android-page .android-container .features-section .features-grid .feature-card .feature-icon {
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+.android-page .android-container .features-section .features-grid .feature-card .feature-icon svg {
+  transition: transform 0.3s ease;
+}
+.android-page .android-container .features-section .features-grid .feature-card:hover .feature-icon svg {
+  transform: scale(1.1);
+}
+.android-page .android-container .features-section .features-grid .feature-card h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #ffffff;
+}
+.android-page .android-container .features-section .features-grid .feature-card p {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #9CA3AF;
+  font-weight: 400;
+}
+.android-page .android-container .features-section .features-grid .feature-card p .dev-status {
+  color: #FF8C00;
+  font-size: 0.85rem;
+  font-style: italic;
+  display: block;
+  margin-top: 0.5rem;
+}
+.android-page .android-container .download-section {
+  padding: 4rem 0;
+  text-align: center;
+}
+.android-page .android-container .download-section .section-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 3rem;
+  color: #ffffff;
+}
+.android-page .android-container .download-section .download-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+}
+.android-page .android-container .download-section .download-buttons .download-btn {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.2rem 2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  min-width: 220px;
+  position: relative;
+  overflow: hidden;
+}
+.android-page .android-container .download-section .download-buttons .download-btn.google-play {
+  background: #4285F4;
+  color: white;
+}
+.android-page .android-container .download-section .download-buttons .download-btn.google-play:hover {
+  background: #3367d6;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(66, 133, 244, 0.3);
+}
+.android-page .android-container .download-section .download-buttons .download-btn.apk-direct {
+  background: #FF8C00;
+  color: white;
+}
+.android-page .android-container .download-section .download-buttons .download-btn.apk-direct:hover {
+  background: #e57c00;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(255, 140, 0, 0.3);
+}
+.android-page .android-container .download-section .download-buttons .download-btn.apk-direct.downloading {
+  background: #cc7a00;
+  cursor: not-allowed;
+  transform: none;
+}
+.android-page .android-container .download-section .download-buttons .download-btn.apk-direct.downloading:hover {
+  background: #cc7a00;
+  transform: none;
+}
+.android-page .android-container .download-section .download-buttons .download-btn.apk-direct:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+.android-page .android-container .download-section .download-buttons .download-btn.apk-direct:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+.android-page .android-container .download-section .download-buttons .download-btn svg {
+  flex-shrink: 0;
+  z-index: 1;
+}
+.android-page .android-container .download-section .download-buttons .download-btn .btn-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 1;
+}
+.android-page .android-container .download-section .download-buttons .download-btn .btn-content .btn-subtitle {
+  font-size: 0.8rem;
+  opacity: 0.9;
+  font-weight: 400;
+}
+.android-page .android-container .download-section .download-buttons .download-btn .btn-content .btn-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+.android-page .android-container .download-section .download-error {
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+.android-page .android-container .download-section .download-error p {
+  color: #FCA5A5;
+  font-size: 0.9rem;
+  margin: 0;
+  padding-right: 2rem;
+}
+.android-page .android-container .download-section .download-error .error-dismiss {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  color: #FCA5A5;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  line-height: 1;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+.android-page .android-container .download-section .download-error .error-dismiss:hover {
+  background: rgba(220, 38, 38, 0.2);
+}
+.android-page .android-container .download-section .download-info {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.android-page .android-container .download-section .download-info .info-item {
+  padding: 1rem 1.5rem;
+  background: #1A1D29;
+  border-radius: 8px;
+  border: 1px solid #2A2E3A;
+  color: #D1D5DB;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+.android-page .android-container .download-section .download-info .info-item strong {
+  color: #FF8C00;
+  margin-right: 0.5rem;
+}
+.android-page .android-container .back-section {
+  padding: 2rem 0;
+  text-align: center;
+}
+.android-page .android-container .back-section .back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #9CA3AF;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.8rem 1.5rem;
+  border: 1px solid #2A2E3A;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  background: #1A1D29;
+}
+.android-page .android-container .back-section .back-link:hover {
+  color: #FF8C00;
+  border-color: #FF8C00;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 140, 0, 0.15);
+}
+.android-page .android-container .back-section .back-link svg {
+  transition: transform 0.3s ease;
+}
+.android-page .android-container .back-section .back-link:hover svg {
+  transform: translateX(-3px);
+}
+
+.iphone-page {
+  min-height: 100vh;
+  background: #0B0C0F;
+  color: #ffffff;
+  padding-top: 80px;
+}
+.iphone-page .iphone-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+.iphone-page .iphone-container .hero-section {
+  text-align: center;
+  padding: 4rem 0 6rem;
+}
+.iphone-page .iphone-container .hero-section .hero-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+.iphone-page .iphone-container .hero-section .hero-content .app-icon-large {
+  margin-bottom: 2rem;
+}
+.iphone-page .iphone-container .hero-section .hero-content .app-icon-large svg {
+  transition: transform 0.3s ease;
+}
+.iphone-page .iphone-container .hero-section .hero-content .app-icon-large svg:hover {
+  transform: scale(1.05);
+}
+.iphone-page .iphone-container .hero-section .hero-content .app-title {
+  font-size: 4rem;
+  font-weight: 900;
+  margin-bottom: 0.5rem;
+  color: #FF8C00;
+  letter-spacing: -2px;
+  text-shadow: 0 0 20px rgba(255, 140, 0, 0.3);
+}
+.iphone-page .iphone-container .hero-section .hero-content .app-subtitle {
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: #9CA3AF;
+  margin-bottom: 2rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.iphone-page .iphone-container .hero-section .hero-content .status-badge {
+  display: inline-block;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #F87171;
+  padding: 0.5rem 1.5rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.iphone-page .iphone-container .explanation-section {
+  padding: 3rem 0;
+  text-align: center;
+}
+.iphone-page .iphone-container .explanation-section .section-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 2rem;
+  color: #ffffff;
+}
+.iphone-page .iphone-container .explanation-section .explanation-content {
+  max-width: 700px;
+  margin: 0 auto;
+}
+.iphone-page .iphone-container .explanation-section .explanation-content .main-message {
+  font-size: 1.2rem;
+  line-height: 1.7;
+  color: #D1D5DB;
+  margin-bottom: 1.5rem;
+  background: #1A1D29;
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid #2A2E3A;
+}
+.iphone-page .iphone-container .explanation-section .explanation-content .apology {
+  font-size: 1.1rem;
+  color: #9CA3AF;
+  font-style: italic;
+}
+.iphone-page .iphone-container .reasons-section {
+  padding: 4rem 0;
+}
+.iphone-page .iphone-container .reasons-section .section-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 3rem;
+  color: #ffffff;
+}
+.iphone-page .iphone-container .reasons-section .reasons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+.iphone-page .iphone-container .reasons-section .reasons-grid .reason-card {
+  background: #1A1D29;
+  border-radius: 12px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  border: 1px solid #2A2E3A;
+}
+.iphone-page .iphone-container .reasons-section .reasons-grid .reason-card:hover {
+  transform: translateY(-5px);
+  background: #232633;
+  border-color: #FF8C00;
+  box-shadow: 0 10px 30px rgba(255, 140, 0, 0.15);
+}
+.iphone-page .iphone-container .reasons-section .reasons-grid .reason-card .reason-icon {
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+.iphone-page .iphone-container .reasons-section .reasons-grid .reason-card .reason-icon svg {
+  transition: transform 0.3s ease;
+}
+.iphone-page .iphone-container .reasons-section .reasons-grid .reason-card:hover .reason-icon svg {
+  transform: scale(1.1);
+}
+.iphone-page .iphone-container .reasons-section .reasons-grid .reason-card h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #ffffff;
+}
+.iphone-page .iphone-container .reasons-section .reasons-grid .reason-card p {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #9CA3AF;
+  font-weight: 400;
+}
+.iphone-page .iphone-container .alternative-section {
+  padding: 4rem 0;
+}
+.iphone-page .iphone-container .alternative-section .section-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 3rem;
+  color: #ffffff;
+}
+.iphone-page .iphone-container .alternative-section .alternative-card {
+  background: #1A1D29;
+  border-radius: 12px;
+  padding: 2.5rem;
+  border: 1px solid #2A2E3A;
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 2rem;
+}
+.iphone-page .iphone-container .alternative-section .alternative-card .alt-icon {
+  flex-shrink: 0;
+  background: rgba(255, 140, 0, 0.1);
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 140, 0, 0.3);
+}
+.iphone-page .iphone-container .alternative-section .alternative-card .alt-content {
+  flex: 1;
+}
+.iphone-page .iphone-container .alternative-section .alternative-card .alt-content h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #FF8C00;
+}
+.iphone-page .iphone-container .alternative-section .alternative-card .alt-content p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #D1D5DB;
+  margin-bottom: 2rem;
+}
+.iphone-page .iphone-container .alternative-section .alternative-card .alt-content .instruction {
+  background: rgba(255, 140, 0, 0.05);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 140, 0, 0.2);
+}
+.iphone-page .iphone-container .alternative-section .alternative-card .alt-content .instruction strong {
+  color: #FF8C00;
+  display: block;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+.iphone-page .iphone-container .alternative-section .alternative-card .alt-content .instruction ol {
+  list-style: none;
+  counter-reset: step-counter;
+}
+.iphone-page .iphone-container .alternative-section .alternative-card .alt-content .instruction ol li {
+  counter-increment: step-counter;
+  position: relative;
+  padding-left: 2rem;
+  margin-bottom: 0.5rem;
+  color: #D1D5DB;
+}
+.iphone-page .iphone-container .alternative-section .alternative-card .alt-content .instruction ol li::before {
+  content: counter(step-counter);
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #FF8C00;
+  color: #0B0C0F;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.iphone-page .iphone-container .future-section {
+  padding: 3rem 0;
+  text-align: center;
+}
+.iphone-page .iphone-container .future-section .section-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 2rem;
+  color: #ffffff;
+}
+.iphone-page .iphone-container .future-section p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: #9CA3AF;
+  max-width: 600px;
+  margin: 0 auto;
+  background: #1A1D29;
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid #2A2E3A;
+}
+.iphone-page .iphone-container .back-section {
+  padding: 2rem 0;
+  text-align: center;
+}
+.iphone-page .iphone-container .back-section .back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #9CA3AF;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.8rem 1.5rem;
+  border: 1px solid #2A2E3A;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  background: #1A1D29;
+}
+.iphone-page .iphone-container .back-section .back-link:hover {
+  color: #FF8C00;
+  border-color: #FF8C00;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 140, 0, 0.15);
+}
+.iphone-page .iphone-container .back-section .back-link svg {
+  transition: transform 0.3s ease;
+}
+.iphone-page .iphone-container .back-section .back-link:hover svg {
+  transform: translateX(-3px);
+}
+
+.pc-page {
+  min-height: 100vh;
+  background: #0B0C0F;
+  color: #ffffff;
+  padding-top: 80px;
+}
+.pc-page .pc-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+.pc-page .pc-container .hero-section {
+  text-align: center;
+  padding: 4rem 0 6rem;
+}
+.pc-page .pc-container .hero-section .hero-content {
+  max-width: 700px;
+  margin: 0 auto;
+}
+.pc-page .pc-container .hero-section .hero-content .app-icon-large {
+  margin-bottom: 2rem;
+}
+.pc-page .pc-container .hero-section .hero-content .app-icon-large svg {
+  transition: transform 0.3s ease;
+}
+.pc-page .pc-container .hero-section .hero-content .app-icon-large svg:hover {
+  transform: scale(1.05);
+}
+.pc-page .pc-container .hero-section .hero-content .app-title {
+  font-size: 4rem;
+  font-weight: 900;
+  margin-bottom: 0.5rem;
+  color: #FF8C00;
+  letter-spacing: -2px;
+  text-shadow: 0 0 20px rgba(255, 140, 0, 0.3);
+}
+.pc-page .pc-container .hero-section .hero-content .app-subtitle {
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: #9CA3AF;
+  margin-bottom: 2rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.pc-page .pc-container .hero-section .hero-content .status-badge {
+  display: inline-block;
+  padding: 0.5rem 1.5rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 2rem;
+}
+.pc-page .pc-container .hero-section .hero-content .status-badge.coming-soon {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #4ADE80;
+}
+.pc-page .pc-container .hero-section .hero-content .app-description {
+  font-size: 1.3rem;
+  line-height: 1.6;
+  color: #D1D5DB;
+  font-weight: 400;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.pc-page .pc-container .features-section {
+  padding: 4rem 0;
+}
+.pc-page .pc-container .features-section .section-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 3rem;
+  color: #ffffff;
+}
+.pc-page .pc-container .features-section .features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+.pc-page .pc-container .features-section .features-grid .feature-card {
+  background: #1A1D29;
+  border-radius: 12px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  border: 1px solid #2A2E3A;
+}
+.pc-page .pc-container .features-section .features-grid .feature-card:hover {
+  transform: translateY(-5px);
+  background: #232633;
+  border-color: #FF8C00;
+  box-shadow: 0 10px 30px rgba(255, 140, 0, 0.15);
+}
+.pc-page .pc-container .features-section .features-grid .feature-card .feature-icon {
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+.pc-page .pc-container .features-section .features-grid .feature-card .feature-icon svg {
+  transition: transform 0.3s ease;
+}
+.pc-page .pc-container .features-section .features-grid .feature-card:hover .feature-icon svg {
+  transform: scale(1.1);
+}
+.pc-page .pc-container .features-section .features-grid .feature-card h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #ffffff;
+}
+.pc-page .pc-container .features-section .features-grid .feature-card p {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #9CA3AF;
+  font-weight: 400;
+}
+.pc-page .pc-container .warning-section {
+  padding: 4rem 0;
+}
+.pc-page .pc-container .warning-section .warning-card {
+  background: rgba(239, 68, 68, 0.05);
+  border: 2px solid rgba(239, 68, 68, 0.2);
+  border-radius: 16px;
+  padding: 2.5rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.pc-page .pc-container .warning-section .warning-card .warning-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.pc-page .pc-container .warning-section .warning-card .warning-header .warning-icon {
+  font-size: 2rem;
+}
+.pc-page .pc-container .warning-section .warning-card .warning-header h2 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #F87171;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.pc-page .pc-container .warning-section .warning-card .warning-content .warning-main {
+  font-size: 1.2rem;
+  line-height: 1.7;
+  color: #FCA5A5;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+.pc-page .pc-container .warning-section .warning-card .warning-content .warning-main strong {
+  color: #EF4444;
+  font-weight: 800;
+}
+.pc-page .pc-container .warning-section .warning-card .warning-content .warning-note {
+  font-size: 1rem;
+  color: #F9A8A8;
+  text-align: center;
+  font-style: italic;
+  background: rgba(239, 68, 68, 0.05);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(239, 68, 68, 0.1);
+}
+.pc-page .pc-container .download-section {
+  padding: 4rem 0;
+  text-align: center;
+}
+.pc-page .pc-container .download-section .section-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 3rem;
+  color: #ffffff;
+}
+.pc-page .pc-container .download-section .download-buttons {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 3rem;
+}
+.pc-page .pc-container .download-section .download-buttons .download-btn {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.2rem 2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  min-width: 280px;
+  position: relative;
+  overflow: hidden;
+}
+.pc-page .pc-container .download-section .download-buttons .download-btn.pc-download {
+  background: #FF8C00;
+  color: white;
+}
+.pc-page .pc-container .download-section .download-buttons .download-btn.pc-download:hover {
+  background: #e57c00;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(255, 140, 0, 0.3);
+}
+.pc-page .pc-container .download-section .download-buttons .download-btn.pc-download.downloading {
+  background: #cc7a00;
+  cursor: not-allowed;
+  transform: none;
+}
+.pc-page .pc-container .download-section .download-buttons .download-btn.pc-download.downloading:hover {
+  background: #cc7a00;
+  transform: none;
+}
+.pc-page .pc-container .download-section .download-buttons .download-btn.pc-download:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+.pc-page .pc-container .download-section .download-buttons .download-btn.pc-download:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+.pc-page .pc-container .download-section .download-buttons .download-btn svg {
+  flex-shrink: 0;
+  z-index: 1;
+}
+.pc-page .pc-container .download-section .download-buttons .download-btn .btn-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 1;
+}
+.pc-page .pc-container .download-section .download-buttons .download-btn .btn-content .btn-subtitle {
+  font-size: 0.8rem;
+  opacity: 0.9;
+  font-weight: 400;
+}
+.pc-page .pc-container .download-section .download-buttons .download-btn .btn-content .btn-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+.pc-page .pc-container .download-section .download-error {
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.pc-page .pc-container .download-section .download-error p {
+  color: #FCA5A5;
+  font-size: 0.9rem;
+  margin: 0;
+  padding-right: 2rem;
+}
+.pc-page .pc-container .download-section .download-error .error-dismiss {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  color: #FCA5A5;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  line-height: 1;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+.pc-page .pc-container .download-section .download-error .error-dismiss:hover {
+  background: rgba(220, 38, 38, 0.2);
+}
+.pc-page .pc-container .download-section .download-info {
+  display: flex;
+  justify-content: center;
+}
+.pc-page .pc-container .download-section .download-info .info-item {
+  padding: 1rem 1.5rem;
+  background: #1A1D29;
+  border-radius: 8px;
+  border: 1px solid #2A2E3A;
+  color: #D1D5DB;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+.pc-page .pc-container .download-section .download-info .info-item strong {
+  color: #FF8C00;
+  margin-right: 0.5rem;
+}
+.pc-page .pc-container .closing-section {
+  padding: 2rem 0;
+  text-align: center;
+}
+.pc-page .pc-container .closing-section .closing-message {
+  font-size: 1.3rem;
+  color: #4ADE80;
+  font-weight: 500;
+  background: rgba(34, 197, 94, 0.1);
+  padding: 1.5rem 2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  display: inline-block;
+}
+.pc-page .pc-container .back-section {
+  padding: 2rem 0;
+  text-align: center;
+}
+.pc-page .pc-container .back-section .back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #9CA3AF;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.8rem 1.5rem;
+  border: 1px solid #2A2E3A;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  background: #1A1D29;
+}
+.pc-page .pc-container .back-section .back-link:hover {
+  color: #FF8C00;
+  border-color: #FF8C00;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 140, 0, 0.15);
+}
+.pc-page .pc-container .back-section .back-link svg {
+  transition: transform 0.3s ease;
+}
+.pc-page .pc-container .back-section .back-link:hover svg {
+  transform: translateX(-3px);
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+.apps-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0e0e14 0%, #1a1a2e 100%);
+  color: #ffffff;
+  padding-top: 80px;
+}
+.apps-page .apps-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+.apps-page .apps-container .apps-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 3rem;
+  background: linear-gradient(45deg, var(--primary-color), #ff6b35);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 4px 15px rgba(255, 165, 0, 0.3);
+}
+.apps-page .apps-container .app-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+  margin-bottom: 3rem;
+}
+.apps-page .apps-container .app-info .app-description h2 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #cccccc;
+}
+.apps-page .apps-container .app-info .app-description p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #bbbbbb;
+  margin-bottom: 2rem;
+}
+.apps-page .apps-container .app-info .app-description .features h3 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+}
+.apps-page .apps-container .app-info .app-description .features ul {
+  list-style: none;
+  padding: 0;
+}
+.apps-page .apps-container .app-info .app-description .features ul li {
+  font-size: 1rem;
+  margin-bottom: 0.8rem;
+  padding: 0.5rem 0;
+  color: #cccccc;
+  transition: color 0.3s ease;
+}
+.apps-page .apps-container .app-info .app-description .features ul li:hover {
+  color: var(--primary-color);
+}
+.apps-page .apps-container .app-info .download-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.apps-page .apps-container .app-info .download-section .app-icon {
+  margin-bottom: 2rem;
+}
+.apps-page .apps-container .app-info .download-section .app-icon .phone-mockup,
+.apps-page .apps-container .app-info .download-section .app-icon .desktop-mockup {
+  font-size: 4rem;
+  background: linear-gradient(145deg, #1f1f1f, #2e2e2e);
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s ease;
+}
+.apps-page .apps-container .app-info .download-section .app-icon .phone-mockup:hover,
+.apps-page .apps-container .app-info .download-section .app-icon .desktop-mockup:hover {
+  transform: scale(1.05);
+}
+.apps-page .apps-container .app-info .download-section .download-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.apps-page .apps-container .app-info .download-section .download-buttons .download-btn {
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  display: inline-block;
+  min-width: 200px;
+}
+.apps-page .apps-container .app-info .download-section .download-buttons .download-btn.google-play {
+  background: linear-gradient(135deg, #4285F4, #34A853);
+  color: white;
+}
+.apps-page .apps-container .app-info .download-section .download-buttons .download-btn.google-play:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(66, 133, 244, 0.4);
+}
+.apps-page .apps-container .app-info .download-section .download-buttons .download-btn.app-store {
+  background: linear-gradient(135deg, #000000, #333333);
+  color: white;
+}
+.apps-page .apps-container .app-info .download-section .download-buttons .download-btn.app-store:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+.apps-page .apps-container .app-info .download-section .download-buttons .download-btn.apk-download, .apps-page .apps-container .app-info .download-section .download-buttons .download-btn.testflight, .apps-page .apps-container .app-info .download-section .download-buttons .download-btn.windows, .apps-page .apps-container .app-info .download-section .download-buttons .download-btn.macos, .apps-page .apps-container .app-info .download-section .download-buttons .download-btn.linux {
+  background: linear-gradient(135deg, var(--primary-color), #ff6b35);
+  color: white;
+}
+.apps-page .apps-container .app-info .download-section .download-buttons .download-btn.apk-download:hover, .apps-page .apps-container .app-info .download-section .download-buttons .download-btn.testflight:hover, .apps-page .apps-container .app-info .download-section .download-buttons .download-btn.windows:hover, .apps-page .apps-container .app-info .download-section .download-buttons .download-btn.macos:hover, .apps-page .apps-container .app-info .download-section .download-buttons .download-btn.linux:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 165, 0, 0.4);
+}
+.apps-page .apps-container .app-info .download-section .system-requirements {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1.5rem;
+  border-radius: 12px;
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.apps-page .apps-container .app-info .download-section .system-requirements h4 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+  color: var(--primary-color);
+}
+.apps-page .apps-container .app-info .download-section .system-requirements p {
+  font-size: 0.9rem;
+  color: #cccccc;
+  margin-bottom: 0.5rem;
+}
+.apps-page .apps-container .app-info .download-section .system-requirements p:last-child {
+  margin-bottom: 0;
+}
+.apps-page .apps-container .app-info .download-section .system-requirements .requirements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+.apps-page .apps-container .app-info .download-section .system-requirements .requirements-grid div strong {
+  display: block;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+.apps-page .apps-container .back-link {
+  text-align: center;
+}
+.apps-page .apps-container .back-link a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 500;
+  padding: 0.8rem 1.5rem;
+  border: 2px solid var(--primary-color);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+.apps-page .apps-container .back-link a:hover {
+  background: var(--primary-color);
+  color: #000000;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 165, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+  .android-page .android-container {
+    padding: 1rem;
+  }
+  .android-page .android-container .hero-section {
+    padding: 2rem 0 4rem;
+  }
+  .android-page .android-container .hero-section .hero-content .app-icon-large svg {
+    width: 80px;
+    height: 80px;
+  }
+  .android-page .android-container .hero-section .hero-content .app-title {
+    font-size: 2.5rem;
+  }
+  .android-page .android-container .hero-section .hero-content .app-subtitle {
+    font-size: 1.2rem;
+  }
+  .android-page .android-container .hero-section .hero-content .app-description {
+    font-size: 1.1rem;
+  }
+  .android-page .android-container .features-section {
+    padding: 3rem 0;
+  }
+  .android-page .android-container .features-section .section-title {
+    font-size: 2rem;
+  }
+  .android-page .android-container .features-section .features-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .android-page .android-container .features-section .features-grid .feature-card {
+    padding: 1.5rem 1rem;
+  }
+  .android-page .android-container .features-section .features-grid .feature-card h3 {
+    font-size: 1.1rem;
+  }
+  .android-page .android-container .features-section .features-grid .feature-card p {
+    font-size: 0.9rem;
+  }
+  .android-page .android-container .features-section .features-grid .feature-card p .dev-status {
+    font-size: 0.8rem;
+  }
+  .android-page .android-container .download-section {
+    padding: 3rem 0;
+  }
+  .android-page .android-container .download-section .section-title {
+    font-size: 2rem;
+  }
+  .android-page .android-container .download-section .download-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  .android-page .android-container .download-section .download-buttons .download-btn {
+    min-width: 280px;
+  }
+  .android-page .android-container .download-section .download-info {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  .iphone-page .iphone-container {
+    padding: 1rem;
+  }
+  .iphone-page .iphone-container .hero-section {
+    padding: 2rem 0 4rem;
+  }
+  .iphone-page .iphone-container .hero-section .hero-content .app-icon-large svg {
+    width: 80px;
+    height: 80px;
+  }
+  .iphone-page .iphone-container .hero-section .hero-content .app-title {
+    font-size: 2.5rem;
+  }
+  .iphone-page .iphone-container .hero-section .hero-content .app-subtitle {
+    font-size: 1.2rem;
+  }
+  .iphone-page .iphone-container .hero-section .hero-content .status-badge {
+    font-size: 0.8rem;
+    padding: 0.4rem 1.2rem;
+  }
+  .iphone-page .iphone-container .explanation-section {
+    padding: 2rem 0;
+  }
+  .iphone-page .iphone-container .explanation-section .section-title {
+    font-size: 2rem;
+  }
+  .iphone-page .iphone-container .explanation-section .explanation-content .main-message {
+    font-size: 1.1rem;
+    padding: 1.5rem;
+  }
+  .iphone-page .iphone-container .explanation-section .explanation-content .apology {
+    font-size: 1rem;
+  }
+  .iphone-page .iphone-container .reasons-section {
+    padding: 3rem 0;
+  }
+  .iphone-page .iphone-container .reasons-section .section-title {
+    font-size: 2rem;
+  }
+  .iphone-page .iphone-container .reasons-section .reasons-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .iphone-page .iphone-container .reasons-section .reasons-grid .reason-card {
+    padding: 1.5rem 1rem;
+  }
+  .iphone-page .iphone-container .reasons-section .reasons-grid .reason-card h3 {
+    font-size: 1.1rem;
+  }
+  .iphone-page .iphone-container .reasons-section .reasons-grid .reason-card p {
+    font-size: 0.9rem;
+  }
+  .iphone-page .iphone-container .alternative-section {
+    padding: 3rem 0;
+  }
+  .iphone-page .iphone-container .alternative-section .section-title {
+    font-size: 2rem;
+  }
+  .iphone-page .iphone-container .alternative-section .alternative-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 2rem;
+  }
+  .iphone-page .iphone-container .alternative-section .alternative-card .alt-icon {
+    align-self: center;
+    margin-bottom: 1rem;
+  }
+  .iphone-page .iphone-container .alternative-section .alternative-card .alt-content h3 {
+    font-size: 1.3rem;
+  }
+  .iphone-page .iphone-container .alternative-section .alternative-card .alt-content p {
+    font-size: 1rem;
+  }
+  .iphone-page .iphone-container .alternative-section .alternative-card .alt-content .instruction {
+    padding: 1rem;
+  }
+  .iphone-page .iphone-container .alternative-section .alternative-card .alt-content .instruction strong {
+    font-size: 1rem;
+  }
+  .iphone-page .iphone-container .future-section {
+    padding: 2rem 0;
+  }
+  .iphone-page .iphone-container .future-section .section-title {
+    font-size: 2rem;
+  }
+  .iphone-page .iphone-container .future-section p {
+    font-size: 1.1rem;
+    padding: 1.5rem;
+  }
+  .apps-page .apps-container {
+    padding: 1rem;
+  }
+  .apps-page .apps-container .apps-title {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+  .apps-page .apps-container .app-info {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .apps-page .apps-container .app-info .app-description h2 {
+    font-size: 1.5rem;
+  }
+  .apps-page .apps-container .app-info .app-description p {
+    font-size: 1rem;
+  }
+  .apps-page .apps-container .app-info .app-description .features h3 {
+    font-size: 1.2rem;
+  }
+  .apps-page .apps-container .app-info .app-description .features ul li {
+    font-size: 0.9rem;
+  }
+  .apps-page .apps-container .app-info .download-section .app-icon .phone-mockup,
+  .apps-page .apps-container .app-info .download-section .app-icon .desktop-mockup {
+    font-size: 3rem;
+    padding: 1.5rem;
+  }
+  .apps-page .apps-container .app-info .download-section .download-buttons .download-btn {
+    min-width: 180px;
+    font-size: 0.9rem;
+    padding: 0.8rem 1.5rem;
+  }
+  .apps-page .apps-container .app-info .download-section .system-requirements {
+    padding: 1rem;
+  }
+  .apps-page .apps-container .app-info .download-section .system-requirements .requirements-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 480px) {
+  .android-page .android-container .hero-section {
+    padding: 1.5rem 0 3rem;
+  }
+  .android-page .android-container .hero-section .hero-content .app-icon-large svg {
+    width: 60px;
+    height: 60px;
+  }
+  .android-page .android-container .hero-section .hero-content .app-title {
+    font-size: 2rem;
+  }
+  .android-page .android-container .hero-section .hero-content .app-subtitle {
+    font-size: 1rem;
+    letter-spacing: 1px;
+  }
+  .android-page .android-container .hero-section .hero-content .app-description {
+    font-size: 1rem;
+  }
+  .android-page .android-container .features-section {
+    padding: 2rem 0;
+  }
+  .android-page .android-container .features-section .section-title {
+    font-size: 1.8rem;
+  }
+  .android-page .android-container .features-section .features-grid .feature-card {
+    padding: 1.25rem 1rem;
+  }
+  .android-page .android-container .download-section {
+    padding: 2rem 0;
+  }
+  .android-page .android-container .download-section .section-title {
+    font-size: 1.8rem;
+  }
+  .android-page .android-container .download-section .download-buttons .download-btn {
+    min-width: 250px;
+    padding: 1rem 1.5rem;
+  }
+  .android-page .android-container .download-section .download-buttons .download-btn .btn-content .btn-subtitle {
+    font-size: 0.7rem;
+  }
+  .android-page .android-container .download-section .download-buttons .download-btn .btn-content .btn-title {
+    font-size: 1rem;
+  }
+  .iphone-page .iphone-container .hero-section {
+    padding: 1.5rem 0 3rem;
+  }
+  .iphone-page .iphone-container .hero-section .hero-content .app-icon-large svg {
+    width: 60px;
+    height: 60px;
+  }
+  .iphone-page .iphone-container .hero-section .hero-content .app-title {
+    font-size: 2rem;
+  }
+  .iphone-page .iphone-container .hero-section .hero-content .app-subtitle {
+    font-size: 1rem;
+    letter-spacing: 1px;
+  }
+  .iphone-page .iphone-container .hero-section .hero-content .status-badge {
+    font-size: 0.75rem;
+    padding: 0.3rem 1rem;
+  }
+  .iphone-page .iphone-container .explanation-section {
+    padding: 1.5rem 0;
+  }
+  .iphone-page .iphone-container .explanation-section .section-title {
+    font-size: 1.8rem;
+  }
+  .iphone-page .iphone-container .explanation-section .explanation-content .main-message {
+    font-size: 1rem;
+    padding: 1.2rem;
+  }
+  .iphone-page .iphone-container .explanation-section .explanation-content .apology {
+    font-size: 0.9rem;
+  }
+  .iphone-page .iphone-container .reasons-section {
+    padding: 2rem 0;
+  }
+  .iphone-page .iphone-container .reasons-section .section-title {
+    font-size: 1.8rem;
+  }
+  .iphone-page .iphone-container .reasons-section .reasons-grid .reason-card {
+    padding: 1.2rem 0.8rem;
+  }
+  .iphone-page .iphone-container .reasons-section .reasons-grid .reason-card h3 {
+    font-size: 1rem;
+  }
+  .iphone-page .iphone-container .reasons-section .reasons-grid .reason-card p {
+    font-size: 0.85rem;
+  }
+  .iphone-page .iphone-container .alternative-section {
+    padding: 2rem 0;
+  }
+  .iphone-page .iphone-container .alternative-section .section-title {
+    font-size: 1.8rem;
+  }
+  .iphone-page .iphone-container .alternative-section .alternative-card {
+    padding: 1.5rem;
+  }
+  .iphone-page .iphone-container .alternative-section .alternative-card .alt-content h3 {
+    font-size: 1.2rem;
+  }
+  .iphone-page .iphone-container .alternative-section .alternative-card .alt-content p {
+    font-size: 0.95rem;
+  }
+  .iphone-page .iphone-container .alternative-section .alternative-card .alt-content .instruction {
+    padding: 0.8rem;
+  }
+  .iphone-page .iphone-container .alternative-section .alternative-card .alt-content .instruction strong {
+    font-size: 0.95rem;
+  }
+  .iphone-page .iphone-container .alternative-section .alternative-card .alt-content .instruction ol li {
+    font-size: 0.85rem;
+  }
+  .iphone-page .iphone-container .future-section {
+    padding: 1.5rem 0;
+  }
+  .iphone-page .iphone-container .future-section .section-title {
+    font-size: 1.8rem;
+  }
+  .iphone-page .iphone-container .future-section p {
+    font-size: 1rem;
+    padding: 1.2rem;
+  }
+  .pc-page .pc-container .hero-section {
+    padding: 1.5rem 0 3rem;
+  }
+  .pc-page .pc-container .hero-section .hero-content .app-icon-large svg {
+    width: 60px;
+    height: 60px;
+  }
+  .pc-page .pc-container .hero-section .hero-content .app-title {
+    font-size: 2rem;
+  }
+  .pc-page .pc-container .hero-section .hero-content .app-subtitle {
+    font-size: 1rem;
+    letter-spacing: 1px;
+  }
+  .pc-page .pc-container .hero-section .hero-content .status-badge {
+    font-size: 0.75rem;
+    padding: 0.3rem 1rem;
+  }
+  .pc-page .pc-container .hero-section .hero-content .app-description {
+    font-size: 1rem;
+  }
+  .pc-page .pc-container .features-section {
+    padding: 2rem 0;
+  }
+  .pc-page .pc-container .features-section .section-title {
+    font-size: 1.8rem;
+  }
+  .pc-page .pc-container .features-section .features-grid .feature-card {
+    padding: 1.2rem 0.8rem;
+  }
+  .pc-page .pc-container .features-section .features-grid .feature-card h3 {
+    font-size: 1rem;
+  }
+  .pc-page .pc-container .features-section .features-grid .feature-card p {
+    font-size: 0.85rem;
+  }
+  .pc-page .pc-container .warning-section {
+    padding: 2rem 0;
+  }
+  .pc-page .pc-container .warning-section .warning-card {
+    padding: 1.5rem 1rem;
+  }
+  .pc-page .pc-container .warning-section .warning-card .warning-header {
+    margin-bottom: 1rem;
+  }
+  .pc-page .pc-container .warning-section .warning-card .warning-header .warning-icon {
+    font-size: 1.5rem;
+  }
+  .pc-page .pc-container .warning-section .warning-card .warning-header h2 {
+    font-size: 1.4rem;
+  }
+  .pc-page .pc-container .warning-section .warning-card .warning-content .warning-main {
+    font-size: 1rem;
+  }
+  .pc-page .pc-container .warning-section .warning-card .warning-content .warning-note {
+    font-size: 0.85rem;
+    padding: 0.8rem;
+  }
+  .pc-page .pc-container .download-section {
+    padding: 2rem 0;
+  }
+  .pc-page .pc-container .download-section .section-title {
+    font-size: 1.8rem;
+  }
+  .pc-page .pc-container .download-section .download-buttons .download-btn {
+    min-width: 240px;
+    padding: 1rem 1.5rem;
+  }
+  .pc-page .pc-container .download-section .download-buttons .download-btn .btn-content .btn-subtitle {
+    font-size: 0.7rem;
+  }
+  .pc-page .pc-container .download-section .download-buttons .download-btn .btn-content .btn-title {
+    font-size: 1rem;
+  }
+  .pc-page .pc-container .closing-section .closing-message {
+    font-size: 1.1rem;
+    padding: 1rem 1.5rem;
+  }
+  .apps-page .apps-container .apps-title {
+    font-size: 1.8rem;
+  }
+  .apps-page .apps-container .app-info .download-section .download-buttons .download-btn {
+    min-width: 160px;
+    font-size: 0.8rem;
+    padding: 0.7rem 1.2rem;
+  }
+}/*# sourceMappingURL=apps-pages.css.map */

@@ -1,0 +1,3916 @@
+// ===== ANIME PROFILE PAGE CORRECT - Steam-style layout с цветами anime page =====
+
+// Цветовая схема для темной темы (по умолчанию)
+$bg-dark-primary: #0d0d0d;
+$bg-dark-secondary: #1a1a1a;
+$bg-dark-tertiary: #252525;
+$bg-card: #1e1e1e;
+$border-color: #333;
+$border-color-light: #404040;
+$text-primary: #fff;
+$text-secondary: #b8b8b8;
+$text-muted: #8b8b8b;
+$accent-purple: #505050; // Нейтральный серый вместо фиолетового
+$accent-pink: #ff6584;
+$accent-blue: #2196f3;
+$accent-green: #10b981;
+$accent-orange: #ff9800;
+$accent-red: #f44336;
+
+// Цветовая схема для светлой темы (применяется только к СВОЕМУ профилю)
+$light-bg-primary: #f5f5f5;
+$light-bg-secondary: #ffffff;
+$light-bg-tertiary: #fafafa;
+$light-text-primary: #0d0d0d; // Более темный для лучшей читаемости
+$light-text-secondary: #2a2a2a; // Более темный для лучшей читаемости
+$light-text-muted: #5a5a5a; // Более темный для лучшей читаемости
+$light-border-color: #e0e0e0;
+$light-border-color-light: #eeeeee;
+
+// Градиенты
+$gradient-purple: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+$gradient-pink: linear-gradient(135deg, #ff6584 0%, #ff4567 100%);
+$gradient-overlay: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
+
+// Breakpoints
+$bp-mobile: 600px;
+$bp-tablet: 900px;
+$bp-desktop: 1200px;
+
+// ===== Background Wrapper (Discord Style) =====
+.anime-profile-page-correct-wrapper {
+  position: relative;
+  min-height: 100vh;
+  width: 100%; // Занимать всю ширину страницы
+  margin-top: -30px;
+  background: $bg-dark-primary !important;
+  padding: 0;
+  transition: background 0.3s ease, color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  // Фоновое изображение/видео профиля - на всю страницу
+  .anime-profile-page-correct-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    background: $bg-dark-primary;
+    
+    img, video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.6;
+      filter: blur(3px) brightness(0.9);
+    }
+    
+    // Легкий оверлей
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(13, 13, 13, 0.3) 0%,
+        rgba(13, 13, 13, 0.5) 50%,
+        rgba(13, 13, 13, 0.7) 100%
+      );
+      z-index: 1;
+    }
+  }
+  
+  // Общий фон для всего профиля с единым градиентом
+  &::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 1400px;
+    height: 100%;
+    background: linear-gradient(
+      180deg,
+      var(--profile-color-1, $bg-dark-primary) 0%,
+      var(--profile-color-2, $bg-dark-secondary) 100%
+    );
+    opacity: 0.75;
+    z-index: 1;
+    pointer-events: none;
+    
+    // Дымка по бокам
+    box-shadow: 
+      -80px 0 120px 60px rgba(var(--profile-color-1-rgb, 13, 13, 13), 0.4),
+      80px 0 120px 60px rgba(var(--profile-color-2-rgb, 26, 26, 26), 0.4);
+  }
+  
+  // Убираем отдельные фоны у header и container
+  .anime-profile-page-correct-header,
+  .anime-profile-page-correct-container {
+    position: relative;
+    z-index: 2;
+  }
+  
+  // Градиент баннера с основным цветом
+  .anime-profile-page-correct-banner-overlay {
+    background: linear-gradient(
+      180deg, 
+      transparent 0%, 
+      rgba(var(--profile-color-1-rgb, 13, 13, 13), 0.8) 100%
+    ) !important;
+  }
+  
+  // Рамка и тень аватара применяются через inline стили в компоненте
+  
+  // Активная вкладка с акцентным цветом
+  .anime-profile-page-correct-tab-button.active {
+    border-bottom-color: var(--profile-color-2, transparent) !important;
+    color: var(--profile-color-2, $text-primary) !important;
+  }
+  
+  // Hover эффекты с акцентным цветом
+  .anime-profile-page-correct-section-action:hover,
+  .btn-toggle-activity:hover,
+  .show-more-btn:hover,
+  .load-more-btn:hover {
+    border-color: var(--profile-color-2, $border-color) !important;
+    color: var(--profile-color-2, $text-primary) !important;
+    background: rgba(var(--profile-color-2-rgb, 255, 255, 255), 0.05) !important;
+  }
+  
+  .anime-profile-page-correct-badge-icon:hover {
+    border-color: var(--profile-color-2, $border-color) !important;
+    background: rgba(var(--profile-color-2-rgb, 255, 255, 255), 0.05) !important;
+  }
+  
+  // Акценты на карточках аниме
+  .profile-anime-card:hover {
+    border-color: var(--profile-color-2, $border-color) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  }
+  
+  // Скроллбары с акцентным цветом
+  .recently-watched-scroll::-webkit-scrollbar-thumb,
+  .favorites-scroll::-webkit-scrollbar-thumb,
+  .activity-list::-webkit-scrollbar-thumb {
+    background: var(--profile-color-2, $border-color) !important;
+  }
+  
+  // Статистика с акцентом
+  .stat-line:hover {
+    border-left: 3px solid var(--profile-color-2, transparent) !important;
+  }
+
+  // Светлая тема (применяется только для СВОЕГО профиля)
+  &[data-profile-theme="light"],
+  &[data-profile-theme="light"] * {
+    transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+
+  &[data-profile-theme="light"] {
+    background: $light-bg-primary !important;
+    color: $light-text-primary !important;
+
+    // Фон для светлой темы
+    .anime-profile-page-correct-background {
+      background: $light-bg-primary !important;
+      
+      img, video {
+        opacity: 0.5;
+        filter: blur(3px) brightness(1.1);
+      }
+      
+      &::after {
+        background: linear-gradient(
+          180deg,
+          rgba(245, 245, 245, 0.4) 0%,
+          rgba(245, 245, 245, 0.6) 50%,
+          rgba(245, 245, 245, 0.8) 100%
+        ) !important;
+      }
+    }
+
+    // Общий фон для светлой темы
+    &::after {
+      background: linear-gradient(
+        180deg,
+        var(--profile-color-1, $light-bg-primary) 0%,
+        var(--profile-color-2, $light-bg-secondary) 100%
+      ) !important;
+      opacity: 0.8;
+      
+      box-shadow: 
+        -80px 0 120px 60px rgba(var(--profile-color-1-rgb, 245, 245, 245), 0.5),
+        80px 0 120px 60px rgba(var(--profile-color-2-rgb, 255, 255, 255), 0.5);
+    }
+
+    // Header
+    .anime-profile-page-correct-header {
+      background: transparent !important;
+    }
+
+    .anime-profile-page-correct-header-content {
+      background: transparent !important;
+    }
+
+    .anime-profile-page-correct-banner-overlay {
+      background: linear-gradient(180deg, transparent 50%, rgba(var(--profile-color-1-rgb, 245, 245, 245), 0.3) 100%) !important;
+    }
+
+    // Avatar border
+    .anime-profile-page-correct-info .anime-profile-page-correct-avatar {
+      border: 8px solid $light-bg-primary !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    }
+    
+    .anime-profile-page-correct-avatar-container {
+      background: transparent !important;
+    }
+
+    // Text colors
+    .anime-profile-page-correct-username {
+      color: $light-text-primary !important;
+      text-shadow: none !important;
+    }
+
+    .anime-profile-page-correct-bio {
+      background: $light-bg-secondary !important;
+      border: 1px solid $light-border-color !important;
+      color: $light-text-secondary !important;
+    }
+
+    // Role badges
+    .anime-profile-page-correct-role-badge {
+      &.moderator {
+        background: linear-gradient(135deg, #5865F2 0%, #4752C4 100%) !important;
+        border-color: rgba(88, 101, 242, 0.4) !important;
+        color: #ffffff !important;
+      }
+
+      &.uploader {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+        border-color: rgba(16, 185, 129, 0.4) !important;
+        color: #ffffff !important;
+      }
+
+      &.admin {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+        border-color: rgba(239, 68, 68, 0.4) !important;
+        color: #ffffff !important;
+      }
+    }
+
+    // Badges
+    .anime-profile-page-correct-badges {
+      .anime-profile-page-correct-badge-icon {
+        background: $light-bg-tertiary !important;
+        border: 1px solid $light-border-color !important;
+        color: $light-text-primary !important;
+
+        &:hover {
+          background: $light-bg-secondary !important;
+          border-color: $accent-purple !important;
+        }
+      }
+    }
+
+    // Ban/Mute Badges on Banner (Light Theme)
+    .anime-profile-page-correct-banner-wrapper {
+      .anime-profile-page-correct-ban-badge,
+      .anime-profile-page-correct-mute-badge {
+        background: rgba(255, 255, 255, 0.95) !important;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15),
+                    0 0 0 1px rgba(0, 0, 0, 0.05) !important;
+      }
+
+      .anime-profile-page-correct-ban-badge {
+        .badge-icon {
+          background: rgba(237, 66, 69, 0.15) !important;
+        }
+
+        .badge-content {
+          .badge-title {
+            color: #991b1b !important;
+          }
+
+          .badge-date {
+            color: #dc2626 !important;
+          }
+
+          .badge-reason {
+            color: #b91c1c !important;
+          }
+        }
+      }
+
+      .anime-profile-page-correct-mute-badge {
+        .badge-icon {
+          background: rgba(250, 166, 26, 0.15) !important;
+        }
+
+        .badge-content {
+          .badge-title {
+            color: #92400e !important;
+          }
+
+          .badge-date {
+            color: #b45309 !important;
+          }
+
+          .badge-reason {
+            color: #a16207 !important;
+          }
+        }
+      }
+
+      // Friend Button (Light Theme)
+      .anime-profile-page-correct-banner-friend-btn {
+        .add-friend-btn {
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+
+          &:hover:not(:disabled) {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
+          }
+        }
+      }
+    }
+
+    // Container
+    .anime-profile-page-correct-container {
+      background: transparent !important;
+    }
+
+    // Sidebar
+    .anime-profile-page-correct-sidebar-section {
+      background: $light-bg-secondary !important;
+      border: 1px solid $light-border-color !important;
+    }
+
+    .anime-profile-page-correct-section-title {
+      color: $light-text-muted !important;
+    }
+
+    // Tabs
+    .anime-profile-page-correct-tabs {
+      border-bottom: 1px solid $light-border-color !important;
+    }
+
+    .anime-profile-page-correct-tab-button {
+      color: $light-text-muted !important;
+
+      &.active {
+        color: $light-text-primary !important;
+      }
+
+      &:hover {
+        color: $light-text-secondary !important;
+      }
+    }
+
+    // Content sections
+    .anime-profile-page-correct-content-section {
+      background: $light-bg-secondary !important;
+      border: 1px solid $light-border-color !important;
+
+      h2,
+      h3,
+      h4,
+      .section-title {
+        color: $light-text-primary !important;
+        font-weight: 700 !important;
+      }
+      
+      p,
+      span,
+      div {
+        color: $light-text-secondary !important;
+      }
+    }
+
+    // Cards and items
+    .anime-card-watching,
+    .profile-anime-card,
+    .favorites-anime-card {
+      background: $light-bg-secondary !important;
+      border: 1px solid $light-border-color !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+
+      &:hover {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12) !important;
+      }
+
+      .title,
+      .anime-title,
+      .card-title {
+        color: $light-text-primary !important;
+        font-weight: 600 !important;
+      }
+
+      .year,
+      .season-label,
+      .progress-text,
+      .card-info,
+      .card-meta {
+        color: $light-text-secondary !important;
+        font-weight: 500 !important;
+      }
+      
+      // Контент карточки
+      .profile-anime-card-content,
+      .profile-anime-card__text,
+      .card-info,
+      .favorites-anime-content {
+        .title,
+        h3,
+        h4 {
+          color: $light-text-primary !important;
+          font-weight: 600 !important;
+        }
+        
+        p,
+        span,
+        div {
+          color: $light-text-secondary !important;
+        }
+      }
+    }
+
+    // Scrollbars для светлой темы
+    .watching-list,
+    .watching-list-container,
+    .favorites-grid-pc,
+    .friends-modal-content {
+      scrollbar-color: $light-border-color-light $light-bg-secondary !important;
+
+      &::-webkit-scrollbar {
+        background: $light-bg-secondary !important;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: $light-border-color !important;
+
+        &:hover {
+          background: $light-text-muted !important;
+        }
+      }
+
+      &::-webkit-scrollbar-track {
+        background: $light-bg-tertiary !important;
+      }
+    }
+
+    .activity-item {
+      background: #ffffff !important;
+      border: 1px solid $light-border-color !important;
+      color: #000000 !important;
+
+      .activity-text,
+      .activity-description,
+      p,
+      span,
+      div {
+        color: #000000 !important;
+        font-weight: 600 !important;
+      }
+
+      .activity-time,
+      .activity-date,
+      small {
+        color: #3a3a3a !important;
+        font-weight: 600 !important;
+        border-top: 1px solid $light-border-color !important;
+      }
+    }
+
+    // Stats
+    .stat-line {
+      background: #ffffff !important;
+      border: 1px solid $light-border-color !important;
+      color: #000000 !important;
+      font-weight: 700 !important;
+      
+      span,
+      .stat-label,
+      .stat-value,
+      strong,
+      div,
+      p,
+      * {
+        color: #000000 !important;
+        font-weight: 700 !important;
+      }
+    }
+    
+    // Статистика в сайдбаре
+    .anime-profile-page-correct-sidebar-section {
+      .stat-line {
+        background: #ffffff !important;
+        
+        &:hover {
+          background: $light-bg-tertiary !important;
+        }
+        
+        span,
+        .stat-label,
+        .stat-value,
+        strong,
+        div,
+        p,
+        * {
+          color: #000000 !important;
+          font-weight: 700 !important;
+        }
+      }
+    }
+    
+    // Статистика (основная секция)
+    .anime-profile-page-correct-stats-section {
+      .stats-chart-container {
+        .stats-list {
+          .stat-line {
+            background: #ffffff !important;
+            border: 1px solid $light-border-color !important;
+            
+            &:hover {
+              background: $light-bg-tertiary !important;
+            }
+            
+            span:first-child {
+              color: #3a3a3a !important;
+              font-weight: 700 !important;
+            }
+            
+            span:last-child {
+              color: #000000 !important;
+              font-weight: 700 !important;
+            }
+          }
+        }
+      }
+      
+      .anime-profile-page-correct-stats-list {
+        .anime-profile-page-correct-stat-item {
+          background: #ffffff !important;
+          border: 1px solid $light-border-color !important;
+          
+          &:hover {
+            background: $light-bg-tertiary !important;
+          }
+          
+          .anime-profile-page-correct-stat-label {
+            color: #3a3a3a !important;
+            font-weight: 700 !important;
+          }
+          
+          .anime-profile-page-correct-stat-value {
+            color: #000000 !important;
+            font-weight: 700 !important;
+          }
+        }
+      }
+    }
+    
+    // Активность (с префиксом класса)
+    .anime-profile-page-correct-activity-list {
+      .anime-profile-page-correct-activity-item {
+        background: #ffffff !important;
+        border: 1px solid $light-border-color !important;
+        
+        &:hover {
+          background: $light-bg-tertiary !important;
+        }
+        
+        .anime-profile-page-correct-activity-content {
+          .anime-profile-page-correct-activity-text {
+            color: #000000 !important;
+            font-weight: 600 !important;
+            
+            strong {
+              color: #000000 !important;
+              font-weight: 700 !important;
+            }
+          }
+          
+          .anime-profile-page-correct-activity-time {
+            color: #3a3a3a !important;
+            font-weight: 600 !important;
+          }
+        }
+      }
+    }
+    
+    // Recent activity section
+    .recent-activity {
+      .activity-list {
+        .activity-item {
+          background: #ffffff !important;
+          border: 1px solid $light-border-color !important;
+        }
+      }
+    }
+
+    // Reviews
+    .anime-profile-page-correct-review-card {
+      background: rgba(0, 0, 0, 0.05) !important;
+
+      .anime-profile-page-correct-review-anime-title {
+        color: $light-text-primary !important;
+      }
+
+      .anime-profile-page-correct-review-text {
+        color: $light-text-secondary !important;
+      }
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.08) !important;
+      }
+    }
+
+    // Buttons
+    .anime-profile-page-correct-section-action,
+    .btn-toggle-activity,
+    .activity-toggle,
+    .activity-toggle button,
+    .show-more-btn-friends-list,
+    .show-more-btn,
+    .load-more-btn,
+    button {
+      background: $light-bg-secondary !important;
+      border: 1px solid $light-border-color !important;
+      color: $light-text-primary !important;
+
+      &:hover {
+        background: $light-bg-tertiary !important;
+        color: $light-text-primary !important;
+        border-color: $accent-purple !important;
+      }
+    }
+
+    // Friends cards
+    .friends-profile-card,
+    .friend-card {
+      background: $light-bg-secondary !important;
+      border: 1px solid $light-border-color !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+
+      &:hover {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12) !important;
+      }
+
+      .friends-profile-name,
+      .friend-name,
+      .friend-username {
+        color: $light-text-primary !important;
+      }
+    }
+
+    // Friends section
+    .anime-profile-page-correct-friends-section {
+      .friends-profile-name,
+      .friend-name {
+        color: $light-text-primary !important;
+      }
+    }
+
+    // Now watching section
+    .now-watching {
+      h2,
+      h3,
+      .section-title {
+        color: $light-text-primary !important;
+        font-weight: 700 !important;
+      }
+    }
+
+    // Favorites section  
+    .favorites-block-pc {
+      h2,
+      h3,
+      .section-title {
+        color: $light-text-primary !important;
+        font-weight: 700 !important;
+      }
+      
+      .section-header {
+        color: $light-text-primary !important;
+      }
+    }
+    
+    // Избранное заголовок
+    .anime-profile-page-correct-content-section h2 {
+      color: $light-text-primary !important;
+      font-weight: 700 !important;
+    }
+
+    // Ban/Mute banners
+    .anime-profile-page-correct-mute-banner,
+    .anime-profile-page-correct-ban-banner {
+      background: $light-bg-secondary !important;
+      border: 1px solid $light-border-color !important;
+
+      .anime-profile-page-correct-banner-header,
+      .anime-profile-page-correct-banner-dates,
+      .anime-profile-page-correct-banner-reason {
+        color: $light-text-primary !important;
+      }
+    }
+
+    // Empty states
+    .empty,
+    .empty-text,
+    .no-reviews-message,
+    .loading-text {
+      color: $light-text-muted !important;
+      background: rgba(0, 0, 0, 0.03) !important;
+    }
+  }
+}
+
+// ===== Profile Header (Discord Style) =====
+.anime-profile-page-correct-header {
+  position: relative;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto 0;
+  background: transparent !important;
+
+  // Баннер
+  .anime-profile-page-correct-banner-wrapper {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    overflow: hidden;
+
+    @media (max-width: $bp-tablet) {
+      height: 200px;
+    }
+
+    // Ban/Mute Badges on Banner (Discord Style)
+    .anime-profile-page-correct-banner-badges {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 10;
+
+      @media (max-width: $bp-tablet) {
+        top: 12px;
+        right: 12px;
+        gap: 8px;
+      }
+    }
+
+    .anime-profile-page-correct-ban-badge,
+    .anime-profile-page-correct-mute-badge {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(12px);
+      border-radius: 12px;
+      padding: 14px 16px;
+      min-width: 280px;
+      max-width: 340px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4),
+                  0 0 0 1px rgba(255, 255, 255, 0.1);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+      @media (max-width: $bp-tablet) {
+        min-width: 240px;
+        max-width: 280px;
+        padding: 12px 14px;
+        gap: 10px;
+      }
+
+      @media (max-width: $bp-mobile) {
+        min-width: 200px;
+        max-width: 240px;
+        padding: 10px 12px;
+        gap: 8px;
+      }
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5),
+                    0 0 0 1px rgba(255, 255, 255, 0.15);
+      }
+
+      .badge-icon {
+        flex-shrink: 0;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.1);
+
+        @media (max-width: $bp-tablet) {
+          width: 36px;
+          height: 36px;
+        }
+
+        @media (max-width: $bp-mobile) {
+          width: 32px;
+          height: 32px;
+
+          svg {
+            width: 16px !important;
+            height: 16px !important;
+          }
+        }
+      }
+
+      .badge-content {
+        flex: 1;
+        min-width: 0;
+
+        .badge-title {
+          font-size: 14px;
+          font-weight: 600;
+          margin-bottom: 4px;
+          letter-spacing: -0.01em;
+
+          @media (max-width: $bp-mobile) {
+            font-size: 13px;
+          }
+
+          strong {
+            font-weight: 700;
+          }
+        }
+
+        .badge-date {
+          font-size: 12px;
+          opacity: 0.85;
+          margin-bottom: 4px;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+
+          @media (max-width: $bp-mobile) {
+            font-size: 11px;
+          }
+        }
+
+        .badge-reason {
+          font-size: 12px;
+          opacity: 0.75;
+          line-height: 1.4;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+
+          @media (max-width: $bp-mobile) {
+            font-size: 11px;
+            -webkit-line-clamp: 1;
+          }
+        }
+      }
+    }
+
+    .anime-profile-page-correct-ban-badge {
+      border-left: 4px solid #ed4245;
+
+      .badge-icon {
+        background: rgba(237, 66, 69, 0.2);
+        color: #ed4245;
+      }
+
+      .badge-content {
+        .badge-title {
+          color: #f8a5a7;
+        }
+
+        .badge-date {
+          color: #f8a5a7;
+        }
+
+        .badge-reason {
+          color: #f8a5a7;
+        }
+      }
+    }
+
+    .anime-profile-page-correct-mute-badge {
+      border-left: 4px solid #faa61a;
+
+      .badge-icon {
+        background: rgba(250, 166, 26, 0.2);
+        color: #faa61a;
+      }
+
+      .badge-content {
+        .badge-title {
+          color: #ffd485;
+        }
+
+        .badge-date {
+          color: #ffd485;
+        }
+
+        .badge-reason {
+          color: #ffd485;
+        }
+      }
+    }
+
+    // Add Friend Button on Banner (Discord Style)
+    .anime-profile-page-correct-banner-friend-btn {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      z-index: 10;
+
+      @media (max-width: $bp-tablet) {
+        bottom: 12px;
+        right: 12px;
+      }
+
+      @media (max-width: $bp-mobile) {
+        bottom: 8px;
+        right: 8px;
+      }
+
+      .add-friend-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 20px;
+        font-size: 14px;
+        font-weight: 600;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(12px);
+        white-space: nowrap;
+
+        @media (max-width: $bp-mobile) {
+          padding: 8px 16px;
+          font-size: 13px;
+          gap: 6px;
+        }
+
+        svg {
+          flex-shrink: 0;
+        }
+
+        &:hover:not(:disabled) {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        &:active:not(:disabled) {
+          transform: translateY(0);
+        }
+
+        &:disabled {
+          cursor: not-allowed;
+          opacity: 0.8;
+        }
+
+        // Добавить в друзья
+        &.friend-btn--add {
+          background: var(--primary-color, #5865f2);
+          color: #ffffff;
+          
+          &:hover:not(:disabled) {
+            background: var(--primary-bg-hover, #4752c4);
+          }
+        }
+
+        // Ожидание
+        &.friend-btn--pending {
+          background: rgba(250, 166, 26, 0.9);
+          color: #ffffff;
+        }
+
+        // В друзьях
+        &.friend-btn--friends {
+          background: rgba(67, 181, 129, 0.9);
+          color: #ffffff;
+        }
+
+        // Принять заявку
+        &.friend-btn--accept {
+          background: var(--primary-color, #5865f2);
+          color: #ffffff;
+          
+          &:hover:not(:disabled) {
+            background: var(--primary-bg-hover, #4752c4);
+          }
+        }
+      }
+    }
+  }
+
+  .anime-profile-page-correct-banner-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .anime-profile-page-correct-banner-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
+    pointer-events: none;
+  }
+
+  // Контент под баннером
+  .anime-profile-page-correct-header-content {
+    position: relative;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 40px;
+    background: transparent; // Убираем фон, используем фон родителя
+
+    @media (max-width: $bp-tablet) {
+      padding: 0 20px;
+    }
+  }
+}
+
+// ===== Profile Info Section (Discord Style) =====
+.anime-profile-page-correct-info {
+  position: relative;
+  display: flex;
+  gap: 24px;
+  padding: 16px 0 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+
+  @media (max-width: $bp-tablet) {
+    flex-direction: column;
+    gap: 16px;
+    padding: 12px 0 20px;
+  }
+
+  .anime-profile-page-correct-avatar-container {
+    flex-shrink: 0;
+    position: relative;
+    margin-top: -80px; // Аватар накладывается на баннер
+    z-index: 2;
+
+    @media (max-width: $bp-tablet) {
+      margin-top: -48px;
+    }
+
+    .anime-profile-page-correct-avatar-wrapper {
+      display: inline-block;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      animation: avatarGlow 3s ease-in-out infinite;
+      
+      @keyframes avatarGlow {
+        0%, 100% {
+          filter: brightness(1) drop-shadow(0 0 20px rgba(var(--profile-color-1-rgb, 0, 0, 0), 0.4));
+        }
+        50% {
+          filter: brightness(1.05) drop-shadow(0 0 30px rgba(var(--profile-color-2-rgb, 0, 0, 0), 0.6));
+        }
+      }
+    }
+
+    .anime-profile-page-correct-avatar {
+      width: 128px;
+      height: 128px;
+      border-radius: 50%; // Круглый аватар как в Discord
+      background: $bg-dark-tertiary;
+      object-fit: cover;
+      display: block;
+
+      @media (max-width: $bp-tablet) {
+        width: 96px;
+        height: 96px;
+      }
+    }
+
+    .anime-profile-page-correct-avatar-frame {
+      display: none; // Убираем подсветку
+    }
+  }
+
+  .anime-profile-page-correct-details {
+    flex: 1;
+    min-width: 0;
+    padding-top: 8px; // Небольшой отступ сверху
+
+    .anime-profile-page-correct-name-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+      flex-wrap: wrap;
+
+      .anime-profile-page-correct-username {
+        font-size: 20px;
+        font-weight: 700;
+        color: $text-primary;
+        text-shadow: none; // Убираем тень для Discord-стиля
+
+        @media (max-width: $bp-tablet) {
+          font-size: 18px;
+        }
+      }
+
+      .anime-profile-page-correct-verified-badge {
+        display: inline-flex;
+        align-items: center;
+        
+        svg {
+          width: 20px;
+          height: 20px;
+          fill: $accent-green;
+          filter: none;
+        }
+      }
+
+      .anime-profile-page-correct-role-badge {
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border: 2px solid transparent;
+        backdrop-filter: blur(8px);
+
+        &.admin {
+          background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+          border-color: rgba(239, 68, 68, 0.3);
+          color: #ffffff;
+        }
+
+        &.moderator {
+          background: linear-gradient(135deg, #5865F2 0%, #4752C4 100%);
+          border-color: rgba(88, 101, 242, 0.3);
+          color: #ffffff;
+        }
+
+        &.uploader {
+          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+          border-color: rgba(16, 185, 129, 0.3);
+          color: #ffffff;
+        }
+      }
+    }
+
+    .anime-profile-page-correct-badges {
+      display: flex;
+      gap: 6px;
+      margin: 8px 0;
+      flex-wrap: wrap;
+
+      .anime-profile-page-correct-badge-icon {
+        width: 32px;
+        height: 32px;
+        background: rgba(var(--profile-color-1-rgb, 37, 37, 37), 0.3);
+        border: 1px solid rgba(var(--profile-color-2-rgb, 60, 60, 60), 0.3);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: help;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: rgba(var(--profile-color-1-rgb, 37, 37, 37), 0.5);
+          border-color: var(--profile-color-2, $border-color);
+          box-shadow: 0 0 12px rgba(var(--profile-color-2-rgb, 60, 60, 60), 0.3);
+        }
+
+        svg {
+          color: var(--profile-color-2, $text-primary);
+        }
+      }
+    }
+
+    .anime-profile-page-correct-bio {
+      font-size: 14px;
+      color: $text-secondary;
+      line-height: 1.5;
+      max-width: 600px;
+      margin: 12px 0;
+      padding: 12px;
+      background: $bg-dark-tertiary;
+      border-radius: 8px;
+      border: 1px solid $border-color;
+    }
+
+    .anime-profile-page-correct-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+
+      button {
+        padding: 10px 24px;
+        background: $gradient-purple;
+        border: none;
+        border-radius: 4px;
+        color: $text-primary;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(60, 60, 60, 0.4);
+        }
+
+        &.secondary {
+          background: $bg-dark-tertiary;
+          border: 1px solid $border-color-light;
+
+          &:hover {
+            background: $bg-card;
+            border-color: $border-color;
+          }
+        }
+      }
+    }
+  }
+}
+
+// ===== Main Content Container (Discord Style) =====
+.anime-profile-page-correct-container {
+  width: 100%; // Занимать всю доступную ширину
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 16px 40px 40px;
+  display: flex;
+  flex-wrap: nowrap; // Не переносить элементы
+  gap: 16px;
+  background: transparent !important;
+  box-sizing: border-box; // Учитывать padding в ширине
+
+  @media (max-width: $bp-tablet) {
+    flex-direction: column;
+    padding: 16px 20px 40px;
+  }
+}
+
+// ===== Left Sidebar (Discord Style) =====
+.anime-profile-page-correct-sidebar {
+  width: 340px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  @media (max-width: $bp-tablet) {
+    width: 100%;
+  }
+
+  .anime-profile-page-correct-sidebar-section {
+    background: rgba(26, 26, 26, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+
+    &:hover {
+      border-color: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    }
+
+    .anime-profile-page-correct-section-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: $text-secondary;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+  }
+}
+
+// ===== Friends Section =====
+.anime-profile-page-correct-friends-section {
+  // Скрываем заголовок из FriendsList компонента, так как у нас уже есть section-title
+  h2 {
+    display: none !important;
+  }
+
+  // Переопределяем стили FriendsList для нового дизайна
+  .profile-block.friends {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+
+    &:hover {
+      border: none !important;
+      box-shadow: none !important;
+    }
+
+    .friends-list {
+      margin-bottom: 0 !important;
+    }
+  }
+
+  // Стили для карточек друзей (NEW - с градиентом и glow эффектом)
+  .friends-profile-card {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-bottom: 10px;
+    cursor: pointer;
+
+    // С кастомными цветами профиля
+    &[data-has-colors="true"] {
+      background: rgba(255, 255, 255, 0.02) !important;
+      border: 3px solid transparent !important;
+      background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), 
+                        linear-gradient(180deg, var(--friend-color-1) 0%, var(--friend-color-2) 100%) !important;
+      background-origin: border-box !important;
+      background-clip: padding-box, border-box !important;
+      box-shadow: 0 0 16px rgba(var(--friend-color-1-rgb, 102, 126, 234), 0.2),
+                  0 0 24px rgba(var(--friend-color-2-rgb, 102, 126, 234), 0.15) !important;
+
+      &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 5px;
+        background: linear-gradient(180deg, var(--friend-color-1) 0%, var(--friend-color-2) 100%);
+        opacity: 0.08;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3),
+                    0 0 20px rgba(var(--friend-color-1-rgb, 102, 126, 234), 0.3),
+                    0 0 28px rgba(var(--friend-color-2-rgb, 102, 126, 234), 0.25) !important;
+
+        &::before {
+          opacity: 0.12;
+        }
+      }
+
+      .friends-profile-banner,
+      .friends-profile-info,
+      .friends-profile-left,
+      .friends-profile-avatar {
+        position: relative;
+        z-index: 1;
+      }
+    }
+
+    // Без кастомных цветов
+    &[data-has-colors="false"] {
+      border: 2px solid rgba(255, 255, 255, 0.1) !important;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.2) !important;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3),
+                    0 0 16px rgba(0, 0, 0, 0.25) !important;
+      }
+    }
+
+    .friends-profile-banner {
+      position: relative;
+      width: 100%;
+      height: 100px;
+      overflow: hidden;
+
+      img, video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .friends-profile-info {
+      position: relative;
+      padding: 8px 10px;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+
+      .friends-profile-left {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex: 1;
+        min-width: 0;
+
+        .friends-profile-name {
+          font-size: 12px;
+          font-weight: 700;
+          color: $text-primary;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .verified-badge-friends {
+          display: inline-flex;
+          align-items: center;
+          flex-shrink: 0;
+
+          .verified-icon-friends {
+            width: 16px;
+            height: 16px;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8));
+
+            path {
+              fill: #ef4444 !important;
+            }
+          }
+        }
+      }
+
+      .friends-profile-avatar {
+        width: 34px;
+        height: 34px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        border: 2px solid var(--friend-color-1, rgba(255, 255, 255, 0.1));
+        overflow: hidden;
+
+        img, video {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+    }
+  }
+
+  // Кнопка "показать еще"
+  .show-more-btn-friends-list {
+    width: 100%;
+    margin-top: 12px;
+    padding: 10px;
+    background: $bg-dark-tertiary !important;
+    border: 1px solid $border-color !important;
+    border-radius: 4px !important;
+    color: $text-secondary !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+
+    &:hover {
+      background: $bg-dark-secondary !important;
+      color: $text-primary !important;
+      border-color: $accent-purple !important;
+      box-shadow: none !important;
+    }
+  }
+
+  .anime-profile-page-correct-friends-grid {
+    display: grid;
+    grid-template-columns: 1fr; // Одна колонка как на скриншоте
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .anime-profile-page-correct-friend-card {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+
+    .anime-profile-page-correct-friend-banner {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.8);
+    }
+
+    .anime-profile-page-correct-friend-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 8px;
+      background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.9) 100%);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      .anime-profile-page-correct-friend-avatar {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border: 1px solid $border-color-light;
+      }
+
+      .anime-profile-page-correct-friend-name {
+        font-size: 11px;
+        font-weight: 600;
+        color: $text-primary;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+  }
+
+  .anime-profile-page-correct-view-all-friends {
+    margin-top: 12px;
+    width: 100%;
+    padding: 10px;
+    background: $bg-dark-tertiary;
+    border: 1px solid $border-color;
+    border-radius: 4px;
+    color: $text-secondary;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: $bg-card;
+      color: $text-primary;
+      border-color: $accent-purple;
+    }
+  }
+}
+
+// ===== Stats Section (Discord Style) =====
+.anime-profile-page-correct-stats-section {
+  // Скрываем заголовок из StatsChart компонента
+  h2 {
+    display: none !important;
+  }
+
+  // Переопределяем стили StatsChart
+  .stats-chart-container {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+
+    &:hover {
+      border: none !important;
+      box-shadow: none !important;
+    }
+
+    h2 {
+      display: none !important;
+    }
+
+    canvas {
+      display: block !important;
+      margin: 0 auto 16px !important;
+      max-width: 180px !important;
+      max-height: 180px !important;
+    }
+
+    .stats-list {
+      margin-top: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 4px !important;
+
+      .stat-line {
+        padding: 8px 10px !important;
+        margin-bottom: 0 !important;
+        background: rgba(0, 0, 0, 0.25) !important;
+        border-radius: 6px !important;
+        border: none !important;
+        transition: all 0.2s ease !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+
+        &:hover {
+          background: rgba(0, 0, 0, 0.35) !important;
+          transform: none !important;
+        }
+
+        span:first-child {
+          font-size: 11px !important;
+          color: $text-muted !important;
+          font-weight: 600 !important;
+          text-transform: uppercase !important;
+          letter-spacing: 0.3px !important;
+        }
+
+        span:last-child {
+          font-size: 13px !important;
+          color: $text-primary !important;
+          font-weight: 700 !important;
+        }
+      }
+    }
+  }
+
+  .anime-profile-page-correct-stats-chart {
+    margin: 0 auto 16px;
+    max-width: 180px;
+  }
+
+  .anime-profile-page-correct-stats-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 0;
+
+    .anime-profile-page-correct-stat-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 10px;
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 6px;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.35);
+      }
+
+      .anime-profile-page-correct-stat-label {
+        font-size: 11px;
+        color: $text-muted;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+      }
+
+      .anime-profile-page-correct-stat-value {
+        font-size: 13px;
+        color: $text-primary;
+        font-weight: 700;
+      }
+    }
+  }
+
+  // Light theme overrides for friends cards
+  [data-theme="light"] &,
+  .theme-light & {
+    .friends-profile-card {
+      &[data-has-colors="true"] {
+        box-shadow: 0 0 16px rgba(var(--friend-color-1-rgb, 102, 126, 234), 0.25),
+                    0 0 24px rgba(var(--friend-color-2-rgb, 102, 126, 234), 0.2) !important;
+
+        &:hover {
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15),
+                      0 0 20px rgba(var(--friend-color-1-rgb, 102, 126, 234), 0.35),
+                      0 0 28px rgba(var(--friend-color-2-rgb, 102, 126, 234), 0.3) !important;
+        }
+      }
+
+      &[data-has-colors="false"] {
+        border-color: rgba(0, 0, 0, 0.15) !important;
+        box-shadow: 0 0 12px rgba(0, 0, 0, 0.1) !important;
+
+        &:hover {
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15),
+                      0 0 16px rgba(0, 0, 0, 0.12) !important;
+        }
+
+        .friends-profile-banner {
+          background: linear-gradient(135deg, #e8e8e8 0%, #d0d0d0 100%);
+        }
+
+        .friends-profile-avatar img,
+        .friends-profile-avatar video {
+          border-color: rgba(0, 0, 0, 0.2);
+        }
+      }
+    }
+  }
+}
+
+// ===== Main Content Area (Discord Style) =====
+.anime-profile-page-correct-main {
+  flex: 1 1 0%; // Расширяться, заполняя доступное пространство
+  min-width: 0; // Позволить flex-элементу корректно работать
+  max-width: 100%; // Не выходить за пределы родителя
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+// ===== Tabs Navigation (Discord Style) =====
+.anime-profile-page-correct-tabs {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid $border-color;
+  padding: 0;
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+
+  @media (max-width: $bp-mobile) {
+    gap: 8px;
+  }
+
+  .anime-profile-page-correct-tab-button {
+    padding: 12px 16px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: $text-muted;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    position: relative;
+    margin-bottom: -1px;
+
+    &:hover {
+      color: $text-secondary;
+      border-bottom-color: $text-muted;
+    }
+
+    &.active {
+      color: $text-primary;
+      border-bottom-color: $accent-purple;
+    }
+  }
+}
+
+// ===== Content Sections (Discord Style) =====
+.anime-profile-page-correct-content-section {
+  background: rgba(26, 26, 26, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+  width: 100% !important; // Занимать всю ширину родительского контейнера
+  min-width: 100% !important; // Не сжиматься меньше 100%
+  max-width: 100% !important; // Не расширяться больше 100%
+  box-sizing: border-box; // Учитывать padding и border в ширине
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  }
+
+  .anime-profile-page-correct-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 0;
+    border-bottom: none;
+
+    h2 {
+      font-size: 15px;
+      font-weight: 700;
+      color: $text-primary;
+      margin: 0;
+    }
+
+    .anime-profile-page-correct-section-action {
+      padding: 8px 16px;
+      background: rgba(37, 37, 37, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      color: $text-secondary;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: rgba(37, 37, 37, 1);
+        color: $text-primary;
+        border-color: $accent-purple;
+      }
+    }
+  }
+
+  // Переопределение стилей для вложенных компонентов
+  .now-watching,
+  .recent-activity,
+  .favorites-block-pc,
+  .user-collections-block {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    width: 100% !important; // Занимать всю ширину контейнера
+    min-width: 100% !important; // Не сжиматься
+    max-width: 100% !important; // Не расширяться
+    box-sizing: border-box !important;
+
+    &:hover {
+      border: none !important;
+      box-shadow: none !important;
+    }
+
+    h2 {
+      display: none !important; // Заголовок уже есть в section-header
+    }
+  }
+
+  // Стили для карточек аниме (фиксированная ширина для горизонтального скролла)
+  .anime-card-watching,
+  .profile-anime-card,
+  .favorites-anime-card {
+    min-width: 225px !important;
+    max-width: 225px !important;
+    flex-shrink: 0 !important;
+    background: rgba(37, 37, 37, 0.9) !important;
+    backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 10px !important;
+    transition: all 0.3s ease !important;
+    overflow: hidden !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+
+    &:hover {
+      transform: translateY(-4px) !important;
+      border-color: $accent-purple !important;
+      box-shadow: 0 8px 24px rgba(60, 60, 60, 0.4) !important;
+      background: rgba(37, 37, 37, 1) !important;
+    }
+
+    img {
+      border-radius: 8px 8px 0 0 !important;
+      width: 100% !important;
+      height: auto !important;
+      aspect-ratio: 3/4 !important;
+      object-fit: cover !important;
+    }
+
+    .card-info,
+    .profile-anime-card__text,
+    .favorites-anime-content {
+      padding: 12px !important;
+      background: transparent !important;
+    }
+  }
+
+  // Стили для списка активности (Discord Style)
+  .recent-activity {
+    .activity-list {
+      padding: 0 !important;
+      margin: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 8px !important;
+
+      li,
+      .activity-item {
+        padding: 12px 14px !important;
+        margin-bottom: 0 !important;
+        background: rgba(37, 37, 37, 0.7) !important;
+        backdrop-filter: blur(8px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        border-radius: 8px !important;
+        transition: all 0.2s ease !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 12px !important;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3) !important;
+
+        &:hover {
+          background: rgba(37, 37, 37, 0.9) !important;
+          border-color: rgba(255, 255, 255, 0.1) !important;
+          transform: none !important;
+        }
+
+        &:last-child {
+          margin-bottom: 0 !important;
+        }
+
+        .icon {
+          flex-shrink: 0 !important;
+          width: 32px !important;
+          height: 32px !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          background: rgba(60, 60, 60, 0.15) !important;
+          border-radius: 6px !important;
+          
+          svg {
+            width: 16px !important;
+            height: 16px !important;
+            color: $accent-purple !important;
+          }
+        }
+
+        .activity-text {
+          flex: 1 !important;
+          font-size: 13px !important;
+          line-height: 1.4 !important;
+          color: $text-secondary !important;
+
+          strong {
+            color: $text-primary !important;
+            font-weight: 600 !important;
+          }
+        }
+
+        .activity-time {
+          flex-shrink: 0 !important;
+          font-size: 11px !important;
+          color: $text-muted !important;
+          text-align: right !important;
+        }
+      }
+    }
+
+    // Кнопка "показать еще" для активности
+    .activity-toggle {
+      display: flex !important;
+      justify-content: center !important;
+      margin-top: 12px !important;
+
+      .btn-toggle-activity {
+        padding: 8px 16px !important;
+        background: rgba(0, 0, 0, 0.2) !important;
+        border: none !important;
+        border-radius: 6px !important;
+        color: $text-secondary !important;
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+
+        &:hover {
+          background: rgba(0, 0, 0, 0.3) !important;
+          color: $text-primary !important;
+        }
+      }
+    }
+  }
+
+  // Стили для сетки избранного (горизонтальный скролл)
+  .favorites-grid-pc {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 12px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    padding: 4px !important;
+    margin: 0 !important;
+    scroll-behavior: smooth !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: $border-color $bg-dark-secondary !important;
+
+    &::-webkit-scrollbar {
+      height: 8px !important;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: $bg-dark-secondary !important;
+      border-radius: 4px !important;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: $border-color !important;
+      border-radius: 4px !important;
+
+      &:hover {
+        background: $border-color-light !important;
+      }
+    }
+  }
+
+  // Стили для сетки просмотра (горизонтальный скролл)
+  .watching-list,
+  .watching-list-container {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 12px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    padding: 4px !important;
+    margin: 0 !important;
+    scroll-behavior: smooth !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: $border-color $bg-dark-secondary !important;
+
+    &::-webkit-scrollbar {
+      height: 8px !important;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: $bg-dark-secondary !important;
+      border-radius: 4px !important;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: $border-color !important;
+      border-radius: 4px !important;
+
+      &:hover {
+        background: $border-color-light !important;
+      }
+    }
+  }
+
+  // Скрываем кнопки "показать еще" для блоков с горизонтальным скроллом
+  .now-watching,
+  .favorites-block-pc {
+    .show-more-btn,
+    .toggle-btn,
+    .load-more {
+      display: none !important; // Прячем, так как теперь горизонтальный скролл
+    }
+  }
+
+  // Скрываем старую кнопку отзывов (используем section-action)
+  .toggle-reviews-btn {
+    display: none !important;
+  }
+
+  // Стили для коллекций
+  .tabs-container {
+    display: flex !important;
+    gap: 8px !important;
+    margin-bottom: 20px !important;
+    padding: 4px !important;
+    background: $bg-dark-tertiary !important;
+    border-radius: 4px !important;
+    width: 100% !important; // Занимать всю ширину
+    min-width: 100% !important; // Не сжиматься
+    max-width: 100% !important; // Не расширяться
+    box-sizing: border-box !important;
+
+    button {
+      flex: 1 !important;
+      padding: 10px 20px !important;
+      background: transparent !important;
+      border: none !important;
+      border-radius: 4px !important;
+      color: $text-secondary !important;
+      cursor: pointer !important;
+      transition: all 0.3s ease !important;
+
+      &:hover {
+        background: rgba(60, 60, 60, 0.1) !important;
+        color: $text-primary !important;
+      }
+
+      &.active {
+        background: $gradient-purple !important;
+        color: $text-primary !important;
+      }
+    }
+  }
+
+  .collection-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important;
+    gap: 16px !important;
+    width: 100% !important; // Занимать всю ширину
+    min-width: 100% !important; // Не сжиматься
+    max-width: 100% !important; // Не расширяться
+    box-sizing: border-box !important;
+  }
+
+  // Стили для пустых сообщений (Discord Style)
+  .no-reviews-message,
+  .empty-text,
+  .loading-text {
+    text-align: center !important;
+    padding: 40px 20px !important;
+    color: $text-muted !important;
+    font-style: normal !important;
+    font-size: 13px !important;
+    background: rgba(0, 0, 0, 0.1) !important;
+    border-radius: 8px !important;
+  }
+
+  // Переопределение для progress bar
+  .progress-bar {
+    background: rgba(0, 0, 0, 0.3) !important;
+    border-radius: 2px !important;
+
+    .progress-fill {
+      background: $gradient-purple !important;
+    }
+  }
+
+  // Стили для метаданных аниме
+  .anime-info,
+  .card-info {
+    .title {
+      color: $text-primary !important;
+      font-weight: 600 !important;
+    }
+
+    .progress,
+    .meta-row {
+      color: $text-muted !important;
+      font-size: 12px !important;
+    }
+  }
+}
+
+// ===== Now Watching Grid =====
+.anime-profile-page-correct-watching-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+
+  @media (max-width: $bp-mobile) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .anime-profile-page-correct-anime-card {
+    background: $bg-dark-tertiary;
+    border: 1px solid $border-color;
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+      border-color: $accent-purple;
+      box-shadow: 0 8px 24px rgba(60, 60, 60, 0.3);
+    }
+
+    .anime-profile-page-correct-anime-cover {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+    }
+
+    .anime-profile-page-correct-anime-info {
+      padding: 12px;
+
+      .anime-profile-page-correct-anime-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: $text-primary;
+        margin-bottom: 8px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        line-height: 1.4;
+      }
+
+      .anime-profile-page-correct-anime-progress {
+        font-size: 12px;
+        color: $text-muted;
+        margin-bottom: 8px;
+      }
+
+      .anime-profile-page-correct-progress-bar {
+        width: 100%;
+        height: 4px;
+        background: $bg-dark-secondary;
+        border-radius: 2px;
+        overflow: hidden;
+
+        .anime-profile-page-correct-progress-fill {
+          height: 100%;
+          background: $gradient-purple;
+          transition: width 0.3s ease;
+        }
+      }
+    }
+  }
+}
+
+// ===== Recent Activity =====
+.anime-profile-page-correct-activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .anime-profile-page-correct-activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px;
+    background: $bg-dark-tertiary;
+    border: 1px solid $border-color;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: $bg-dark-secondary;
+      border-color: $border-color-light;
+    }
+
+    .anime-profile-page-correct-activity-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(60, 60, 60, 0.1);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+
+      svg {
+        color: $accent-purple;
+      }
+    }
+
+    .anime-profile-page-correct-activity-content {
+      flex: 1;
+      min-width: 0;
+
+      .anime-profile-page-correct-activity-text {
+        font-size: 14px;
+        color: $text-secondary;
+        line-height: 1.5;
+        margin-bottom: 4px;
+
+        strong {
+          color: $text-primary;
+          font-weight: 600;
+        }
+      }
+
+      .anime-profile-page-correct-activity-time {
+        font-size: 12px;
+        color: $text-muted;
+      }
+    }
+  }
+}
+
+// ===== Reviews Section (Discord Style) =====
+.anime-profile-page-correct-reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .anime-profile-page-correct-review-card {
+    background: rgba(0, 0, 0, 0.2);
+    border: none;
+    border-radius: 8px;
+    padding: 16px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.3);
+      transform: none;
+    }
+
+    .anime-profile-page-correct-review-header {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 12px;
+
+      .anime-profile-page-correct-review-cover {
+        width: 56px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 6px;
+        flex-shrink: 0;
+      }
+
+      .anime-profile-page-correct-review-meta {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+
+        .anime-profile-page-correct-review-anime-title {
+          font-size: 15px;
+          font-weight: 700;
+          color: $text-primary;
+          line-height: 1.3;
+        }
+
+        .anime-profile-page-correct-review-rating {
+          font-size: 12px;
+          color: $accent-purple;
+          font-weight: 600;
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+
+          &::before {
+            content: '★';
+            font-size: 14px;
+          }
+        }
+      }
+    }
+
+    .anime-profile-page-correct-review-text {
+      font-size: 13px;
+      color: $text-secondary;
+      line-height: 1.5;
+      padding-left: 70px; // Выравнивание с текстом выше
+    }
+  }
+}
+
+// Кнопка "показать еще" для отзывов
+.anime-profile-page-correct-section-action {
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
+  padding: 8px 16px;
+  background: rgba(0, 0, 0, 0.2);
+  border: none;
+  border-radius: 6px;
+  color: $text-secondary;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.3);
+    color: $text-primary;
+  }
+}
+
+// ===== Collections =====
+.anime-profile-page-correct-collections-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+
+  @media (max-width: $bp-mobile) {
+    grid-template-columns: 1fr;
+  }
+
+  .anime-profile-page-correct-collection-card {
+    background: $bg-dark-tertiary;
+    border: 1px solid $border-color;
+    border-radius: 4px;
+    padding: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+      border-color: $accent-purple;
+      box-shadow: 0 8px 24px rgba(60, 60, 60, 0.3);
+    }
+
+    .anime-profile-page-correct-collection-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    .anime-profile-page-correct-collection-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: $text-primary;
+      margin-bottom: 8px;
+    }
+
+    .anime-profile-page-correct-collection-count {
+      font-size: 24px;
+      font-weight: 700;
+      color: $accent-purple;
+    }
+  }
+}
+
+// ===== Ban/Mute Banners =====
+.anime-profile-page-correct-ban-banner,
+.anime-profile-page-correct-mute-banner {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 4px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  backdrop-filter: blur(10px);
+
+  .anime-profile-page-correct-banner-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    color: #fca5a5;
+    font-weight: 600;
+
+    svg {
+      flex-shrink: 0;
+    }
+  }
+
+  .anime-profile-page-correct-banner-dates {
+    font-size: 13px;
+    color: #fca5a5;
+    margin-bottom: 6px;
+  }
+
+  .anime-profile-page-correct-banner-reason {
+    font-size: 13px;
+    color: #fca5a5;
+    line-height: 1.4;
+  }
+}
+
+.anime-profile-page-correct-mute-banner {
+  background: rgba(251, 146, 60, 0.1);
+  border-color: rgba(251, 146, 60, 0.3);
+
+  .anime-profile-page-correct-banner-header,
+  .anime-profile-page-correct-banner-dates,
+  .anime-profile-page-correct-banner-reason {
+    color: #fdba74;
+  }
+}
+
+// ===== Permanent Ban Page (Discord Style) =====
+.anime-profile-page-correct-permanent-ban-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  position: relative;
+  z-index: 1;
+
+  .anime-profile-page-correct-ban-container {
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+    background: #2b2d31;
+    border-radius: 16px;
+    padding: 48px 40px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.05);
+    position: relative;
+    overflow: hidden;
+
+    // Subtle top accent
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #ed4245 0%, #f04747 100%);
+    }
+
+    .ban-icon-wrapper {
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: center;
+
+      .ban-icon-circle {
+        width: 96px;
+        height: 96px;
+        border-radius: 50%;
+        background: rgba(237, 66, 69, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+
+        svg {
+          color: #ed4245;
+          stroke-width: 2;
+        }
+
+        &::after {
+          content: '';
+          position: absolute;
+          inset: -8px;
+          border-radius: 50%;
+          border: 2px solid rgba(237, 66, 69, 0.2);
+          animation: pulse-ban 2s ease-in-out infinite;
+        }
+      }
+    }
+
+    .ban-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #f2f3f5;
+      margin: 0 0 32px 0;
+      line-height: 1.5;
+      letter-spacing: -0.01em;
+    }
+
+    .ban-reason-card {
+      background: #1e1f22;
+      border-radius: 12px;
+      padding: 0;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+
+      .ban-reason-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 16px;
+        background: rgba(237, 66, 69, 0.1);
+        border-bottom: 1px solid rgba(237, 66, 69, 0.2);
+
+        svg {
+          color: #ed4245;
+          stroke-width: 2;
+          flex-shrink: 0;
+        }
+
+        span {
+          font-size: 14px;
+          font-weight: 600;
+          color: #ed4245;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+      }
+
+      .ban-reason-content {
+        padding: 16px;
+        font-size: 15px;
+        color: #dbdee1;
+        text-align: left;
+        line-height: 1.6;
+        word-wrap: break-word;
+      }
+    }
+  }
+}
+
+// Light theme
+[data-theme="light"] .anime-profile-page-correct-permanent-ban-page {
+  .anime-profile-page-correct-ban-container {
+    background: #ffffff;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12),
+                0 0 0 1px rgba(0, 0, 0, 0.05);
+
+    .ban-icon-wrapper .ban-icon-circle {
+      background: rgba(237, 66, 69, 0.1);
+      
+      &::after {
+        border-color: rgba(237, 66, 69, 0.15);
+      }
+    }
+
+    .ban-title {
+      color: #2e3338;
+    }
+
+    .ban-reason-card {
+      background: #f2f3f5;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+      .ban-reason-header {
+        background: rgba(237, 66, 69, 0.08);
+        border-bottom-color: rgba(237, 66, 69, 0.15);
+      }
+
+      .ban-reason-content {
+        color: #4e5058;
+      }
+    }
+  }
+}
+
+@keyframes pulse-ban {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .anime-profile-page-correct-permanent-ban-page {
+    padding: 24px 16px;
+
+    .anime-profile-page-correct-ban-container {
+      padding: 40px 24px;
+
+      .ban-icon-wrapper .ban-icon-circle {
+        width: 80px;
+        height: 80px;
+
+        svg {
+          width: 40px;
+          height: 40px;
+        }
+      }
+
+      .ban-title {
+        font-size: 18px;
+        margin-bottom: 24px;
+      }
+
+      .ban-reason-card {
+        .ban-reason-header {
+          padding: 12px 14px;
+
+          svg {
+            width: 18px;
+            height: 18px;
+          }
+
+          span {
+            font-size: 13px;
+          }
+        }
+
+        .ban-reason-content {
+          padding: 14px;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}
+
+// ===== Empty States =====
+.anime-profile-page-correct-empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: $text-muted;
+
+  .anime-profile-page-correct-empty-icon {
+    font-size: 64px;
+    opacity: 0.3;
+    margin-bottom: 16px;
+  }
+
+  .anime-profile-page-correct-empty-text {
+    font-size: 16px;
+    font-style: italic;
+  }
+}
+
+// ===== Loading Spinner =====
+.anime-profile-page-correct-loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+
+  .anime-profile-page-correct-spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid rgba(60, 60, 60, 0.1);
+    border-top-color: $text-primary;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+}
+
+// ===== Skeleton Loaders =====
+.anime-profile-page-correct-skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(var(--profile-color-1-rgb, 26, 26, 26), 0.3) 0%,
+    rgba(var(--profile-color-1-rgb, 37, 37, 37), 0.5) 50%,
+    rgba(var(--profile-color-1-rgb, 26, 26, 26), 0.3) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.8s ease-in-out infinite;
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(var(--profile-color-2-rgb, 255, 255, 255), 0.08) 50%,
+      transparent 100%
+    );
+    animation: skeleton-shimmer 2s ease-in-out infinite;
+  }
+
+  @keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  @keyframes skeleton-shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+}
+
+.anime-profile-page-correct-header-skeleton {
+  width: 100%;
+  
+  .anime-profile-page-correct-skeleton-banner {
+    width: 100%;
+    height: 340px;
+    background: linear-gradient(
+      135deg,
+      rgba(var(--profile-color-1-rgb, 26, 26, 26), 0.4) 0%,
+      rgba(var(--profile-color-2-rgb, 37, 37, 37), 0.4) 100%
+    );
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.1) 50%,
+        transparent 100%
+      );
+      animation: banner-sweep 2.5s ease-in-out infinite;
+    }
+
+    @keyframes banner-sweep {
+      0% { left: -100%; }
+      100% { left: 200%; }
+    }
+  }
+
+  .anime-profile-page-correct-skeleton-info {
+    max-width: 1400px;
+    margin: -80px auto 0;
+    padding: 0 40px;
+    display: flex;
+    gap: 24px;
+
+    .anime-profile-page-correct-skeleton-avatar {
+      width: 180px;
+      height: 180px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      border: 6px solid rgba(var(--profile-color-1-rgb, 13, 13, 13), 0.8);
+      box-shadow: 0 0 30px rgba(var(--profile-color-1-rgb, 0, 0, 0), 0.5),
+                  0 0 60px rgba(var(--profile-color-2-rgb, 0, 0, 0), 0.3);
+    }
+
+    .anime-profile-page-correct-skeleton-details {
+      flex: 1;
+      padding-top: 100px;
+
+      .anime-profile-page-correct-skeleton-name {
+        width: 300px;
+        height: 40px;
+        margin-bottom: 12px;
+        border-radius: 8px;
+      }
+
+      .anime-profile-page-correct-skeleton-badges {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 12px;
+        
+        .anime-profile-page-correct-skeleton-badge {
+          width: 32px;
+          height: 32px;
+          border-radius: 8px;
+        }
+      }
+
+      .anime-profile-page-correct-skeleton-bio {
+        width: 100%;
+        max-width: 500px;
+        height: 60px;
+        border-radius: 8px;
+      }
+    }
+  }
+}
+
+// Скелетон для секций
+.anime-profile-page-correct-skeleton-section-wrapper {
+  background: rgba(26, 26, 26, 0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+
+  .anime-profile-page-correct-skeleton-section-title {
+    width: 150px;
+    height: 24px;
+    margin-bottom: 16px;
+    border-radius: 8px;
+  }
+}
+
+// Скелетон списка друзей
+.anime-profile-page-correct-skeleton-friends-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.anime-profile-page-correct-skeleton-friend-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+
+  .anime-profile-page-correct-skeleton-friend-avatar {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    border-radius: 50%;
+  }
+
+  .anime-profile-page-correct-skeleton-friend-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    .anime-profile-page-correct-skeleton-friend-name {
+      width: 120px;
+      height: 16px;
+      border-radius: 4px;
+    }
+
+    .anime-profile-page-correct-skeleton-friend-bio {
+      width: 180px;
+      height: 14px;
+      border-radius: 4px;
+    }
+  }
+}
+
+// Скелетон графика
+.anime-profile-page-correct-skeleton-chart {
+  width: 180px;
+  height: 180px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+}
+
+// Скелетон сетки аниме
+.anime-profile-page-correct-skeleton-anime-grid {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  
+  &::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+}
+
+.anime-profile-page-correct-skeleton-anime-card {
+  min-width: 225px;
+  width: 225px;
+  height: 320px;
+  flex-shrink: 0;
+  border-radius: 10px;
+}
+
+.anime-profile-page-correct-content-skeleton {
+  .anime-profile-page-correct-skeleton-tabs {
+    height: 48px;
+    margin-bottom: 16px;
+    border-radius: 10px;
+  }
+
+  .anime-profile-page-correct-skeleton-section {
+    height: 400px;
+    margin-bottom: 16px;
+    border-radius: 12px;
+    background: rgba(26, 26, 26, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+}
+
+// ===== Дополнительные переопределения для кнопок FriendsList =====
+.anime-profile-page-correct-wrapper {
+  // Переопределение для view-all-friends кнопки
+  .view-all-friends {
+    display: block !important;
+    width: 100% !important;
+    padding: 10px !important;
+    margin-top: 12px !important;
+    background: $bg-dark-tertiary !important;
+    border: 1px solid $border-color !important;
+    border-radius: 4px !important;
+    color: $text-secondary !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+
+    &:hover {
+      background: $bg-dark-secondary !important;
+      color: $text-primary !important;
+      border-color: $accent-purple !important;
+    }
+  }
+
+  // Переопределение для friend-requests-badge
+  .friend-requests-badge {
+    display: inline-block !important;
+    padding: 2px 8px !important;
+    background: $gradient-pink !important;
+    border-radius: 12px !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    color: $text-primary !important;
+    margin-left: 8px !important;
+  }
+}
+
+// ===== Адаптивность =====
+@media (max-width: $bp-tablet) {
+  .anime-profile-page-correct-container {
+    padding: 20px 20px !important;
+  }
+
+  .anime-profile-page-correct-header {
+    .anime-profile-page-correct-header-content {
+      padding: 0 20px 20px !important;
+    }
+  }
+
+  .anime-profile-page-correct-sidebar {
+    width: 100% !important;
+  }
+
+  .anime-profile-page-correct-content-section {
+    padding: 20px !important;
+  }
+}
+
+@media (max-width: $bp-mobile) {
+  .anime-profile-page-correct-tabs {
+    flex-direction: column !important;
+  }
+
+  .anime-profile-page-correct-content-section {
+    .watching-list,
+    .watching-list-container,
+    .favorites-grid-pc {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+  }
+
+  .anime-profile-page-correct-friends-section {
+    .friends-profile-card {
+      height: auto !important;
+    }
+  }
+
+  .anime-profile-page-correct-info {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  .anime-profile-page-correct-avatar-container {
+    .anime-profile-page-correct-avatar {
+      width: 120px !important;
+      height: 120px !important;
+    }
+  }
+}
+
+// ===== Friends Modal (Discord Style с поддержкой темы сайта) =====
+.modal-show-more-friends-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  background: rgba(0, 0, 0, 0.85) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 1000 !important;
+  backdrop-filter: blur(4px) !important;
+  animation: fadeIn .2s ease-out !important;
+}
+
+.modal-show-more-friends-content {
+  width: min(1400px, 96vw) !important;
+  height: min(820px, 92vh) !important;
+  background: $bg-dark-secondary !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 16px !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 
+    0 8px 16px rgba(0, 0, 0, 0.4),
+    0 24px 64px rgba(0, 0, 0, 0.7) !important;
+  animation: modalPop .35s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+// Светлая тема для модалки
+[data-theme="light"] .modal-show-more-friends-content,
+.theme-light .modal-show-more-friends-content {
+  background: #f9fafb !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 
+    0 8px 16px rgba(0, 0, 0, 0.1),
+    0 24px 64px rgba(0, 0, 0, 0.15) !important;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes modalPop {
+  from { 
+    transform: translateY(20px) scale(.95); 
+    opacity: 0; 
+  }
+  to   { 
+    transform: translateY(0) scale(1); 
+    opacity: 1; 
+  }
+}
+
+.modal-show-more-friends-close {
+  position: absolute !important;
+  top: 20px !important;
+  right: 20px !important;
+  width: 36px !important;
+  height: 36px !important;
+  background: rgba(0, 0, 0, 0.4) !important;
+  color: $text-secondary !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  border-radius: 8px !important;
+  font-size: 20px !important;
+  font-weight: 300 !important;
+  cursor: pointer !important;
+  z-index: 10 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all .2s ease !important;
+
+  &:hover {
+    background: rgba(239, 68, 68, 0.15) !important;
+    border-color: rgba(239, 68, 68, 0.3) !important;
+    color: #ef4444 !important;
+    transform: scale(1.05) !important;
+  }
+  
+  &:active {
+    transform: scale(0.95) !important;
+  }
+}
+
+.friends-modal-layout {
+  display: flex !important;
+  flex-direction: row !important;
+  height: 100% !important;
+}
+
+.friends-modal-sidebar {
+  width: 260px !important;
+  flex-shrink: 0 !important;
+  background: rgba(0, 0, 0, 0.3) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.06) !important;
+  padding: 28px 18px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+
+  @media (max-width: $bp-tablet) {
+    width: 220px !important;
+    padding: 24px 14px !important;
+    gap: 8px !important;
+  }
+  
+  @media (max-width: $bp-mobile) {
+    width: 72px !important;
+    padding: 20px 8px !important;
+  }
+}
+
+// Светлая тема для sidebar
+[data-theme="light"] .friends-modal-sidebar,
+.theme-light .friends-modal-sidebar {
+  background: rgba(0, 0, 0, 0.03) !important;
+  border-right-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+.sidebar-item {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  padding: 12px 16px !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 8px !important;
+  color: $text-muted !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all .2s ease !important;
+  white-space: nowrap !important;
+  position: relative !important;
+  text-align: left !important;
+  width: 100% !important;
+
+  &::before {
+    content: '' !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 50% !important;
+    transform: translateY(-50%) scaleY(0) !important;
+    width: 3px !important;
+    height: 70% !important;
+    background: var(--primary-color) !important;
+    border-radius: 0 4px 4px 0 !important;
+    transition: transform .2s ease !important;
+  }
+
+  &.active {
+    color: $text-primary !important;
+    background: var(--primary-bg-hover) !important;
+    
+    &::before {
+      transform: translateY(-50%) scaleY(1) !important;
+    }
+  }
+
+  &:hover:not(.active) {
+    color: $text-secondary !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+  }
+
+  @media (max-width: $bp-tablet) {
+    padding: 10px 12px !important;
+    font-size: 14px !important;
+  }
+  
+  @media (max-width: $bp-mobile) {
+    padding: 10px 8px !important;
+    font-size: 0 !important;
+    justify-content: center !important;
+    
+    &::after {
+      content: '👥' !important;
+      font-size: 20px !important;
+    }
+  }
+}
+
+// Светлая тема для sidebar items
+[data-theme="light"] .sidebar-item,
+.theme-light .sidebar-item {
+  color: #6b7280 !important;
+
+  &.active {
+    color: #111827 !important;
+  }
+
+  &:hover:not(.active) {
+    color: #374151 !important;
+    background: rgba(0, 0, 0, 0.03) !important;
+  }
+}
+
+.friends-modal-content {
+  flex: 1 !important;
+  padding: 28px 32px !important;
+  overflow-y: auto !important;
+  background: $bg-dark-secondary !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: $border-color $bg-dark-secondary !important;
+
+  &::-webkit-scrollbar {
+    width: 10px !important;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent !important;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-radius: 6px !important;
+    border: 2px solid transparent !important;
+    background-clip: content-box !important;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.15) !important;
+      background-clip: content-box !important;
+    }
+  }
+
+  @media (max-width: $bp-tablet) {
+    padding: 20px 24px !important;
+  }
+  
+  @media (max-width: $bp-mobile) {
+    padding: 16px !important;
+  }
+}
+
+// Светлая тема для content
+[data-theme="light"] .friends-modal-content,
+.theme-light .friends-modal-content {
+  background: #ffffff !important;
+  scrollbar-color: rgba(0, 0, 0, 0.2) #ffffff !important;
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.15) !important;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.25) !important;
+    }
+  }
+}
+
+.friends-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+  gap: 16px !important;
+
+  @media (max-width: $bp-tablet) {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)) !important;
+    gap: 12px !important;
+  }
+
+  @media (max-width: $bp-mobile) {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+// Стили для карточек друзей в модалке (Discord-style с анимированными изображениями)
+.friends-modal-content {
+  .friend-card {
+    position: relative !important;
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    background: rgba(255, 255, 255, 0.02) !important;
+    overflow: hidden !important;
+    cursor: pointer !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+
+    // Карточка с цветами профиля
+    &[data-has-colors="true"] {
+      background: rgba(255, 255, 255, 0.02) !important;
+      border: 2px solid transparent !important;
+      background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
+                        linear-gradient(180deg, var(--friend-color-1) 0%, var(--friend-color-2) 100%) !important;
+      background-origin: border-box !important;
+      background-clip: padding-box, border-box !important;
+      
+      &::before {
+        content: '' !important;
+        position: absolute !important;
+        inset: 0 !important;
+        border-radius: 10px !important;
+        background: linear-gradient(180deg, var(--friend-color-1) 0%, var(--friend-color-2) 100%) !important;
+        opacity: 0.12 !important;
+        z-index: 0 !important;
+        pointer-events: none !important;
+      }
+
+      &:hover {
+        transform: translateY(-4px) !important;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 
+                    0 0 8px var(--friend-color-1),
+                    0 0 12px var(--friend-color-2) !important;
+        
+        &::before {
+          opacity: 0.18 !important;
+        }
+      }
+
+      .banner {
+        position: relative !important;
+        z-index: 1 !important;
+      }
+
+      .info {
+        position: relative !important;
+        z-index: 1 !important;
+        
+        .avatar {
+          position: relative !important;
+          overflow: visible !important;
+          
+          > div {
+            position: relative !important;
+            z-index: 2 !important;
+            border-radius: 50% !important;
+            overflow: hidden !important;
+          }
+          
+          &::before {
+            content: '' !important;
+            position: absolute !important;
+            inset: -4px !important;
+            border-radius: 50% !important;
+            background: linear-gradient(135deg, var(--friend-color-1) 0%, var(--friend-color-2) 100%) !important;
+            z-index: 1 !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+          }
+        }
+      }
+    }
+
+    // Карточка без цветов профиля (темная тема по умолчанию)
+    &[data-has-colors="false"] {
+      &:hover {
+        transform: translateY(-4px) !important;
+        border-color: rgba(255, 255, 255, 0.12) !important;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
+      }
+
+      .banner {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%) !important;
+      }
+
+      .info .avatar {
+        border-color: rgba(255, 255, 255, 0.15) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+      }
+
+      &:hover .info .avatar {
+        border-color: rgba(255, 255, 255, 0.25) !important;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5) !important;
+      }
+    }
+  }
+}
+
+// Светлая тема для карточек друзей без цветов профиля
+[data-profile-theme="light"] .friends-modal-content .friend-card[data-has-colors="false"],
+.light-theme .friends-modal-content .friend-card[data-has-colors="false"],
+[data-theme="light"] .friends-modal-content .friend-card[data-has-colors="false"] {
+  background: rgba(0, 0, 0, 0.03) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+
+  &:hover {
+    border-color: rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1) !important;
+  }
+
+  .banner {
+    background: linear-gradient(135deg, #e8e8e8 0%, #d0d0d0 100%) !important;
+  }
+
+  .info {
+    background: rgba(255, 255, 255, 0.8) !important;
+
+    .avatar {
+      border-color: rgba(0, 0, 0, 0.2) !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+    }
+
+    .user-info {
+      .name {
+        color: #000000 !important;
+        font-weight: 800 !important;
+        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5) !important;
+      }
+
+      .bio {
+        color: #374151 !important;
+        font-weight: 600 !important;
+      }
+    }
+  }
+
+  &:hover .info .avatar {
+    border-color: rgba(0, 0, 0, 0.25) !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2) !important;
+  }
+}
+
+// Продолжение стилей для карточек друзей
+.friends-modal-content {
+  .friend-card {
+    // Баннер с переключением на анимированный при hover
+    .banner {
+      position: relative !important;
+      width: 100% !important;
+      height: 120px !important;
+      overflow: hidden !important;
+
+      > div {
+        width: 100% !important;
+        height: 100% !important;
+      }
+
+      &::after {
+        content: '' !important;
+        position: absolute !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 50% !important;
+        background: linear-gradient(
+          180deg,
+          transparent 0%,
+          rgba(0, 0, 0, 0.6) 100%
+        ) !important;
+        pointer-events: none !important;
+        z-index: 1 !important;
+      }
+    }
+
+    // Информация
+    .info {
+      position: relative !important;
+      padding: 16px !important;
+      display: flex !important;
+      align-items: flex-start !important;
+      gap: 14px !important;
+      background: rgba(0, 0, 0, 0.2) !important;
+      margin-top: -32px !important;
+      z-index: 2 !important;
+
+      .avatar {
+        position: relative !important;
+        flex-shrink: 0 !important;
+        width: 56px !important;
+        height: 56px !important;
+        border-radius: 50% !important;
+        overflow: hidden !important;
+        background: $bg-dark-primary !important;
+        transition: all 0.3s ease !important;
+
+        > div {
+          border-radius: 50% !important;
+          overflow: hidden !important;
+        }
+      }
+
+      .user-info {
+        flex: 1 !important;
+        min-width: 0 !important;
+        
+        .name {
+          font-size: 15px !important;
+          font-weight: 700 !important;
+          color: $text-primary !important;
+          white-space: nowrap !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+          display: flex !important;
+          align-items: center !important;
+          gap: 6px !important;
+          margin-bottom: 4px !important;
+
+          .verified-badge-friends {
+            display: inline-flex !important;
+            align-items: center !important;
+            flex-shrink: 0 !important;
+
+            svg,
+            .verified-icon-friends {
+              width: 16px !important;
+              height: 16px !important;
+              filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6)) !important;
+
+              path {
+                fill: #ef4444 !important;
+              }
+            }
+          }
+        }
+
+        .bio {
+          font-size: 12px !important;
+          color: $text-secondary !important;
+          line-height: 1.4 !important;
+          display: -webkit-box !important;
+          -webkit-line-clamp: 2 !important;
+          line-clamp: 2 !important;
+          -webkit-box-orient: vertical !important;
+          overflow: hidden !important;
+        }
+      }
+    }
+
+    // Действия
+    .actions-row {
+      padding: 0 16px 16px !important;
+      background: transparent !important;
+
+      .btn-danger {
+        width: 100% !important;
+        padding: 10px 16px !important;
+        background: rgba(239, 68, 68, 0.12) !important;
+        border: 1px solid rgba(239, 68, 68, 0.25) !important;
+        border-radius: 8px !important;
+        color: #ef4444 !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+
+        &:hover {
+          background: rgba(239, 68, 68, 0.2) !important;
+          border-color: rgba(239, 68, 68, 0.4) !important;
+          transform: translateY(-1px) !important;
+        }
+
+        &:active {
+          transform: translateY(0) !important;
+        }
+      }
+    }
+  }
+}
+
+// Заголовок списка друзей
+.friends-modal-content {
+  h3 {
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    color: $text-muted !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    margin-bottom: 16px !important;
+    padding-left: 4px !important;
+  }
+
+  // Список заявок
+  .requests-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+
+    .request-item {
+      display: flex !important;
+      align-items: center !important;
+      gap: 12px !important;
+      padding: 12px 14px !important;
+      background: rgba(0, 0, 0, 0.2) !important;
+      border-radius: 8px !important;
+      transition: all 0.2s ease !important;
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.3) !important;
+      }
+
+      .avatar {
+        flex-shrink: 0 !important;
+        width: 40px !important;
+        height: 40px !important;
+        border-radius: 50% !important;
+        overflow: hidden !important;
+        background: $bg-dark-primary !important;
+
+        img {
+          width: 100% !important;
+          height: 100% !important;
+          object-fit: cover !important;
+        }
+      }
+
+      .name {
+        flex: 1 !important;
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        color: $text-primary !important;
+      }
+
+      .actions {
+        display: flex !important;
+        gap: 8px !important;
+
+        button {
+          padding: 6px 12px !important;
+          border: none !important;
+          border-radius: 6px !important;
+          font-size: 12px !important;
+          font-weight: 600 !important;
+          cursor: pointer !important;
+          transition: all 0.2s ease !important;
+        }
+
+        .btn-primary {
+          background: $accent-purple !important;
+          color: $text-primary !important;
+
+          &:hover {
+            background: darken($accent-purple, 10%) !important;
+          }
+        }
+
+        .btn-secondary {
+          background: rgba(255, 255, 255, 0.1) !important;
+          color: $text-secondary !important;
+
+          &:hover {
+            background: rgba(255, 255, 255, 0.15) !important;
+            color: $text-primary !important;
+          }
+        }
+
+        .btn-danger {
+          background: rgba(239, 68, 68, 0.15) !important;
+          color: #ef4444 !important;
+
+          &:hover {
+            background: rgba(239, 68, 68, 0.25) !important;
+          }
+        }
+      }
+    }
+  }
+
+  // Пустое состояние
+  .empty {
+    text-align: center !important;
+    padding: 60px 20px !important;
+    color: $text-muted !important;
+    font-size: 14px !important;
+  }
+}
+
+// Пустое состояние (дополнительные классы)
+.no-friends-message,
+.no-requests-message {
+  text-align: center !important;
+  padding: 60px 20px !important;
+  color: $text-muted !important;
+  font-size: 14px !important;
+
+  svg {
+    margin-bottom: 12px !important;
+    opacity: 0.5 !important;
+  }
+}
+
+// Светлая тема для заголовков и элементов
+[data-theme="light"] .friends-modal-content,
+.theme-light .friends-modal-content {
+  h3 {
+    color: #6b7280 !important;
+  }
+
+  .empty,
+  .no-friends-message,
+  .no-requests-message {
+    color: #9ca3af !important;
+  }
+
+  .requests-list .request-item {
+    background: rgba(0, 0, 0, 0.02) !important;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.05) !important;
+    }
+
+    .avatar {
+      background: #f3f4f6 !important;
+    }
+
+    .name {
+      color: #111827 !important;
+    }
+  }
+}
+
+// ===== Скелетон загрузки для модалки друзей =====
+@keyframes skeletonPulsate {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
+}
+
+.loading-skeleton {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-radius: 8px !important;
+  animation: skeletonPulsate 1.8s ease-in-out infinite !important;
+
+  &.sidebar-item {
+    height: 42px !important;
+    border-radius: 8px !important;
+    margin-bottom: 10px !important;
+  }
+
+  &.content-header {
+    width: 200px !important;
+    height: 24px !important;
+    margin-bottom: 20px !important;
+  }
+
+  &.friend-card {
+    height: 240px !important;
+    border-radius: 12px !important;
+  }
+
+  &.request-item {
+    height: 64px !important;
+    border-radius: 8px !important;
+    margin-bottom: 8px !important;
+  }
+}
+
+.no-scrollbar {
+  overflow: hidden !important;
+}
+
+// ===== МОБИЛЬНАЯ ВЕРСИЯ ПРОФИЛЯ - Светлая тема =====
+.profile-mobile-wrapper,
+.permanent-ban-page {
+  transition: background 0.3s ease, color 0.3s ease;
+
+  &[data-profile-theme="light"] {
+    background: $light-bg-primary !important;
+    color: $light-text-primary !important;
+
+    // Баннер
+    .profile-mobile-banner {
+      &::after {
+        background: linear-gradient(180deg, transparent 0%, $light-bg-primary 100%) !important;
+      }
+    }
+
+    // Аватар
+    .profile-mobile-avatar-wrapper {
+      .profile-mobile-avatar {
+        border: 4px solid $light-bg-primary !important;
+      }
+    }
+
+    // Текст
+    .profile-mobile-nickname,
+    .profile-mobile-username {
+      color: $light-text-primary !important;
+    }
+
+    .profile-mobile-bio {
+      background: $light-bg-secondary !important;
+      border: 1px solid $light-border-color !important;
+      color: $light-text-secondary !important;
+    }
+
+    // Статистика
+    .profile-mobile-stats-summary {
+      background: $light-bg-secondary !important;
+      border: 1px solid $light-border-color !important;
+
+      .stat-item {
+        border-right: 1px solid $light-border-color !important;
+
+        .stat-label {
+          color: $light-text-muted !important;
+        }
+
+        .stat-value {
+          color: $light-text-primary !important;
+        }
+      }
+    }
+
+    // Вкладки
+    .profile-mobile-tabs-bar {
+      background: $light-bg-secondary !important;
+      border-bottom: 1px solid $light-border-color !important;
+
+      .tab-button {
+        color: $light-text-muted !important;
+
+        &.active {
+          color: $light-text-primary !important;
+          border-bottom-color: $accent-purple !important;
+        }
+      }
+    }
+
+    // Контент
+    .profile-mobile-content {
+      background: $light-bg-primary !important;
+    }
+
+    // Карточки друзей
+    .friend-card-mobile {
+      background: $light-bg-secondary !important;
+      border: 1px solid $light-border-color !important;
+
+      .friend-name {
+        color: $light-text-primary !important;
+      }
+    }
+
+    // Активность
+    .activity-item-mobile {
+      background: $light-bg-secondary !important;
+      border: 1px solid $light-border-color !important;
+
+      .activity-text {
+        color: $light-text-primary !important;
+      }
+
+      .activity-time {
+        color: $light-text-muted !important;
+      }
+    }
+
+    // Отзывы
+    .review-card-mobile {
+      background: $light-bg-secondary !important;
+      border: 1px solid $light-border-color !important;
+
+      .review-title {
+        color: $light-text-primary !important;
+      }
+
+      .review-text {
+        color: $light-text-secondary !important;
+      }
+    }
+
+    // Баннеры бана/мута
+    .mute-banner-mobile,
+    .ban-banner-mobile {
+      background: $light-bg-secondary !important;
+      border: 1px solid $light-border-color !important;
+
+      .banner-header,
+      .banner-dates,
+      .banner-reason {
+        color: $light-text-primary !important;
+      }
+    }
+
+    // Permanent ban page
+    .permanent-ban-container {
+      background: $light-bg-secondary !important;
+      border: 1px solid $light-border-color !important;
+
+      h1,
+      p {
+        color: $light-text-primary !important;
+      }
+
+      .ban-icon {
+        color: $light-text-muted !important;
+      }
+    }
+  }
+}
+

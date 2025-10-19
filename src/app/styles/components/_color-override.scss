@@ -1,0 +1,284 @@
+// Глобальное переопределение цветов
+// Этот файл гарантирует, что все элементы используют CSS переменные
+
+// Все ссылки
+a {
+  color: var(--text-secondary);
+  
+  &:hover {
+    color: var(--primary-color) !important;
+  }
+}
+
+// Все кнопки
+button {
+  &.primary,
+  &[class*="primary"] {
+    background: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    
+    &:hover {
+      background: var(--primary-hover) !important;
+      border-color: var(--primary-hover) !important;
+    }
+  }
+}
+
+// Хедер
+.header {
+  a:hover,
+  .logo-dropdown ul li a:hover,
+  .our-apps .apps-dropdown ul li a:hover,
+  .profile-dropdown ul li a:hover,
+  .profile-dropdown ul li button:hover {
+    color: var(--primary-color) !important;
+  }
+  
+  .theme-button {
+    &:hover {
+      color: var(--primary-color) !important;
+      
+      svg {
+        color: var(--primary-color) !important;
+      }
+    }
+  }
+}
+
+// Карточки аниме
+.anime-card,
+.global-anime-card {
+  &:hover {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 4px 20px var(--primary-bg) !important;
+  }
+}
+
+// Категории
+.category {
+  &:hover {
+    border-color: var(--primary-color) !important;
+  }
+}
+
+.category-title {
+  &:hover {
+    color: var(--primary-color) !important;
+  }
+}
+
+// Поля ввода
+input,
+textarea,
+select {
+  &:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px var(--primary-bg) !important;
+  }
+}
+
+// Активные элементы в модальном окне темы
+.theme-option-card.active {
+  border-color: var(--primary-color) !important;
+  background: var(--primary-bg) !important;
+  
+  .theme-checkmark {
+    color: var(--primary-color) !important;
+  }
+}
+
+.color-option-item.active {
+  background: var(--primary-bg) !important;
+  
+  .color-checkmark {
+    color: var(--primary-color) !important;
+  }
+}
+
+// Прогресс-бары
+progress,
+input[type="range"] {
+  accent-color: var(--primary-color) !important;
+  
+  &::-webkit-progress-value {
+    background: var(--primary-color) !important;
+  }
+  
+  &::-moz-progress-bar {
+    background: var(--primary-color) !important;
+  }
+  
+  &::-webkit-slider-thumb {
+    background: var(--primary-color) !important;
+  }
+  
+  &::-moz-range-thumb {
+    background: var(--primary-color) !important;
+  }
+}
+
+// Чекбоксы и радио
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--primary-color) !important;
+  
+  &:checked {
+    background: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+  }
+}
+
+// Скроллбары
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--primary-color) !important;
+}
+
+// Выделение текста
+::selection {
+  background-color: var(--primary-bg) !important;
+  color: var(--primary-color) !important;
+}
+
+::-moz-selection {
+  background-color: var(--primary-bg) !important;
+  color: var(--primary-color) !important;
+}
+
+// SVG иконки
+svg {
+  &[stroke],
+  &[fill] {
+    transition: all 0.3s ease;
+  }
+  
+  &:hover {
+    stroke: var(--primary-color);
+    fill: var(--primary-color);
+  }
+}
+
+// Классы с primary в названии
+[class*="primary"] {
+  &[class*="color"],
+  &[class*="text"],
+  &[class*="bg"] {
+    color: var(--primary-color) !important;
+  }
+  
+  &[class*="background"],
+  &[class*="bg"] {
+    background: var(--primary-color) !important;
+  }
+  
+  &[class*="border"] {
+    border-color: var(--primary-color) !important;
+  }
+}
+
+// Элементы с активным состоянием (исключаем profile-tab и tab-button)
+.active:not(.profile-tab):not(.tab-button),
+[class*="active"]:not(.profile-tab):not(.tab-button) {
+  color: var(--primary-color);
+  
+  &[class*="border"] {
+    border-color: var(--primary-color) !important;
+  }
+  
+  &[class*="bg"],
+  &[class*="background"] {
+    background: var(--primary-bg) !important;
+  }
+}
+
+// Навигация
+nav {
+  a {
+    &:hover,
+    &.active {
+      color: var(--primary-color) !important;
+    }
+  }
+}
+
+// Табы (исключаем таблицы И admin-anime-subtabs И profile-tab И tab-button из глобального правила)
+.tab:not(.modern-admin-table):not(.table-container):not([class*="table"]):not(.admin-anime-subtabs):not(.profile-tab):not(.tab-button),
+[class*="tab"]:not(.modern-admin-table):not(.table-container):not([class*="table"]):not([class*="table-row"]):not(.admin-anime-subtabs):not([class*="admin-anime-subtabs"]):not(.profile-tab):not(.tab-button) {
+  &.active,
+  &:hover {
+    color: var(--primary-color) !important;
+  }
+}
+
+// БЛОКИРУЕМ ТОЛЬКО outline стили для таблиц, остальное разрешаем
+.modern-admin-table,
+.modern-admin-table *,
+.table-container,
+.table-container *,
+[class*="table-row"],
+[class*="table-row"] * {
+  // Принудительно отключаем ТОЛЬКО outline
+  &:hover,
+  &:focus,
+  &:active {
+    outline: none !important;
+    /* border-color, background, box-shadow, transform - разрешены! */
+  }
+}
+
+// СПЕЦИАЛЬНЫЕ правила для admin-anime-updates: блокируем только outline
+[class*="admin-anime-updates"] {
+  &:hover,
+  &:focus,
+  &:active {
+    // Блокируем только outline
+    outline: none !important;
+    // border-color, background, transform, box-shadow - разрешены!
+  }
+}
+
+// Бейджи и лейблы
+.badge,
+.label,
+[class*="badge"],
+[class*="label"] {
+  &.primary {
+    background: var(--primary-color) !important;
+    color: white !important;
+  }
+}
+
+// Уведомления
+.notification,
+.alert {
+  &.primary {
+    background: var(--primary-bg) !important;
+    border-color: var(--primary-color) !important;
+    color: var(--primary-color) !important;
+  }
+}
+
+// Тултипы
+.tooltip,
+[class*="tooltip"] {
+  &.primary {
+    background: var(--primary-color) !important;
+    color: white !important;
+  }
+}
+
+// Пагинация
+.pagination {
+  a,
+  button {
+    &:hover {
+      color: var(--primary-color) !important;
+      border-color: var(--primary-color) !important;
+    }
+    
+    &.active {
+      background: var(--primary-color) !important;
+      border-color: var(--primary-color) !important;
+      color: white !important;
+    }
+  }
+}

@@ -1,0 +1,177 @@
+/* ===== КРИТИЧЕСКИ ВАЖНО: Полное удаление outline у табов ===== */
+
+// Максимальный приоритет для удаления outline
+.test-tabs-modern,
+.anime-tabs,
+div.test-tabs-modern,
+div.anime-tabs,
+[class*="test-tabs-modern"],
+[class*="anime-tabs"] {
+  outline: 0 !important;
+  outline: none !important;
+  outline-width: 0px !important;
+  outline-style: none !important;
+  outline-color: transparent !important;
+  outline-offset: 0px !important;
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-focus-ring-color: transparent !important;
+  -moz-outline-radius: 0 !important;
+  
+  // КРИТИЧЕСКИ ВАЖНО: Специальные правила для hover
+  &:hover {
+    outline: 0 !important;
+    outline: none !important;
+    outline-width: 0px !important;
+    outline-style: none !important;
+    outline-color: transparent !important;
+    outline-offset: 0px !important;
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-focus-ring-color: transparent !important;
+    -moz-outline-radius: 0 !important;
+    box-shadow: none !important;
+  }
+  
+  // Все состояния
+  &:hover,
+  &:focus,
+  &:focus-visible,
+  &:focus-within,
+  &:active,
+  &:visited,
+  &::before,
+  &::after {
+    outline: 0 !important;
+    outline: none !important;
+    outline-width: 0px !important;
+    outline-style: none !important;
+    outline-color: transparent !important;
+    outline-offset: 0px !important;
+  }
+  
+  // Все вложенные элементы
+  * {
+    outline: 0 !important;
+    outline: none !important;
+    outline-width: 0px !important;
+    outline-style: none !important;
+    outline-color: transparent !important;
+    outline-offset: 0px !important;
+    
+    &:hover,
+    &:focus,
+    &:focus-visible,
+    &:focus-within,
+    &:active {
+      outline: 0 !important;
+      outline: none !important;
+      outline-width: 0px !important;
+      outline-style: none !important;
+      outline-color: transparent !important;
+      outline-offset: 0px !important;
+    }
+  }
+  
+  // Кнопки внутри табов
+  button,
+  .anime-tab {
+    outline: 0 !important;
+    outline: none !important;
+    outline-width: 0px !important;
+    outline-style: none !important;
+    outline-color: transparent !important;
+    outline-offset: 0px !important;
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-focus-ring-color: transparent !important;
+    
+    &:hover,
+    &:focus,
+    &:focus-visible,
+    &:focus-within,
+    &:active,
+    &.active {
+      outline: 0 !important;
+      outline: none !important;
+      outline-width: 0px !important;
+      outline-style: none !important;
+      outline-color: transparent !important;
+      outline-offset: 0px !important;
+    }
+    
+    &::-moz-focus-inner {
+      border: 0 !important;
+      outline: 0 !important;
+    }
+  }
+}
+
+// Дополнительные селекторы для гарантии
+.test-tabs-modern button,
+.anime-tabs button,
+.anime-tabs .anime-tab {
+  outline: 0 !important;
+  outline: none !important;
+  outline-width: 0px !important;
+  outline-style: none !important;
+  outline-color: transparent !important;
+  outline-offset: 0px !important;
+}
+
+// ЭКСТРЕННЫЕ ПРАВИЛА: Максимальный приоритет для hover состояния
+.test-tabs-modern:hover,
+.anime-tabs:hover,
+div.test-tabs-modern:hover,
+div.anime-tabs:hover,
+[class*="test-tabs-modern"]:hover,
+[class*="anime-tabs"]:hover {
+  outline: 0 !important;
+  outline: none !important;
+  outline-width: 0px !important;
+  outline-style: none !important;
+  outline-color: transparent !important;
+  outline-offset: 0px !important;
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-focus-ring-color: transparent !important;
+  -moz-outline-radius: 0 !important;
+  box-shadow: none !important;
+  border-color: var(--bg-secondary) !important;
+}
+
+// Hover для кнопок
+.test-tabs-modern:hover button,
+.anime-tabs:hover button,
+.anime-tabs:hover .anime-tab,
+.test-tabs-modern button:hover,
+.anime-tabs button:hover,
+.anime-tabs .anime-tab:hover {
+  outline: 0 !important;
+  outline: none !important;
+  outline-width: 0px !important;
+  outline-style: none !important;
+  outline-color: transparent !important;
+  outline-offset: 0px !important;
+}
+
+// Firefox specific
+@-moz-document url-prefix() {
+  .test-tabs-modern,
+  .anime-tabs,
+  .test-tabs-modern *,
+  .anime-tabs * {
+    outline: 0 !important;
+    outline: none !important;
+    -moz-outline-style: none !important;
+  }
+}
+
+// Webkit specific
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  .test-tabs-modern,
+  .anime-tabs,
+  .test-tabs-modern *,
+  .anime-tabs * {
+    outline: 0 !important;
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-focus-ring-color: transparent !important;
+  }
+}

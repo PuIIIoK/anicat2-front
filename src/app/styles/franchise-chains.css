@@ -1,0 +1,649 @@
+@charset "UTF-8";
+.franchise-chain-manager {
+  margin-top: 30px;
+  padding: 25px;
+  background: #1a1a1a;
+  border-radius: 12px;
+  border: 1px solid #333;
+}
+.franchise-chain-manager .section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+.franchise-chain-manager .section-header h3 {
+  color: #fff;
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+.franchise-chain-manager .section-header .header-actions {
+  display: flex;
+  gap: 12px;
+}
+.franchise-chain-manager .section-header .header-actions .btn-create-chain,
+.franchise-chain-manager .section-header .header-actions .btn-add-to-chain {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.franchise-chain-manager .section-header .header-actions .btn-create-chain:hover:not(:disabled),
+.franchise-chain-manager .section-header .header-actions .btn-add-to-chain:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+.franchise-chain-manager .section-header .header-actions .btn-create-chain:disabled,
+.franchise-chain-manager .section-header .header-actions .btn-add-to-chain:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.franchise-chain-manager .section-header .header-actions .btn-create-chain {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+.franchise-chain-manager .section-header .header-actions .btn-create-chain:hover:not(:disabled) {
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+.franchise-chain-manager .section-header .header-actions .btn-add-to-chain {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+.franchise-chain-manager .section-header .header-actions .btn-add-to-chain:hover:not(:disabled) {
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+.franchise-chain-manager .current-chains .loading-text,
+.franchise-chain-manager .current-chains .empty-text {
+  text-align: center;
+  color: #888;
+  padding: 30px;
+  font-style: italic;
+  background: #2a2a2a;
+  border-radius: 10px;
+  border: 1px solid #333;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card {
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card:hover {
+  border-color: #555;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .chain-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #333;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .chain-header .chain-info {
+  flex: 1;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .chain-header .chain-info .chain-name {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .chain-header .chain-info .chain-name svg {
+  color: #3b82f6;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .chain-header .chain-info .chain-description {
+  color: #cbd5e1;
+  font-size: 14px;
+  margin-bottom: 10px;
+  line-height: 1.4;
+  font-style: italic;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .chain-header .chain-info .chain-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: #94a3b8;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .chain-header .chain-info .chain-meta .anime-count {
+  padding: 3px 10px;
+  background: rgba(16, 185, 129, 0.2);
+  border-radius: 14px;
+  color: #10b981;
+  font-weight: 600;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .chain-header .chain-info .chain-meta .separator {
+  color: #64748b;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .chain-header .chain-info .chain-meta .created-date {
+  color: #94a3b8;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .chain-header .chain-actions {
+  display: flex;
+  gap: 8px;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .chain-header .chain-actions .btn-remove,
+.franchise-chain-manager .current-chains .franchise-chain-card .chain-header .chain-actions .btn-delete-chain {
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid #555;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .chain-header .chain-actions .btn-remove:hover,
+.franchise-chain-manager .current-chains .franchise-chain-card .chain-header .chain-actions .btn-delete-chain:hover {
+  transform: scale(1.05);
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .chain-header .chain-actions .btn-remove {
+  color: #fbbf24;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .chain-header .chain-actions .btn-remove:hover {
+  background: rgba(251, 191, 36, 0.15);
+  border-color: #fbbf24;
+  box-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .chain-header .chain-actions .btn-delete-chain {
+  color: #ef4444;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .chain-header .chain-actions .btn-delete-chain:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: #ef4444;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .animes-in-chain {
+  padding: 20px;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .animes-in-chain .animes-header {
+  margin-bottom: 15px;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .animes-in-chain .animes-header h4 {
+  color: #e2e8f0;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #374151;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .animes-in-chain .animes-list .anime-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  margin-bottom: 8px;
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .animes-in-chain .animes-list .anime-item.dragging {
+  background: #374151;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  transform: rotate(2deg);
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .animes-in-chain .animes-list .anime-item.current {
+  border-left: 4px solid #10b981;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%);
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .animes-in-chain .animes-list .anime-item.current .anime-title {
+  font-weight: 700;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .animes-in-chain .animes-list .anime-item:hover:not(.dragging) {
+  background: #374151;
+  border-color: #4b5563;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .animes-in-chain .animes-list .anime-item .drag-handle {
+  color: #6b7280;
+  margin-right: 12px;
+  cursor: grab;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .animes-in-chain .animes-list .anime-item .drag-handle:hover {
+  background: rgba(107, 114, 128, 0.2);
+  color: #9ca3af;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .animes-in-chain .animes-list .anime-item .drag-handle:active {
+  cursor: grabbing;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .animes-in-chain .animes-list .anime-item .anime-order {
+  color: #9ca3af;
+  font-weight: 700;
+  font-size: 14px;
+  margin-right: 12px;
+  min-width: 25px;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .animes-in-chain .animes-list .anime-item .anime-details {
+  flex: 1;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .animes-in-chain .animes-list .anime-item .anime-details .anime-title-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .animes-in-chain .animes-list .anime-item .anime-details .anime-title-row .anime-title {
+  color: #f1f5f9;
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .animes-in-chain .animes-list .anime-item .anime-details .anime-title-row .anime-title .current-marker {
+  display: flex;
+  align-items: center;
+  color: #10b981;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .animes-in-chain .animes-list .anime-item .anime-details .anime-title-row .anime-title .current-marker svg {
+  color: #fbbf24;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .animes-in-chain .animes-list .anime-item .anime-details .anime-alttitle {
+  color: #94a3b8;
+  font-size: 13px;
+  font-style: italic;
+  margin-bottom: 6px;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .animes-in-chain .animes-list .anime-item .anime-details .anime-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #6b7280;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .animes-in-chain .animes-list .anime-item .anime-details .anime-meta .anime-year {
+  padding: 1px 6px;
+  background: rgba(59, 130, 246, 0.2);
+  border-radius: 10px;
+  color: #3b82f6;
+  font-weight: 600;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .animes-in-chain .animes-list .anime-item .anime-details .anime-meta .separator {
+  color: #4b5563;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .animes-in-chain .animes-list .anime-item .anime-details .anime-meta .anime-status {
+  padding: 1px 6px;
+  background: rgba(168, 85, 247, 0.2);
+  border-radius: 10px;
+  color: #a855f7;
+  font-weight: 500;
+}
+.franchise-chain-manager .current-chains .franchise-chain-card .animes-in-chain .animes-list .anime-item .anime-details .anime-meta .episodes {
+  padding: 1px 6px;
+  background: rgba(34, 197, 94, 0.2);
+  border-radius: 10px;
+  color: #22c55e;
+  font-weight: 500;
+}
+.franchise-chain-manager .modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  -webkit-backdrop-filter: blur(4px);
+          backdrop-filter: blur(4px);
+}
+.franchise-chain-manager .modal-overlay .modal-content {
+  background: #1a1a1a;
+  border: 1px solid #444;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #333;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-header h3 {
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-header .modal-close {
+  background: transparent;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-header .modal-close:hover {
+  color: #fff;
+  background: #333;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .form-group {
+  margin-bottom: 20px;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .form-group label {
+  display: block;
+  color: #ccc;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .form-group .form-input,
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .form-group .form-textarea {
+  width: 100%;
+  padding: 12px;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .form-group .form-input:focus,
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .form-group .form-textarea:focus {
+  outline: none;
+  border-color: #667eea;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .form-group .form-input::-moz-placeholder, .franchise-chain-manager .modal-overlay .modal-content .modal-body .form-group .form-textarea::-moz-placeholder {
+  color: #888;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .form-group .form-input::placeholder,
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .form-group .form-textarea::placeholder {
+  color: #888;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .form-group .form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .search-input-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .search-input-container .search-input {
+  width: 100%;
+  padding: 12px 40px 12px 12px;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .search-input-container .search-input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .search-input-container .search-input::-moz-placeholder {
+  color: #888;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .search-input-container .search-input::placeholder {
+  color: #888;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .search-input-container .search-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+  width: 16px;
+  height: 16px;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .search-loading {
+  text-align: center;
+  color: #888;
+  padding: 10px;
+  font-style: italic;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .chains-list {
+  max-height: 400px;
+  overflow-y: auto;
+  /* Кастомный скроллбар */
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .chains-list .empty-text {
+  text-align: center;
+  color: #888;
+  padding: 30px 20px;
+  font-style: italic;
+  background: #2a2a2a;
+  border-radius: 10px;
+  border: 1px dashed #444;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .chains-list .chains-scroll-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .chains-list .chains-scroll-container .chain-item.selectable {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  margin-bottom: 12px;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 10px;
+  transition: background-color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+  cursor: pointer;
+  border-left: 4px solid #667eea;
+  position: relative;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .chains-list .chains-scroll-container .chain-item.selectable:hover {
+  background: #333;
+  border-color: #555;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .chains-list .chains-scroll-container .chain-item.selectable.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-left-color: #888;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .chains-list .chains-scroll-container .chain-item.selectable.disabled:hover {
+  background: #2a2a2a;
+  border-color: #444;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .chains-list .chains-scroll-container .chain-item.selectable .chain-info {
+  flex: 1;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .chains-list .chains-scroll-container .chain-item.selectable .chain-info .chain-name {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .chains-list .chains-scroll-container .chain-item.selectable .chain-info .chain-name svg {
+  color: #667eea;
+  flex-shrink: 0;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .chains-list .chains-scroll-container .chain-item.selectable .chain-info .chain-name .badge-added {
+  font-size: 12px;
+  color: #10b981;
+  font-weight: 500;
+  padding: 2px 8px;
+  background: rgba(16, 185, 129, 0.15);
+  border-radius: 12px;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .chains-list .chains-scroll-container .chain-item.selectable .chain-info .chain-description {
+  color: #cbd5e1;
+  font-size: 13px;
+  margin-bottom: 10px;
+  line-height: 1.5;
+  font-style: italic;
+  opacity: 0.9;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .chains-list .chains-scroll-container .chain-item.selectable .chain-info .chain-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: #888;
+  flex-wrap: wrap;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .chains-list .chains-scroll-container .chain-item.selectable .chain-info .chain-meta .anime-count {
+  padding: 4px 10px;
+  background: rgba(16, 185, 129, 0.15);
+  border-radius: 14px;
+  color: #10b981;
+  font-weight: 600;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  display: inline-flex;
+  align-items: center;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .chains-list .chains-scroll-container .chain-item.selectable .chain-info .chain-meta .separator {
+  color: #555;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .chains-list .chains-scroll-container .chain-item.selectable .chain-info .chain-meta .created-date {
+  color: #94a3b8;
+  font-size: 11px;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .chains-list::-webkit-scrollbar {
+  width: 8px;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .chains-list::-webkit-scrollbar-track {
+  background: #1a1a1a;
+  border-radius: 4px;
+  margin: 4px 0;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .chains-list::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 4px;
+  border: 2px solid #1a1a1a;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .chains-list::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-footer {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding: 20px;
+  border-top: 1px solid #333;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-footer .btn-save {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-footer .btn-save:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-footer .btn-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-footer .btn-cancel {
+  padding: 10px 16px;
+  background: transparent;
+  color: #ccc;
+  border: 1px solid #555;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.franchise-chain-manager .modal-overlay .modal-content .modal-footer .btn-cancel:hover {
+  background: #333;
+  border-color: #666;
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .franchise-chain-manager {
+    padding: 20px;
+  }
+  .franchise-chain-manager .section-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+  .franchise-chain-manager .section-header .header-actions {
+    justify-content: center;
+  }
+  .franchise-chain-manager .current-chains .chain-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+  .franchise-chain-manager .current-chains .chain-item .chain-actions {
+    justify-content: center;
+  }
+  .franchise-chain-manager .modal-overlay .modal-content {
+    width: 95%;
+    max-height: 90vh;
+  }
+  .franchise-chain-manager .modal-overlay .modal-content .modal-body {
+    padding: 15px;
+  }
+  .franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .chains-list {
+    max-height: 300px;
+  }
+  .franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .chains-list .chains-scroll-container .chain-item.selectable {
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+  .franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .chains-list .chains-scroll-container .chain-item.selectable .chain-info .chain-name {
+    font-size: 15px;
+  }
+  .franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .chains-list .chains-scroll-container .chain-item.selectable .chain-info .chain-description {
+    font-size: 12px;
+  }
+  .franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .chains-list .chains-scroll-container .chain-item.selectable .chain-info .chain-meta {
+    font-size: 11px;
+    gap: 8px;
+  }
+  .franchise-chain-manager .modal-overlay .modal-content .modal-body .search-container .chains-list .chains-scroll-container .chain-item.selectable .chain-info .chain-meta .anime-count {
+    padding: 3px 8px;
+  }
+  .franchise-chain-manager .modal-overlay .modal-content .modal-footer {
+    padding: 15px;
+    flex-direction: column;
+  }
+  .franchise-chain-manager .modal-overlay .modal-content .modal-footer .btn-save,
+  .franchise-chain-manager .modal-overlay .modal-content .modal-footer .btn-cancel {
+    width: 100%;
+    justify-content: center;
+  }
+}/*# sourceMappingURL=franchise-chains.css.map */

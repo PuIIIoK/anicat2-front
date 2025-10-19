@@ -3,21 +3,22 @@
 import { API_SERVER } from "../../../tools/constants";
 
 export interface AnimeEpisode {
-    title: string; // Название эпизода
-    link?: string;  // Ссылка на эпизод
+    title: string;
+    link?: string;
 }
 
 export interface AnimeInfo {
     id: number;
-    coverId: number;
+    coverId?: number;
     status: string;
     title: string;
     alttitle: string;
     episode_all: string;
     current_episode: string;
     rating: string;
-    image_url: { url: string }; // ✅ теперь это объект с полем `url`
+    image_url: { url: string };
     type: string;
+    collectionType: string;
     season: string;
     genres: string;
     year: string;
@@ -27,12 +28,26 @@ export interface AnimeInfo {
     mouth_season: string;
     studio: string;
     realesed_for: string;
-    kinescopeVideoId?: string; // ← добавь эту строку
+    kinescopeVideoId?: string;
     alias: string;
     kodik: string;
     coverUrl: string;
     bannerUrl: string;
+    zametka: string;
+    anons: string;           // новое поле
+    opened: boolean;         // новое поле
+    blockedCountries: string[] | null;
+    
+    // Поддержка разных форматов cover
+    cover?: {
+        id: number;
+        name?: string;
+    };
+
+    note?: string;           // новое поле — заметки (опционально)
+    blocked_note?: string;   // новое поле — причина блокировки (опционально)
 }
+
 
 interface RawAnime {
     id: number;
@@ -50,16 +65,26 @@ interface RawAnime {
     mouth_season: string;
     studio: string;
     realesed_for: string;
+    collectionType: string;
     alias: string;
     kodik: string;
     coverUrl: string;
     bannerUrl: string;
-    cover: { id: number; name: string }; // ✅ теперь cover берётся отсюда
+    zametka: string;
+    cover: { id: number; name: string };
+    allowedCountries: string[] | null;
+    anons?: string;         // возможно отсутствует, поэтому опционально
+    opened?: boolean;       // возможно отсутствует, поэтому опционально
+
+    // Новые поля, которые могут отсутствовать
+    note?: string;
+    blockedCountries: string;
+    blocked_note?: string;
 }
+
 
 import { fetchCoverUrl } from '../fetch-cover-url';
 
-// Обновленная версия с обязательными значениями для animeInfo
 export const fetchAllAnime = async (): Promise<AnimeInfo[]> => {
     const response = await fetch(`${API_SERVER}/api/anime/get-anime`);
     const data: RawAnime[] = await response.json();
@@ -78,7 +103,6 @@ export const fetchAllAnime = async (): Promise<AnimeInfo[]> => {
                 }
             }
 
-            // Возвращаем объект AnimeInfo с дефолтными значениями
             return {
                 id: anime.id,
                 coverId,
@@ -103,6 +127,16 @@ export const fetchAllAnime = async (): Promise<AnimeInfo[]> => {
                 kodik: anime.kodik || '',
                 coverUrl: anime.coverUrl || '',
                 bannerUrl: anime.bannerUrl || '',
+                zametka: anime.zametka || '',
+                collectionType: anime.collectionType || '',
+                blockedCountries: (anime.blockedCountries && anime.blockedCountries.length > 0) ? anime.blockedCountries : null,
+                anons: anime.anons || '',    // новое поле с дефолтом
+                opened: anime.opened ?? true, // новое поле с дефолтом
+
+                // Добавляем новые поля с дефолтами
+                note: anime.note || '',
+                blocked_where: anime.blockedCountries || '',
+                blocked_note: anime.blocked_note || '',
             } as AnimeInfo;
         })
     );

@@ -1,0 +1,201 @@
+@charset "UTF-8";
+.tab-player-content-selector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.tab-switcher {
+  display: flex;
+  background-color: #333333;
+  border-radius: 9999px;
+  padding: 4px;
+  width: -moz-fit-content;
+  width: fit-content;
+  position: relative;
+}
+.tab-switcher button {
+  flex: 1;
+  padding: 6px 16px;
+  border: none;
+  background: transparent;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 9999px;
+  cursor: pointer;
+  z-index: 2;
+  position: relative;
+  transition: color 0.3s;
+}
+.tab-switcher .active {
+  color: white;
+}
+.tab-switcher::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc(50% - 8px);
+  background: #ff0000;
+  border-radius: 9999px;
+  transition: transform 0.3s ease-in-out;
+  z-index: 1;
+}
+.tab-switcher.audio::before {
+  transform: translateX(100%);
+}
+.tab-switcher.episodes::before {
+  transform: translateX(0);
+}
+
+.tab-content {
+  width: 100%;
+  max-width: 350px;
+  background: #1c1c1c;
+  border: 2px solid #ff0000;
+  border-radius: 10px;
+  padding: 10px;
+  max-height: 400px;
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+
+.anime-episodes-page,
+.audio-selector-item {
+  /* СКРОЛЛ */
+}
+.anime-episodes-page ul,
+.audio-selector-item ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.anime-episodes-page ul li,
+.audio-selector-item ul li {
+  margin: 5px 0;
+}
+.anime-episodes-page ul li button,
+.audio-selector-item ul li button {
+  width: 100%;
+  font-size: 13px;
+  padding: 6px 10px;
+  background-color: #333;
+  color: #fff;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.anime-episodes-page ul li button.active,
+.audio-selector-item ul li button.active {
+  background-color: #ff0000;
+  color: #fff;
+  font-weight: bold;
+}
+.anime-episodes-page ul li button:hover,
+.audio-selector-item ul li button:hover {
+  background-color: #555;
+}
+.anime-episodes-page::-webkit-scrollbar,
+.audio-selector-item::-webkit-scrollbar {
+  width: 6px;
+}
+.anime-episodes-page::-webkit-scrollbar-thumb,
+.audio-selector-item::-webkit-scrollbar-thumb {
+  background: #ff0000;
+  border-radius: 6px;
+}
+.anime-episodes-page::-webkit-scrollbar-track,
+.audio-selector-item::-webkit-scrollbar-track {
+  background: #000;
+  border-radius: 6px;
+}
+
+@media (max-width: 1024px) {
+  .tab-player-content-selector {
+    gap: 8px;
+  }
+  .tab-switcher button {
+    padding: 5px 14px;
+    font-size: 13px;
+  }
+  .tab-content {
+    max-width: 320px;
+    max-height: 380px;
+    padding: 8px;
+  }
+  .anime-episodes-page ul li button,
+  .audio-selector-item ul li button {
+    font-size: 12.5px;
+    padding: 5px 8px;
+  }
+}
+@media (max-width: 768px) {
+  .tab-player-content-selector {
+    gap: 6px;
+  }
+  .tab-switcher button {
+    padding: 4px 12px;
+    font-size: 12px;
+  }
+  .tab-switcher::before {
+    width: calc(50% - 6px);
+  }
+  .tab-content {
+    max-width: 280px;
+    max-height: 340px;
+    padding: 7px;
+  }
+  .anime-episodes-page ul li button,
+  .audio-selector-item ul li button {
+    font-size: 12px;
+    padding: 5px 7px;
+  }
+}
+@media (max-width: 480px) {
+  .tab-player-content-selector {
+    gap: 5px;
+  }
+  .tab-switcher {
+    padding: 3px;
+  }
+  .tab-switcher button {
+    padding: 3px 10px;
+    font-size: 11.5px;
+  }
+  .tab-switcher::before {
+    width: calc(50% - 4px);
+  }
+  .tab-content {
+    max-width: 260px;
+    max-height: 300px;
+    padding: 6px;
+  }
+  .anime-episodes-page ul li button,
+  .audio-selector-item ul li button {
+    font-size: 11.5px;
+    padding: 4px 6px;
+  }
+}
+@media (min-width: 1440px) {
+  .tab-content {
+    max-width: 400px;
+    max-height: 500px;
+    padding: 12px;
+  }
+  .tab-switcher button {
+    padding: 8px 18px;
+    font-size: 15px;
+  }
+  .tab-switcher::before {
+    width: calc(50% - 10px);
+  }
+  .anime-episodes-page ul li button,
+  .audio-selector-item ul li button {
+    font-size: 14px;
+    padding: 7px 10px;
+  }
+}/*# sourceMappingURL=episode-audio-selector.css.map */

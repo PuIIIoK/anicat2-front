@@ -1,0 +1,87 @@
+.branches-page {
+  max-width: 700px;
+  margin: 70px auto 0;
+  padding: 32px 16px 64px;
+  color: #fff;
+}
+.branches-page h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 32px;
+  text-align: center;
+  letter-spacing: 1px;
+}
+.branches-page .branches-list {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+.branches-page .branch-card {
+  background: #181927;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2509803922);
+  padding: 32px 24px 24px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border-left: 4px solid #f3667d;
+}
+.branches-page .branch-card.private {
+  border-left: 4px solid #ffaa47;
+}
+.branches-page .branch-card .branch-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.branches-page .branch-card .branch-header h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0;
+}
+.branches-page .branch-card .branch-header .branch-type {
+  background: #252a34;
+  padding: 3px 12px;
+  border-radius: 99px;
+  font-size: 0.93rem;
+  color: #f3667d;
+}
+.branches-page .branch-card .branch-header .branch-type.private {
+  color: #ffaa47;
+}
+.branches-page .branch-card .branch-info {
+  font-size: 1rem;
+  opacity: 0.9;
+  margin-bottom: 12px;
+}
+.branches-page .branch-card .branch-btn {
+  margin-top: 8px;
+  display: inline-block;
+  background: #f3667d;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  font-size: 1.03em;
+  font-weight: 500;
+  padding: 8px 28px;
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.2s;
+  box-shadow: 0 1px 7px rgba(0, 0, 0, 0.2666666667);
+}
+.branches-page .branch-card .branch-btn:hover {
+  background: #ff547a;
+  color: #fff;
+}
+.branches-page .branch-card.private .branch-type {
+  color: #ffaa47;
+}
+.branches-page .branch-card.private .branch-btn {
+  background: #ffaa47;
+  color: #181927;
+}
+.branches-page .branch-card.private .branch-btn:hover {
+  background: #ffbe66;
+}/*# sourceMappingURL=branches.css.map */

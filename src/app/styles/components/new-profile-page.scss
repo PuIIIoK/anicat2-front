@@ -1,0 +1,1867 @@
+// Ниже 900px — планшеты, ниже 600px — мобилки
+$breakpoint-tablet: 900px;
+$breakpoint-mobile: 600px;
+// Desktop / laptop breakpoints
+$bp-hd: 1366px;   // 1366x768, 14-15"
+$bp-fhd: 1920px;  // 1920x1080, 15-17"
+$bp-qhd: 2560px;  // 2560x1440, 17-27"
+$bp-uhd: 3840px;  // 4K 27"+
+
+// Фоновый wrapper для профиля (как в Steam)
+.profile-background-wrapper {
+  position: relative;
+  min-height: 100vh;
+  // Фоновый градиент и картинка задаются через inline style
+  // Если backgroundAnimatedUrl есть - будет анимированный фон
+  // Иначе - серый градиент по умолчанию
+  background: linear-gradient(
+    to bottom,
+    rgba(13, 13, 13, 1) 0%,
+    rgba(18, 18, 18, 1) 50%,
+    rgba(13, 13, 13, 1) 100%
+  );
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(0, 0, 0, 0.1) 0%,
+      rgba(0, 0, 0, 0.3) 50%,
+      rgba(0, 0, 0, 0.6) 100%
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  > * {
+    position: relative;
+    z-index: 2;
+  }
+}
+
+.profile-container {
+  display: flex;
+  margin: 0px auto 0 auto;
+  align-items: flex-start;
+  padding: 0 20px;
+  max-width: clamp(990px, 70vw, 1600px);
+  color: #fff;
+}
+
+//friends
+.friends-profile-card {
+  position: relative;
+  width: 270px;
+  height: 160px;
+  margin-bottom: 20px;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #222222;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(0);
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.6);
+  }
+
+  &:hover .friends-profile-info {
+    background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.8));
+  }
+
+  &:hover .friends-profile-avatar-img {
+    transform: scale(1.05);
+  }
+}
+
+.friends-profile-banner {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: all 0.3s ease;
+  filter: brightness(0.9) saturate(1.1);
+
+  &:hover {
+    filter: brightness(1) saturate(1.2);
+  }
+}
+
+.friends-profile-info {
+  position: absolute;
+  height: 55px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 8px;
+  color: white;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.7));
+  font-family: 'Arial', sans-serif;
+  backdrop-filter: blur(2px);
+}
+
+.friends-profile-left {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 80%;
+}
+
+.friends-profile-name {
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 0;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  letter-spacing: 0.3px;
+}
+
+.verified-badge-friends {
+  display: inline-flex !important;
+  position: relative !important;
+  top: 5px !important;
+  right: -4px !important;
+  align-items: center !important;
+  transition: transform 0.15s;
+  vertical-align: middle !important;
+}
+
+.verified-badge-friends:hover {
+  animation: pulse 1s infinite;
+}
+
+.verified-icon-friends {
+  transition: filter .2s;
+    width: 30px !important;
+    height: 30px !important;
+    fill: #ff0000 !important;
+    display: inline-block !important;
+    vertical-align: middle !important;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.friends-profile-quote {
+  font-size: 12px;
+  opacity: 0.9;
+  line-height: 1.3;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  font-style: italic;
+}
+
+/* Стили для значка верификации в модальном окне */
+.verified-badge {
+  display: inline-flex !important;
+  margin-left: 6px !important;
+  position: relative !important;
+  top: 0 !important;
+  align-items: center !important;
+  transition: transform 0.15s;
+  vertical-align: middle !important;
+}
+
+.verified-badge:hover {
+  animation: pulse 1s infinite;
+}
+
+.verified-icon {
+  width: 18px !important;
+  height: 18px !important;
+  fill: #43d675 !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+  transition: filter 0.2s;
+}
+
+.friends-profile-avatar {
+  margin-right: 5px;
+  width: var(--avatar-size, 42px); /* Размер аватарки задается через переменную, по умолчанию 40px */
+  height: var(--avatar-size, 40px); /* Тот же размер для высоты */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.friends-profile-avatar-img {
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3), 0 2px 8px rgba(0, 0, 0, 0.3);
+  object-fit: cover; /* Масштабирование изображения с сохранением пропорций */
+  width: 100%;
+  height: 100%;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 1);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.4), 0 4px 12px rgba(0, 0, 0, 0.4);
+    transform: scale(1.05);
+  }
+}
+
+.profile-layout {
+  flex: 0 0 clamp(320px, 28vw, 420px);
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+
+    .profile-sidebar {
+      padding: clamp(18px, 2.2vw, 32px) clamp(20px, 2.6vw, 40px);
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    max-width: 450px;
+
+    .profile-block {
+      border-radius: 18px;
+      padding: 20px;
+      background: transparent; // Убираем зависимость от темы сайта
+      color: inherit;
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+
+      h2 {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        color: inherit;
+      }
+    }
+    // ==== СТАТИСТИКА ====
+    .stats-chart-container {
+      background: transparent; // Убираем зависимость от темы сайта
+      padding: 16px;
+      border-radius: 12px;
+      color: inherit;
+      h2 {
+        font-size: 20px;
+        margin-bottom: 12px;
+        color: inherit;
+      }
+
+      .stats-list {
+        margin-top: 16px;
+        .stat-line {
+          display: flex;
+          justify-content: space-between;
+          padding: 4px 0;
+          font-size: 14px;
+          span:first-child {
+            font-weight: 600;
+          }
+        }
+      }
+    }
+
+
+    // ==== ДОСТИЖЕНИЯ ====
+    .achievements {
+      .achievements-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+
+        .achievement {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          font-size: 13px;
+          text-align: center;
+          background: #1a1a1a;
+          border-radius: 12px;
+          padding: 10px 4px;
+          transition: all 0.2s ease;
+
+          img {
+            border-radius: 8px;
+            margin-bottom: 6px;
+          }
+
+          .achievement-title {
+            font-weight: 600;
+            font-size: 12px;
+            margin-bottom: 4px;
+          }
+
+          .stars {
+            font-size: 13px;
+            &.yellow { color: #f1c40f; }
+            &.blue { color: #3498db; }
+            &.green { color: #2ecc71; }
+          }
+
+          &.add-more {
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 500;
+            background: #222;
+            cursor: pointer;
+          }
+        }
+      }
+
+      .add-more-label {
+        text-align: center;
+        margin-top: 12px;
+        font-size: 13px;
+        color: #bbb;
+      }
+    }
+  }
+}
+
+.profile-main-content-container {
+  width: 100%;
+  max-width: clamp(990px, 70vw, 1600px);
+  padding: 0 clamp(12px, 2vw, 24px);
+  margin: 32px auto 0 auto;
+
+  /* Глобальный бэйдж анонса для всех карточек профиля */
+  .anons-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 6px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #ff5e5e, #ff9d47);
+    color: #111;
+    font-weight: 700;
+    font-size: 11px;
+    line-height: 1.1;
+    letter-spacing: 0.02em;
+    box-shadow: 0 2px 6px rgba(255, 100, 100, 0.35);
+    white-space: nowrap;
+  }
+  .anons-badge.small { font-size: 12px; padding: 0 5px; }
+
+  /* ЕДИНЫЙ стиль карточки профиля */
+  .profile-anime-card {
+    width: clamp(200px, 14vw, 240px); // Увеличили ширину
+    flex-shrink: 0;
+    background: #0b0b0b;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    }
+  }
+
+  .profile-anime-card img {
+    width: 100%;
+    height: clamp(210px, 18vw, 260px); // Уменьшили высоту
+    display: block;
+    object-fit: cover;
+  }
+
+  .profile-anime-card .profile-anime-card__text {
+    margin-top: 5px;
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+    flex-direction: column;
+  }
+
+  .profile-anime-card .title {
+    font-weight: 700;
+    font-size: clamp(14px, 1.2vw, 18px);
+    margin-bottom: 6px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .profile-anime-card .meta-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+  }
+
+  .profile-anime-card .meta-row .year,
+  .profile-anime-card .meta-row .episodes,
+  .profile-anime-card .meta-row .season {
+    font-size: clamp(11px, 0.95vw, 13px);
+    color: #999;
+    white-space: nowrap;
+  }
+
+  .profile-anime-card .meta-row .season {
+    color: #ccc;
+    margin-left: auto;
+  }
+
+  .profile-anime-card .meta-row .dot {
+    color: #666;
+  }
+
+  /* Когда есть анонс — переносим только сезон на новую строку слева */
+  .profile-anime-card .meta-row.has-anons {
+    flex-wrap: wrap;
+    gap: 6px 8px; /* rows x columns */
+  }
+  .profile-anime-card .meta-row.has-anons .season {
+    margin-left: 0 !important;
+    flex-basis: 100%;
+    width: 100%;
+    align-self: flex-start;
+  }
+
+  .now-watching {
+    flex: 0 0 auto; // не позволяет растягиваться
+    width: 100%; // во всю ширину контейнера
+    max-width: 100%; // без доп. ограничений
+    margin: 0; // убираем центрирование
+    padding: 24px 28px 36px;
+    border-radius: 20px;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05);
+    color: #fff;
+    margin-bottom: 24px;
+
+    .watching-list-container {
+      width: 100%;
+      padding-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(clamp(150px, 14vw, 220px), 1fr));
+      gap: clamp(18px, 2vw, 15px);
+      max-width: 100%;
+      padding-bottom: 8px; // для возможной полосы прокрутки
+    }
+
+
+    /* При разворачивании включаем горизонтальную прокрутку ленты */
+    .watching-list.expanded {
+      .watching-list-container {
+        display: flex;
+        flex-wrap: nowrap;
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        gap: clamp(18px, 2vw, 30px);
+        /* важное отличие: контейнер НЕ расширяется, карточки уезжают за правый край и появляется скролл */
+        min-width: 0;
+        padding-bottom: 8px;
+      }
+      .watching-list-container::-webkit-scrollbar { height: 8px; }
+      .watching-list-container::-webkit-scrollbar-track { background: transparent; }
+      .watching-list-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 8px; }
+      .watching-list-container::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+    }
+
+    /* placeholder removed */
+  }
+  .scroll-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-20%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 2;
+    svg {
+      width: 32px;
+      height: 32px;
+      color: #fff;
+    }
+
+    &.left {
+      left: 40rem; // или 0, если стрелки должны быть внутри
+    }
+    &.right {
+      right: 1rem;
+    }
+  }
+  .watch-history {
+    border-radius: 20px;
+    padding: 24px 28px 36px;
+    color: #fff;
+    margin-bottom: 24px;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05);
+
+    h2 {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 20px;
+      color: var(--text-primary); // Используем цвет текста темы
+    }
+
+    .history-day {
+      margin-bottom: 28px;
+
+      .history-date {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 12px;
+      }
+
+      .episode-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(clamp(150px, 12vw, 220px), 1fr));
+        gap: clamp(10px, 1.5vw, 18px);
+
+        .episode-card {
+          position: relative;
+          border-radius: 12px;
+          overflow: hidden;
+          background: #000;
+
+          img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+          }
+
+          .episode-overlay {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            padding: 8px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+            color: #fff;
+
+            .anime-title {
+              font-size: 11px;
+              opacity: 0.9;
+            }
+
+            .episode-number {
+              font-size: 14px;
+              font-weight: bold;
+              margin-top: 2px;
+            }
+          }
+        }
+
+        .load-more {
+          align-self: flex-end;
+          font-weight: 600;
+          font-size: 15px;
+          padding: 10px;
+          color: #fff;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+  .show-more-btn {
+    margin-top: 12px;
+    cursor: pointer;
+    color: #ff7a7a;
+    font-weight: bold;
+    text-align: center;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .recent-activity {
+    margin-top: 40px;
+    background: var(--recent-activity-bg) !important;
+    padding: 20px 24px;
+    border-radius: 16px;
+    border: 1px solid var(--recent-activity-border);
+    transition: all 0.3s ease;
+
+    h2 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+    }
+
+    .activity-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      &.expanded {
+        max-height: 450px;
+        overflow: auto;
+        padding-right: 6px;
+        scrollbar-width: thin;
+      }
+
+      li {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 12px;
+        margin-bottom: 8px;
+        border-radius: 8px;
+        background: var(--activity-item-bg);
+        transition: background-color 0.2s ease;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        &:hover {
+          background: var(--activity-item-hover);
+        }
+
+        .icon {
+          color: var(--activity-icon-color);
+          margin-top: 2px;
+          flex-shrink: 0;
+        }
+
+        .text {
+          color: var(--activity-text-secondary);
+          font-size: 15px;
+          line-height: 1.4;
+          position: relative;
+          flex: 1;
+
+          --activity-text-secondary: #ccc;
+          --activity-text-primary: #fff;
+          --activity-link-color: #facc15;
+          --activity-time-color: #888;
+
+          &[data-theme="light"] {
+            --activity-text-secondary: #666;
+            --activity-text-primary: #333;
+            --activity-link-color: #d97706;
+            --activity-time-color: #999;
+          }
+
+          strong {
+            color: var(--activity-text-primary);
+          }
+
+          a {
+            color: var(--activity-link-color);
+            text-decoration: none;
+
+            &:hover {
+              text-decoration: underline;
+            }
+          }
+
+          .time {
+            display: block;
+            font-size: 12px;
+            color: var(--activity-time-color);
+            margin-top: 4px;
+          }
+        }
+      }
+    }
+
+    .activity-toggle {
+      display: flex;
+      justify-content: center;
+      margin-top: 12px;
+    }
+
+    .btn-toggle-activity {
+      appearance: none;
+      border: 1px solid var(--activity-border);
+      background: var(--activity-button-bg);
+      color: var(--activity-text);
+      padding: 8px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background .2s ease, border-color .2s ease;
+
+      --activity-button-bg: #1a1a1a;
+
+      &[data-theme="dark"] {
+        --activity-button-bg: #1e1e1e;
+      }
+
+      &[data-theme="light"] {
+        --activity-button-bg: #f5f5f5;
+      }
+
+      &:hover { 
+        background: var(--activity-item-hover); 
+        border-color: var(--activity-icon-color); 
+      }
+    }
+  }
+  .favorites-block-pc {
+    margin: 80px 0;
+
+    h2 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      padding-left: 5px;
+      letter-spacing: 0.05em;
+      color: var(--text-primary); // Используем цвет текста темы
+    }
+
+    .favorites-grid-pc {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(clamp(180px,14vw,220px), 1fr));
+      gap: clamp(16px, 1.5vw, 24px);
+      padding: 0 clamp(12px, 2vw, 20px);
+    }
+
+    /* Контейнер избранного в стиле "Сейчас смотрит" */
+    &.favorites-as-watching {
+      /* идентичные контейнерные стили с .now-watching */
+      flex: 0 0 auto;
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      padding: 24px 28px 36px;
+      border-radius: 20px;
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05);
+      color: #fff;
+      margin-top: 24px;
+      margin-bottom: 24px;
+
+      .favorites-scroll-container {
+        position: relative;
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden; /* не даём обёртке разъезжать */
+
+        .favorites-list-container {
+          /* идентичная сетка с .watching-list-container */
+          width: 100%;
+          padding-top: 20px;
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(clamp(150px, 14vw, 220px), 1fr));
+          gap: clamp(18px, 2vw, 15px);
+          max-width: 100%;
+          padding-bottom: 8px;
+        }
+      }
+
+      /* В развёрнутом состоянии — горизонтальная лента, как в .now-watching */
+      .favorites-scroll-container.expanded .favorites-list-container {
+        display: flex;
+        flex-wrap: nowrap;
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        gap: clamp(18px, 2vw, 30px);
+        min-width: 0;
+        padding-bottom: 8px;
+      }
+      .favorites-scroll-container.expanded .favorites-list-container > .profile-anime-card {
+        flex: 0 0 clamp(170px, 14vw, 240px); // Увеличили ширину
+      }
+      .favorites-scroll-container.expanded .favorites-list-container::-webkit-scrollbar { height: 8px; }
+      .favorites-scroll-container.expanded .favorites-list-container::-webkit-scrollbar-track { background: transparent; }
+      .favorites-scroll-container.expanded .favorites-list-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 8px; }
+      .favorites-scroll-container.expanded .favorites-list-container::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+    }
+
+    .favorites-anime-card {
+      background: #1c1c22;  // Темный фон карточки
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+
+      &:hover {
+        transform: scale(1.01);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .favorites-anime-img {
+        width: 100%;
+        height: 220px; // Уменьшили высоту пропорционально
+        object-fit: cover;
+        border-bottom: 3px solid #ff4c4c;  // Акцентный бордер снизу
+      }
+
+      .favorites-anime-info {
+        padding: 15px;
+        color: #f3e9cf;  // Светлый текст
+
+        .favorites-anime-title {
+          font-size: 16px;
+          font-weight: 600;
+          margin-bottom: 10px;
+          color: #fff;  // Белый текст для названия
+          text-transform: capitalize;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .favorites-anime-meta {
+          font-size: 14px;
+          color: #d0d0d0;  // Легкий серый для метаинформации
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+
+        /* Специальный стиль для текста анонса */
+        .anons-badge {
+          display: inline-block;
+          padding: 2px 8px;
+          border-radius: 999px;
+          background: linear-gradient(135deg, #ff5e5e, #ff9d47);
+          color: #111;
+          font-weight: 700;
+          font-size: 12px;
+          letter-spacing: 0.02em;
+          box-shadow: 0 2px 6px rgba(255, 100, 100, 0.35);
+          white-space: nowrap;
+        }
+        .anons-badge.small {
+          font-size: 11px;
+          padding: 1px 6px;
+        }
+      }
+    }
+
+    // Кнопка сделать такой же как в "Сейчас смотрит"
+    .show-more-btn {
+      margin-top: 12px;
+      cursor: pointer;
+      color: #ff7a7a;
+      font-weight: bold;
+      text-align: center;
+      &:hover { text-decoration: underline; }
+    }
+  }
+
+  .user-reviews-block {
+ margin-bottom: 40px;
+    margin-top: 40px;
+
+    h2 {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 20px;
+      color: var(--text-primary); // Используем цвет текста темы
+    }
+
+    .reviews-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .review-card {
+      background: #1a1a1a;
+      border-radius: 12px;
+      padding: 16px;
+      color: #ddd;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+
+      .anime-header-review {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 10px;
+
+        img {
+          width: 64px;
+          height: 90px;
+          object-fit: cover;
+          border-radius: 8px;
+        }
+
+        .anime-info-review {
+          h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            margin: 0;
+          }
+
+          .rating {
+            font-size: 13px;
+            color: #aaa;
+            margin-top: 4px;
+          }
+        }
+      }
+
+      .review-text {
+        font-size: 14px;
+        line-height: 1.5;
+        margin-bottom: 8px;
+        color: #ccc;
+      }
+
+      .timestamp {
+        font-size: 12px;
+        color: #666;
+      }
+    }
+  }
+}
+
+/* Desktop responsive breakpoints */
+@media (max-width: $bp-hd) {
+  .profile-main-content-container { max-width: 800px; }
+  .profile-container { max-width: 1100px; }
+  .profile-header { max-width: 800px; }
+  .profile-layout { flex-basis: clamp(300px, 26vw, 360px); }
+}
+
+@media (min-width: $bp-fhd) {
+  .profile-main-content-container { max-width: 1400px; }
+  .profile-container { max-width: 1100px; }
+  .profile-header { max-width: 1400px; }
+}
+
+@media (min-width: $bp-qhd) {
+  .profile-main-content-container { max-width: 1600px; }
+  .profile-container { max-width: 1100px; }
+  .profile-header { max-width: 1600px; }
+  .profile-anime-card { width: clamp(220px, 12vw, 260px); } // Увеличили ширину
+  .profile-anime-card img { height: clamp(240px, 16vw, 300px); } // Уменьшили высоту
+}
+
+@media (min-width: $bp-uhd) {
+  .profile-main-content-container { max-width: 1800px; }
+  .profile-container { max-width: 1800px; }
+  .profile-header { max-width: 1800px; }
+  .profile-anime-card { width: clamp(240px, 11vw, 300px); } // Увеличили ширину
+  .profile-anime-card img { height: clamp(280px, 15vw, 340px); } // Уменьшили высоту
+}
+.load-more {
+  margin-top: 20px;
+  text-align: center;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  padding: 10px;
+  background: #2a2a2a;
+  border-radius: 8px;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #444;
+  }
+}
+.load-more-reviews {
+  margin-top: 20px;
+  text-align: center;
+  padding: 10px 16px;
+  background-color: #1e1e1e;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background-color: #2c2c2c;
+  }
+
+  &:active {
+    background-color: #3a3a3a;
+  }
+}
+
+//TOP PROFILE
+.profile-header {
+  position: relative;
+  margin: -23px auto 0 auto;
+  max-width: clamp(990px, 70vw, 1600px);
+  height: clamp(310px, 22vh, 320px);
+  border-radius: 0 0 32px 32px;
+  overflow: hidden;
+  color: white;
+
+  .profile-banner {
+    z-index: 1;
+    filter: brightness(0.85);
+  }
+
+  .profile-header-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2;
+    padding: 20px 40px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.65), transparent 60%);
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+
+    .profile-avatar-block {
+      flex-shrink: 0;
+    }
+
+    .profile-avatar {
+      width: var(--avatar-size, 90px);  /* Устанавливаем размер аватарки через переменную */
+      height: var(--avatar-size, 90px); /* Тот же размер для высоты */
+      border-radius: 50%;
+      background-color: #0A0A0A;
+      /* Важно: делаем саму картинку пропорциональной и центрированной в круге */
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    /* Вложенный селектор для старых разметок (на всякий случай) */
+    .profile-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    .profile-info-block {
+      display: flex;
+      flex-direction: column;
+
+      .nickname-line {
+        display: flex;
+        align-items: flex-end;
+        flex-wrap: wrap;
+        gap: 8px;
+
+        .nickname-block {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .nickname-icons {
+          display: flex;
+          gap: 4px;
+          margin-bottom: 2px;
+
+          img {
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+          }
+        }
+
+        /* Контейнер для верификации + ника */
+        .nickname-verified-friends {
+          display: flex;
+          align-items: center;
+        }
+
+
+
+
+        @keyframes pulse {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.2); }
+          100% { transform: scale(1); }
+        }
+
+        .nickname {
+          font-size: 20px;
+          font-weight: 700;
+          color: #fff;
+        }
+
+        .role-badge {
+          padding: 2px 6px;
+          font-size: 12px;
+          border-radius: 6px;
+          font-weight: bold;
+
+          &.admin {
+            background-color: #d33232;
+            color: white;
+          }
+
+          &.moderator {
+            background-color: #325ed3;
+            color: white;
+          }
+
+          &.uploader {
+            background-color: #32d38c;
+            color: white;
+          }
+        }
+
+        .leaderboard-text {
+          font-size: 13px;
+          font-weight: 600;
+          color: #ccc;
+          margin-left: auto;
+        }
+      }
+
+      .bio-line {
+        margin-top: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 14px;
+        color: #e0e0e0;
+      }
+
+      .status-text {
+        font-size: 12px;
+        color: #ccc;
+        margin-top: 4px;
+        opacity: 0.7;
+      }
+    }
+  }
+}
+
+.show-more-friends-profile-card {
+  position: relative;
+  width: 280px;
+  height: 160px;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #222222;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.5);
+
+  .show-more-friends-profile-banner {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    filter: blur(5px);
+  }
+
+  .show-more-friends-profile-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    color: white;
+    background: rgba(0, 0, 0, 0.5); /* Полупрозрачный черный фон для текста */
+    font-family: 'Arial', sans-serif;
+
+    .show-more-friends-profile-top {
+      display: flex;
+      flex-direction: column;
+      max-width: 80%;
+    }
+
+    .show-more-friends-profile-name {
+      font-weight: bold;
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+
+    .show-more-friends-profile-quote {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .show-more-friends-profile-avatar {
+      margin-left: 10px;
+      border-radius: 50%;
+      border: 2px solid white;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+    }
+  }
+}
+
+.add-friend-btn-container {
+  position: absolute;
+  bottom: 14px;
+  right: 20px;
+  z-index: 3;
+}
+
+.add-friend-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.1s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  svg {
+    font-size: 18px;
+    transition: color 0.2s;
+  }
+}
+
+.friend-btn--add {
+  background: linear-gradient(90deg, #43d675 0%, #2ecc40 100%);
+  color: #fff;
+  &:hover {
+    background: linear-gradient(90deg, #2ecc40 0%, #43d675 100%);
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 4px 16px rgba(67, 214, 117, 0.15);
+  }
+  svg { color: #fff; }
+}
+
+.friend-btn--pending {
+  background: linear-gradient(90deg, #ffd93a 0%, #ffb03a 100%);
+  color: #7a5d00;
+  cursor: not-allowed;
+  &:hover {
+    background: linear-gradient(90deg, #ffb03a 0%, #ffd93a 100%);
+    box-shadow: 0 4px 16px rgba(255, 217, 58, 0.12);
+  }
+  svg { color: #7a5d00; }
+}
+
+.friend-btn--friends {
+  background: linear-gradient(90deg, #4e9cff 0%, #43d6e3 100%);
+  color: #fff;
+  cursor: not-allowed;
+  &:hover {
+    background: linear-gradient(90deg, #43d6e3 0%, #4e9cff 100%);
+    box-shadow: 0 4px 16px rgba(67, 214, 227, 0.12);
+  }
+  svg { color: #fff; }
+}
+
+.friend-btn--accept {
+  background: linear-gradient(90deg, #ff4e4e 0%, #ffb03a 100%);
+  color: #fff;
+  &:hover {
+    background: linear-gradient(90deg, #ffb03a 0%, #ff4e4e 100%);
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 4px 16px rgba(255, 76, 76, 0.15);
+  }
+  svg { color: #fff; }
+}
+//modal-friends
+.friends-profile-card-modal {
+  position: relative;
+  width: 210px;
+  height: 150px;
+  margin-bottom: 20px;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #222222;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.friends-profile-banner-modal {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.friends-profile-info-modal {
+  position: absolute;
+  height: 55px;
+  bottom: 0; /* Размещаем текст в самом низу */
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px; /* Добавляем отступы */
+  color: white;
+  background: rgba(0, 0, 0, 0.5); /* Полупрозрачный черный фон для текста */
+  font-family: 'Arial', sans-serif;
+}
+
+.friends-profile-left-modal {
+  display: flex;
+  flex-direction: column;
+  max-width: 80%; /* Оставляем место для аватарки */
+}
+
+.friends-profile-name-modal {
+  font-weight: bold;
+  font-size: 15px;
+  margin-bottom: 5px;
+}
+
+.friends-profile-quote-modal {
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+.friends-profile-avatar-modal {
+  margin-left: 10px;
+  width: var(--avatar-size, 42px); /* Размер аватарки задается через переменную, по умолчанию 40px */
+  height: var(--avatar-size, 40px); /* Тот же размер для высоты */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.friends-profile-avatar-img {
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+  object-fit: cover; /* Масштабирование изображения с сохранением пропорций */
+  width: 100%;
+  height: 100%;
+}
+
+.request-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: #1a1a1a;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #333;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(0);
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: #ff4c4c;
+    box-shadow: 0 4px 15px rgba(255, 76, 76, 0.2);
+  }
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #ff4c4c;
+    overflow: hidden;
+    margin-right: 12px;
+  }
+
+  .name {
+    font-weight: 600;
+    font-size: 14px;
+    color: #fff;
+    flex: 1;
+  }
+
+  .actions {
+    display: flex;
+    gap: 8px;
+  }
+}
+
+.friends-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+  
+  /* Адаптивность для маленьких экранов */
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 12px;
+  }
+  
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-top: 8px;
+  }
+}
+
+.requests-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.tab-content-friends {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  
+  h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #ff4c4c;
+    margin-bottom: 16px;
+    text-align: center;
+    text-shadow: 0 0 6px rgba(255, 76, 76, 0.3);
+  }
+
+  .empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: #888;
+    font-style: italic;
+    font-size: 14px;
+  }
+}
+
+.sidebar-item {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+
+  &:hover {
+    background: #222;
+    border-color: #ff4c4c;
+    transform: translateX(4px);
+  }
+
+  &.active {
+    background: #ff4c4c;
+    border-color: #ff4c4c;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(255, 76, 76, 0.3);
+  }
+  
+  /* Адаптивность для маленьких экранов */
+  @media (max-width: 768px) {
+    padding: 10px 14px;
+    margin-bottom: 0;
+    margin-right: 8px;
+    white-space: nowrap;
+    min-width: fit-content;
+    
+    &:hover {
+      transform: translateY(-2px);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    padding: 8px 12px;
+    font-size: 13px;
+    margin-right: 6px;
+  }
+}
+
+.modal-show-more-friends-sidebar {
+  flex: 0 0 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  
+  /* Адаптивность для маленьких экранов */
+  @media (max-width: 768px) {
+    flex: 0 0 auto;
+    flex-direction: row;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    
+    &::-webkit-scrollbar {
+      height: 4px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: #333;
+      border-radius: 2px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: #ff4c4c;
+      border-radius: 2px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    gap: 8px;
+    padding-bottom: 4px;
+  }
+}
+
+.friends-modal-content {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  padding-right: 8px;
+  width: 100%;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #333;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #ff4c4c;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #ff6b6b;
+  }
+
+  /* Скрытие скроллбара во время загрузки */
+  &.no-scrollbar {
+    overflow: hidden;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+  }
+
+  &.no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Адаптивность для маленьких экранов */
+  @media (max-width: 768px) {
+    padding-right: 0;
+    padding-top: 8px;
+  }
+  
+  @media (max-width: 480px) {
+    padding-top: 4px;
+  }
+}
+
+.loading-skeleton {
+  background: linear-gradient(90deg, #2a2a2a 25%, #3a3a3a 50%, #2a2a2a 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+
+  &.friend-card {
+    height: 200px;
+    margin-bottom: 16px;
+  }
+
+  &.request-item {
+    height: 60px;
+    margin-bottom: 12px;
+  }
+
+  &.sidebar-item {
+    height: 44px;
+    margin-bottom: 8px;
+  }
+
+  &.content-header {
+    height: 32px;
+    width: 200px;
+    margin-bottom: 20px;
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: #ff4c4c;
+  border: none;
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(255, 76, 76, 0.3);
+
+  &:hover {
+    background: #ff6b6b;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(255, 76, 76, 0.4);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.profile-block.friends {
+  background: var(--friends-block-bg);
+  border-radius: 18px;
+  padding: 20px;
+  color: var(--text-primary);
+  box-shadow: 0 0 0 1px var(--friends-block-border);
+  transition: all 0.3s ease;
+
+
+  h2 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--friends-text-color);
+    text-align: center;
+  }
+  
+  // Стили для карточек друзей
+  .friends-profile-card {
+    background: transparent;
+    border: 1px solid var(--friends-block-border);
+    border-radius: 12px;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+  }
+  
+  // Стили для информации о друзьях
+  .friends-profile-name {
+    color: var(--friends-text-color) !important;
+    transition: color 0.3s ease;
+  }
+  
+  .friends-profile-info {
+    background: var(--friends-info-bg);
+    
+    --friends-info-bg: rgba(0, 0, 0, 0.1);
+    
+    &[data-theme="light"] {
+      --friends-info-bg: rgba(255, 255, 255, 0.8);
+    }
+  }
+  
+  // Верифицированный бейдж
+  .verified-badge-friends {
+    opacity: 0.9;
+    filter: drop-shadow(0 0 4px var(--friends-hover-border));
+  }
+  
+  // Кнопка "Загрузить ещё"
+  .show-more-btn-friends-list {
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--friends-block-border);
+    border-radius: 8px;
+    padding: 8px 16px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    
+    &:hover {
+      background: var(--friends-hover-border);
+      color: white;
+      border-color: var(--friends-hover-border);
+    }
+  }
+}
+
+/* Анимации для плавного появления */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.friend-card,
+.request-item,
+.friends-profile-card {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+/* Стили для сообщения об отсутствии друзей */
+.no-friends-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 120px;
+  background: rgba(34, 34, 34, 0.6);
+  border-radius: 12px;
+  border: 1px dashed #444;
+  margin: 20px 0;
+  
+  p {
+    color: #888;
+    font-size: 14px;
+    text-align: center;
+    margin: 0;
+    font-style: italic;
+  }
+}
+
+/* Show more button in friends list */
+.show-more-btn-friends-list {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: var(--bg-hover);
+    border-color: var(--primary-color);
+    box-shadow: 0 2px 12px var(--shadow);
+    color: var(--primary-color);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0px);
+    background-color: var(--bg-active);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 76, 76, 0.18);
+    border-color: #444;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .show-more-btn-friends-list {
+    transition: none;
+  }
+}
+
+// === ЗАГОЛОВОК КОЛЛЕКЦИЙ ===
+.user-collections-block {
+    h2 {
+        color: var(--text-primary);
+        font-weight: 700;
+        font-size: 24px;
+        margin-bottom: 20px;
+        text-shadow: none;
+    }
+}
+
+// === ЦВЕТОВЫЕ СХЕМЫ ПРОФИЛЯ ===
+.profile-container {
+  // Стили по умолчанию (темный профиль)
+  color: #ffffff;
+  
+  .profile-block,
+  .stats-chart-container {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+  
+  a {
+    color: inherit;
+  }
+}
+
+.profile-container.profile-light {
+  // Светлый профиль
+  color: #333333;
+  
+  .profile-block,
+  .stats-chart-container {
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    color: #333333;
+  }
+  
+  .profile-info-text,
+  .friends-profile-name,
+  .anime-status {
+    color: #333333;
+  }
+  
+  a {
+    color: #333333;
+    
+    &:hover {
+      color: var(--accent-color);
+    }
+  }
+  
+  .profile-sidebar,
+  .profile-main-content-container {
+    color: #333333;
+  }
+}
+
+.profile-container.profile-dark {
+  // Темный профиль (максимально темный)
+  color: #ffffff;
+  
+  .profile-block,
+  .stats-chart-container {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05);
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    color: #ffffff;
+  }
+  
+  .profile-info-text,
+  .friends-profile-name,
+  .anime-status {
+    color: #ffffff;
+  }
+  
+  a {
+    color: #ffffff;
+    
+    &:hover {
+      color: var(--accent-color);
+    }
+  }
+  
+  .profile-sidebar,
+  .profile-main-content-container {
+    color: #ffffff;
+  }
+}

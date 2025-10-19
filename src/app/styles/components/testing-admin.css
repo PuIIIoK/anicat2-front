@@ -1,0 +1,36 @@
+.testing-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.testing-card {
+  background-color: #1e1e2f;
+  border-radius: 12px;
+  padding: 1.2rem;
+  color: #ffffff;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.testing-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4);
+}
+.testing-card .testing-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.testing-card .testing-card-icon {
+  font-size: 2rem;
+}
+.testing-card .testing-card-title {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+.testing-card .testing-card-link {
+  font-size: 0.9rem;
+  color: #7cd3ff;
+}/*# sourceMappingURL=testing-admin.css.map */

@@ -1,0 +1,825 @@
+@charset "UTF-8";
+/* Мобильный плеер — чистый дизайн */
+/* Убираем стандартные эффекты браузера для всех кнопок */
+.mobile-player *,
+.mobile-player *:before,
+.mobile-player *:after {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.mobile-player button,
+.mobile-player input,
+.mobile-player [role=button] {
+  border: none;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.mobile-player {
+  margin-top: -93px;
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  min-height: 100dvh;
+  background: #000;
+  color: #fff;
+  touch-action: manipulation;
+  overflow: hidden;
+}
+
+/* when hiding entire UI */
+.mobile-player.ui-hidden {
+  --ui-opacity: 0;
+}
+
+.mobile-player.ui-hidden .mobile-player-topbar,
+.mobile-player.ui-hidden .mobile-player-title-center,
+.mobile-player.ui-hidden .mobile-player-center-controls,
+.mobile-player.ui-hidden .mobile-player-controls,
+.mobile-player.ui-hidden .mobile-player-panel,
+.mobile-player.ui-hidden .mobile-player-panel__close,
+.mobile-player.ui-hidden .mobile-player-panel__back {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(6px);
+}
+
+.mobile-player-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: #000;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+
+/* YouTube-like double-tap seek indicator */
+.yt-seek {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.55);
+  padding: 10px 14px;
+  border-radius: 999px;
+  color: #fff;
+  z-index: 8;
+  pointer-events: none;
+  animation: yt-pop 650ms ease;
+}
+
+.yt-seek.forward {
+  right: 12%;
+}
+
+.yt-seek.back {
+  left: 12%;
+}
+
+.yt-seek__icon {
+  width: 26px;
+  height: 26px;
+  -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 5v14l7-7-7-7z"/></svg>') center/contain no-repeat;
+          mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 5v14l7-7-7-7z"/></svg>') center/contain no-repeat;
+  background: #fff;
+}
+
+.yt-seek.back .yt-seek__icon {
+  -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 19V5l-7 7 7 7z"/></svg>') center/contain no-repeat;
+          mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 19V5l-7 7 7 7z"/></svg>') center/contain no-repeat;
+}
+
+.yt-seek__text {
+  font-weight: 800;
+  letter-spacing: 0.2px;
+}
+
+@keyframes yt-pop {
+  0% {
+    transform: translateY(-50%) scale(0.9);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+  100% {
+    opacity: 1;
+  }
+}
+/* ripple on tap */
+.yt-ripple {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  margin-left: -60px;
+  margin-top: -60px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.18) 40%, rgba(255, 255, 255, 0.08) 70%, rgba(255, 255, 255, 0) 72%);
+  animation: yt-ripple 600ms ease-out forwards;
+  z-index: 7;
+}
+
+.yt-ripple.forward {
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.35);
+}
+
+.yt-ripple.back {
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.35);
+}
+
+.yt-ripple.single {
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.25);
+}
+
+@keyframes yt-ripple {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.15);
+    opacity: 0;
+  }
+}
+/* Верхняя панель */
+.mobile-player-topbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  padding: calc(12px + env(safe-area-inset-top)) 16px 12px 16px;
+  min-height: calc(58px + env(safe-area-inset-top));
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 60%, transparent 100%);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Always-visible skip button for Libria */
+.mobile-player-skip {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(80px + env(safe-area-inset-bottom));
+  width: 70%;
+  max-width: 350px;
+  height: 36px;
+  background: rgba(0, 0, 0, 0.55);
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  z-index: 7; /* default above hidden UI */
+  -webkit-backdrop-filter: blur(2px);
+          backdrop-filter: blur(2px);
+}
+
+.mobile-player-skip.disabled {
+  opacity: 0.6;
+}
+
+.mobile-player-skip.opening {
+  opacity: 1;
+}
+
+.mobile-player-skip.ending {
+  opacity: 1;
+}
+
+.mobile-player-skip-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, rgba(255, 59, 48, 0.7), rgba(255, 59, 48, 0.45));
+  pointer-events: none;
+  transition: width 120ms linear;
+}
+
+.mobile-player-skip-label {
+  position: relative;
+  z-index: 1;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.mobile-player-topbar__left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.mobile-player-topbar__info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mobile-player-topbar__info .mobile-player-title {
+  max-width: 52vw;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mobile-player-episode-info {
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0.95;
+}
+
+.mobile-player-title {
+  font-size: 12px;
+  opacity: 0.8;
+  font-weight: 500;
+}
+
+/* Center small title that hides with UI */
+.mobile-player-title-center {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: calc(100% - 160px);
+  white-space: normal;
+  overflow: visible;
+  text-align: center;
+  line-height: 1.25;
+  opacity: 0.9;
+  font-weight: 600;
+  z-index: 6;
+}
+
+/* На узких экранах смещаем заголовок ниже, чтобы не накладывался на топбар */
+@media (max-width: 700px) {
+  .mobile-player-title-center {
+    top: 55px;
+    max-width: calc(100% - 150px);
+  }
+}
+@media (max-width: 600px) {
+  .mobile-player-title-center {
+    top: 60px;
+    max-width: calc(100% - 150px);
+  }
+}
+@media (max-width: 360px) {
+  .mobile-player-title-center {
+    top: 70px;
+    max-width: calc(100% - 150px);
+  }
+}
+/* Top-left back button on mobile */
+.mobile-player-top-back {
+  position: relative;
+  left: -5px;
+  top: 0;
+  width: 70px;
+  height: 44px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.377);
+  color: #fff;
+  z-index: 7;
+}
+
+.mobile-player-top-back:active {
+  transform: scale(0.96);
+}
+
+.mobile-player-topbar__right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mobile-player-top-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background: transparent;
+  border: none;
+  outline: none;
+  border-radius: 50%;
+  color: #fff;
+  transition: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.mobile-player-top-button:active {
+  background: transparent;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-player-top-button svg {
+  display: block;
+  width: 28px;
+  height: 28px;
+  stroke-width: 2.5;
+  color: inherit;
+}
+
+/* Центральные кнопки управления */
+.mobile-player-center-controls {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  z-index: 6;
+}
+
+.mobile-player-center-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 55px;
+  height: 55px;
+  background: transparent;
+  border: none;
+  outline: none;
+  border-radius: 50%;
+  color: #fff;
+  transition: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.mobile-player-center-button.play {
+  width: 70px;
+  height: 70px;
+  background: transparent;
+}
+
+.mobile-player-center-button:active {
+  background: transparent;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-player-center-button svg {
+  display: block;
+  width: 48px;
+  height: 48px;
+  stroke-width: 3;
+  color: inherit;
+}
+
+.mobile-player-center-button.play svg {
+  width: 64px;
+  height: 64px;
+}
+
+/* Нижняя панель управления */
+.mobile-player-controls {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 16px 16px calc(20px + env(safe-area-inset-bottom)) 16px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.6) 40%, rgba(0, 0, 0, 0.8) 100%);
+  z-index: 5;
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.mobile-player-controls.hidden {
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+}
+
+/* ensure skip button stays visible even when controls hidden */
+.ui-hidden .mobile-player-skip {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Когда открыт какой-либо оверлей/панель — плашку опускаем ниже и ставим под UI */
+.overlay-open .mobile-player-skip {
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  z-index: 4; /* ниже topbar/panels (z>=5) и под overlay (z=20) */
+}
+
+/* Плашка «Продолжить просмотр» — под окнами плейлиста/источника/настроек на мобилке */
+.mobile-player .player-resume-overlay {
+  z-index: 7 !important;
+  bottom: calc(80px + env(safe-area-inset-bottom));
+}
+
+.overlay-open .player-resume-overlay {
+  z-index: 4 !important;
+  bottom: calc(16px + env(safe-area-inset-bottom));
+}
+
+/* Mobile-specific resume styles */
+.player-resume-overlay--mobile {
+  left: 8px;
+  right: 8px;
+  bottom: calc(72px + env(safe-area-inset-bottom));
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.player-resume--mobile {
+  pointer-events: auto;
+  background: rgba(20, 20, 20, 0.95);
+  padding: 8px 10px;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.player-resume--mobile .player-resume-title {
+  font-size: 13px;
+  font-weight: 700;
+  margin-right: 8px;
+}
+
+.player-resume--mobile .player-resume-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.player-resume--mobile .player-resume-btn {
+  padding: 6px 10px;
+  font-size: 13px;
+  border-radius: 8px;
+}
+
+.player-resume--mobile .player-resume-btn.primary {
+  background: #ff4757;
+  border-color: #ff4757;
+  color: #fff;
+}
+
+.player-resume--mobile .player-resume-btn {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.mobile-player-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.mobile-player-time {
+  font-size: 13px;
+  opacity: 0.9;
+  font-weight: 500;
+  min-width: 90px;
+}
+
+.mobile-player-seek {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+       appearance: none;
+  flex: 1;
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ff3b30 var(--percent, 0%), rgba(255, 255, 255, 0.3) var(--percent, 0%));
+  position: relative;
+}
+
+.mobile-player-seek::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 0;
+  height: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  margin-top: 0;
+  box-shadow: none;
+}
+
+.mobile-player-seek::-moz-range-thumb {
+  width: 0;
+  height: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.mobile-player-bottom-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mobile-player-bottom-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mobile-player-bottom-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mobile-player-bottom-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 30px;
+  background: transparent;
+  border: none;
+  outline: none;
+  border-radius: 50%;
+  color: #fff;
+  transition: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.mobile-player-bottom-button:active {
+  background: transparent;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-player-bottom-button svg {
+  display: block;
+  width: 28px;
+  height: 28px;
+  stroke-width: 2.5;
+  color: inherit;
+}
+
+/* Оверлеи */
+.mobile-player-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+
+.mobile-player-panel {
+  position: relative;
+  width: calc(100% - 32px);
+  max-height: calc(100vh - 40px);
+  background: #1a1a1a;
+  border-radius: 12px;
+  overflow: hidden auto;
+  box-shadow: 0 4px 28px rgba(0, 0, 0, 0.45);
+  transition: transform 200ms ease, opacity 200ms ease;
+  transform-origin: center center;
+  opacity: 1;
+}
+
+.mobile-player-panel.closing {
+  transform: scale(0.98);
+  opacity: 0;
+}
+
+.mobile-player-panel__header {
+  display: none;
+}
+
+.mobile-player-panel__subtitle {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+}
+
+/* Close button outside panel */
+.mobile-player-panel__close {
+  position: fixed;
+  right: 14px;
+  top: calc(env(safe-area-inset-top) + 10px);
+  z-index: 120;
+  width: 60px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 15px;
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.mobile-player-panel__close svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* back button near close (left side) */
+.mobile-player-panel__back {
+  position: fixed;
+  left: 14px;
+  top: calc(env(safe-area-inset-top) + 10px);
+  z-index: 120;
+  width: 55px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 12px;
+  color: #fff;
+}
+
+.mobile-player-panel__back svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* compact settings */
+.mobile-player-list.settings {
+  padding: 6px 8px;
+  gap: 6px;
+}
+
+.mobile-player-list.settings .mobile-player-list-item {
+  padding: 8px 10px;
+  font-size: 13px;
+  border-radius: 10px;
+}
+
+.mobile-player-list.settings .mobile-player-toggle {
+  display: inline-flex;
+  align-items: center;
+}
+
+.mobile-player-list.settings .mobile-player-chip {
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.mobile-player-list {
+  padding: 10px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  overflow-y: auto;
+  max-height: calc(100vh - 120px);
+}
+
+/* Compact variant for voices and playlist */
+.mobile-player-list.compact {
+  gap: 6px;
+  padding: 6px 8px;
+}
+
+.mobile-player-list.compact .mobile-player-list-item {
+  padding: 8px 10px;
+  min-height: 44px;
+  font-size: 13px;
+  border-radius: 10px;
+}
+
+.mobile-player-list.compact .mobile-player-list-item .mobile-player-chip {
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.mobile-player-list-item {
+  padding: 12px 14px;
+  color: #eaeaea;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 180ms ease, transform 120ms ease, box-shadow 180ms ease;
+  cursor: pointer;
+  width: 100%;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+  min-height: 56px;
+  font-size: 15px;
+  padding-right: 12px; /* extra space for chip */
+}
+
+.mobile-player-list-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.mobile-player-list-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: #fff;
+}
+
+.mobile-player-ep-progress {
+  position: relative;
+  width: 52vw;
+  max-width: 320px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.mobile-player-ep-progress__bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, #ff3b30, rgba(255, 59, 48, 0.4));
+  border-radius: 999px;
+}
+
+.mobile-player-list-item.active {
+  background: linear-gradient(90deg, rgba(255, 59, 48, 0.12), rgba(255, 255, 255, 0.02));
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  transform: translateY(-2px);
+  border-left: 2px solid rgba(255, 59, 48, 0.95);
+}
+
+.mobile-player-list-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.mobile-player-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  min-width: 38px;
+  justify-content: center;
+}
+
+/* Larger touch target for items */
+.mobile-player-list-item .item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mobile-player-list-item .source-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.mobile-player-list-item .source-meta {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* subtle divider between header and list when scrolling */
+.mobile-player-panel.scrolled .mobile-player-panel__header {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.24);
+}/*# sourceMappingURL=mobile-player.css.map */

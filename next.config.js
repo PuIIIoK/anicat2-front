@@ -3,6 +3,7 @@ const isTurbopack = process.env.TURBOPACK === '1';
 
 const nextConfig = {
     images: {
+        unoptimized: true,
         domains: [
             'path.to',
             'anilibria.top',
@@ -27,6 +28,10 @@ const nextConfig = {
                     ignored: /node_modules/,
                 };
             }
+            // Добавляем наблюдение за SCSS при стандартном вебпаке (на всякий случай)
+            config.module = config.module || {};
+            config.module.rules = config.module.rules || [];
+            // Ничего не меняем по SCSS-лоадерам — сборка выполняется отдельным watcher'ом из package.json
             return config;
         }
     }),

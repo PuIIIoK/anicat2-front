@@ -1,0 +1,394 @@
+.continue-watching-section {
+    margin: 2rem 0;
+    padding: 0 20px;
+    
+    .continue-watching-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid rgba(var(--primary-color-rgb), 0.2);
+        
+        .continue-watching-title {
+            color: var(--text-primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: -0.02em;
+            
+            .section-icon {
+                color: var(--primary-color);
+                filter: drop-shadow(0 2px 4px rgba(var(--primary-color-rgb), 0.3));
+            }
+        }
+        
+        .continue-watching-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            
+            .scroll-btn {
+                width: 40px;
+                height: 40px;
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                background: rgba(255, 255, 255, 0.08);
+                backdrop-filter: blur(10px);
+                border-radius: 10px;
+                color: var(--text-secondary);
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+                
+                &:hover {
+                    background: rgba(255, 255, 255, 0.12);
+                    border-color: rgba(255, 255, 255, 0.25);
+                    color: var(--text-primary);
+                    transform: translateY(-2px);
+                }
+                
+                &:active {
+                    transform: translateY(0);
+                }
+            }
+        }
+    }
+    
+    .continue-watching-content {
+        position: relative;
+        overflow: hidden;
+        
+        .continue-watching-grid {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding-bottom: 10px;
+            
+            &::-webkit-scrollbar {
+                display: none;
+            }
+        }
+    }
+    
+    .continue-watching-loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 200px;
+        
+        .continue-watching-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(var(--primary-color-rgb), 0.2);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+    }
+}
+
+.continue-watching-card-wrapper {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    &.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.continue-watching-card {
+    width: 280px;
+    height: 550px;
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    
+    &:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        
+        .play-overlay {
+            opacity: 1;
+        }
+        
+        .cover-image {
+            transform: scale(1.05);
+        }
+    }
+    
+    .continue-watching-card-image {
+        position: relative;
+        width: 100%;
+        height: 300px; /* Увеличиваем высоту для лучших пропорций */
+        overflow: hidden;
+        border-radius: 16px 16px 0 0;
+        
+        .cover-image {
+            object-fit: cover; /* Сохраняем пропорции без деформации */
+            object-position: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .cover-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+        }
+        
+        .progress-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: rgba(0, 0, 0, 0.5);
+            
+            .progress-bar {
+                height: 100%;
+                background: linear-gradient(90deg, var(--primary-color) 0%, #ff6b35 100%);
+                transition: width 0.3s ease;
+            }
+        }
+        
+        .play-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(2px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            
+            .play-button {
+                width: 50px;
+                height: 50px;
+                background: var(--primary-color);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                transform: scale(0.8);
+                transition: transform 0.2s ease;
+                
+                &:hover {
+                    transform: scale(1);
+                }
+            }
+        }
+    }
+    
+    .continue-watching-card-info {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        
+        .anime-title {
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-decoration: none;
+            
+            &:hover {
+                color: var(--primary-color);
+            }
+        }
+        
+        .watch-info {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 12px;
+            
+            .episode-info,
+            .voice-info,
+            .source-info {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 0.85rem;
+                color: var(--text-secondary);
+                
+                svg {
+                    flex-shrink: 0;
+                    opacity: 0.7;
+                }
+                
+                span {
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+            }
+        }
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            
+            .progress-text {
+                color: var(--text-secondary);
+                font-weight: 500;
+            }
+            
+            .time-info {
+                color: var(--text-muted);
+                font-size: 0.8rem;
+            }
+        }
+        
+        .continue-button {
+            width: 100%;
+            padding: 10px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            margin-top: auto;
+            
+            &:hover {
+                background: #c8102e;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.4);
+            }
+            
+            &:active {
+                transform: translateY(0);
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .continue-watching-section {
+        padding: 0 15px;
+        margin: 1.5rem 0;
+        
+        .continue-watching-header {
+            .continue-watching-title {
+                font-size: 1.5rem;
+                gap: 10px;
+                
+                .section-icon {
+                    font-size: 20px;
+                }
+            }
+            
+            .continue-watching-actions {
+                .scroll-btn {
+                    width: 36px;
+                    height: 36px;
+                    
+                    svg {
+                        size: 18px;
+                    }
+                }
+            }
+        }
+        
+        .continue-watching-content {
+            .continue-watching-grid {
+                gap: 16px;
+            }
+        }
+    }
+    
+    .continue-watching-card {
+        width: 240px;
+        display: flex;
+        flex-direction: column;
+        
+        .continue-watching-card-image {
+            height: 170px; /* Увеличиваем для мобильной версии тоже */
+        }
+        
+        .continue-watching-card-info {
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            
+            .anime-title {
+                font-size: 0.95rem;
+                margin-bottom: 10px;
+            }
+            
+            .watch-info {
+                gap: 5px;
+                margin-bottom: 10px;
+                
+                .episode-info,
+                .voice-info,
+                .source-info {
+                    font-size: 0.8rem;
+                }
+            }
+            
+            .progress-info {
+                font-size: 0.8rem;
+                margin-bottom: 10px;
+                
+                .time-info {
+                    font-size: 0.75rem;
+                }
+            }
+            
+            .continue-button {
+                padding: 8px;
+                font-size: 0.85rem;
+            }
+        }
+    }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

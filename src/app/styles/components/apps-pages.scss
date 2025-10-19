@@ -1,0 +1,1897 @@
+// Android Page Styles (Crunchyroll-inspired)
+.android-page {
+  min-height: 100vh;
+  background: #0B0C0F; // Тёмная тема Crunchyroll
+  color: #ffffff;
+  padding-top: 80px;
+  
+  .android-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+    
+    // Hero Section
+    .hero-section {
+      text-align: center;
+      padding: 4rem 0 6rem;
+      
+      .hero-content {
+        max-width: 600px;
+        margin: 0 auto;
+        
+        .app-icon-large {
+          margin-bottom: 2rem;
+          
+          svg {
+            transition: transform 0.3s ease;
+            
+            &:hover {
+              transform: scale(1.05);
+            }
+          }
+        }
+        
+        .app-title {
+          font-size: 4rem;
+          font-weight: 900;
+          margin-bottom: 0.5rem;
+          color: #FF8C00; // Оранжевый Crunchyroll
+          letter-spacing: -2px;
+          text-shadow: 0 0 20px rgba(255, 140, 0, 0.3);
+        }
+        
+        .app-subtitle {
+          font-size: 1.5rem;
+          font-weight: 400;
+          color: #9CA3AF;
+          margin-bottom: 2rem;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+        }
+        
+        .app-description {
+          font-size: 1.3rem;
+          line-height: 1.6;
+          color: #D1D5DB;
+          font-weight: 400;
+          max-width: 500px;
+          margin: 0 auto;
+        }
+      }
+    }
+    
+    // Features Section
+    .features-section {
+      padding: 4rem 0;
+      
+      .section-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 3rem;
+        color: #ffffff;
+      }
+      
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        
+        .feature-card {
+          background: #1A1D29;
+          border-radius: 12px;
+          padding: 2rem 1.5rem;
+          text-align: center;
+          transition: all 0.3s ease;
+          border: 1px solid #2A2E3A;
+          
+          &:hover {
+            transform: translateY(-5px);
+            background: #232633;
+            border-color: #FF8C00;
+            box-shadow: 0 10px 30px rgba(255, 140, 0, 0.15);
+          }
+          
+          .feature-icon {
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: center;
+            
+            svg {
+              transition: transform 0.3s ease;
+            }
+          }
+          
+          &:hover .feature-icon svg {
+            transform: scale(1.1);
+          }
+          
+          h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #ffffff;
+          }
+          
+          p {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #9CA3AF;
+            font-weight: 400;
+            
+            .dev-status {
+              color: #FF8C00;
+              font-size: 0.85rem;
+              font-style: italic;
+              display: block;
+              margin-top: 0.5rem;
+            }
+          }
+        }
+      }
+    }
+    
+    // Download Section
+    .download-section {
+      padding: 4rem 0;
+      text-align: center;
+      
+      .section-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 3rem;
+        color: #ffffff;
+      }
+      
+      .download-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+        flex-wrap: wrap;
+        
+        .download-btn {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          padding: 1.2rem 2rem;
+          border-radius: 8px;
+          text-decoration: none;
+          font-weight: 600;
+          transition: all 0.3s ease;
+          border: none;
+          cursor: pointer;
+          min-width: 220px;
+          position: relative;
+          overflow: hidden;
+          
+          &.google-play {
+            background: #4285F4;
+            color: white;
+            
+            &:hover {
+              background: #3367d6;
+              transform: translateY(-2px);
+              box-shadow: 0 10px 25px rgba(66, 133, 244, 0.3);
+            }
+          }
+          
+          &.apk-direct {
+            background: #FF8C00;
+            color: white;
+            
+            &:hover {
+              background: #e57c00;
+              transform: translateY(-2px);
+              box-shadow: 0 10px 25px rgba(255, 140, 0, 0.3);
+            }
+            
+            &.downloading {
+              background: #cc7a00;
+              cursor: not-allowed;
+              transform: none;
+              
+              &:hover {
+                background: #cc7a00;
+                transform: none;
+              }
+            }
+            
+            &:disabled {
+              opacity: 0.7;
+              cursor: not-allowed;
+              
+              &:hover {
+                transform: none;
+                box-shadow: none;
+              }
+            }
+          }
+          
+          svg {
+            flex-shrink: 0;
+            z-index: 1;
+          }
+          
+          .btn-content {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            z-index: 1;
+            
+            .btn-subtitle {
+              font-size: 0.8rem;
+              opacity: 0.9;
+              font-weight: 400;
+            }
+            
+            .btn-title {
+              font-size: 1.1rem;
+              font-weight: 700;
+            }
+          }
+        }
+      }
+      
+      .download-error {
+        background: rgba(220, 38, 38, 0.1);
+        border: 1px solid rgba(220, 38, 38, 0.3);
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        position: relative;
+        
+        p {
+          color: #FCA5A5;
+          font-size: 0.9rem;
+          margin: 0;
+          padding-right: 2rem;
+        }
+        
+        .error-dismiss {
+          position: absolute;
+          top: 0.5rem;
+          right: 0.5rem;
+          background: none;
+          border: none;
+          color: #FCA5A5;
+          font-size: 1.5rem;
+          cursor: pointer;
+          padding: 0.25rem;
+          line-height: 1;
+          width: 1.5rem;
+          height: 1.5rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 4px;
+          
+          &:hover {
+            background: rgba(220, 38, 38, 0.2);
+          }
+        }
+      }
+      
+      .download-info {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+        
+        .info-item {
+          padding: 1rem 1.5rem;
+          background: #1A1D29;
+          border-radius: 8px;
+          border: 1px solid #2A2E3A;
+          
+          strong {
+            color: #FF8C00;
+            margin-right: 0.5rem;
+          }
+          
+          color: #D1D5DB;
+          font-size: 0.9rem;
+          font-weight: 500;
+        }
+      }
+    }
+    
+    // Back Section
+    .back-section {
+      padding: 2rem 0;
+      text-align: center;
+      
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #9CA3AF;
+        text-decoration: none;
+        font-size: 1rem;
+        font-weight: 500;
+        padding: 0.8rem 1.5rem;
+        border: 1px solid #2A2E3A;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        background: #1A1D29;
+        
+        &:hover {
+          color: #FF8C00;
+          border-color: #FF8C00;
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(255, 140, 0, 0.15);
+        }
+        
+        svg {
+          transition: transform 0.3s ease;
+        }
+        
+        &:hover svg {
+          transform: translateX(-3px);
+        }
+      }
+    }
+  }
+}
+
+// iPhone Page Styles (Crunchyroll-inspired)
+.iphone-page {
+  min-height: 100vh;
+  background: #0B0C0F; // Тёмная тема Crunchyroll
+  color: #ffffff;
+  padding-top: 80px;
+  
+  .iphone-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+    
+    // Hero Section
+    .hero-section {
+      text-align: center;
+      padding: 4rem 0 6rem;
+      
+      .hero-content {
+        max-width: 600px;
+        margin: 0 auto;
+        
+        .app-icon-large {
+          margin-bottom: 2rem;
+          
+          svg {
+            transition: transform 0.3s ease;
+            
+            &:hover {
+              transform: scale(1.05);
+            }
+          }
+        }
+        
+        .app-title {
+          font-size: 4rem;
+          font-weight: 900;
+          margin-bottom: 0.5rem;
+          color: #FF8C00; // Оранжевый Crunchyroll
+          letter-spacing: -2px;
+          text-shadow: 0 0 20px rgba(255, 140, 0, 0.3);
+        }
+        
+        .app-subtitle {
+          font-size: 1.5rem;
+          font-weight: 400;
+          color: #9CA3AF;
+          margin-bottom: 2rem;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+        }
+        
+        .status-badge {
+          display: inline-block;
+          background: rgba(239, 68, 68, 0.1);
+          border: 1px solid rgba(239, 68, 68, 0.3);
+          color: #F87171;
+          padding: 0.5rem 1.5rem;
+          border-radius: 20px;
+          font-size: 0.9rem;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+        }
+      }
+    }
+    
+    // Explanation Section
+    .explanation-section {
+      padding: 3rem 0;
+      text-align: center;
+      
+      .section-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 2rem;
+        color: #ffffff;
+      }
+      
+      .explanation-content {
+        max-width: 700px;
+        margin: 0 auto;
+        
+        .main-message {
+          font-size: 1.2rem;
+          line-height: 1.7;
+          color: #D1D5DB;
+          margin-bottom: 1.5rem;
+          background: #1A1D29;
+          padding: 2rem;
+          border-radius: 12px;
+          border: 1px solid #2A2E3A;
+        }
+        
+        .apology {
+          font-size: 1.1rem;
+          color: #9CA3AF;
+          font-style: italic;
+        }
+      }
+    }
+    
+    // Reasons Section
+    .reasons-section {
+      padding: 4rem 0;
+      
+      .section-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 3rem;
+        color: #ffffff;
+      }
+      
+      .reasons-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        
+        .reason-card {
+          background: #1A1D29;
+          border-radius: 12px;
+          padding: 2rem 1.5rem;
+          text-align: center;
+          transition: all 0.3s ease;
+          border: 1px solid #2A2E3A;
+          
+          &:hover {
+            transform: translateY(-5px);
+            background: #232633;
+            border-color: #FF8C00;
+            box-shadow: 0 10px 30px rgba(255, 140, 0, 0.15);
+          }
+          
+          .reason-icon {
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: center;
+            
+            svg {
+              transition: transform 0.3s ease;
+            }
+          }
+          
+          &:hover .reason-icon svg {
+            transform: scale(1.1);
+          }
+          
+          h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #ffffff;
+          }
+          
+          p {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #9CA3AF;
+            font-weight: 400;
+          }
+        }
+      }
+    }
+    
+    // Alternative Section
+    .alternative-section {
+      padding: 4rem 0;
+      
+      .section-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 3rem;
+        color: #ffffff;
+      }
+      
+      .alternative-card {
+        background: #1A1D29;
+        border-radius: 12px;
+        padding: 2.5rem;
+        border: 1px solid #2A2E3A;
+        max-width: 800px;
+        margin: 0 auto;
+        
+        display: flex;
+        align-items: flex-start;
+        gap: 2rem;
+        
+        .alt-icon {
+          flex-shrink: 0;
+          background: rgba(255, 140, 0, 0.1);
+          padding: 1rem;
+          border-radius: 12px;
+          border: 1px solid rgba(255, 140, 0, 0.3);
+        }
+        
+        .alt-content {
+          flex: 1;
+          
+          h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #FF8C00;
+          }
+          
+          p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #D1D5DB;
+            margin-bottom: 2rem;
+          }
+          
+          .instruction {
+            background: rgba(255, 140, 0, 0.05);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            
+            strong {
+              color: #FF8C00;
+              display: block;
+              margin-bottom: 1rem;
+              font-size: 1.1rem;
+            }
+            
+            ol {
+              list-style: none;
+              counter-reset: step-counter;
+              
+              li {
+                counter-increment: step-counter;
+                position: relative;
+                padding-left: 2rem;
+                margin-bottom: 0.5rem;
+                color: #D1D5DB;
+                
+                &::before {
+                  content: counter(step-counter);
+                  position: absolute;
+                  left: 0;
+                  top: 0;
+                  background: #FF8C00;
+                  color: #0B0C0F;
+                  width: 1.5rem;
+                  height: 1.5rem;
+                  border-radius: 50%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 0.8rem;
+                  font-weight: 700;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    // Future Section
+    .future-section {
+      padding: 3rem 0;
+      text-align: center;
+      
+      .section-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 2rem;
+        color: #ffffff;
+      }
+      
+      p {
+        font-size: 1.2rem;
+        line-height: 1.6;
+        color: #9CA3AF;
+        max-width: 600px;
+        margin: 0 auto;
+        background: #1A1D29;
+        padding: 2rem;
+        border-radius: 12px;
+        border: 1px solid #2A2E3A;
+      }
+    }
+    
+    // Back Section
+    .back-section {
+      padding: 2rem 0;
+      text-align: center;
+      
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #9CA3AF;
+        text-decoration: none;
+        font-size: 1rem;
+        font-weight: 500;
+        padding: 0.8rem 1.5rem;
+        border: 1px solid #2A2E3A;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        background: #1A1D29;
+        
+        &:hover {
+          color: #FF8C00;
+          border-color: #FF8C00;
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(255, 140, 0, 0.15);
+        }
+        
+        svg {
+          transition: transform 0.3s ease;
+        }
+        
+        &:hover svg {
+          transform: translateX(-3px);
+        }
+      }
+    }
+  }
+}
+
+// PC Page Styles (Crunchyroll-inspired)
+.pc-page {
+  min-height: 100vh;
+  background: #0B0C0F; // Тёмная тема Crunchyroll
+  color: #ffffff;
+  padding-top: 80px;
+  
+  .pc-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+    
+    // Hero Section
+    .hero-section {
+      text-align: center;
+      padding: 4rem 0 6rem;
+      
+      .hero-content {
+        max-width: 700px;
+        margin: 0 auto;
+        
+        .app-icon-large {
+          margin-bottom: 2rem;
+          
+          svg {
+            transition: transform 0.3s ease;
+            
+            &:hover {
+              transform: scale(1.05);
+            }
+          }
+        }
+        
+        .app-title {
+          font-size: 4rem;
+          font-weight: 900;
+          margin-bottom: 0.5rem;
+          color: #FF8C00; // Оранжевый Crunchyroll
+          letter-spacing: -2px;
+          text-shadow: 0 0 20px rgba(255, 140, 0, 0.3);
+        }
+        
+        .app-subtitle {
+          font-size: 1.5rem;
+          font-weight: 400;
+          color: #9CA3AF;
+          margin-bottom: 2rem;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+        }
+        
+        .status-badge {
+          display: inline-block;
+          padding: 0.5rem 1.5rem;
+          border-radius: 20px;
+          font-size: 0.9rem;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          margin-bottom: 2rem;
+          
+          &.coming-soon {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #4ADE80;
+          }
+        }
+        
+        .app-description {
+          font-size: 1.3rem;
+          line-height: 1.6;
+          color: #D1D5DB;
+          font-weight: 400;
+          max-width: 600px;
+          margin: 0 auto;
+        }
+      }
+    }
+    
+    // Features Section
+    .features-section {
+      padding: 4rem 0;
+      
+      .section-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 3rem;
+        color: #ffffff;
+      }
+      
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        
+        .feature-card {
+          background: #1A1D29;
+          border-radius: 12px;
+          padding: 2rem 1.5rem;
+          text-align: center;
+          transition: all 0.3s ease;
+          border: 1px solid #2A2E3A;
+          
+          &:hover {
+            transform: translateY(-5px);
+            background: #232633;
+            border-color: #FF8C00;
+            box-shadow: 0 10px 30px rgba(255, 140, 0, 0.15);
+          }
+          
+          .feature-icon {
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: center;
+            
+            svg {
+              transition: transform 0.3s ease;
+            }
+          }
+          
+          &:hover .feature-icon svg {
+            transform: scale(1.1);
+          }
+          
+          h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #ffffff;
+          }
+          
+          p {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #9CA3AF;
+            font-weight: 400;
+          }
+        }
+      }
+    }
+    
+    // Warning Section
+    .warning-section {
+      padding: 4rem 0;
+      
+      .warning-card {
+        background: rgba(239, 68, 68, 0.05);
+        border: 2px solid rgba(239, 68, 68, 0.2);
+        border-radius: 16px;
+        padding: 2.5rem;
+        max-width: 800px;
+        margin: 0 auto;
+        
+        .warning-header {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 1rem;
+          margin-bottom: 2rem;
+          
+          .warning-icon {
+            font-size: 2rem;
+          }
+          
+          h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #F87171;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+          }
+        }
+        
+        .warning-content {
+          .warning-main {
+            font-size: 1.2rem;
+            line-height: 1.7;
+            color: #FCA5A5;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            
+            strong {
+              color: #EF4444;
+              font-weight: 800;
+            }
+          }
+          
+          .warning-note {
+            font-size: 1rem;
+            color: #F9A8A8;
+            text-align: center;
+            font-style: italic;
+            background: rgba(239, 68, 68, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(239, 68, 68, 0.1);
+          }
+        }
+      }
+    }
+    
+    // Download Section
+    .download-section {
+      padding: 4rem 0;
+      text-align: center;
+      
+      .section-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 3rem;
+        color: #ffffff;
+      }
+      
+      .download-buttons {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 3rem;
+        
+        .download-btn {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          padding: 1.2rem 2rem;
+          border-radius: 8px;
+          text-decoration: none;
+          font-weight: 600;
+          transition: all 0.3s ease;
+          border: none;
+          cursor: pointer;
+          min-width: 280px;
+          position: relative;
+          overflow: hidden;
+          
+          &.pc-download {
+            background: #FF8C00;
+            color: white;
+            
+            &:hover {
+              background: #e57c00;
+              transform: translateY(-2px);
+              box-shadow: 0 10px 25px rgba(255, 140, 0, 0.3);
+            }
+            
+            &.downloading {
+              background: #cc7a00;
+              cursor: not-allowed;
+              transform: none;
+              
+              &:hover {
+                background: #cc7a00;
+                transform: none;
+              }
+            }
+            
+            &:disabled {
+              opacity: 0.7;
+              cursor: not-allowed;
+              
+              &:hover {
+                transform: none;
+                box-shadow: none;
+              }
+            }
+          }
+          
+          svg {
+            flex-shrink: 0;
+            z-index: 1;
+          }
+          
+          .btn-content {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            z-index: 1;
+            
+            .btn-subtitle {
+              font-size: 0.8rem;
+              opacity: 0.9;
+              font-weight: 400;
+            }
+            
+            .btn-title {
+              font-size: 1.1rem;
+              font-weight: 700;
+            }
+          }
+        }
+      }
+      
+      .download-error {
+        background: rgba(220, 38, 38, 0.1);
+        border: 1px solid rgba(220, 38, 38, 0.3);
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        position: relative;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+        
+        p {
+          color: #FCA5A5;
+          font-size: 0.9rem;
+          margin: 0;
+          padding-right: 2rem;
+        }
+        
+        .error-dismiss {
+          position: absolute;
+          top: 0.5rem;
+          right: 0.5rem;
+          background: none;
+          border: none;
+          color: #FCA5A5;
+          font-size: 1.5rem;
+          cursor: pointer;
+          padding: 0.25rem;
+          line-height: 1;
+          width: 1.5rem;
+          height: 1.5rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 4px;
+          
+          &:hover {
+            background: rgba(220, 38, 38, 0.2);
+          }
+        }
+      }
+      
+      .download-info {
+        display: flex;
+        justify-content: center;
+        
+        .info-item {
+          padding: 1rem 1.5rem;
+          background: #1A1D29;
+          border-radius: 8px;
+          border: 1px solid #2A2E3A;
+          
+          strong {
+            color: #FF8C00;
+            margin-right: 0.5rem;
+          }
+          
+          color: #D1D5DB;
+          font-size: 0.9rem;
+          font-weight: 500;
+        }
+      }
+    }
+    
+    // Closing Section
+    .closing-section {
+      padding: 2rem 0;
+      text-align: center;
+      
+      .closing-message {
+        font-size: 1.3rem;
+        color: #4ADE80;
+        font-weight: 500;
+        background: rgba(34, 197, 94, 0.1);
+        padding: 1.5rem 2rem;
+        border-radius: 12px;
+        border: 1px solid rgba(34, 197, 94, 0.2);
+        display: inline-block;
+      }
+    }
+    
+    // Back Section
+    .back-section {
+      padding: 2rem 0;
+      text-align: center;
+      
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #9CA3AF;
+        text-decoration: none;
+        font-size: 1rem;
+        font-weight: 500;
+        padding: 0.8rem 1.5rem;
+        border: 1px solid #2A2E3A;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        background: #1A1D29;
+        
+        &:hover {
+          color: #FF8C00;
+          border-color: #FF8C00;
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(255, 140, 0, 0.15);
+        }
+        
+        svg {
+          transition: transform 0.3s ease;
+        }
+        
+        &:hover svg {
+          transform: translateX(-3px);
+        }
+      }
+    }
+  }
+}
+
+// Анимации
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+// Legacy Apps Page Styles (for other app pages)
+.apps-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0e0e14 0%, #1a1a2e 100%);
+  color: #ffffff;
+  padding-top: 80px; // отступ сверху для хедера
+  
+  .apps-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    
+    .apps-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 3rem;
+      background: linear-gradient(45deg, var(--primary-color), #ff6b35);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 4px 15px rgba(255, 165, 0, 0.3);
+    }
+    
+    .app-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: start;
+      margin-bottom: 3rem;
+      
+      .app-description {
+        h2 {
+          font-size: 1.8rem;
+          font-weight: 600;
+          margin-bottom: 1rem;
+          color: #cccccc;
+        }
+        
+        p {
+          font-size: 1.1rem;
+          line-height: 1.6;
+          color: #bbbbbb;
+          margin-bottom: 2rem;
+        }
+        
+        .features {
+          h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+          }
+          
+          ul {
+            list-style: none;
+            padding: 0;
+            
+            li {
+              font-size: 1rem;
+              margin-bottom: 0.8rem;
+              padding: 0.5rem 0;
+              color: #cccccc;
+              transition: color 0.3s ease;
+              
+              &:hover {
+                color: var(--primary-color);
+              }
+            }
+          }
+        }
+      }
+      
+      .download-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        
+        .app-icon {
+          margin-bottom: 2rem;
+          
+          .phone-mockup,
+          .desktop-mockup {
+            font-size: 4rem;
+            background: linear-gradient(145deg, #1f1f1f, #2e2e2e);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease;
+            
+            &:hover {
+              transform: scale(1.05);
+            }
+          }
+        }
+        
+        .download-buttons {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+          margin-bottom: 2rem;
+          
+          .download-btn {
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            display: inline-block;
+            min-width: 200px;
+            
+            &.google-play {
+              background: linear-gradient(135deg, #4285F4, #34A853);
+              color: white;
+              
+              &:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(66, 133, 244, 0.4);
+              }
+            }
+            
+            &.app-store {
+              background: linear-gradient(135deg, #000000, #333333);
+              color: white;
+              
+              &:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+              }
+            }
+            
+            &.apk-download,
+            &.testflight,
+            &.windows,
+            &.macos,
+            &.linux {
+              background: linear-gradient(135deg, var(--primary-color), #ff6b35);
+              color: white;
+              
+              &:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(255, 165, 0, 0.4);
+              }
+            }
+          }
+        }
+        
+        .system-requirements {
+          background: rgba(255, 255, 255, 0.05);
+          padding: 1.5rem;
+          border-radius: 12px;
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          
+          h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            color: var(--primary-color);
+          }
+          
+          p {
+            font-size: 0.9rem;
+            color: #cccccc;
+            margin-bottom: 0.5rem;
+            
+            &:last-child {
+              margin-bottom: 0;
+            }
+          }
+          
+          .requirements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            
+            div {
+              strong {
+                display: block;
+                color: var(--primary-color);
+                margin-bottom: 0.5rem;
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    .back-link {
+      text-align: center;
+      
+      a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-size: 1.1rem;
+        font-weight: 500;
+        padding: 0.8rem 1.5rem;
+        border: 2px solid var(--primary-color);
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        display: inline-block;
+        
+        &:hover {
+          background: var(--primary-color);
+          color: #000000;
+          transform: translateY(-2px);
+          box-shadow: 0 5px 15px rgba(255, 165, 0, 0.3);
+        }
+      }
+    }
+  }
+}
+
+// Адаптивный дизайн для Android страницы (Crunchyroll-style)
+@media (max-width: 768px) {
+  .android-page {
+    .android-container {
+      padding: 1rem;
+      
+      .hero-section {
+        padding: 2rem 0 4rem;
+        
+        .hero-content {
+          .app-icon-large svg {
+            width: 80px;
+            height: 80px;
+          }
+          
+          .app-title {
+            font-size: 2.5rem;
+          }
+          
+          .app-subtitle {
+            font-size: 1.2rem;
+          }
+          
+          .app-description {
+            font-size: 1.1rem;
+          }
+        }
+      }
+      
+      .features-section {
+        padding: 3rem 0;
+        
+        .section-title {
+          font-size: 2rem;
+        }
+        
+        .features-grid {
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
+          
+          .feature-card {
+            padding: 1.5rem 1rem;
+            
+            h3 {
+              font-size: 1.1rem;
+            }
+            
+            p {
+              font-size: 0.9rem;
+              
+              .dev-status {
+                font-size: 0.8rem;
+              }
+            }
+          }
+        }
+      }
+      
+      .download-section {
+        padding: 3rem 0;
+        
+        .section-title {
+          font-size: 2rem;
+        }
+        
+        .download-buttons {
+          flex-direction: column;
+          align-items: center;
+          
+          .download-btn {
+            min-width: 280px;
+          }
+        }
+        
+        .download-info {
+          flex-direction: column;
+          align-items: center;
+          gap: 1rem;
+        }
+      }
+    }
+  }
+
+  // iPhone page адаптивные стили
+  .iphone-page {
+    .iphone-container {
+      padding: 1rem;
+      
+      .hero-section {
+        padding: 2rem 0 4rem;
+        
+        .hero-content {
+          .app-icon-large svg {
+            width: 80px;
+            height: 80px;
+          }
+          
+          .app-title {
+            font-size: 2.5rem;
+          }
+          
+          .app-subtitle {
+            font-size: 1.2rem;
+          }
+          
+          .status-badge {
+            font-size: 0.8rem;
+            padding: 0.4rem 1.2rem;
+          }
+        }
+      }
+      
+      .explanation-section {
+        padding: 2rem 0;
+        
+        .section-title {
+          font-size: 2rem;
+        }
+        
+        .explanation-content {
+          .main-message {
+            font-size: 1.1rem;
+            padding: 1.5rem;
+          }
+          
+          .apology {
+            font-size: 1rem;
+          }
+        }
+      }
+      
+      .reasons-section {
+        padding: 3rem 0;
+        
+        .section-title {
+          font-size: 2rem;
+        }
+        
+        .reasons-grid {
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
+          
+          .reason-card {
+            padding: 1.5rem 1rem;
+            
+            h3 {
+              font-size: 1.1rem;
+            }
+            
+            p {
+              font-size: 0.9rem;
+            }
+          }
+        }
+      }
+      
+      .alternative-section {
+        padding: 3rem 0;
+        
+        .section-title {
+          font-size: 2rem;
+        }
+        
+        .alternative-card {
+          flex-direction: column;
+          text-align: center;
+          padding: 2rem;
+          
+          .alt-icon {
+            align-self: center;
+            margin-bottom: 1rem;
+          }
+          
+          .alt-content {
+            h3 {
+              font-size: 1.3rem;
+            }
+            
+            p {
+              font-size: 1rem;
+            }
+            
+            .instruction {
+              padding: 1rem;
+              
+              strong {
+                font-size: 1rem;
+              }
+            }
+          }
+        }
+      }
+      
+      .future-section {
+        padding: 2rem 0;
+        
+        .section-title {
+          font-size: 2rem;
+        }
+        
+        p {
+          font-size: 1.1rem;
+          padding: 1.5rem;
+        }
+      }
+    }
+  }
+  
+  // Legacy apps page responsive
+  .apps-page {
+    .apps-container {
+      padding: 1rem;
+      
+      .apps-title {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+      }
+      
+      .app-info {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        
+        .app-description {
+          h2 {
+            font-size: 1.5rem;
+          }
+          
+          p {
+            font-size: 1rem;
+          }
+          
+          .features {
+            h3 {
+              font-size: 1.2rem;
+            }
+            
+            ul li {
+              font-size: 0.9rem;
+            }
+          }
+        }
+        
+        .download-section {
+          .app-icon {
+            .phone-mockup,
+            .desktop-mockup {
+              font-size: 3rem;
+              padding: 1.5rem;
+            }
+          }
+          
+          .download-buttons {
+            .download-btn {
+              min-width: 180px;
+              font-size: 0.9rem;
+              padding: 0.8rem 1.5rem;
+            }
+          }
+          
+          .system-requirements {
+            padding: 1rem;
+            
+            .requirements-grid {
+              grid-template-columns: 1fr;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .android-page {
+    .android-container {
+      .hero-section {
+        padding: 1.5rem 0 3rem;
+        
+        .hero-content {
+          .app-icon-large svg {
+            width: 60px;
+            height: 60px;
+          }
+          
+          .app-title {
+            font-size: 2rem;
+          }
+          
+          .app-subtitle {
+            font-size: 1rem;
+            letter-spacing: 1px;
+          }
+          
+          .app-description {
+            font-size: 1rem;
+          }
+        }
+      }
+      
+      .features-section {
+        padding: 2rem 0;
+        
+        .section-title {
+          font-size: 1.8rem;
+        }
+        
+        .features-grid {
+          .feature-card {
+            padding: 1.25rem 1rem;
+          }
+        }
+      }
+      
+      .download-section {
+        padding: 2rem 0;
+        
+        .section-title {
+          font-size: 1.8rem;
+        }
+        
+        .download-buttons {
+          .download-btn {
+            min-width: 250px;
+            padding: 1rem 1.5rem;
+            
+            .btn-content {
+              .btn-subtitle {
+                font-size: 0.7rem;
+              }
+              
+              .btn-title {
+                font-size: 1rem;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // iPhone page адаптивные стили для малых экранов  
+  .iphone-page {
+    .iphone-container {
+      .hero-section {
+        padding: 1.5rem 0 3rem;
+        
+        .hero-content {
+          .app-icon-large svg {
+            width: 60px;
+            height: 60px;
+          }
+          
+          .app-title {
+            font-size: 2rem;
+          }
+          
+          .app-subtitle {
+            font-size: 1rem;
+            letter-spacing: 1px;
+          }
+          
+          .status-badge {
+            font-size: 0.75rem;
+            padding: 0.3rem 1rem;
+          }
+        }
+      }
+      
+      .explanation-section {
+        padding: 1.5rem 0;
+        
+        .section-title {
+          font-size: 1.8rem;
+        }
+        
+        .explanation-content {
+          .main-message {
+            font-size: 1rem;
+            padding: 1.2rem;
+          }
+          
+          .apology {
+            font-size: 0.9rem;
+          }
+        }
+      }
+      
+      .reasons-section {
+        padding: 2rem 0;
+        
+        .section-title {
+          font-size: 1.8rem;
+        }
+        
+        .reasons-grid {
+          .reason-card {
+            padding: 1.2rem 0.8rem;
+            
+            h3 {
+              font-size: 1rem;
+            }
+            
+            p {
+              font-size: 0.85rem;
+            }
+          }
+        }
+      }
+      
+      .alternative-section {
+        padding: 2rem 0;
+        
+        .section-title {
+          font-size: 1.8rem;
+        }
+        
+        .alternative-card {
+          padding: 1.5rem;
+          
+          .alt-content {
+            h3 {
+              font-size: 1.2rem;
+            }
+            
+            p {
+              font-size: 0.95rem;
+            }
+            
+            .instruction {
+              padding: 0.8rem;
+              
+              strong {
+                font-size: 0.95rem;
+              }
+              
+              ol li {
+                font-size: 0.85rem;
+              }
+            }
+          }
+        }
+      }
+      
+      .future-section {
+        padding: 1.5rem 0;
+        
+        .section-title {
+          font-size: 1.8rem;
+        }
+        
+        p {
+          font-size: 1rem;
+          padding: 1.2rem;
+        }
+      }
+    }
+  }
+
+  // PC page адаптивные стили для малых экранов
+  .pc-page {
+    .pc-container {
+      .hero-section {
+        padding: 1.5rem 0 3rem;
+        
+        .hero-content {
+          .app-icon-large svg {
+            width: 60px;
+            height: 60px;
+          }
+          
+          .app-title {
+            font-size: 2rem;
+          }
+          
+          .app-subtitle {
+            font-size: 1rem;
+            letter-spacing: 1px;
+          }
+          
+          .status-badge {
+            font-size: 0.75rem;
+            padding: 0.3rem 1rem;
+          }
+          
+          .app-description {
+            font-size: 1rem;
+          }
+        }
+      }
+      
+      .features-section {
+        padding: 2rem 0;
+        
+        .section-title {
+          font-size: 1.8rem;
+        }
+        
+        .features-grid {
+          .feature-card {
+            padding: 1.2rem 0.8rem;
+            
+            h3 {
+              font-size: 1rem;
+            }
+            
+            p {
+              font-size: 0.85rem;
+            }
+          }
+        }
+      }
+      
+      .warning-section {
+        padding: 2rem 0;
+        
+        .warning-card {
+          padding: 1.5rem 1rem;
+          
+          .warning-header {
+            margin-bottom: 1rem;
+            
+            .warning-icon {
+              font-size: 1.5rem;
+            }
+            
+            h2 {
+              font-size: 1.4rem;
+            }
+          }
+          
+          .warning-content {
+            .warning-main {
+              font-size: 1rem;
+            }
+            
+            .warning-note {
+              font-size: 0.85rem;
+              padding: 0.8rem;
+            }
+          }
+        }
+      }
+      
+      .download-section {
+        padding: 2rem 0;
+        
+        .section-title {
+          font-size: 1.8rem;
+        }
+        
+        .download-buttons {
+          .download-btn {
+            min-width: 240px;
+            padding: 1rem 1.5rem;
+            
+            .btn-content {
+              .btn-subtitle {
+                font-size: 0.7rem;
+              }
+              
+              .btn-title {
+                font-size: 1rem;
+              }
+            }
+          }
+        }
+      }
+      
+      .closing-section {
+        .closing-message {
+          font-size: 1.1rem;
+          padding: 1rem 1.5rem;
+        }
+      }
+    }
+  }
+  
+  // Legacy apps page responsive
+  .apps-page {
+    .apps-container {
+      .apps-title {
+        font-size: 1.8rem;
+      }
+      
+      .app-info {
+        .download-section {
+          .download-buttons {
+            .download-btn {
+              min-width: 160px;
+              font-size: 0.8rem;
+              padding: 0.7rem 1.2rem;
+            }
+          }
+        }
+      }
+    }
+  }
+}

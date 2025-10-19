@@ -1,0 +1,874 @@
+// Оптимизированные компоненты аниме
+// ====================================
+
+// Базовые переменные - обновленные пропорции карточек
+$card-width: 220px;  // Увеличили ширину
+$card-height: 260px; // Уменьшили высоту
+$animation-duration: 0.25s;
+$border-radius: 16px;
+$card-spacing: 12px;
+
+// Плейсхолдер для карточки
+.optimized-anime-card-placeholder {
+  width: $card-width;
+  height: calc(#{$card-height} + 60px); // Высота изображения + информация
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: $border-radius;
+  margin: 0 10px;
+
+  @media (prefers-color-scheme: dark) {
+    background: linear-gradient(90deg, #2a2a2a 25%, #3a3a3a 50%, #2a2a2a 75%);
+    background-size: 200% 100%;
+  }
+}
+
+// Анимация загрузки
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+// Оптимизированная карточка аниме - современный дизайн
+.optimized-anime-card-wrapper {
+  position: relative;
+  margin: 0 $card-spacing;
+  
+  // Адаптивность для мобильных
+  @media (max-width: 768px) {
+    margin: 0 8px;
+  }
+  
+  .optimized-anime-card {
+    display: block;
+    width: $card-width;
+    cursor: pointer;
+    border-radius: $border-radius;
+    overflow: hidden;
+    transition: all $animation-duration cubic-bezier(0.4, 0.0, 0.2, 1);
+    background: #1a1a1a;
+    box-shadow: 
+      0 1px 3px rgba(0, 0, 0, 0.12),
+      0 1px 2px rgba(0, 0, 0, 0.24);
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    
+    // Состояния видимости
+    opacity: 0;
+    transform: translateY(16px);
+    
+    &.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.16),
+        0 2px 4px rgba(0, 0, 0, 0.32);
+      border-color: rgba(255, 106, 53, 0.3);
+      
+      // Отключаем hover эффекты на touch устройствах
+      @media (hover: none) {
+        transform: translateY(0);
+        box-shadow: 
+          0 1px 3px rgba(0, 0, 0, 0.12),
+          0 1px 2px rgba(0, 0, 0, 0.24);
+        border-color: rgba(255, 255, 255, 0.06);
+      }
+    }
+    
+    // Активное состояние для touch устройств
+    &:active {
+      @media (hover: none) {
+        transform: scale(0.98);
+        transition-duration: 0.1s;
+      }
+    }
+    
+    &:focus {
+      outline: none;
+      box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.16),
+        0 2px 4px rgba(0, 0, 0, 0.32),
+        0 0 0 2px rgba(255, 106, 53, 0.5);
+    }
+    
+    // Светлая тема
+    @media (prefers-color-scheme: light) {
+      background: #ffffff;
+      border-color: rgba(0, 0, 0, 0.08);
+      color: #1a1a1a;
+      
+      &:hover {
+        border-color: rgba(255, 106, 53, 0.4);
+      }
+    }
+  }
+}
+
+// Изображение карточки
+.optimized-card-image {
+  position: relative;
+  width: $card-width;
+  height: $card-height;
+  overflow: hidden;
+  
+  .card-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform $animation-duration ease;
+    
+    &.loaded {
+      animation: fadeInImage 0.5s ease;
+    }
+  }
+  
+  // Плейсхолдер изображения
+  .optimized-image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background: var(--placeholder-background);
+    color: var(--placeholder-text);
+    
+    .optimized-loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border-color);
+      border-top: 3px solid var(--primary-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    .no-image-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      
+      svg {
+        width: 48px;
+        height: 48px;
+        opacity: 0.5;
+      }
+      
+      span {
+        font-size: 12px;
+        opacity: 0.7;
+      }
+    }
+  }
+}
+
+// Теги на карточке - обновленный дизайн
+.optimized-badges {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 2;
+  
+  .type-badge, .rating-badge {
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: all $animation-duration ease;
+    
+    &.loaded {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .type-badge {
+    background: rgba(255, 107, 53, 0.92);
+    color: white;
+    box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
+    
+    @media (prefers-color-scheme: light) {
+      background: rgba(255, 107, 53, 0.95);
+      border-color: rgba(255, 107, 53, 0.2);
+    }
+  }
+  
+  .rating-badge {
+    background: rgba(34, 34, 34, 0.92);
+    color: #fbbf24;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    border-color: rgba(251, 191, 36, 0.2);
+    
+    @media (prefers-color-scheme: light) {
+      background: rgba(255, 255, 255, 0.95);
+      color: #d97706;
+      border-color: rgba(217, 119, 6, 0.2);
+    }
+  }
+}
+
+// Статус коллекции
+.collection-status {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  color: white;
+  backdrop-filter: blur(10px);
+  z-index: 2;
+}
+
+// Информация карточки - современный дизайн
+.optimized-card-info {
+  padding: 16px;
+  background: transparent;
+  
+  .optimized-card-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+    line-height: 1.25;
+    height: 38px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    color: #ffffff;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all $animation-duration ease;
+    
+    &.loaded {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    @media (prefers-color-scheme: light) {
+      color: #1a1a1a;
+    }
+  }
+  
+  .optimized-card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+    
+    @media (prefers-color-scheme: light) {
+      color: rgba(26, 26, 26, 0.6);
+    }
+    
+    .episodes-info, .season-info {
+      opacity: 0;
+      transition: all $animation-duration ease;
+      transform: translateY(4px);
+      
+      &.loaded {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .episodes-info {
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.9);
+      
+      @media (prefers-color-scheme: light) {
+        color: rgba(26, 26, 26, 0.8);
+      }
+    }
+    
+    .season-info {
+      font-size: 11px;
+      opacity: 0.7;
+      padding: 2px 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      
+      @media (prefers-color-scheme: light) {
+        background: rgba(0, 0, 0, 0.04);
+        border-color: rgba(0, 0, 0, 0.08);
+      }
+    }
+  }
+}
+
+// Современные анимации
+@keyframes fadeInImage {
+  from {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Оптимизированная секция категории
+.optimized-category-section {
+  margin: 40px 0;
+  
+  .category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 0 20px;
+    
+    .category-title-link {
+      text-decoration: none;
+      
+      .category-title {
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0;
+        color: var(--text-primary);
+        transition: color $animation-duration ease;
+        
+        &:hover {
+          color: var(--primary-color);
+        }
+      }
+    }
+    
+    .category-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      
+      .scroll-btn {
+        width: 36px;
+        height: 36px;
+        border: none;
+        border-radius: 50%;
+        background: var(--button-background);
+        color: var(--text-primary);
+        cursor: pointer;
+        transition: all $animation-duration ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        svg {
+          width: 18px;
+          height: 18px;
+        }
+        
+        &:hover {
+          background: var(--button-hover);
+          transform: scale(1.1);
+        }
+      }
+      
+      .view-all-btn {
+        padding: 8px 16px;
+        background: var(--primary-color);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all $animation-duration ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        
+        svg {
+          width: 16px;
+          height: 16px;
+        }
+        
+        &:hover {
+          background: var(--primary-hover);
+          transform: translateY(-2px);
+        }
+      }
+    }
+  }
+  
+  .category-content {
+    .anime-grid-container {
+      display: flex;
+      overflow-x: auto;
+      padding: 0 20px;
+      scroll-behavior: smooth;
+      
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      
+      .anime-card-wrapper {
+        flex-shrink: 0;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all $animation-duration ease;
+        
+        &.visible {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    }
+    
+    // Состояния загрузки и ошибки
+    .loading-state, .error-state, .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px 20px;
+      text-align: center;
+      
+      .category-loading-spinner {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 16px;
+        
+        .spinner-ring {
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background: var(--primary-color);
+          animation: bounce 1.4s ease-in-out infinite both;
+          
+          &:nth-child(1) { animation-delay: -0.32s; }
+          &:nth-child(2) { animation-delay: -0.16s; }
+        }
+      }
+      
+      .loading-text {
+        color: var(--text-secondary);
+        font-size: 14px;
+      }
+      
+      p {
+        color: var(--text-secondary);
+        margin: 0;
+      }
+    }
+  }
+}
+
+@keyframes bounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+  } 
+  40% {
+    transform: scale(1);
+  }
+}
+
+// Темная тема
+@media (prefers-color-scheme: dark) {
+  :root {
+    --card-background: #2a2a2a;
+    --placeholder-background: #333;
+    --placeholder-text: #666;
+    --text-primary: #ffffff;
+    --text-secondary: #b0b0b0;
+    --border-color: #444;
+    --primary-color: #ff6b35;
+    --primary-hover: #e55a2b;
+    --button-background: #444;
+    --button-hover: #555;
+  }
+}
+
+// Светлая тема
+@media (prefers-color-scheme: light) {
+  :root {
+    --card-background: #ffffff;
+    --placeholder-background: #f5f5f5;
+    --placeholder-text: #999;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --border-color: #ddd;
+    --primary-color: #ff6b35;
+    --primary-hover: #e55a2b;
+    --button-background: #f5f5f5;
+    --button-hover: #e5e5e5;
+  }
+}
+
+// Lazy Screenshots компонент
+.lazy-screenshots {
+  margin: 20px 0;
+  
+  .screenshots-placeholder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    background: var(--card-background);
+    border-radius: $border-radius;
+    border: 2px dashed var(--border-color);
+    
+    .placeholder-content {
+      text-align: center;
+      padding: 40px;
+      
+      .placeholder-icon {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 16px;
+        color: var(--text-secondary);
+        opacity: 0.5;
+        
+        svg {
+          width: 100%;
+          height: 100%;
+        }
+      }
+      
+      h3 {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0 0 8px 0;
+      }
+      
+      p {
+        color: var(--text-secondary);
+        margin: 0 0 20px 0;
+        font-size: 14px;
+      }
+      
+      .load-screenshots-btn {
+        padding: 12px 24px;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all $animation-duration ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0 auto;
+        
+        &:hover:not(:disabled) {
+          background: var(--primary-hover);
+          transform: translateY(-2px);
+        }
+        
+        &:disabled {
+          opacity: 0.7;
+          cursor: not-allowed;
+        }
+        
+        .btn-spinner {
+          width: 16px;
+          height: 16px;
+          border: 2px solid rgba(255, 255, 255, 0.3);
+          border-top: 2px solid white;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+        }
+      }
+    }
+  }
+  
+  .error-message {
+    text-align: center;
+    padding: 40px;
+    color: #ff6b6b;
+    
+    p {
+      margin: 0 0 16px 0;
+    }
+    
+    .retry-btn {
+      padding: 8px 16px;
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      
+      &:hover {
+        background: #ff5252;
+      }
+    }
+  }
+  
+  .no-screenshots {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-secondary);
+    
+    .no-screenshots-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 16px;
+      opacity: 0.5;
+      
+      svg {
+        width: 100%;
+        height: 100%;
+      }
+    }
+    
+    p {
+      margin: 0;
+      font-size: 14px;
+    }
+  }
+  
+  .screenshots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    
+    .screenshot-item {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform $animation-duration ease;
+      
+      &:hover {
+        transform: scale(1.05);
+        
+        .screenshot-overlay {
+          opacity: 1;
+        }
+      }
+      
+      .screenshot-image {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+      
+      .screenshot-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity $animation-duration ease;
+        
+        svg {
+          width: 32px;
+          height: 32px;
+          color: white;
+        }
+      }
+    }
+  }
+  
+  .screenshot-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+    
+    .modal-content {
+      position: relative;
+      max-width: 90vw;
+      max-height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      .modal-close {
+        position: absolute;
+        top: -50px;
+        right: 0;
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        z-index: 10;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: background $animation-duration ease;
+        
+        &:hover {
+          background: rgba(255, 255, 255, 0.1);
+        }
+        
+        svg {
+          width: 24px;
+          height: 24px;
+        }
+      }
+      
+      .modal-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.5);
+        border: none;
+        color: white;
+        cursor: pointer;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all $animation-duration ease;
+        z-index: 10;
+        
+        &:hover {
+          background: rgba(0, 0, 0, 0.8);
+          transform: translateY(-50%) scale(1.1);
+        }
+        
+        &.prev {
+          left: -70px;
+        }
+        
+        &.next {
+          right: -70px;
+        }
+        
+        svg {
+          width: 24px;
+          height: 24px;
+        }
+      }
+      
+      .modal-image-container {
+        max-width: 100%;
+        max-height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        .modal-image {
+          max-width: 100%;
+          max-height: 100%;
+          object-fit: contain;
+          border-radius: 8px;
+        }
+      }
+      
+      .modal-counter {
+        position: absolute;
+        bottom: -40px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: white;
+        font-size: 14px;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 8px 16px;
+        border-radius: 20px;
+      }
+    }
+  }
+}
+
+// Адаптивность
+@media (max-width: 768px) {
+  .optimized-category-section {
+    .category-header {
+      padding: 0 16px;
+      
+      .category-actions {
+        .view-all-btn {
+          padding: 6px 12px;
+          font-size: 12px;
+        }
+      }
+    }
+    
+    .category-content .anime-grid-container {
+      padding: 0 16px;
+    }
+  }
+  
+  .optimized-anime-card-wrapper {
+    margin: 0 6px;
+    
+    .optimized-anime-card {
+      width: 160px;
+    }
+  }
+  
+  .optimized-card-image {
+    width: 160px;
+    height: 220px;
+  }
+}

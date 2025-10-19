@@ -2,10 +2,10 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Chart from 'chart.js/auto';
-import ProfileBanner from '../../component/profile-page-new/profile-top-banner';
-import ProfileLeftBlock from '../../component/profile-page-new/profile-block-left';
-import ProfileRightBlock from '../../component/profile-page-new/profile-block-right';
-import ProfileModal from '../../component/profile-page-new/profile-model';
+import ProfileBanner from '@/component/profile-page-new/profile-top-banner';
+import ProfileLeftBlock from '@/component/profile-page-new/profile-block-left';
+import ProfileRightBlock from '@/component/profile-page-new/profile-block-right';
+import ProfileModal from '@/component/profile-page-new/profile-model';
 
 const Test = () => {
     const chartRef = useRef<HTMLCanvasElement>(null);

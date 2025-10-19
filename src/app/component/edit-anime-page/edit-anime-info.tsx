@@ -122,7 +122,7 @@ const AnimeMainInfo: React.FC<Props> = ({
                         <option value="Декабрь">Декабрь</option>
                     </select>
                 </label>
-                <label>Сезон (указывать номер + сезон):
+                <label>Сезон (ПИСАТЬ ТОЛЬКО ЧИСЛО, БЕЗ СЕЗОНА!):
                     <input value={season} onChange={(e) => setSeason(e.target.value)} placeholder="например, 1 сезон"/>
                 </label>
                 <label>Год:

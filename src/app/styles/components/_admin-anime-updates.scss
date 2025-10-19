@@ -1,0 +1,966 @@
+.admin-section {
+  color: #f9fafb;
+  background: linear-gradient(135deg, #111827 0%, #000000 100%);
+  border-radius: 12px;
+  border: 1px solid #374151;
+  padding: 24px;
+  margin-bottom: 24px;
+
+  h2 {
+    color: #f9fafb;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    svg {
+      color: #3b82f6;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  }
+
+  .admin-anime-updates-controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+
+      .admin-anime-updates-sync-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 16px;
+        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 14px;
+
+        &:hover {
+          background: linear-gradient(135deg, #2563eb, #1e40af);
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+          transform: none;
+          box-shadow: none;
+        }
+
+        &.active {
+          background: linear-gradient(135deg, #10b981, #059669);
+          box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+          animation: pulse-sync 2s infinite;
+        }
+
+        .spinning {
+          animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      }
+
+      .admin-anime-updates-reset-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background: #dc2626;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+        }
+
+        svg {
+          flex-shrink: 0;
+        }
+      }
+
+      .admin-anime-updates-filter-select {
+        padding: 8px 12px;
+        background: #1f2937;
+        border: 1px solid #374151;
+        border-radius: 8px;
+        color: #f9fafb;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+          border-color: #4b5563;
+          background: #374151;
+        }
+
+        &:focus {
+          outline: none;
+          border-color: #3b82f6;
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        option {
+          background: #1f2937;
+          color: #f9fafb;
+        }
+      }
+    }
+  }
+
+  .admin-anime-updates-stats {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 24px;
+
+    .admin-anime-updates-stat-card {
+      flex: 1;
+      background: rgba(17, 24, 39, 0.5);
+      border: 1px solid #374151;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+
+      .stat-number {
+        font-size: 24px;
+        font-weight: 700;
+        color: #10b981;
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .stat-label {
+        font-size: 12px;
+        color: #9ca3af;
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .admin-anime-updates-desktop-only {
+    display: block;
+
+    .admin-anime-updates-table {
+      background: rgba(17, 24, 39, 0.5);
+      border: 1px solid #374151;
+      border-radius: 8px;
+      overflow: hidden;
+
+      .admin-anime-updates-table-header {
+        display: grid;
+        grid-template-columns: 150px 1fr 200px 120px 100px;
+        background: linear-gradient(135deg, #374151, #1f2937);
+        border-bottom: 1px solid #4b5563;
+
+        .admin-anime-updates-header-cell {
+          padding: 14px 16px;
+          font-weight: 700;
+          font-size: 12px;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          color: #d1d5db;
+          text-align: left;
+
+          &:not(:last-child) {
+            border-right: 1px solid #4b5563;
+          }
+        }
+      }
+
+      .admin-anime-updates-table-body {
+        .admin-anime-updates-table-row {
+          display: grid;
+          grid-template-columns: 150px 1fr 200px 120px 100px;
+          border-bottom: 1px solid #374151;
+          transition: all 0.2s ease;
+
+          // Hover убран для совместимости с ThemeContext
+
+          &:last-child {
+            border-bottom: none;
+          }
+
+          .admin-anime-updates-cell {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            border-right: 1px solid #374151;
+
+            &:last-child {
+              border-right: none;
+            }
+
+            &.admin-anime-updates-cell-time {
+              .admin-anime-updates-time-text {
+                font-size: 13px;
+                color: #9ca3af;
+                font-family: 'JetBrains Mono', monospace;
+              }
+            }
+
+            &.admin-anime-updates-cell-anime {
+              .admin-anime-updates-anime-info {
+                display: flex;
+                flex-direction: column;
+                gap: 3px;
+
+                .admin-anime-updates-anime-title {
+                  color: #f9fafb;
+                  font-weight: 600;
+                  font-size: 14px;
+                  line-height: 1.4;
+                  max-width: 180px;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  white-space: nowrap;
+                  display: block;
+
+                  &.system-log {
+                    color: #fbbf24;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    font-size: 12px;
+                    letter-spacing: 0.5px;
+                    max-width: none;
+                    white-space: normal;
+                  }
+                }
+
+                .admin-anime-updates-anime-id {
+                  color: #9ca3af;
+                  font-size: 11px;
+                  font-family: 'JetBrains Mono', monospace;
+                  font-weight: 500;
+                  min-width: 80px;
+                  max-width: 80px;
+                  line-height: 1.2;
+                  display: block;
+                }
+              }
+            }
+
+            &.admin-anime-updates-cell-episodes {
+              .admin-anime-updates-episodes-change {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+
+                .admin-anime-updates-episodes-before {
+                  color: #ef4444;
+                  font-weight: 600;
+                  font-size: 13px;
+                }
+
+                .admin-anime-updates-arrow {
+                  color: #6b7280;
+                  font-weight: 500;
+                }
+
+                .admin-anime-updates-episodes-after {
+                  color: #10b981;
+                  font-weight: 600;
+                  font-size: 13px;
+                }
+              }
+
+              .admin-anime-updates-system-result {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+
+                .system-description {
+                  color: #9ca3af;
+                  font-size: 12px;
+                  font-style: italic;
+                }
+
+                .system-summary {
+                  color: #10b981;
+                  font-weight: 700;
+                  font-size: 14px;
+                }
+              }
+            }
+
+            &.admin-anime-updates-cell-actions {
+              text-align: center;
+
+              .admin-anime-updates-summary-btn {
+                background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+                color: white;
+                border: none;
+                padding: 6px 12px;
+                border-radius: 6px;
+                font-size: 12px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s ease;
+
+                &:hover {
+                  background: linear-gradient(135deg, #2563eb, #1e40af);
+                  transform: translateY(-1px);
+                  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+                }
+
+                &:active {
+                  transform: translateY(0);
+                }
+              }
+            }
+
+            &.admin-anime-updates-cell-source {
+              .admin-anime-updates-source-badge {
+                display: inline-block;
+                padding: 4px 12px;
+                border-radius: 12px;
+                font-size: 11px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+
+                &.admin-anime-updates-source-kodik {
+                  background: linear-gradient(135deg, #f59e0b, #d97706);
+                  color: #fef3c7;
+                }
+
+                &.admin-anime-updates-source-manual {
+                  background: linear-gradient(135deg, #10b981, #059669);
+                  color: #d1fae5;
+                }
+
+                &.admin-anime-updates-source-unknown {
+                  background: linear-gradient(135deg, #6b7280, #4b5563);
+                  color: #f3f4f6;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .admin-anime-updates-no-data {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 20px;
+        color: #6b7280;
+
+        svg {
+          margin-bottom: 16px;
+          color: #4b5563;
+        }
+
+        p {
+          font-size: 16px;
+          font-weight: 600;
+          margin-bottom: 8px;
+        }
+
+        span {
+          font-size: 14px;
+          text-align: center;
+          max-width: 300px;
+        }
+      }
+    }
+  }
+
+  .admin-anime-updates-mobile-only {
+    display: none;
+
+    @media (max-width: 768px) {
+      display: block;
+
+      .admin-anime-updates-mobile-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+        .admin-anime-updates-mobile-card {
+          background: rgba(17, 24, 39, 0.5);
+          border: 1px solid #374151;
+          border-radius: 8px;
+          padding: 16px;
+          transition: all 0.2s ease;
+
+          &:hover {
+            border-color: #4b5563;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+          }
+
+          .admin-anime-updates-mobile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+
+            .admin-anime-updates-mobile-time {
+              font-size: 12px;
+              color: #9ca3af;
+              font-family: 'JetBrains Mono', monospace;
+            }
+
+            .admin-anime-updates-mobile-source {
+              padding: 3px 8px;
+              border-radius: 8px;
+              font-size: 10px;
+              font-weight: 600;
+              text-transform: uppercase;
+
+              &.admin-anime-updates-source-kodik {
+                background: #f59e0b;
+                color: #fef3c7;
+              }
+
+              &.admin-anime-updates-source-manual {
+                background: #10b981;
+                color: #d1fae5;
+              }
+
+              &.admin-anime-updates-source-unknown {
+                background: #6b7280;
+                color: #f3f4f6;
+              }
+            }
+          }
+
+        .admin-anime-updates-mobile-anime {
+          display: flex;
+          flex-direction: column;
+          gap: 3px;
+          margin-bottom: 12px;
+
+          .admin-anime-updates-anime-title {
+            color: #f9fafb;
+            font-weight: 600;
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 2px;
+            display: block;
+
+            &.system-log {
+              color: #fbbf24;
+              font-weight: 700;
+              text-transform: uppercase;
+              font-size: 12px;
+              letter-spacing: 0.5px;
+            }
+          }
+
+          .admin-anime-updates-anime-id {
+            color: #9ca3af;
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+            display: block;
+          }
+        }
+
+        .admin-anime-updates-mobile-episodes {
+          color: #d1d5db;
+          font-size: 14px;
+
+          span {
+            color: #9ca3af;
+          }
+
+          .admin-anime-updates-episodes-change {
+            font-weight: 600;
+          }
+
+          .admin-anime-updates-mobile-system-result {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+
+            .mobile-system-description {
+              color: #9ca3af;
+              font-size: 12px;
+              font-style: italic;
+            }
+
+            .mobile-system-summary {
+              color: #10b981;
+              font-weight: 700;
+              font-size: 14px;
+            }
+          }
+        }
+
+        .admin-anime-updates-mobile-summary-btn {
+          background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+          color: white;
+          border: none;
+          padding: 6px 12px;
+          border-radius: 6px;
+          font-size: 12px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          margin-top: 8px;
+
+          &:hover {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+          }
+
+          &:active {
+            transform: translateY(0);
+          }
+        }
+      }
+
+      .admin-anime-updates-no-data {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 20px;
+        color: #6b7280;
+        text-align: center;
+
+        svg {
+          margin-bottom: 16px;
+          color: #4b5563;
+        }
+
+        p {
+          font-size: 16px;
+          font-weight: 600;
+          margin-bottom: 8px;
+        }
+
+        span {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+
+  .admin-anime-updates-pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 24px;
+
+    button {
+      padding: 8px 12px;
+      background: transparent;
+      border: 1px solid #374151;
+      border-radius: 6px;
+      color: #9ca3af;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        border-color: #3b82f6;
+        color: #3b82f6;
+        background: rgba(59, 130, 246, 0.1);
+      }
+
+      &.active {
+        background: #3b82f6;
+        border-color: #3b82f6;
+        color: white;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .admin-anime-updates-desktop-only {
+      display: none;
+    }
+
+    .admin-anime-updates-stats {
+      flex-direction: column;
+      gap: 16px;
+
+      .admin-anime-updates-stat-card {
+        .stat-number {
+          font-size: 20px;
+        }
+
+        .stat-label {
+          font-size: 11px;
+        }
+      }
+    }
+
+    .admin-anime-updates-controls {
+      justify-content: center;
+      flex-wrap: wrap;
+
+      .admin-anime-updates-sync-btn {
+        font-size: 13px;
+        padding: 8px 14px;
+      }
+
+      .admin-anime-updates-filter-select {
+        font-size: 13px;
+        padding: 7px 10px;
+      }
+    }
+
+    .admin-anime-updates-stats {
+      justify-content: center;
+      text-align: center;
+
+      .admin-anime-updates-stats-text {
+        font-size: 13px;
+      }
+    }
+
+    .admin-anime-updates-pagination {
+      button {
+        padding: 6px 10px;
+        font-size: 13px;
+      }
+    }
+
+    h2 {
+      font-size: 18px;
+      text-align: center;
+
+      .gradient-text {
+        color: #ef4444;
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+/* Анимация для активной кнопки синхронизации */
+@keyframes pulse-sync {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.6);
+  }
+}
+
+// Стили для модального окна сводки
+.admin-anime-updates-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(4px);
+}
+
+.admin-anime-updates-modal {
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  border-radius: 12px;
+  border: 1px solid #374151;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  width: 90%;
+  max-width: 700px;
+  max-height: 80vh;
+  overflow: hidden;
+  animation: modalSlideIn 0.3s ease-out;
+
+  @keyframes modalSlideIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95) translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  .admin-anime-updates-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #374151;
+    background: linear-gradient(135deg, #374151, #1f2937);
+
+    h3 {
+      color: #f9fafb;
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .admin-anime-updates-modal-close {
+      background: none;
+      border: none;
+      color: #9ca3af;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+
+      &:hover {
+        color: #f87171;
+        background: rgba(248, 113, 113, 0.1);
+      }
+    }
+  }
+
+  .admin-anime-updates-modal-content {
+    padding: 20px;
+    overflow-y: auto;
+    max-height: calc(80vh - 80px);
+
+    .admin-anime-updates-modal-info {
+      margin-bottom: 24px;
+      padding: 16px;
+      background: linear-gradient(135deg, #065f46, #047857);
+      border-radius: 8px;
+      border-left: 4px solid #10b981;
+
+      .modal-sync-title {
+        color: #fbbf24;
+        font-weight: 700;
+        font-size: 16px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+
+      .modal-sync-time {
+        color: #d1d5db;
+        font-size: 14px;
+        margin-bottom: 8px;
+      }
+
+      .modal-sync-result {
+        color: #10b981;
+        font-weight: 600;
+        font-size: 15px;
+      }
+    }
+
+    .admin-anime-updates-modal-details {
+      h4 {
+        color: #f9fafb;
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0 0 16px 0;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #374151;
+      }
+
+      .modal-loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 40px;
+        color: #9ca3af;
+
+        .spinning {
+          animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      }
+
+      .modal-sync-summary {
+        .modal-summary-stats {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 16px;
+          margin-bottom: 24px;
+          padding: 16px;
+          background: rgba(17, 24, 39, 0.5);
+          border-radius: 8px;
+          border: 1px solid #374151;
+
+          .summary-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+
+            .stat-label {
+              color: #9ca3af;
+              font-size: 12px;
+              text-align: center;
+            }
+
+            .stat-value {
+              font-size: 20px;
+              font-weight: 700;
+              color: #f9fafb;
+
+              &.updated {
+                color: #10b981;
+              }
+
+              &.no-changes {
+                color: #6b7280;
+              }
+            }
+          }
+        }
+
+        h5 {
+          color: #f9fafb;
+          font-size: 14px;
+          font-weight: 600;
+          margin: 16px 0 12px 0;
+          padding-bottom: 8px;
+          border-bottom: 1px solid #374151;
+        }
+
+        .modal-results-list {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+
+          .modal-result-item {
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            padding: 16px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            &.updated {
+              border-left: 4px solid #10b981;
+            }
+
+            &:hover {
+              border-color: #4b5563;
+              transform: translateY(-1px);
+              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            }
+
+            .modal-anime-info {
+              flex: 1;
+
+              .modal-anime-title {
+                color: #f9fafb;
+                font-weight: 600;
+                font-size: 14px;
+                margin-bottom: 4px;
+              }
+
+              .modal-anime-id {
+                color: #9ca3af;
+                font-size: 11px;
+                font-family: 'JetBrains Mono', monospace;
+              }
+            }
+
+            .modal-episode-change {
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              margin: 0 16px;
+
+              .before {
+                color: #ef4444;
+                font-weight: 600;
+                font-size: 13px;
+              }
+
+              .arrow {
+                color: #6b7280;
+                font-weight: 500;
+              }
+
+              .after {
+                color: #10b981;
+                font-weight: 600;
+                font-size: 13px;
+              }
+            }
+
+            .update-status {
+              .status-badge {
+                padding: 4px 8px;
+                border-radius: 12px;
+                font-size: 11px;
+                font-weight: 600;
+                text-transform: uppercase;
+
+                &.success {
+                  background: linear-gradient(135deg, #10b981, #059669);
+                  color: #d1fae5;
+                }
+
+                &.no-change {
+                  background: linear-gradient(135deg, #6b7280, #4b5563);
+                  color: #f3f4f6;
+                }
+              }
+            }
+          }
+        }
+
+        .no-updates-info {
+          text-align: center;
+          padding: 20px;
+          color: #9ca3af;
+          font-style: italic;
+          background: rgba(17, 24, 39, 0.3);
+          border-radius: 8px;
+          margin-top: 16px;
+        }
+      }
+
+      .modal-no-details {
+        text-align: center;
+        padding: 40px;
+        color: #9ca3af;
+
+        p {
+          margin: 0 0 8px 0;
+          font-size: 16px;
+        }
+
+        span {
+          font-size: 14px;
+          color: #6b7280;
+        }
+      }
+    }
+  }
+}

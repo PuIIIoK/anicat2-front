@@ -1,133 +1,254 @@
 .search-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(0, 0, 0, 0.85);
   z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: fadeIn 0.25s ease-in-out;
-  backdrop-filter: blur(3px);
+  animation: fadeIn 0.3s ease-out;
+  backdrop-filter: blur(8px);
 }
 
 .search-modal {
-  background: #16161a;
-  padding: 2rem;
-  border-radius: 12px;
+  background: rgba(18, 18, 18, 0.95);
+  backdrop-filter: blur(20px);
+  padding: 1.5rem;
+  border-radius: 16px;
   width: 90%;
-  max-width: 900px;
+  max-width: 800px;
   color: #fff;
-  box-shadow: 0 0 15px rgba(255, 45, 100, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
 .search-modal-content {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.2rem;
+  height: 500px; // Фиксированная высота для предотвращения прыганий
 }
 
 .search-modal-input {
-  padding: 0.75rem 1rem;
+  padding: 12px 16px;
   border: none;
-  border-radius: 8px;
-  font-size: 1.05rem;
-  background: #1f1f24;
+  border-radius: 12px;
+  font-size: 16px;
+  background: rgba(30, 30, 30, 0.8);
   color: #fff;
   outline: none;
-  transition: 0.2s ease;
-  border: 1px solid #2d2d35;
+  transition: all 0.25s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  &::placeholder {
+    color: #888;
+  }
 }
 
 .search-modal-input:focus {
-  border-color: #ff2e63;
-  box-shadow: 0 0 4px rgba(255, 45, 100, 0.4);
+  border-color: rgba(255, 165, 0, 0.4);
+  background: rgba(35, 35, 35, 0.9);
+  box-shadow: 0 0 0 3px rgba(255, 165, 0, 0.1);
+}
+
+.search-mode-toggle {
+  display: flex;
+  gap: 0;
+  margin-bottom: 0;
+  background: rgba(30, 30, 30, 0.5);
+  border-radius: 10px;
+  padding: 4px;
+
+  button {
+    flex: 1;
+    padding: 8px 16px;
+    font-size: 14px;
+    border: none;
+    border-radius: 8px;
+    color: #aaa;
+    cursor: pointer;
+    background: transparent;
+    font-weight: 500;
+    transition: all 0.25s ease;
+
+    &.active {
+      background: rgba(255, 165, 0, 0.2);
+      color: var(--primary-color);
+      box-shadow: 0 2px 8px rgba(255, 165, 0, 0.15);
+    }
+
+    &:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.05);
+      color: #ccc;
+    }
+  }
 }
 
 .search-results {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  max-height: 420px;
+  gap: 0.4rem;
+  height: 100%; // Используем всю доступную высоту
   overflow-y: auto;
-  padding-right: 4px;
+  padding-right: 8px;
   scrollbar-width: thin;
-  scrollbar-color: #ff2e63 #222;
+  scrollbar-color: rgba(255, 165, 0, 0.5) transparent;
+  
+  // GPU-ускорение для плавной прокрутки
+  will-change: scroll-position;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -webkit-overflow-scrolling: touch;
+  
+  // Оптимизация рендеринга
+  contain: layout style paint;
 
   &::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
   }
 
   &::-webkit-scrollbar-track {
-    background: #111;
-    border-radius: 10px;
+    background: transparent;
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: #ff2e63;
-    border-radius: 10px;
-    border: 2px solid #111;
+    background: rgba(255, 165, 0, 0.3);
+    border-radius: 3px;
+    
+    &:hover {
+      background: rgba(255, 165, 0, 0.5);
+    }
   }
 }
 
-.anime-card {
+.anime-card-search {
   display: flex;
-  background: #1f1f24;
+  align-items: center;
+  gap: 10px;
+  background: rgba(20, 20, 20, 0.4);
   border-radius: 10px;
-  padding: 0.65rem;
-  transition: 0.2s ease;
+  padding: 10px;
+  min-height: 100px;
+  transition: all 0.25s ease;
   cursor: pointer;
-  border: 1px solid transparent;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(5px);
+  
+  // GPU-ускорение для карточек
+  will-change: transform;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  
+  // Оптимизация рендеринга
+  contain: layout style paint;
 
   &:hover {
-    background: #2c2c35;
-    border-color: rgba(255, 45, 100, 0.3);
+    background: rgba(25, 25, 25, 0.7);
+    border-color: rgba(255, 165, 0, 0.15);
+    transform: translateY(-2px) translateZ(0);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   }
 
   .anime-card-search-img {
-    border-radius: 6px;
+    border-radius: 8px;
     object-fit: cover;
-    width: 75px !important;
-    height: 110px !important;
+    width: 55px !important;
+    height: 80px !important;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: transform 0.25s ease;
+    
+    // Оптимизация рендеринга изображений
+    image-rendering: -webkit-optimize-contrast;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: transform;
   }
 
-  .anime-card-info {
-    margin-left: 1rem;
+  .anime-card-info-search {
+    flex: 1;
+    margin-top: 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    gap: 4px;
 
-    .anime-title {
-      margin-left: -0.63rem;
-      font-size: 1rem;
-      color: #ff2e63;
+    .anime-title-search {
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+      line-height: 1.3;
+      margin-bottom: 0;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      overflow: hidden;
 
-      .anime-episodes {
-        color: #fbc531;
-        margin-left: -0.3rem;
-        font-size: 0.85rem;
+      .anime-episodes-search {
+        display: inline-block;
+        background: rgba(255, 165, 0, 0.15);
+        color: var(--primary-color);
+        margin-left: 6px;
+        padding: 2px 6px;
+        font-size: 11px;
+        font-weight: 500;
+        border-radius: 4px;
+        border: 1px solid rgba(255, 165, 0, 0.2);
       }
     }
 
-    .anime-meta {
-      font-size: 0.8rem;
-      color: #aaa;
+    .anime-meta-search {
+      font-size: 12px;
+      color: #aaaaaa;
+      margin-bottom: 0;
+      font-weight: 400;
+      line-height: 1.3;
     }
 
-    .anime-description {
-      font-size: 0.75rem;
-      color: #777;
+    .anime-description-search {
+      font-size: 11px;
+      color: #999999;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 1;
+      line-clamp: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.3;
+      max-height: calc(1.3em * 1);
+      word-break: break-word;
     }
   }
 }
 
-.loading-text {
+.close-button {
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
   color: #aaa;
-  font-size: 0.85rem;
-  text-align: center;
-  padding-top: 1rem;
+  font-size: 18px;
+  cursor: pointer;
+  align-self: flex-end;
+  transition: all 0.2s ease;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: rgba(255, 165, 0, 0.1);
+    color: var(--primary-color);
+    transform: scale(1.1);
+  }
 }
 
-
+// Скроллбар под стиль
 .search-results::-webkit-scrollbar {
   width: 8px;
 }
@@ -138,82 +259,274 @@
 }
 
 .search-results::-webkit-scrollbar-thumb {
-  background-color: #ff2e63;
+  background-color: #ffc14d;
   border-radius: 10px;
   border: 2px solid #111;
 }
 
-.anime-card-search {
-  display: flex;
-  background: #1e1e24;
-  border-radius: 10px;
-  padding: 0.75rem;
-  transition: all 0.2s ease;
-  cursor: pointer;
-  border: 1px solid transparent;
-
-  &:hover {
-    background: #282832;
-    border-color: rgba(255, 45, 100, 0.35);
-    transform: scale(1.01);
-  }
-}
-
-.anime-search-image {
-  border-radius: 6px;
-  object-fit: cover;
-  flex-shrink: 0;
-}
-
-.anime-search-info {
-  margin-left: 1rem;
-  display: flex;
-  flex-direction: column;
-}
-
-.anime-search-title {
-  font-size: 1.1rem;
-  color: #ff2e63;
-  margin-bottom: 0.35rem;
-}
-
-.anime-search-episodes {
-  font-size: 0.85rem;
-  color: #fbc531;
-}
-
-.anime-search-meta {
-  font-size: 0.85rem;
-  color: #aaa;
-}
-
-.anime-search-description {
-  font-size: 0.8rem;
-  color: #888;
-  margin-top: 0.5rem;
-}
-
-.close-button {
-  background: none;
-  border: none;
-  color: #ff2e63;
-  font-size: 1.5rem;
-  cursor: pointer;
-  align-self: flex-end;
-  transition: 0.2s ease;
-
-  &:hover {
-    color: #fff;
-  }
-}
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: scale(0.95);
+    transform: scale(0.9) translateY(20px);
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: scale(1) translateY(0);
+  }
+}
+
+.loading-text {
+  text-align: center;
+  color: #888;
+  font-size: 14px;
+  padding: 20px;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .search-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    align-items: stretch;
+    justify-content: flex-start;
+    animation: slideUp 0.3s ease-out;
+    backdrop-filter: blur(5px);
+  }
+
+  .search-modal {
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 15, 15, 0.98);
+    border-radius: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    border: none;
+  }
+
+  .search-modal-content {
+    flex: 1;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    gap: 1rem;
+    height: 100vh;
+  }
+
+  .search-mode-toggle {
+    background: rgba(25, 25, 25, 0.6);
+    border-radius: 8px;
+    padding: 3px;
+    margin-bottom: 0;
+
+    button {
+      flex: 1;
+      padding: 10px;
+      background: transparent;
+      border: none;
+      font-size: 14px;
+      color: #aaa;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.25s ease;
+
+      &.active {
+        color: var(--primary-color);
+        background: rgba(255, 165, 0, 0.15);
+      }
+
+      &:hover:not(.active) {
+        background: rgba(255, 255, 255, 0.05);
+        color: #ccc;
+      }
+    }
+  }
+
+  .search-modal-input {
+    width: 100%;
+    font-size: 16px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(25, 25, 25, 0.8);
+    color: #fff;
+
+    &:focus {
+      border-color: rgba(255, 165, 0, 0.4);
+      background: rgba(30, 30, 30, 0.9);
+      box-shadow: 0 0 0 2px rgba(255, 165, 0, 0.1);
+    }
+
+    &::placeholder {
+      color: #888;
+    }
+  }
+
+  .search-results {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    overflow-y: auto;
+    flex: 1;
+    height: 100%;
+    padding-right: 8px;
+    
+    // GPU-ускорение для плавной прокрутки на мобильных
+    will-change: scroll-position;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    -webkit-overflow-scrolling: touch;
+    
+    // Оптимизация рендеринга
+    contain: layout style paint;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(255, 165, 0, 0.3);
+      border-radius: 2px;
+
+      &:hover {
+        background: rgba(255, 165, 0, 0.5);
+      }
+    }
+  }
+
+  .anime-card-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(18, 18, 18, 0.8);
+    border-radius: 8px;
+    padding: 8px;
+    min-height: 85px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    
+    // GPU-ускорение для мобильных карточек
+    will-change: transform;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    
+    // Оптимизация рендеринга
+    contain: layout style paint;
+
+    &:hover {
+      background: rgba(22, 22, 22, 0.9);
+      border-color: rgba(255, 165, 0, 0.2);
+      transform: translateY(-1px) translateZ(0);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  .anime-card-search-img {
+    width: 50px !important;
+    height: 70px !important;
+    border-radius: 6px;
+    object-fit: cover;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    
+    // Оптимизация рендеринга изображений
+    image-rendering: -webkit-optimize-contrast;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: transform;
+  }
+
+  .anime-card-info-search {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
+    min-width: 0;
+
+    .anime-title-search {
+      font-size: 13px;
+      font-weight: 600;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-bottom: 0;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      overflow: hidden;
+
+      .anime-episodes-search {
+        display: inline-block;
+        background: rgba(255, 165, 0, 0.2);
+        color: var(--primary-color);
+        margin-left: 4px;
+        padding: 1px 5px;
+        font-size: 10px;
+        font-weight: 500;
+        border-radius: 4px;
+      }
+    }
+
+    .anime-meta-search {
+      font-size: 10px;
+      color: #aaa;
+      margin-bottom: 0;
+      line-height: 1.2;
+    }
+
+    .anime-description-search {
+      font-size: 10px;
+      color: #999;
+      line-height: 1.2;
+      -webkit-line-clamp: 1;
+      line-clamp: 1;
+      max-height: calc(1.2em * 1);
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .close-button {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+
+    &:hover {
+      background: rgba(255, 165, 0, 0.1);
+      color: var(--primary-color);
+    }
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

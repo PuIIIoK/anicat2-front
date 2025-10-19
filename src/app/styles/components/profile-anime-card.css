@@ -1,0 +1,298 @@
+.profile-anime-card {
+  display: flex;
+  flex-direction: column;
+  width: 220px !important;
+  height: 395px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  position: relative;
+}
+.profile-anime-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+}
+.profile-anime-card:focus {
+  outline: 2px solid #7c5cff;
+  outline-offset: 2px;
+}
+
+.profile-anime-card-image-container {
+  position: relative;
+  width: 220px;
+  height: 280px;
+  overflow: hidden;
+  border-radius: 12px 12px 0 0;
+}
+
+.profile-anime-card-image {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  -o-object-position: center;
+     object-position: center;
+  transition: transform 0.3s ease;
+}
+.profile-anime-card:hover .profile-anime-card-image {
+  transform: scale(1.05);
+}
+
+.profile-anime-card-content {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  position: relative;
+}
+
+.profile-anime-card-title {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0;
+  color: #ffffff;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 34px;
+}
+@media (prefers-color-scheme: light) {
+  .profile-anime-card-title {
+    color: #1a1a1a;
+  }
+}
+
+.profile-anime-card-year-season {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+.profile-anime-card-year {
+  color: #7c5cff;
+  font-weight: 500;
+  font-size: 11px;
+}
+@media (prefers-color-scheme: light) {
+  .profile-anime-card-year {
+    color: #7c5cff;
+  }
+}
+
+.profile-anime-card-season {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 11px;
+  font-weight: 400;
+}
+@media (prefers-color-scheme: light) {
+  .profile-anime-card-season {
+    color: rgba(26, 26, 26, 0.7);
+  }
+}
+
+.profile-anime-card-episodes {
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 500;
+  padding: 4px 8px;
+  background: rgba(124, 92, 255, 0.8);
+  border-radius: 6px;
+  -webkit-backdrop-filter: blur(8px);
+          backdrop-filter: blur(8px);
+  border: 1px solid rgba(124, 92, 255, 0.3);
+  white-space: nowrap;
+}
+@media (prefers-color-scheme: light) {
+  .profile-anime-card-episodes {
+    background: rgba(124, 92, 255, 0.9);
+    color: white;
+    border: 1px solid rgba(124, 92, 255, 0.4);
+  }
+}
+
+.profile-anime-card-voices {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.profile-anime-card-voice-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  padding: 2px 0;
+}
+
+.voice-name {
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (prefers-color-scheme: light) {
+  .voice-name {
+    color: rgba(26, 26, 26, 0.8);
+  }
+}
+
+.voice-count {
+  color: #7c5cff;
+  font-weight: 600;
+  margin-left: 4px;
+  white-space: nowrap;
+}
+
+.profile-anime-card-voice-more {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 9px;
+  font-weight: 500;
+  text-align: center;
+}
+@media (prefers-color-scheme: light) {
+  .profile-anime-card-voice-more {
+    color: rgba(26, 26, 26, 0.6);
+  }
+}
+
+.profile-anime-card-bottom {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  position: relative;
+}
+
+.profile-anime-progress-button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: rgba(124, 92, 255, 0.15);
+  border: 1px solid rgba(124, 92, 255, 0.3);
+  border-radius: 6px;
+  color: #7c5cff;
+  font-size: 9px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.profile-anime-progress-button:hover {
+  background: rgba(124, 92, 255, 0.25);
+  border-color: rgba(124, 92, 255, 0.5);
+  color: #8f6cff;
+  transform: translateY(-1px);
+}
+.profile-anime-progress-button:active {
+  transform: translateY(0);
+}
+.profile-anime-progress-button svg {
+  width: 12px;
+  height: 12px;
+  stroke-width: 2.5;
+}
+@media (prefers-color-scheme: light) {
+  .profile-anime-progress-button {
+    background: rgba(124, 92, 255, 0.1);
+    border-color: rgba(124, 92, 255, 0.2);
+    color: #7c5cff;
+  }
+  .profile-anime-progress-button:hover {
+    background: rgba(124, 92, 255, 0.2);
+    border-color: rgba(124, 92, 255, 0.4);
+  }
+}
+
+.profile-anime-card-progress {
+  color: #00d4aa;
+  font-weight: 500;
+  font-size: 10px;
+  margin-top: 4px;
+}
+
+@media (max-width: 768px) {
+  .profile-anime-card {
+    width: 140px;
+  }
+  .profile-anime-card-image-container {
+    height: 190px;
+  }
+  .profile-anime-card-content {
+    padding: 10px;
+  }
+  .profile-anime-card-title {
+    font-size: 12px;
+  }
+  .profile-anime-card-year-season {
+    font-size: 10px;
+  }
+  .profile-anime-card-episodes {
+    bottom: 10px;
+    right: 10px;
+    font-size: 9px;
+    padding: 3px 6px;
+  }
+}
+@media (max-width: 480px) {
+  .profile-anime-card {
+    width: 120px;
+  }
+  .profile-anime-card-image-container {
+    height: 160px;
+  }
+  .profile-anime-card-content {
+    padding: 8px;
+  }
+  .profile-anime-card-title {
+    font-size: 11px;
+    max-height: 28px;
+  }
+  .profile-anime-card-year-season {
+    font-size: 9px;
+    gap: 6px;
+  }
+  .profile-anime-card-episodes {
+    bottom: 8px;
+    right: 8px;
+    font-size: 8px;
+    padding: 2px 4px;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  .profile-anime-card {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .profile-anime-card:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+@media (prefers-color-scheme: light) {
+  .profile-anime-card {
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+  .profile-anime-card:hover {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  }
+}/*# sourceMappingURL=profile-anime-card.css.map */

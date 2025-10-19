@@ -160,8 +160,9 @@ export const useVideoPlayer = (episodes: Episode[], selectedPlayer: 'kodik' | 'a
         if (!video) return;
 
         if (video.paused) {
-            video.play().catch(() => {});
-            setIsPlaying(true);
+            video.play()
+                .then(() => setIsPlaying(true))
+                .catch(() => setIsPlaying(false));
             setWasEnded(false);
         } else {
             video.pause();
@@ -262,8 +263,9 @@ export const useVideoPlayer = (episodes: Episode[], selectedPlayer: 'kodik' | 'a
         const video = videoRef.current;
         if (video) {
             video.volume = volume;
-            video.play().catch(() => {});
-            setIsPlaying(true);
+            video.play()
+                .then(() => setIsPlaying(true))
+                .catch(() => setIsPlaying(false));
         }
     }, [currentEpisode]);
 

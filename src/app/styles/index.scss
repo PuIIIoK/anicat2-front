@@ -1,32 +1,63 @@
 
 @import 'plyr/dist/plyr.css';
+@import './components/theme-variables';
 @import './components/header';
+@import './components/apps-pages';
 @import './components/footer';
 @import './components/animes-containers';
 @import './components/auth';
-@import './components/anime-page';
-@import './components/profile_page';
+@import './components/anime-page-provider';
+@import './components/mobile-anime-page-provider';
+@import './components/anime-modals';
 @import './components/settings_page';
+@import './components/pc-settings';
+@import './components/mobile-settings';
 @import './components/my_colletion';
 @import './components/loading';
+@import './components/server-error';
+@import './components/continue-watching';
 @import './components/anime-player';
 @import './components/episode-audio-selector';
-@import './components/profile-modal';
-@import './components/profile-page-old';
-@import './components/profile-collection-old';
 @import './components/search-modal';
 @import './components/searchloader';
 @import './components/admin-panel-ac';
+@import './components/admin-mobile';
 @import './components/add-anime';
-@import './components/admin-categry';
+@import './components/admin-categories-modern';
+@import './components/admin-platforms';
+@import './components/admin-platforms-add';
+@import './components/admin-site-updates';
 @import './components/edit-anime';
 @import './components/testing-admin';
 @import './components/player-switch';
 @import './components/plyr-player';
+@import './components/mobile-player';
 @import './components/episode-selector';
-@import './components/anicat-player';
-@import './components/test-anime-page';
-@import './components/anicat-player-new';
+@import './components/shop';
+@import "./components/anicat-player-new2";
+@import "./components/privacy_policy";
+@import "./components/public_offerta";
+@import "./components/navbar";
+@import "./components/bottom-navbar";
+@import "./components/admin-users";
+@import "./components/custom-titile-bar";
+@import "./components/branches";
+@import "./components/test-access";
+@import "./components/category-loading";
+@import "./components/collection-stats";
+@import "./components/collections-mobile";
+@import "./components/collections-pc";
+@import "./components/delete-anime-modal";
+@import "./components/theme-modal";
+@import "./components/profile-mobile";
+@import "./components/anime-profile-page-correct";
+@import "./components/crunchyroll-theme";
+@import "./components/new-category-section";
+@import "./components/global-anime-card";
+@import "./components/anime-category";
+@import "./components/sync-progress-notification";
+@import "./components/notification-modals";
+/* удалили debug и тест */
 
 
 
@@ -39,30 +70,221 @@ $enable-animations: true; // 👈 можно переключать из JS че
   box-sizing: border-box;
 }
 
+body.electron {
+  header {
+    margin-top: 32px; // сдвигаем вниз
+  }
+
+  .main {
+    padding-top: 32px; // тоже можно
+  }
+}
+
 body {
-  overflow-x: hidden;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: visible; // ✅ Разрешаем показ hover карточек по горизонтали
+  overflow-y: auto; // Разрешаем вертикальную прокрутку для hover карточек
   margin-top: 93px;
-  font-family: 'Arial', sans-serif;
-  background-color: #1b1b1b;
-  color: #fff;
+  font-family: 'Rubik', sans-serif; // основной читаемый шрифт
+  background-color: var(--bg-primary); // Используем переменную для фона
+  color: var(--text-primary); // Используем переменную для текста
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#__next {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 a {
+  font-family: 'M PLUS 1p', sans-serif; // аниме-UI стиль: современный и читаемый
+  font-weight: 500;
+  font-size: 14.5px;
+  letter-spacing: 0.3px;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+ul, ol, li {
+  font-family: 'Rubik', sans-serif; // списки
   text-decoration: none;
 }
 
-h1 {
-  color: #ffffff;
-  margin-bottom: 0.7rem;
-  font-size: 30px;
+span {
+  font-family: 'Rubik', sans-serif; // базовые текстовые вкрапления
+  text-decoration: none;
 }
-.categories {
-  padding: 20px;
 
-  h2 {
-    text-align: center;
-    font-size: 2rem;
-    margin-bottom: 20px;
-    color: #fff;
+strong, b {
+  font-family: 'Rubik', sans-serif;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Zen Tokyo Zoo', cursive; // декоративный аниме-стиль заголовков
+  text-decoration: none;
+}
+
+/* Минималистичный скроллбар как в Discord */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb); // почти невидимый
+  border-radius: 10px;
+  transition: background 0.3s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover);
+}
+
+// === ADMIN ACCESS NOTIFICATION ===
+.admin-access-notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  max-width: 500px;
+  width: 90%;
+  animation: adminNotificationSlideIn 0.5s ease-out;
+  
+  .admin-access-content {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(185, 28, 28, 0.05));
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    backdrop-filter: blur(20px);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    
+    .admin-access-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    
+    .admin-access-text {
+      color: #fca5a5;
+      font-size: 0.9rem;
+      font-weight: 500;
+      flex: 1;
+    }
+    
+    .admin-access-close {
+      background: none;
+      border: none;
+      color: #fca5a5;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+      }
+    }
   }
 }
+
+@keyframes adminNotificationSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@import "./components/_admin-anime-updates";
+@import "./components/_admin-anime-subtabs";
+@import "./anime-related";
+@import "./franchise-sections";
+
+// Глобальное переопределение цветов - должно быть в самом конце
+@import "./components/_color-override";
+
+// Дополнительные стили для светлой темы
+.theme-light {
+  .header {
+    background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+    
+    .search-bar-anime {
+      background: rgba(0, 0, 0, 0.05);
+      color: rgba(0, 0, 0, 0.8);
+      
+      &:hover {
+        background: rgba(0, 0, 0, 0.08);
+      }
+    }
+    
+    .theme-button {
+      color: rgba(0, 0, 0, 0.8);
+      
+      &:hover {
+        background: rgba(0, 0, 0, 0.1);
+      }
+    }
+    
+    .profile-dropdown {
+      background: linear-gradient(135deg, #ffffff, #f5f5f5);
+      border-color: rgba(0, 0, 0, 0.08);
+      
+      ul li a, ul li button {
+        color: rgba(0, 0, 0, 0.8);
+        
+        &:hover {
+          background: rgba(0, 0, 0, 0.05);
+        }
+      }
+    }
+  }
+  
+  // Адаптация других компонентов под светлую тему
+  .anime-card {
+    background: rgba(0, 0, 0, 0.03);
+    
+    &:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+  }
+  
+  .footer {
+    background: linear-gradient(135deg, #f5f5f5, #e8e8e8);
+    color: rgba(0, 0, 0, 0.8);
+  }
+}
+
+// Import skeleton styles
+@import './components/skeleton';
+
+// Скелетон загрузки аниме страницы
+@import './components/anime-page-skeleton';
+
+// КРИТИЧЕСКИ ВАЖНО: Этот файл должен быть последним для максимального приоритета
+@import './components/no-outline-tabs';

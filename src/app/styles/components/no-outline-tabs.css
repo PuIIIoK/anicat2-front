@@ -1,0 +1,305 @@
+@charset "UTF-8";
+/* ===== КРИТИЧЕСКИ ВАЖНО: Полное удаление outline у табов ===== */
+.test-tabs-modern,
+.anime-tabs,
+div.test-tabs-modern,
+div.anime-tabs,
+[class*=test-tabs-modern],
+[class*=anime-tabs] {
+  outline: 0 !important;
+  outline: none !important;
+  outline-width: 0px !important;
+  outline-style: none !important;
+  outline-color: transparent !important;
+  outline-offset: 0px !important;
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-focus-ring-color: transparent !important;
+  -moz-outline-radius: 0 !important;
+}
+.test-tabs-modern:hover,
+.anime-tabs:hover,
+div.test-tabs-modern:hover,
+div.anime-tabs:hover,
+[class*=test-tabs-modern]:hover,
+[class*=anime-tabs]:hover {
+  outline: 0 !important;
+  outline: none !important;
+  outline-width: 0px !important;
+  outline-style: none !important;
+  outline-color: transparent !important;
+  outline-offset: 0px !important;
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-focus-ring-color: transparent !important;
+  -moz-outline-radius: 0 !important;
+  box-shadow: none !important;
+}
+.test-tabs-modern:hover, .test-tabs-modern:focus, .test-tabs-modern:focus-visible, .test-tabs-modern:focus-within, .test-tabs-modern:active, .test-tabs-modern:visited, .test-tabs-modern::before, .test-tabs-modern::after,
+.anime-tabs:hover,
+.anime-tabs:focus,
+.anime-tabs:focus-visible,
+.anime-tabs:focus-within,
+.anime-tabs:active,
+.anime-tabs:visited,
+.anime-tabs::before,
+.anime-tabs::after,
+div.test-tabs-modern:hover,
+div.test-tabs-modern:focus,
+div.test-tabs-modern:focus-visible,
+div.test-tabs-modern:focus-within,
+div.test-tabs-modern:active,
+div.test-tabs-modern:visited,
+div.test-tabs-modern::before,
+div.test-tabs-modern::after,
+div.anime-tabs:hover,
+div.anime-tabs:focus,
+div.anime-tabs:focus-visible,
+div.anime-tabs:focus-within,
+div.anime-tabs:active,
+div.anime-tabs:visited,
+div.anime-tabs::before,
+div.anime-tabs::after,
+[class*=test-tabs-modern]:hover,
+[class*=test-tabs-modern]:focus,
+[class*=test-tabs-modern]:focus-visible,
+[class*=test-tabs-modern]:focus-within,
+[class*=test-tabs-modern]:active,
+[class*=test-tabs-modern]:visited,
+[class*=test-tabs-modern]::before,
+[class*=test-tabs-modern]::after,
+[class*=anime-tabs]:hover,
+[class*=anime-tabs]:focus,
+[class*=anime-tabs]:focus-visible,
+[class*=anime-tabs]:focus-within,
+[class*=anime-tabs]:active,
+[class*=anime-tabs]:visited,
+[class*=anime-tabs]::before,
+[class*=anime-tabs]::after {
+  outline: 0 !important;
+  outline: none !important;
+  outline-width: 0px !important;
+  outline-style: none !important;
+  outline-color: transparent !important;
+  outline-offset: 0px !important;
+}
+.test-tabs-modern *,
+.anime-tabs *,
+div.test-tabs-modern *,
+div.anime-tabs *,
+[class*=test-tabs-modern] *,
+[class*=anime-tabs] * {
+  outline: 0 !important;
+  outline: none !important;
+  outline-width: 0px !important;
+  outline-style: none !important;
+  outline-color: transparent !important;
+  outline-offset: 0px !important;
+}
+.test-tabs-modern *:hover, .test-tabs-modern *:focus, .test-tabs-modern *:focus-visible, .test-tabs-modern *:focus-within, .test-tabs-modern *:active,
+.anime-tabs *:hover,
+.anime-tabs *:focus,
+.anime-tabs *:focus-visible,
+.anime-tabs *:focus-within,
+.anime-tabs *:active,
+div.test-tabs-modern *:hover,
+div.test-tabs-modern *:focus,
+div.test-tabs-modern *:focus-visible,
+div.test-tabs-modern *:focus-within,
+div.test-tabs-modern *:active,
+div.anime-tabs *:hover,
+div.anime-tabs *:focus,
+div.anime-tabs *:focus-visible,
+div.anime-tabs *:focus-within,
+div.anime-tabs *:active,
+[class*=test-tabs-modern] *:hover,
+[class*=test-tabs-modern] *:focus,
+[class*=test-tabs-modern] *:focus-visible,
+[class*=test-tabs-modern] *:focus-within,
+[class*=test-tabs-modern] *:active,
+[class*=anime-tabs] *:hover,
+[class*=anime-tabs] *:focus,
+[class*=anime-tabs] *:focus-visible,
+[class*=anime-tabs] *:focus-within,
+[class*=anime-tabs] *:active {
+  outline: 0 !important;
+  outline: none !important;
+  outline-width: 0px !important;
+  outline-style: none !important;
+  outline-color: transparent !important;
+  outline-offset: 0px !important;
+}
+.test-tabs-modern button,
+.test-tabs-modern .anime-tab,
+.anime-tabs button,
+.anime-tabs .anime-tab,
+div.test-tabs-modern button,
+div.test-tabs-modern .anime-tab,
+div.anime-tabs button,
+div.anime-tabs .anime-tab,
+[class*=test-tabs-modern] button,
+[class*=test-tabs-modern] .anime-tab,
+[class*=anime-tabs] button,
+[class*=anime-tabs] .anime-tab {
+  outline: 0 !important;
+  outline: none !important;
+  outline-width: 0px !important;
+  outline-style: none !important;
+  outline-color: transparent !important;
+  outline-offset: 0px !important;
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-focus-ring-color: transparent !important;
+}
+.test-tabs-modern button:hover, .test-tabs-modern button:focus, .test-tabs-modern button:focus-visible, .test-tabs-modern button:focus-within, .test-tabs-modern button:active, .test-tabs-modern button.active,
+.test-tabs-modern .anime-tab:hover,
+.test-tabs-modern .anime-tab:focus,
+.test-tabs-modern .anime-tab:focus-visible,
+.test-tabs-modern .anime-tab:focus-within,
+.test-tabs-modern .anime-tab:active,
+.test-tabs-modern .anime-tab.active,
+.anime-tabs button:hover,
+.anime-tabs button:focus,
+.anime-tabs button:focus-visible,
+.anime-tabs button:focus-within,
+.anime-tabs button:active,
+.anime-tabs button.active,
+.anime-tabs .anime-tab:hover,
+.anime-tabs .anime-tab:focus,
+.anime-tabs .anime-tab:focus-visible,
+.anime-tabs .anime-tab:focus-within,
+.anime-tabs .anime-tab:active,
+.anime-tabs .anime-tab.active,
+div.test-tabs-modern button:hover,
+div.test-tabs-modern button:focus,
+div.test-tabs-modern button:focus-visible,
+div.test-tabs-modern button:focus-within,
+div.test-tabs-modern button:active,
+div.test-tabs-modern button.active,
+div.test-tabs-modern .anime-tab:hover,
+div.test-tabs-modern .anime-tab:focus,
+div.test-tabs-modern .anime-tab:focus-visible,
+div.test-tabs-modern .anime-tab:focus-within,
+div.test-tabs-modern .anime-tab:active,
+div.test-tabs-modern .anime-tab.active,
+div.anime-tabs button:hover,
+div.anime-tabs button:focus,
+div.anime-tabs button:focus-visible,
+div.anime-tabs button:focus-within,
+div.anime-tabs button:active,
+div.anime-tabs button.active,
+div.anime-tabs .anime-tab:hover,
+div.anime-tabs .anime-tab:focus,
+div.anime-tabs .anime-tab:focus-visible,
+div.anime-tabs .anime-tab:focus-within,
+div.anime-tabs .anime-tab:active,
+div.anime-tabs .anime-tab.active,
+[class*=test-tabs-modern] button:hover,
+[class*=test-tabs-modern] button:focus,
+[class*=test-tabs-modern] button:focus-visible,
+[class*=test-tabs-modern] button:focus-within,
+[class*=test-tabs-modern] button:active,
+[class*=test-tabs-modern] button.active,
+[class*=test-tabs-modern] .anime-tab:hover,
+[class*=test-tabs-modern] .anime-tab:focus,
+[class*=test-tabs-modern] .anime-tab:focus-visible,
+[class*=test-tabs-modern] .anime-tab:focus-within,
+[class*=test-tabs-modern] .anime-tab:active,
+[class*=test-tabs-modern] .anime-tab.active,
+[class*=anime-tabs] button:hover,
+[class*=anime-tabs] button:focus,
+[class*=anime-tabs] button:focus-visible,
+[class*=anime-tabs] button:focus-within,
+[class*=anime-tabs] button:active,
+[class*=anime-tabs] button.active,
+[class*=anime-tabs] .anime-tab:hover,
+[class*=anime-tabs] .anime-tab:focus,
+[class*=anime-tabs] .anime-tab:focus-visible,
+[class*=anime-tabs] .anime-tab:focus-within,
+[class*=anime-tabs] .anime-tab:active,
+[class*=anime-tabs] .anime-tab.active {
+  outline: 0 !important;
+  outline: none !important;
+  outline-width: 0px !important;
+  outline-style: none !important;
+  outline-color: transparent !important;
+  outline-offset: 0px !important;
+}
+.test-tabs-modern button::-moz-focus-inner,
+.test-tabs-modern .anime-tab::-moz-focus-inner,
+.anime-tabs button::-moz-focus-inner,
+.anime-tabs .anime-tab::-moz-focus-inner,
+div.test-tabs-modern button::-moz-focus-inner,
+div.test-tabs-modern .anime-tab::-moz-focus-inner,
+div.anime-tabs button::-moz-focus-inner,
+div.anime-tabs .anime-tab::-moz-focus-inner,
+[class*=test-tabs-modern] button::-moz-focus-inner,
+[class*=test-tabs-modern] .anime-tab::-moz-focus-inner,
+[class*=anime-tabs] button::-moz-focus-inner,
+[class*=anime-tabs] .anime-tab::-moz-focus-inner {
+  border: 0 !important;
+  outline: 0 !important;
+}
+
+.test-tabs-modern button,
+.anime-tabs button,
+.anime-tabs .anime-tab {
+  outline: 0 !important;
+  outline: none !important;
+  outline-width: 0px !important;
+  outline-style: none !important;
+  outline-color: transparent !important;
+  outline-offset: 0px !important;
+}
+
+.test-tabs-modern:hover,
+.anime-tabs:hover,
+div.test-tabs-modern:hover,
+div.anime-tabs:hover,
+[class*=test-tabs-modern]:hover,
+[class*=anime-tabs]:hover {
+  outline: 0 !important;
+  outline: none !important;
+  outline-width: 0px !important;
+  outline-style: none !important;
+  outline-color: transparent !important;
+  outline-offset: 0px !important;
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-focus-ring-color: transparent !important;
+  -moz-outline-radius: 0 !important;
+  box-shadow: none !important;
+  border-color: var(--bg-secondary) !important;
+}
+
+.test-tabs-modern:hover button,
+.anime-tabs:hover button,
+.anime-tabs:hover .anime-tab,
+.test-tabs-modern button:hover,
+.anime-tabs button:hover,
+.anime-tabs .anime-tab:hover {
+  outline: 0 !important;
+  outline: none !important;
+  outline-width: 0px !important;
+  outline-style: none !important;
+  outline-color: transparent !important;
+  outline-offset: 0px !important;
+}
+
+@-moz-document url-prefix() {
+  .test-tabs-modern,
+  .anime-tabs,
+  .test-tabs-modern *,
+  .anime-tabs * {
+    outline: 0 !important;
+    outline: none !important;
+    -moz-outline-style: none !important;
+  }
+}
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  .test-tabs-modern,
+  .anime-tabs,
+  .test-tabs-modern *,
+  .anime-tabs * {
+    outline: 0 !important;
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-focus-ring-color: transparent !important;
+  }
+}/*# sourceMappingURL=no-outline-tabs.css.map */

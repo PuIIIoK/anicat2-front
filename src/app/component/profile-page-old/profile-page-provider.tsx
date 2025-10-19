@@ -4,6 +4,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import { API_SERVER } from '../../../tools/constants';
 import Chart from 'chart.js/auto';
+import Head from "next/head";
+import { performLogout } from '../../utils/logoutUtils';
 
 interface UserProfileResponse {
     userId: number;
@@ -24,10 +26,14 @@ const ProfileMainInfo: React.FC = () => {
     const [bannerUrl, setBannerUrl] = useState<string | null>(null);
     const chartRef = useRef<HTMLCanvasElement>(null);
     const chartInstanceRef = useRef<Chart | null>(null);
+    const [, setIsAuthenticated] = useState(false);
 
     const getCookieToken = () => {
         const match = document.cookie.match(/token=([^;]+)/);
         return match ? match[1] : '';
+    };
+    const handleLogout = () => {
+        performLogout(setIsAuthenticated);
     };
 
     const fetchProfile = async () => {
@@ -86,10 +92,25 @@ const ProfileMainInfo: React.FC = () => {
         if (ctx && chartInstanceRef.current) {
             chartInstanceRef.current.destroy();
         }
+
+        // ЯВНО ставим заголовок во вкладке браузера
+        document.title = 'Ваш профиль | AniCat';
     }, []);
 
     return (
-        <div className="profile-main-info">
+        <>
+        <Head>
+            <title>Ваш профиль | AniCat</title>
+            <meta name="description" content="Ваш профиль, где показаны ваши достижения, награды, роли и личная информация. Управляйте своими коллекциями и настройками аккаунта." />
+            <meta name="keywords" content="AniCat, Профиль, Аниме, Коллекции, Награды, Роли" />
+            <meta property="og:title" content="Ваш профиль | AniCat" />
+            <meta property="og:description" content="Ваш профиль, где показаны ваши достижения, награды, роли и личная информация. Управляйте своими коллекциями и настройками аккаунта." />
+            <meta property="og:image" content="https://anicat.ru/logo-cover.jpg" />
+            <meta property="og:type" content="website" />
+            <meta property="og:url" content="https://anicat.ru/profile" />
+        </Head>
+
+    <div className="profile-main-info">
             <div className="profile-header-container">
                 <div className="profile-photo-cover">
                     {bannerUrl ? (
@@ -120,7 +141,19 @@ const ProfileMainInfo: React.FC = () => {
                 </div>
             </div>
 
+
             <div className="profile-info-page">
+                {/* Кнопка редактирования — только для мобилок */}
+                <div className="edit-profile-btn-mobile">
+                    {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+                    <a href="/profile/settings">Редактировать</a>
+                </div>
+                {(userRoles.includes('MODERATOR') || userRoles.includes('ADMIN') || userRoles.includes('SUPER_ADMIN')) && (
+                    <div className="admin-profile-btn-mobile">
+                        <a href="/admin_panel">Админ панель</a>
+                    </div>
+                )}
+                    <button className="logout-profile-btn-mobile" onClick={handleLogout}>Выйти</button>
                 <div className="profile-info-roles">
                     <div className="profile-role-list">
                         {userRoles
@@ -153,7 +186,9 @@ const ProfileMainInfo: React.FC = () => {
                     <h2>{userDescription?.trim() ? userDescription : 'Нету информации'}</h2>
                 </div>
             </div>
+
         </div>
+        </>
     );
 };
 

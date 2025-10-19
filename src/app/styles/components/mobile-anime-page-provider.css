@@ -1,0 +1,1629 @@
+body:has(.mobile-anime-page) {
+  background: transparent !important;
+  overflow-x: hidden;
+}
+
+.mobile-anime-page {
+  margin-top: -95px;
+  margin-bottom: 80px;
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+}
+
+.mobile-anime-container {
+  width: 100%;
+}
+.mobile-anime-container .mobile-anime-banner {
+  width: 100%;
+  height: 300px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, transparent 0%, var(--bg-primary) 100%);
+}
+.mobile-anime-container .mobile-anime-banner .banner-image {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  opacity: 0.4;
+}
+.mobile-anime-container .mobile-anime-banner .banner-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--bg-secondary), var(--bg-primary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+.mobile-anime-container .mobile-anime-banner .banner-gradient {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 150px;
+  background: linear-gradient(to bottom, transparent, var(--bg-primary));
+}
+.mobile-anime-container .mobile-anime-content {
+  padding: 0 16px 20px;
+  margin-top: -80px;
+  position: relative;
+  z-index: 2;
+}
+.mobile-anime-container .mobile-anime-content .mobile-anime-header {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+  align-items: flex-start;
+}
+.mobile-anime-container .mobile-anime-content .mobile-anime-header .mobile-poster {
+  flex-shrink: 0;
+  width: 140px;
+  height: 200px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  background: var(--bg-secondary);
+  position: relative;
+}
+.mobile-anime-container .mobile-anime-content .mobile-anime-header .mobile-poster img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.mobile-anime-container .mobile-anime-content .mobile-anime-header .mobile-poster .poster-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--bg-secondary), var(--bg-primary));
+  color: var(--text-muted);
+  font-size: 12px;
+  text-align: center;
+  padding: 8px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-anime-header .mobile-info {
+  flex: 1;
+  padding-top: 8px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-anime-header .mobile-info .mobile-title-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-anime-header .mobile-info .mobile-title-section .mobile-anime-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+  margin: 0;
+}
+.mobile-anime-container .mobile-anime-content .mobile-anime-header .mobile-info .mobile-title-section .mobile-anime-title.clickable {
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+.mobile-anime-container .mobile-anime-content .mobile-anime-header .mobile-info .mobile-title-section .mobile-anime-title.clickable:hover {
+  color: var(--primary-color);
+}
+.mobile-anime-container .mobile-anime-content .mobile-anime-header .mobile-info .mobile-title-section .mobile-anime-title.clickable:active {
+  opacity: 0.7;
+}
+.mobile-anime-container .mobile-anime-content .mobile-anime-header .mobile-info .mobile-title-section .mobile-episode-count {
+  padding: 2px 8px;
+  background: var(--bg-secondary);
+  color: var(--text-muted);
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid var(--border-color);
+  align-self: flex-start;
+}
+.mobile-anime-container .mobile-anime-content .mobile-anime-header .mobile-info .mobile-anime-badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-anime-header .mobile-info .mobile-anime-badges .mobile-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.8rem;
+  padding: 4px 8px;
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 16px;
+  font-weight: 600;
+}
+.mobile-anime-container .mobile-anime-content .mobile-anime-header .mobile-info .mobile-anime-badges .mobile-rating.rating-high {
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+  border-color: rgba(34, 197, 94, 0.3);
+}
+.mobile-anime-container .mobile-anime-content .mobile-anime-header .mobile-info .mobile-anime-badges .mobile-rating.rating-medium {
+  background: rgba(251, 191, 36, 0.1);
+  color: #fbbf24;
+  border-color: rgba(251, 191, 36, 0.3);
+}
+.mobile-anime-container .mobile-anime-content .mobile-anime-header .mobile-info .mobile-anime-badges .mobile-rating.rating-low {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+.mobile-anime-container .mobile-anime-content .mobile-anime-header .mobile-info .mobile-anime-badges .mobile-age-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 8px;
+  border-radius: 16px;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+.mobile-anime-container .mobile-anime-content .mobile-anime-header .mobile-info .mobile-anime-badges .mobile-age-rating.age-rating-6 {
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+.mobile-anime-container .mobile-anime-content .mobile-anime-header .mobile-info .mobile-anime-badges .mobile-age-rating.age-rating-12 {
+  background: rgba(251, 191, 36, 0.1);
+  color: #f59e0b;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+.mobile-anime-container .mobile-anime-content .mobile-anime-header .mobile-info .mobile-anime-badges .mobile-age-rating.age-rating-16 {
+  background: rgba(251, 146, 60, 0.1);
+  color: #f97316;
+  border: 1px solid rgba(251, 146, 60, 0.3);
+}
+.mobile-anime-container .mobile-anime-content .mobile-anime-header .mobile-info .mobile-anime-badges .mobile-age-rating.age-rating-18 {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+.mobile-anime-container .mobile-anime-content .mobile-anime-header .mobile-info .mobile-anime-badges .mobile-blocked-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 8px;
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 16px;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+.mobile-anime-container .mobile-anime-content .mobile-anime-header .mobile-info .mobile-anime-meta {
+  display: flex;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+}
+.mobile-anime-container .mobile-anime-content .mobile-anime-header .mobile-info .mobile-anime-meta span {
+  white-space: nowrap;
+}
+.mobile-anime-container .mobile-anime-content .mobile-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-actions .mobile-actions-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.mobile-anime-container .mobile-anime-content .mobile-actions .mobile-actions-row .mobile-collection-dropdown {
+  flex: 1;
+}
+.mobile-anime-container .mobile-anime-content .mobile-actions .mobile-actions-row .mobile-collection-dropdown .mobile-dropdown-trigger {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-actions .mobile-actions-row .mobile-collection-dropdown .mobile-dropdown-trigger:hover:not(.saving) {
+  background: var(--hover-bg);
+  border-color: var(--primary-color);
+}
+.mobile-anime-container .mobile-anime-content .mobile-actions .mobile-actions-row .mobile-collection-dropdown .mobile-dropdown-trigger.saving {
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+.mobile-anime-container .mobile-anime-content .mobile-actions .mobile-actions-row .mobile-collection-dropdown .mobile-dropdown-trigger.saving .spinning {
+  animation: spin 1s linear infinite;
+}
+.mobile-anime-container .mobile-anime-content .mobile-actions .mobile-actions-row .mobile-collection-dropdown .mobile-dropdown-trigger .mobile-status-text {
+  flex: 1;
+  text-align: left;
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.mobile-anime-container .mobile-anime-content .mobile-actions .mobile-actions-row .mobile-action-btn {
+  padding: 8px;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mobile-anime-container .mobile-anime-content .mobile-actions .mobile-actions-row .mobile-action-btn:hover {
+  background: var(--bg-primary);
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+.mobile-anime-container .mobile-anime-content .mobile-actions .mobile-actions-row .mobile-action-btn.active {
+  background: var(--primary-bg);
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+.mobile-anime-container .mobile-anime-content .mobile-actions .mobile-watch-button {
+  flex: 2;
+  padding: 12px 16px;
+  background: var(--primary-bg);
+  color: var(--primary-color);
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-actions .mobile-watch-button:hover:not(.disabled) {
+  background: var(--primary-bg-hover);
+  opacity: 0.9;
+}
+.mobile-anime-container .mobile-anime-content .mobile-actions .mobile-watch-button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--bg-secondary);
+  color: var(--text-muted);
+}
+.mobile-anime-container .mobile-anime-content .mobile-info-section {
+  margin-bottom: 20px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-info-section .mobile-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-info-section .mobile-info-grid .mobile-info-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: linear-gradient(135deg, var(--bg-secondary), rgba(var(--bg-secondary-rgb), 0.8));
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+.mobile-anime-container .mobile-anime-content .mobile-info-section .mobile-info-grid .mobile-info-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.1);
+  border-color: rgba(var(--primary-color-rgb), 0.2);
+}
+.mobile-anime-container .mobile-anime-content .mobile-info-section .mobile-info-grid .mobile-info-item .mobile-info-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(var(--primary-color-rgb), 0.1);
+  border-radius: 10px;
+  color: var(--primary-color);
+  flex-shrink: 0;
+  border: 1px solid rgba(var(--primary-color-rgb), 0.2);
+}
+.mobile-anime-container .mobile-anime-content .mobile-info-section .mobile-info-grid .mobile-info-item .mobile-info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+.mobile-anime-container .mobile-anime-content .mobile-info-section .mobile-info-grid .mobile-info-item .mobile-info-content .mobile-info-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 700;
+}
+.mobile-anime-container .mobile-anime-content .mobile-info-section .mobile-info-grid .mobile-info-item .mobile-info-content .mobile-info-value {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  font-weight: 600;
+  line-height: 1.3;
+}
+.mobile-anime-container .mobile-anime-content .mobile-info-section .mobile-genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-info-section .mobile-genres .mobile-genre-tag {
+  padding: 4px 10px;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+.mobile-anime-container .mobile-anime-content .mobile-info-section .mobile-genres .mobile-genre-tag:hover {
+  background: var(--primary-bg);
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+.mobile-anime-container .mobile-anime-content .mobile-info-section .mobile-anime-note {
+  margin: 12px 0;
+}
+.mobile-anime-container .mobile-anime-content .mobile-info-section .mobile-anime-note .mobile-note-content {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: #3b82f6;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+.mobile-anime-container .mobile-anime-content .mobile-info-section .mobile-anime-blocked-note {
+  margin: 12px 0;
+}
+.mobile-anime-container .mobile-anime-content .mobile-info-section .mobile-anime-blocked-note .mobile-blocked-note-content {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  font-weight: 500;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+.mobile-anime-container .mobile-anime-content .mobile-info-section .mobile-description {
+  background: var(--bg-secondary);
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+.mobile-anime-container .mobile-anime-content .mobile-info-section .mobile-description h3 {
+  margin: 0 0 12px 0;
+  font-size: 1rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.mobile-anime-container .mobile-anime-content .mobile-info-section .mobile-description p {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+.mobile-anime-container .mobile-anime-content .mobile-info-section .mobile-description .mobile-description-text {
+  margin: 0 0 12px 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+.mobile-anime-container .mobile-anime-content .mobile-info-section .mobile-description .mobile-show-more-btn {
+  padding: 8px 16px;
+  background: rgba(var(--primary-color-rgb), 0.1);
+  border: 1px solid rgba(var(--primary-color-rgb), 0.3);
+  border-radius: 8px;
+  color: var(--primary-color);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.mobile-anime-container .mobile-anime-content .mobile-info-section .mobile-description .mobile-show-more-btn:hover {
+  background: rgba(var(--primary-color-rgb), 0.15);
+  border-color: var(--primary-color);
+  transform: translateY(-1px);
+}
+.mobile-anime-container .mobile-anime-content .mobile-info-section .mobile-description .mobile-no-description {
+  color: var(--text-muted);
+  font-style: italic;
+  opacity: 0.8;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tabs-navigation {
+  display: flex;
+  overflow-x: auto;
+  padding: 4px;
+  gap: 4px;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 16px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tabs-navigation::-webkit-scrollbar {
+  height: 0;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tabs-navigation .mobile-tab-button {
+  flex: 0 0 auto;
+  padding: 10px 14px;
+  background: transparent;
+  color: var(--text-muted);
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tabs-navigation .mobile-tab-button:hover:not(.active):not(.disabled) {
+  background: var(--hover-bg);
+  color: var(--text-primary);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tabs-navigation .mobile-tab-button.active {
+  background: var(--primary-bg);
+  color: var(--primary-color);
+  outline: 2px solid var(--primary-color);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tabs-navigation .mobile-tab-button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content {
+  animation: slideIn 0.3s ease;
+}
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-screenshots .mobile-screenshots-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin: 16px 0;
+  padding: 0;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-screenshots .mobile-screenshots-grid .anime-screenshot-item {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--bg-secondary);
+  aspect-ratio: 16/9;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  display: block;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-screenshots .mobile-screenshots-grid .anime-screenshot-item .screenshot-image {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  border-radius: 12px;
+  display: block;
+  transition: all 0.3s ease;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-screenshots .mobile-screenshots-grid .anime-screenshot-item .screenshot-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  z-index: 1;
+  border-radius: 12px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-screenshots .mobile-screenshots-grid .anime-screenshot-item .screenshot-loading .screenshot-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(var(--primary-color-rgb), 0.15);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 12px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-screenshots .mobile-screenshots-grid .anime-screenshot-item .screenshot-loading span {
+  font-size: 14px;
+  opacity: 0.7;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-screenshots .mobile-screenshots-grid .anime-screenshot-item .screenshot-error {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--bg-secondary-rgb), 0.95);
+  color: var(--text-secondary);
+  border: 2px dashed var(--border-color);
+  z-index: 1;
+  border-radius: 12px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-screenshots .mobile-screenshots-grid .anime-screenshot-item .screenshot-error span:first-child {
+  font-size: 2rem;
+  margin-bottom: 8px;
+  opacity: 0.4;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-screenshots .mobile-screenshots-grid .anime-screenshot-item .screenshot-error span:last-child {
+  font-size: 12px;
+  opacity: 0.8;
+  font-weight: 500;
+  text-align: center;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-screenshots .mobile-screenshots-grid .anime-screenshot-item:hover {
+  border-color: var(--primary-color);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(var(--primary-color-rgb), 0.15);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-screenshots .mobile-screenshots-grid .anime-screenshot-item:hover .screenshot-image {
+  opacity: 0.9;
+  transform: scale(1.01);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-screenshots .mobile-screenshots-grid .anime-screenshot-item:active {
+  transform: translateY(0);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-details .mobile-details-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-details .mobile-details-list .mobile-detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-details .mobile-details-list .mobile-detail-item strong {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-details .mobile-details-list .mobile-detail-item span {
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-user-review-display {
+  margin-bottom: 20px;
+  padding: 16px;
+  background: linear-gradient(145deg, rgba(var(--primary-color-rgb), 0.05), rgba(var(--bg-secondary-rgb), 0.8));
+  border-radius: 12px;
+  border: 1px solid rgba(var(--primary-color-rgb), 0.2);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-user-review-display .mobile-user-review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-user-review-display .mobile-user-review-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-user-review-display .mobile-user-review-header .mobile-user-review-actions {
+  display: flex;
+  gap: 6px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-user-review-display .mobile-user-review-header .mobile-user-review-actions button {
+  padding: 6px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-user-review-display .mobile-user-review-header .mobile-user-review-actions button:hover {
+  background: var(--primary-bg);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-user-review-display .mobile-user-review-content .mobile-user-review-rating {
+  margin-bottom: 12px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-user-review-display .mobile-user-review-content .mobile-user-review-rating .mobile-rating-display {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-user-review-display .mobile-user-review-content .mobile-user-review-rating .mobile-rating-display .mobile-rating-score {
+  margin-left: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-user-review-display .mobile-user-review-content .mobile-user-review-text p {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  background: var(--bg-primary);
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-form {
+  margin-bottom: 20px;
+  padding: 16px;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-form .mobile-reviews-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-form .mobile-reviews-form-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-form .mobile-reviews-form-header .mobile-cancel-edit-btn {
+  padding: 6px;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-form .mobile-reviews-form-header .mobile-cancel-edit-btn:hover {
+  background: rgba(255, 68, 68, 0.1);
+  border-color: #ff4444;
+  color: #ff4444;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-form .mobile-review-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-form .mobile-review-input-group .mobile-rating-input label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-form .mobile-review-input-group .mobile-rating-input .mobile-rating-stars {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  gap: 4px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-form .mobile-review-input-group .mobile-rating-input .mobile-rating-stars .mobile-star-label {
+  cursor: pointer;
+  margin: 0;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-form .mobile-review-input-group .mobile-rating-input .mobile-rating-stars .mobile-star-label input[type=radio] {
+  display: none;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-form .mobile-review-input-group .mobile-rating-input .mobile-rating-stars .mobile-star-label svg {
+  fill: var(--text-muted);
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-form .mobile-review-input-group .mobile-rating-input .mobile-rating-stars .mobile-star-label svg:hover {
+  fill: var(--primary-color);
+  color: var(--primary-color);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-form .mobile-review-input-group .mobile-rating-input .mobile-rating-stars .mobile-star-label input[type=radio]:checked ~ svg {
+  fill: var(--primary-color);
+  color: var(--primary-color);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-form .mobile-review-input-group .mobile-rating-input .mobile-rating-stars .mobile-star-label:hover ~ .mobile-star-label svg,
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-form .mobile-review-input-group .mobile-rating-input .mobile-rating-stars .mobile-star-label:hover svg {
+  fill: var(--primary-color);
+  color: var(--primary-color);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-form .mobile-review-input-group .mobile-rating-input .mobile-rating-stars .mobile-star-label:has(input:checked) ~ .mobile-star-label svg,
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-form .mobile-review-input-group .mobile-rating-input .mobile-rating-stars .mobile-star-label:has(input:checked) svg {
+  fill: var(--primary-color);
+  color: var(--primary-color);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-form .mobile-review-input-group .mobile-rating-input .mobile-rating-stars .mobile-star-label:has(input:checked) ~ .mobile-star-label input[type=radio] ~ svg {
+  fill: var(--primary-color);
+  color: var(--primary-color);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-form .mobile-review-input-group .mobile-review-textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  resize: vertical;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-form .mobile-review-input-group .mobile-review-textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.1);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-form .mobile-review-input-group .mobile-review-textarea::-moz-placeholder {
+  color: var(--text-muted);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-form .mobile-review-input-group .mobile-review-textarea::placeholder {
+  color: var(--text-muted);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-form .mobile-review-input-group .mobile-review-submit-btn {
+  align-self: flex-end;
+  padding: 10px 16px;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-form .mobile-review-input-group .mobile-review-submit-btn:hover {
+  background: var(--primary-bg-hover);
+  transform: translateY(-1px);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-section .mobile-reviews-section-content .mobile-reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-section .mobile-reviews-section-content .mobile-reviews-list .mobile-review-item {
+  padding: 14px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-section .mobile-reviews-section-content .mobile-reviews-list .mobile-review-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-section .mobile-reviews-section-content .mobile-reviews-list .mobile-review-item .mobile-review-user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-section .mobile-reviews-section-content .mobile-reviews-list .mobile-review-item .mobile-review-user-info .mobile-review-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-section .mobile-reviews-section-content .mobile-reviews-list .mobile-review-item .mobile-review-user-info .mobile-review-avatar img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-section .mobile-reviews-section-content .mobile-reviews-list .mobile-review-item .mobile-review-user-info .mobile-review-avatar .mobile-avatar-fallback {
+  color: white;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-section .mobile-reviews-section-content .mobile-reviews-list .mobile-review-item .mobile-review-user-info .mobile-review-user-details .mobile-review-username-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-section .mobile-reviews-section-content .mobile-reviews-list .mobile-review-item .mobile-review-user-info .mobile-review-user-details .mobile-review-username-row .mobile-review-username {
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-section .mobile-reviews-section-content .mobile-reviews-list .mobile-review-item .mobile-review-user-info .mobile-review-user-details .mobile-review-username-row .verification-icon {
+  color: #ff4444;
+  filter: drop-shadow(0 0 3px rgba(255, 68, 68, 0.3));
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-section .mobile-reviews-section-content .mobile-reviews-list .mobile-review-item .mobile-review-user-info .mobile-review-user-details .mobile-review-username-row .role-icon.admin {
+  color: #ff4444;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-section .mobile-reviews-section-content .mobile-reviews-list .mobile-review-item .mobile-review-user-info .mobile-review-user-details .mobile-review-username-row .role-icon.moderator {
+  color: #ffa500;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-section .mobile-reviews-section-content .mobile-reviews-list .mobile-review-item .mobile-review-user-info .mobile-review-user-details .mobile-review-username-row .role-icon.premium {
+  color: #ffd700;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-section .mobile-reviews-section-content .mobile-reviews-list .mobile-review-item .mobile-review-content {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  background: var(--bg-primary);
+  border-radius: 6px;
+  border-left: 2px solid rgba(var(--primary-color-rgb), 0.3);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-section .mobile-reviews-section-content .mobile-reviews-list .mobile-review-item .mobile-review-no-content {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  background: rgba(var(--bg-primary-rgb), 0.5);
+  border-radius: 6px;
+  font-style: italic;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-section .mobile-reviews-section-content .mobile-reviews-list .mobile-review-item .mobile-review-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-section .mobile-reviews-section-content .mobile-reviews-list .mobile-review-item .mobile-review-rating .mobile-review-score {
+  margin-left: 4px;
+  font-weight: 600;
+  color: var(--primary-color);
+  font-size: 0.8rem;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-section .mobile-reviews-section-content .mobile-reviews-show-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-section .mobile-reviews-section-content .mobile-reviews-show-more .mobile-show-more-btn {
+  padding: 8px 16px;
+  background: rgba(var(--primary-color-rgb), 0.1);
+  border: 1px solid rgba(var(--primary-color-rgb), 0.2);
+  border-radius: 8px;
+  color: var(--primary-color);
+  font-weight: 500;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-reviews .mobile-reviews-section .mobile-reviews-section-content .mobile-reviews-show-more .mobile-show-more-btn:hover {
+  background: rgba(var(--primary-color-rgb), 0.15);
+  border-color: var(--primary-color);
+  transform: translateY(-1px);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-form {
+  margin-bottom: 20px;
+  padding: 16px;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-form h3 {
+  margin: 0 0 12px 0;
+  font-size: 1rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-form .mobile-comment-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-form .mobile-comment-input-group .mobile-comment-textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  resize: vertical;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-form .mobile-comment-input-group .mobile-comment-textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.1);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-form .mobile-comment-input-group .mobile-comment-textarea::-moz-placeholder {
+  color: var(--text-muted);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-form .mobile-comment-input-group .mobile-comment-textarea::placeholder {
+  color: var(--text-muted);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-form .mobile-comment-input-group .mobile-comment-submit-btn {
+  align-self: flex-end;
+  padding: 8px 16px;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-form .mobile-comment-input-group .mobile-comment-submit-btn:hover {
+  background: var(--primary-bg-hover);
+  transform: translateY(-1px);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item {
+  padding: 12px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item.pending {
+  opacity: 0.7;
+  background: rgba(var(--primary-color-rgb), 0.1);
+  border-color: rgba(var(--primary-color-rgb), 0.3);
+  position: relative;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item.pending::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  border: 1.5px solid rgba(var(--primary-color-rgb), 0.3);
+  border-top: 1.5px solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item.pending:hover {
+  transform: none;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item .mobile-comment-user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item .mobile-comment-user-info .mobile-comment-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item .mobile-comment-user-info .mobile-comment-avatar img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item .mobile-comment-user-info .mobile-comment-avatar .mobile-avatar-fallback {
+  color: white;
+  font-weight: 700;
+  font-size: 0.7rem;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item .mobile-comment-user-info .mobile-comment-user-details .mobile-comment-username-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 2px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item .mobile-comment-user-info .mobile-comment-user-details .mobile-comment-username-row .mobile-comment-username {
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item .mobile-comment-user-info .mobile-comment-user-details .mobile-comment-username-row .verification-icon {
+  color: #ff4444;
+  filter: drop-shadow(0 0 3px rgba(255, 68, 68, 0.3));
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item .mobile-comment-user-info .mobile-comment-user-details .mobile-comment-username-row .role-icon.admin {
+  color: #ff4444;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item .mobile-comment-user-info .mobile-comment-user-details .mobile-comment-username-row .role-icon.moderator {
+  color: #ffa500;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item .mobile-comment-user-info .mobile-comment-user-details .mobile-comment-username-row .role-icon.premium {
+  color: #ffd700;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item .mobile-comment-user-info .mobile-comment-user-details .mobile-comment-timestamp {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item .mobile-comment-content {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  background: var(--bg-primary);
+  border-radius: 6px;
+  border-left: 2px solid rgba(var(--primary-color-rgb), 0.3);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item .mobile-comment-actions {
+  display: flex;
+  gap: 6px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item .mobile-comment-actions .mobile-comment-like-btn,
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item .mobile-comment-actions .mobile-comment-dislike-btn {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 6px;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.7rem;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item .mobile-comment-actions .mobile-comment-like-btn:hover:not(.loading):not(:disabled),
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item .mobile-comment-actions .mobile-comment-dislike-btn:hover:not(.loading):not(:disabled) {
+  background: rgba(var(--primary-color-rgb), 0.1);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item .mobile-comment-actions .mobile-comment-like-btn.liked,
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item .mobile-comment-actions .mobile-comment-dislike-btn.liked {
+  background: rgba(var(--primary-color-rgb), 0.1);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item .mobile-comment-actions .mobile-comment-like-btn.disliked,
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item .mobile-comment-actions .mobile-comment-dislike-btn.disliked {
+  background: rgba(124, 77, 255, 0.1);
+  border-color: #7c4dff;
+  color: #7c4dff;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item .mobile-comment-actions .mobile-comment-like-btn.disliked svg,
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item .mobile-comment-actions .mobile-comment-dislike-btn.disliked svg {
+  fill: #7c4dff;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item .mobile-comment-actions .mobile-comment-like-btn.loading,
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item .mobile-comment-actions .mobile-comment-dislike-btn.loading {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item .mobile-comment-actions .mobile-comment-like-btn:disabled,
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item .mobile-comment-actions .mobile-comment-dislike-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item .mobile-comment-actions .mobile-comment-like-btn .spinner,
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-list .mobile-comment-item .mobile-comment-actions .mobile-comment-dislike-btn .spinner {
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid rgba(var(--primary-color-rgb), 0.2);
+  border-top: 1.5px solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-show-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-show-more .mobile-show-more-btn {
+  padding: 8px 16px;
+  background: rgba(var(--primary-color-rgb), 0.1);
+  border: 1px solid rgba(var(--primary-color-rgb), 0.2);
+  border-radius: 8px;
+  color: var(--primary-color);
+  font-weight: 500;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-comments .mobile-comments-section .mobile-comments-section-content .mobile-comments-show-more .mobile-show-more-btn:hover {
+  background: rgba(var(--primary-color-rgb), 0.15);
+  border-color: var(--primary-color);
+  transform: translateY(-1px);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-loading .mobile-tab-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(var(--primary-color-rgb), 0.2);
+  border-top: 3px solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 12px;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-loading span {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-empty {
+  text-align: center;
+  padding: 40px 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-empty .mobile-tab-empty-icon {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  opacity: 0.7;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-empty .mobile-tab-empty-icon svg {
+  color: var(--text-secondary);
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-empty h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+.mobile-anime-container .mobile-anime-content .mobile-tabs .mobile-tab-content .mobile-tab-empty p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.mobile-anime-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+  background: var(--bg-primary);
+}
+.mobile-anime-error .error-message {
+  padding: 20px;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  text-align: center;
+  font-size: 1rem;
+}
+
+@media (max-width: 480px) {
+  .mobile-anime-container .mobile-anime-banner {
+    height: 250px;
+  }
+  .mobile-anime-container .mobile-anime-content {
+    padding: 0 12px 20px;
+  }
+  .mobile-anime-container .mobile-anime-content .mobile-anime-header {
+    gap: 12px;
+  }
+  .mobile-anime-container .mobile-anime-content .mobile-anime-header .mobile-poster {
+    width: 120px;
+    height: 170px;
+  }
+  .mobile-anime-container .mobile-anime-content .mobile-anime-header .mobile-info .mobile-title-section .mobile-anime-title {
+    font-size: 1.2rem;
+  }
+  .mobile-anime-container .mobile-anime-content .mobile-info-section .mobile-info-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .mobile-anime-container .mobile-anime-content .mobile-info-section .mobile-info-grid .mobile-info-item {
+    padding: 12px;
+  }
+  .mobile-anime-container .mobile-anime-content .mobile-info-section .mobile-info-grid .mobile-info-item .mobile-info-icon {
+    width: 32px;
+    height: 32px;
+  }
+}
+@media (max-width: 768px) and (orientation: landscape) {
+  .mobile-anime-container .mobile-anime-banner {
+    height: 200px;
+  }
+  .mobile-anime-container .mobile-anime-content {
+    margin-top: -60px;
+  }
+  .mobile-anime-container .mobile-anime-content .mobile-anime-header {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  .mobile-anime-container .mobile-anime-content .mobile-anime-header .mobile-poster {
+    width: 100px;
+    height: 140px;
+  }
+}
+.description-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  -webkit-backdrop-filter: blur(4px);
+          backdrop-filter: blur(4px);
+}
+
+.description-modal-content {
+  background: var(--bg-primary);
+  border-radius: 16px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 80vh;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+.description-modal-content .description-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+}
+.description-modal-content .description-modal-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.description-modal-content .description-modal-header .description-modal-close {
+  padding: 6px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+.description-modal-content .description-modal-header .description-modal-close:hover {
+  background: var(--hover-bg);
+  color: var(--text-primary);
+}
+.description-modal-content .description-modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  max-height: calc(80vh - 80px);
+}
+.description-modal-content .description-modal-body h4 {
+  margin: 0 0 16px 0;
+  font-size: 1rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.description-modal-content .description-modal-body .description-modal-text {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.titles-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  -webkit-backdrop-filter: blur(4px);
+          backdrop-filter: blur(4px);
+}
+
+.titles-modal-content {
+  background: var(--bg-primary);
+  border-radius: 16px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 80vh;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+.titles-modal-content .titles-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+}
+.titles-modal-content .titles-modal-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.titles-modal-content .titles-modal-header .titles-modal-close {
+  padding: 6px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+.titles-modal-content .titles-modal-header .titles-modal-close:hover {
+  background: var(--hover-bg);
+  color: var(--text-primary);
+}
+.titles-modal-content .titles-modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  max-height: calc(80vh - 80px);
+}
+.titles-modal-content .titles-modal-body .title-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+.titles-modal-content .titles-modal-body .title-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+.titles-modal-content .titles-modal-body .title-item:last-child {
+  margin-bottom: 0;
+}
+.titles-modal-content .titles-modal-body .title-item .title-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.titles-modal-content .titles-modal-body .title-item .title-info .title-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.titles-modal-content .titles-modal-body .title-item .title-info .title-value {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  font-weight: 500;
+  line-height: 1.4;
+  word-break: break-word;
+}
+.titles-modal-content .titles-modal-body .title-item .copy-button {
+  padding: 8px;
+  background: rgba(var(--primary-color-rgb), 0.1);
+  border: 1px solid rgba(var(--primary-color-rgb), 0.3);
+  border-radius: 8px;
+  color: var(--primary-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 12px;
+  flex-shrink: 0;
+}
+.titles-modal-content .titles-modal-body .title-item .copy-button:hover:not(.copied) {
+  background: rgba(var(--primary-color-rgb), 0.15);
+  border-color: var(--primary-color);
+  transform: translateY(-1px);
+}
+.titles-modal-content .titles-modal-body .title-item .copy-button.copied {
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.3);
+  color: #22c55e;
+  opacity: 0.6;
+  transform: scale(0.95);
+  cursor: not-allowed;
+}
+.titles-modal-content .titles-modal-body .title-item .copy-button:active {
+  transform: scale(0.95);
+}
+
+.collection-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 20px;
+}
+.collection-modal-overlay .collection-modal-content {
+  background: var(--bg-primary);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 400px;
+  max-height: 80vh;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+.collection-modal-overlay .collection-modal-content .collection-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+}
+.collection-modal-overlay .collection-modal-content .collection-modal-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.collection-modal-overlay .collection-modal-content .collection-modal-header .collection-modal-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+.collection-modal-overlay .collection-modal-content .collection-modal-header .collection-modal-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+.collection-modal-overlay .collection-modal-content .collection-modal-body {
+  padding: 12px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+.collection-modal-overlay .collection-modal-content .collection-modal-body .collection-modal-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  margin-bottom: 8px;
+  position: relative;
+}
+.collection-modal-overlay .collection-modal-content .collection-modal-body .collection-modal-item:last-child {
+  margin-bottom: 0;
+}
+.collection-modal-overlay .collection-modal-content .collection-modal-body .collection-modal-item:hover {
+  background: rgba(var(--primary-color-rgb), 0.05);
+  transform: translateX(4px);
+}
+.collection-modal-overlay .collection-modal-content .collection-modal-body .collection-modal-item.active {
+  background: rgba(var(--primary-color-rgb), 0.1);
+  border: 1px solid rgba(var(--primary-color-rgb), 0.3);
+  color: var(--primary-color);
+}
+.collection-modal-overlay .collection-modal-content .collection-modal-body .collection-modal-item .collection-modal-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: rgba(var(--primary-color-rgb), 0.1);
+  border-radius: 10px;
+  color: inherit;
+  flex-shrink: 0;
+}
+.collection-modal-overlay .collection-modal-content .collection-modal-body .collection-modal-item .collection-modal-label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  flex: 1;
+}
+.collection-modal-overlay .collection-modal-content .collection-modal-body .collection-modal-item .collection-modal-check {
+  color: var(--primary-color);
+  flex-shrink: 0;
+}/*# sourceMappingURL=mobile-anime-page-provider.css.map */

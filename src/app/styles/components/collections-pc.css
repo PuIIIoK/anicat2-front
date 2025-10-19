@@ -1,0 +1,679 @@
+@charset "UTF-8";
+.collection-mobile-section-root-pc {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 20px;
+}
+
+.collection-mobile-section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.collection-pc-subheader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.collection-pc-type {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.collection-pc-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.collection-pc-count {
+  opacity: 0.8;
+  font-size: 14px;
+}
+
+.collection-pc-search-input {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px 10px;
+  min-width: 240px;
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.collection-pc-search-input:focus {
+  border-color: rgba(124, 92, 255, 0.65);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.collection-mobile-section-title {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.collection-mobile-section-sub {
+  opacity: 0.7;
+  font-size: 14px;
+}
+
+.collection-mobile-section-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scrollbar-width: thin;
+}
+
+.collection-mobile-section-tab {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
+  color: inherit;
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.05s ease, border-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.collection-mobile-section-tab:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.collection-mobile-section-tab:active {
+  transform: translateY(1px);
+}
+
+.collection-mobile-section-tab.active {
+  background: rgba(124, 92, 255, 0.22);
+  border-color: rgba(124, 92, 255, 0.45);
+}
+
+.collection-mobile-section-grid {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  align-content: start;
+}
+
+@media (max-width: 1400px) {
+  .collection-mobile-section-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+  }
+}
+@media (max-width: 1200px) {
+  .collection-mobile-section-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+  }
+}
+@media (max-width: 900px) {
+  .collection-mobile-section-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 10px;
+  }
+}
+/* Новый современный компонент карточки коллекций */
+.collection-card-modern {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  background: #1a1a1a;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  cursor: pointer;
+  position: relative;
+}
+.collection-card-modern:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.16), 0 2px 4px rgba(0, 0, 0, 0.32);
+  border-color: rgba(255, 106, 53, 0.3);
+}
+.collection-card-modern:focus {
+  outline: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.16), 0 2px 4px rgba(0, 0, 0, 0.32), 0 0 0 2px rgba(255, 106, 53, 0.5);
+}
+@media (prefers-color-scheme: light) {
+  .collection-card-modern {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.08);
+    color: #1a1a1a;
+  }
+  .collection-card-modern:hover {
+    border-color: rgba(255, 106, 53, 0.4);
+  }
+}
+@media (hover: none) {
+  .collection-card-modern:hover {
+    transform: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    border-color: rgba(255, 255, 255, 0.06);
+  }
+  .collection-card-modern:active {
+    transform: scale(0.98);
+  }
+}
+
+.collection-card-image-container {
+  position: relative;
+  width: 100%;
+  height: 260px;
+  overflow: hidden;
+  background: #2a2a2a;
+}
+@media (prefers-color-scheme: light) {
+  .collection-card-image-container {
+    background: #f5f5f5;
+  }
+}
+
+.collection-card-image {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  transition: transform 0.25s ease;
+}
+.collection-card-modern:hover .collection-card-image {
+  transform: scale(1.02);
+}
+
+.collection-card-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.05) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+@media (prefers-color-scheme: light) {
+  .collection-card-image-placeholder {
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.05) 25%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.05) 75%);
+    background-size: 200% 100%;
+  }
+}
+
+.collection-card-loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-top: 2px solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.collection-card-no-image {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.5);
+}
+@media (prefers-color-scheme: light) {
+  .collection-card-no-image {
+    color: rgba(0, 0, 0, 0.4);
+  }
+}
+.collection-card-no-image .collection-card-no-image-icon {
+  font-size: 48px;
+  opacity: 0.5;
+}
+.collection-card-no-image span {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.collection-card-status {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 600;
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+          backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 2;
+}
+.collection-card-status.watching {
+  background: rgba(34, 197, 94, 0.9);
+  color: white;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+}
+.collection-card-status.completed {
+  background: rgba(59, 130, 246, 0.9);
+  color: white;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+.collection-card-status.planned {
+  background: rgba(251, 191, 36, 0.9);
+  color: white;
+  box-shadow: 0 2px 8px rgba(251, 191, 36, 0.3);
+}
+.collection-card-status.dropped {
+  background: rgba(239, 68, 68, 0.9);
+  color: white;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+.collection-card-status.on-hold {
+  background: rgba(168, 85, 247, 0.9);
+  color: white;
+  box-shadow: 0 2px 8px rgba(168, 85, 247, 0.3);
+}
+
+.collection-card-rating {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(34, 34, 34, 0.92);
+  color: #fbbf24;
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+          backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(251, 191, 36, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 2;
+}
+@media (prefers-color-scheme: light) {
+  .collection-card-rating {
+    background: rgba(255, 255, 255, 0.95);
+    color: #d97706;
+    border-color: rgba(217, 119, 6, 0.2);
+  }
+}
+
+.collection-card-type {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  background: rgba(255, 107, 53, 0.92);
+  color: white;
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+          backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
+  z-index: 2;
+}
+@media (prefers-color-scheme: light) {
+  .collection-card-type {
+    background: rgba(255, 107, 53, 0.95);
+    border-color: rgba(255, 107, 53, 0.2);
+  }
+}
+
+.collection-card-info {
+  padding: 16px;
+  background: transparent;
+}
+
+.collection-card-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0 0 10px 0;
+  line-height: 1.25;
+  height: 38px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  color: #ffffff;
+  transition: color 0.25s ease;
+}
+@media (prefers-color-scheme: light) {
+  .collection-card-title {
+    color: #1a1a1a;
+  }
+}
+
+.collection-card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+}
+@media (prefers-color-scheme: light) {
+  .collection-card-meta {
+    color: rgba(26, 26, 26, 0.6);
+  }
+}
+
+.collection-card-episodes {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+}
+@media (prefers-color-scheme: light) {
+  .collection-card-episodes {
+    color: rgba(26, 26, 26, 0.8);
+  }
+}
+
+.collection-card-season {
+  font-size: 11px;
+  padding: 2px 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+@media (prefers-color-scheme: light) {
+  .collection-card-season {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.08);
+  }
+}
+
+/* Анимация для спиннера */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.collection-mobile-section-card {
+  background: #1a1a1a;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  animation: collection-mobile-section-fadein 0.25s ease;
+  cursor: pointer;
+  position: relative;
+}
+.collection-mobile-section-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.16), 0 2px 4px rgba(0, 0, 0, 0.32);
+  border-color: rgba(255, 106, 53, 0.3);
+}
+.collection-mobile-section-card:focus {
+  outline: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.16), 0 2px 4px rgba(0, 0, 0, 0.32), 0 0 0 2px rgba(255, 106, 53, 0.5);
+}
+@media (prefers-color-scheme: light) {
+  .collection-mobile-section-card {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.08);
+    color: #1a1a1a;
+  }
+  .collection-mobile-section-card:hover {
+    border-color: rgba(255, 106, 53, 0.4);
+  }
+}
+@media (hover: none) {
+  .collection-mobile-section-card:hover {
+    transform: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    border-color: rgba(255, 255, 255, 0.06);
+  }
+  .collection-mobile-section-card:active {
+    transform: scale(0.98);
+  }
+}
+.collection-mobile-section-card img {
+  width: 100%;
+  height: 260px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  transition: transform 0.25s ease;
+  display: block;
+}
+.collection-mobile-section-card img:hover {
+  transform: scale(1.02);
+}
+.collection-mobile-section-card .card-info, .collection-mobile-section-card .collection-card-info {
+  padding: 16px;
+  background: transparent;
+}
+.collection-mobile-section-card .card-info .card-title, .collection-mobile-section-card .card-info .title, .collection-mobile-section-card .collection-card-info .card-title, .collection-mobile-section-card .collection-card-info .title {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0 0 10px 0;
+  line-height: 1.25;
+  height: 38px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  color: #ffffff;
+  transition: color 0.25s ease;
+}
+@media (prefers-color-scheme: light) {
+  .collection-mobile-section-card .card-info .card-title, .collection-mobile-section-card .card-info .title, .collection-mobile-section-card .collection-card-info .card-title, .collection-mobile-section-card .collection-card-info .title {
+    color: #1a1a1a;
+  }
+}
+.collection-mobile-section-card .card-info .card-meta, .collection-mobile-section-card .card-info .meta, .collection-mobile-section-card .collection-card-info .card-meta, .collection-mobile-section-card .collection-card-info .meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+}
+@media (prefers-color-scheme: light) {
+  .collection-mobile-section-card .card-info .card-meta, .collection-mobile-section-card .card-info .meta, .collection-mobile-section-card .collection-card-info .card-meta, .collection-mobile-section-card .collection-card-info .meta {
+    color: rgba(26, 26, 26, 0.6);
+  }
+}
+.collection-mobile-section-card .card-info .card-meta .episodes-info, .collection-mobile-section-card .card-info .card-meta .season-info, .collection-mobile-section-card .card-info .card-meta .year-info, .collection-mobile-section-card .card-info .meta .episodes-info, .collection-mobile-section-card .card-info .meta .season-info, .collection-mobile-section-card .card-info .meta .year-info, .collection-mobile-section-card .collection-card-info .card-meta .episodes-info, .collection-mobile-section-card .collection-card-info .card-meta .season-info, .collection-mobile-section-card .collection-card-info .card-meta .year-info, .collection-mobile-section-card .collection-card-info .meta .episodes-info, .collection-mobile-section-card .collection-card-info .meta .season-info, .collection-mobile-section-card .collection-card-info .meta .year-info {
+  opacity: 0.9;
+  transition: opacity 0.25s ease;
+}
+.collection-mobile-section-card .card-info .card-meta .episodes-info:hover, .collection-mobile-section-card .card-info .card-meta .season-info:hover, .collection-mobile-section-card .card-info .card-meta .year-info:hover, .collection-mobile-section-card .card-info .meta .episodes-info:hover, .collection-mobile-section-card .card-info .meta .season-info:hover, .collection-mobile-section-card .card-info .meta .year-info:hover, .collection-mobile-section-card .collection-card-info .card-meta .episodes-info:hover, .collection-mobile-section-card .collection-card-info .card-meta .season-info:hover, .collection-mobile-section-card .collection-card-info .card-meta .year-info:hover, .collection-mobile-section-card .collection-card-info .meta .episodes-info:hover, .collection-mobile-section-card .collection-card-info .meta .season-info:hover, .collection-mobile-section-card .collection-card-info .meta .year-info:hover {
+  opacity: 1;
+}
+.collection-mobile-section-card .card-info .card-meta .season-info, .collection-mobile-section-card .card-info .meta .season-info, .collection-mobile-section-card .collection-card-info .card-meta .season-info, .collection-mobile-section-card .collection-card-info .meta .season-info {
+  font-size: 11px;
+  padding: 2px 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+@media (prefers-color-scheme: light) {
+  .collection-mobile-section-card .card-info .card-meta .season-info, .collection-mobile-section-card .card-info .meta .season-info, .collection-mobile-section-card .collection-card-info .card-meta .season-info, .collection-mobile-section-card .collection-card-info .meta .season-info {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.08);
+  }
+}
+.collection-mobile-section-card .type-badge, .collection-mobile-section-card .rating-badge, .collection-mobile-section-card .collection-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+          backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.25s ease;
+  z-index: 2;
+}
+.collection-mobile-section-card .type-badge.type-badge, .collection-mobile-section-card .rating-badge.type-badge, .collection-mobile-section-card .collection-badge.type-badge {
+  background: rgba(255, 107, 53, 0.92);
+  color: white;
+  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
+}
+@media (prefers-color-scheme: light) {
+  .collection-mobile-section-card .type-badge.type-badge, .collection-mobile-section-card .rating-badge.type-badge, .collection-mobile-section-card .collection-badge.type-badge {
+    background: rgba(255, 107, 53, 0.95);
+    border-color: rgba(255, 107, 53, 0.2);
+  }
+}
+.collection-mobile-section-card .type-badge.rating-badge, .collection-mobile-section-card .rating-badge.rating-badge, .collection-mobile-section-card .collection-badge.rating-badge {
+  background: rgba(34, 34, 34, 0.92);
+  color: #fbbf24;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border-color: rgba(251, 191, 36, 0.2);
+}
+@media (prefers-color-scheme: light) {
+  .collection-mobile-section-card .type-badge.rating-badge, .collection-mobile-section-card .rating-badge.rating-badge, .collection-mobile-section-card .collection-badge.rating-badge {
+    background: rgba(255, 255, 255, 0.95);
+    color: #d97706;
+    border-color: rgba(217, 119, 6, 0.2);
+  }
+}
+.collection-mobile-section-card .collection-status, .collection-mobile-section-card .status-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 600;
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+          backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 2;
+}
+.collection-mobile-section-card .collection-status.watching, .collection-mobile-section-card .status-badge.watching {
+  background: rgba(34, 197, 94, 0.9);
+  color: white;
+}
+.collection-mobile-section-card .collection-status.completed, .collection-mobile-section-card .status-badge.completed {
+  background: rgba(59, 130, 246, 0.9);
+  color: white;
+}
+.collection-mobile-section-card .collection-status.planned, .collection-mobile-section-card .status-badge.planned {
+  background: rgba(251, 191, 36, 0.9);
+  color: white;
+}
+.collection-mobile-section-card .collection-status.dropped, .collection-mobile-section-card .status-badge.dropped {
+  background: rgba(239, 68, 68, 0.9);
+  color: white;
+}
+.collection-mobile-section-card .collection-status.on-hold, .collection-mobile-section-card .status-badge.on-hold {
+  background: rgba(168, 85, 247, 0.9);
+  color: white;
+}
+.collection-mobile-section-card .image-placeholder, .collection-mobile-section-card .loading-placeholder {
+  width: 100%;
+  height: 260px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.05) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 16px 16px 0 0;
+}
+@media (prefers-color-scheme: light) {
+  .collection-mobile-section-card .image-placeholder, .collection-mobile-section-card .loading-placeholder {
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.05) 25%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.05) 75%);
+    background-size: 200% 100%;
+  }
+}
+
+@keyframes collection-mobile-section-fadein {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.collection-mobile-section-empty {
+  width: 100%;
+  text-align: center;
+  opacity: 0.75;
+  padding: 24px 0;
+}
+
+.collection-empty-pc {
+  width: 100%;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  opacity: 0.95;
+}
+
+.collection-empty-img-wrap {
+  width: 220px;
+  height: 220px;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+}
+
+.collection-empty-img {
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+
+.collection-empty-text {
+  margin-top: 6px;
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.collection-mobile-section-loader {
+  width: 100%;
+  min-height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  opacity: 0.9;
+}
+
+.collection-mobile-section-spinner {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #7c5cff;
+  animation: collection-mobile-section-spin 0.8s linear infinite;
+}
+
+@keyframes collection-mobile-section-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}/*# sourceMappingURL=collections-pc.css.map */

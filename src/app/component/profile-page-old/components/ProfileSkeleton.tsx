@@ -1,0 +1,484 @@
+import React from 'react';
+
+const ProfileSkeleton: React.FC = () => {
+  return (
+    <div className="profile-skeleton">
+      {/* Skeleton для баннера */}
+      <div className="profile-header">
+        <div className="banner-skeleton skeleton-animation"></div>
+        <div className="profile-header-content">
+          <div className="profile-avatar-block">
+            <div className="avatar-skeleton skeleton-animation"></div>
+          </div>
+          <div className="profile-info-block">
+            <div className="nickname-line">
+              <div className="nickname-block">
+                <div className="nickname-icons">
+                  <div className="badge-skeleton skeleton-animation"></div>
+                  <div className="badge-skeleton skeleton-animation"></div>
+                </div>
+                <div className="nickname-verified">
+                  <div className="nickname-skeleton skeleton-animation"></div>
+                </div>
+              </div>
+            </div>
+            <div className="bio-line">
+              <div className="bio-skeleton skeleton-animation"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="profile-container">
+        <div className="profile-layout">
+          <div className="profile-sidebar">
+            {/* Skeleton для списка друзей */}
+            <div className="friends-skeleton">
+              <div className="friends-header-skeleton skeleton-animation"></div>
+              <div className="friends-list-skeleton">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="friend-item-skeleton">
+                    <div className="friend-avatar-skeleton skeleton-animation"></div>
+                    <div className="friend-info-skeleton">
+                      <div className="friend-name-skeleton skeleton-animation"></div>
+                      <div className="friend-quote-skeleton skeleton-animation"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Skeleton для статистики */}
+            <div className="stats-skeleton">
+              <div className="stats-header-skeleton skeleton-animation"></div>
+              <div className="stats-chart-skeleton skeleton-animation"></div>
+            </div>
+          </div>
+        </div>
+
+        <div className="profile-main-content-container">
+          {/* Skeleton для табов */}
+          <div className="profile-tabs">
+            <div className="tab-skeleton skeleton-animation"></div>
+            <div className="tab-skeleton skeleton-animation"></div>
+          </div>
+
+          {/* Skeleton для основного контента */}
+          <div className="main-content-skeleton">
+            {/* Skeleton для "Сейчас смотрю" */}
+            <div className="watching-skeleton">
+              <div className="section-header-skeleton skeleton-animation"></div>
+              <div className="anime-grid-skeleton">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="anime-card-skeleton">
+                    <div className="anime-cover-skeleton skeleton-animation"></div>
+                    <div className="anime-info-skeleton">
+                      <div className="anime-title-skeleton skeleton-animation"></div>
+                      <div className="anime-meta-skeleton skeleton-animation"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Skeleton для активности */}
+            <div className="activity-skeleton">
+              <div className="section-header-skeleton skeleton-animation"></div>
+              <div className="activity-list-skeleton">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="activity-item-skeleton">
+                    <div className="activity-icon-skeleton skeleton-animation"></div>
+                    <div className="activity-content-skeleton">
+                      <div className="activity-text-skeleton skeleton-animation"></div>
+                      <div className="activity-time-skeleton skeleton-animation"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Skeleton для избранного */}
+            <div className="favorites-skeleton">
+              <div className="section-header-skeleton skeleton-animation"></div>
+              <div className="anime-grid-skeleton">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="anime-card-skeleton">
+                    <div className="anime-cover-skeleton skeleton-animation"></div>
+                    <div className="anime-info-skeleton">
+                      <div className="anime-title-skeleton skeleton-animation"></div>
+                      <div className="anime-meta-skeleton skeleton-animation"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Skeleton для отзывов */}
+            <div className="reviews-skeleton">
+              <div className="section-header-skeleton skeleton-animation"></div>
+              <div className="reviews-list-skeleton">
+                {[1, 2].map((i) => (
+                  <div key={i} className="review-card-skeleton">
+                    <div className="review-header-skeleton">
+                      <div className="anime-cover-skeleton skeleton-animation"></div>
+                      <div className="review-meta-skeleton">
+                        <div className="anime-title-skeleton skeleton-animation"></div>
+                        <div className="rating-skeleton skeleton-animation"></div>
+                      </div>
+                    </div>
+                    <div className="review-text-skeleton skeleton-animation"></div>
+                    <div className="review-time-skeleton skeleton-animation"></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <style jsx>{`
+        .profile-skeleton {
+          width: 100%;
+        }
+
+        .skeleton-animation {
+          background: linear-gradient(90deg,rgb(0, 0, 0) rgb(33, 33, 33)e0e0 50%,rgb(34, 30, 30) 75%);
+          background-size: 200% 100%;
+          animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+          0% { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
+
+        .profile-header {
+          position: relative;
+          height: 300px;
+          margin-bottom: 20px;
+        }
+
+        .banner-skeleton {
+          width: 100%;
+          height: 200px;
+          border-radius: 8px;
+        }
+
+        .profile-header-content {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          padding: 20px;
+          display: flex;
+          align-items: flex-end;
+          gap: 20px;
+        }
+
+        .profile-avatar-block {
+          flex-shrink: 0;
+        }
+
+        .avatar-skeleton {
+          width: 96px;
+          height: 96px;
+          border-radius: 50%;
+        }
+
+        .profile-info-block {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .nickname-line {
+          margin-bottom: 10px;
+        }
+
+        .nickname-block {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .nickname-icons {
+          display: flex;
+          gap: 5px;
+        }
+
+        .badge-skeleton {
+          width: 20px;
+          height: 20px;
+          border-radius: 4px;
+        }
+
+        .nickname-skeleton {
+          width: 150px;
+          height: 24px;
+          border-radius: 4px;
+        }
+
+        .bio-line {
+          margin-bottom: 10px;
+        }
+
+        .bio-skeleton {
+          width: 300px;
+          height: 16px;
+          border-radius: 4px;
+        }
+
+        .profile-container {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 0 20px;
+        }
+
+        .profile-layout {
+          display: flex;
+          gap: 20px;
+        }
+
+        .profile-sidebar {
+          width: 300px;
+          flex-shrink: 0;
+        }
+
+        .friends-skeleton {
+          background: #fff;
+          border-radius: 8px;
+          padding: 20px;
+          margin-bottom: 20px;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .friends-header-skeleton {
+          width: 120px;
+          height: 20px;
+          border-radius: 4px;
+          margin-bottom: 15px;
+        }
+
+        .friends-list-skeleton {
+          display: flex;
+          flex-direction: column;
+          gap: 15px;
+        }
+
+        .friend-item-skeleton {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+
+        .friend-avatar-skeleton {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+        }
+
+        .friend-info-skeleton {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .friend-name-skeleton {
+          width: 80px;
+          height: 14px;
+          border-radius: 4px;
+          margin-bottom: 5px;
+        }
+
+        .friend-quote-skeleton {
+          width: 120px;
+          height: 12px;
+          border-radius: 4px;
+        }
+
+        .stats-skeleton {
+          background: #fff;
+          border-radius: 8px;
+          padding: 20px;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stats-header-skeleton {
+          width: 100px;
+          height: 18px;
+          border-radius: 4px;
+          margin-bottom: 15px;
+        }
+
+        .stats-chart-skeleton {
+          width: 100%;
+          height: 200px;
+          border-radius: 4px;
+        }
+
+        .profile-main-content-container {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .profile-tabs {
+          display: flex;
+          gap: 10px;
+          margin-bottom: 20px;
+        }
+
+        .tab-skeleton {
+          width: 100px;
+          height: 36px;
+          border-radius: 6px;
+        }
+
+        .main-content-skeleton {
+          display: flex;
+          flex-direction: column;
+          gap: 30px;
+        }
+
+        .section-header-skeleton {
+          width: 200px;
+          height: 24px;
+          border-radius: 4px;
+          margin-bottom: 15px;
+        }
+
+        .anime-grid-skeleton {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+          gap: 15px;
+        }
+
+        .anime-card-skeleton {
+          background: #fff;
+          border-radius: 8px;
+          overflow: hidden;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .anime-cover-skeleton {
+          width: 100%;
+          height: 120px;
+        }
+
+        .anime-info-skeleton {
+          padding: 12px;
+        }
+
+        .anime-title-skeleton {
+          width: 100%;
+          height: 16px;
+          border-radius: 4px;
+          margin-bottom: 8px;
+        }
+
+        .anime-meta-skeleton {
+          width: 60%;
+          height: 12px;
+          border-radius: 4px;
+        }
+
+        .activity-list-skeleton {
+          display: flex;
+          flex-direction: column;
+          gap: 15px;
+        }
+
+        .activity-item-skeleton {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          background: #fff;
+          padding: 15px;
+          border-radius: 8px;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .activity-icon-skeleton {
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+        }
+
+        .activity-content-skeleton {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .activity-text-skeleton {
+          width: 100%;
+          height: 14px;
+          border-radius: 4px;
+          margin-bottom: 5px;
+        }
+
+        .activity-time-skeleton {
+          width: 80px;
+          height: 12px;
+          border-radius: 4px;
+        }
+
+        .reviews-list-skeleton {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+        }
+
+        .review-card-skeleton {
+          background: #fff;
+          border-radius: 8px;
+          padding: 20px;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .review-header-skeleton {
+          display: flex;
+          gap: 15px;
+          margin-bottom: 15px;
+        }
+
+        .review-meta-skeleton {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .rating-skeleton {
+          width: 80px;
+          height: 14px;
+          border-radius: 4px;
+          margin-top: 5px;
+        }
+
+        .review-text-skeleton {
+          width: 100%;
+          height: 16px;
+          border-radius: 4px;
+          margin-bottom: 10px;
+        }
+
+        .review-time-skeleton {
+          width: 120px;
+          height: 12px;
+          border-radius: 4px;
+        }
+
+        @media (max-width: 768px) {
+          .profile-layout {
+            flex-direction: column;
+          }
+
+          .profile-sidebar {
+            width: 100%;
+          }
+
+          .anime-grid-skeleton {
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+          }
+        }
+      `}</style>
+    </div>
+  );
+};
+
+export default ProfileSkeleton;

@@ -1,0 +1,173 @@
+.admin-panel-add-realese {
+  color: #e0e0e0;
+}
+
+.admin-panel-add-realese-card {
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  margin-left: 20px;
+}
+
+.admin-panel-add-realese-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.admin-panel-add-realese-title {
+  font-size: 22px;
+  color: #ff4d88;
+}
+
+.admin-panel-add-realese-back {
+  background: #ff4d88;
+  border: none;
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.admin-panel-add-realese-group {
+  margin-bottom: 14px;
+}
+
+.admin-panel-add-realese-label {
+  display: block;
+  margin-bottom: 6px;
+  color: #ccc;
+  font-weight: 600;
+}
+
+.admin-panel-add-realese-input, .admin-panel-add-realese-textarea {
+  width: 100%;
+  background: #111;
+  color: #fff;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 10px;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.admin-panel-add-realese-input:focus, .admin-panel-add-realese-textarea:focus {
+  border-color: #ff4d88;
+}
+
+.admin-panel-add-realese-textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+.admin-panel-add-realese-file {
+  width: 100%;
+  background: #111;
+  color: #ccc;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.admin-panel-add-realese-filebox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-panel-add-realese-fileinput {
+  display: none;
+}
+
+.admin-panel-add-realese-filelabel {
+  background: #333;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid #444;
+}
+
+.admin-panel-add-realese-filename {
+  color: #aaa;
+}
+
+.admin-panel-add-realese-error {
+  margin-top: 6px;
+  color: #ff9aa2;
+  font-size: 13px;
+}
+
+.admin-panel-add-realese-actions {
+  margin-top: 8px;
+}
+
+.admin-panel-add-realese-upload {
+  background: #e91e63;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.admin-panel-add-realese-upload:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.admin-panel-add-realese-loading {
+  margin-top: 8px;
+  color: #bbb;
+}
+
+.admin-panel-add-realese-success {
+  margin-top: 8px;
+  color: #8bc34a;
+}
+
+.admin-panel-add-realese-submit {
+  background: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+.admin-panel-add-realese-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.admin-panel-add-realese-spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin-left: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+.admin-panel-add-realese-info {
+  margin-top: 14px;
+  background: #222;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.admin-panel-add-realese-hint {
+  margin-top: 8px;
+  color: #aaa;
+  font-size: 13px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}/*# sourceMappingURL=admin-platforms-add.css.map */

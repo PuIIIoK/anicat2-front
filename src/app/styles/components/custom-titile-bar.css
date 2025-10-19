@@ -1,0 +1,102 @@
+.title-bar {
+  display: flex;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+  border-bottom: 1px solid #222;
+  background: #111;
+  justify-content: space-between;
+  align-items: center;
+  height: 32px;
+  color: white;
+  padding: 0 12px;
+  -webkit-app-region: drag;
+  z-index: 9999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  font-family: "Segoe UI", sans-serif;
+}
+.title-bar .left, .title-bar .right {
+  display: flex;
+  gap: 10px;
+  -webkit-app-region: no-drag;
+  align-items: center;
+}
+.title-bar .address-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.title-bar .address-bar {
+  background: #1a1a1a;
+  color: #888;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  max-width: 240px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  pointer-events: none;
+}
+.title-bar .copy-btn {
+  background: transparent;
+  border: none;
+  color: #aaa;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+}
+.title-bar .copy-btn:hover {
+  background: #333;
+  color: #fff;
+}
+.title-bar button {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 14px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.title-bar button:hover {
+  background: #333;
+}
+.title-bar .center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.copy-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.copy-container .copy-tooltip {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 2px;
+  background-color: #222;
+  color: #aaa;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0.8;
+  pointer-events: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  z-index: 10;
+}/*# sourceMappingURL=custom-titile-bar.css.map */

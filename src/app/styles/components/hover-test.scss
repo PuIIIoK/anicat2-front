@@ -1,0 +1,13 @@
+/* Стили для тестового hover компонента */
+
+.hover-test-card {
+  position: relative;
+  
+  &:hover {
+    .anime-hover-card {
+      opacity: 1 !important;
+      visibility: visible !important;
+      transform: translateX(0) !important;
+    }
+  }
+}

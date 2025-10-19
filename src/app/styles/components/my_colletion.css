@@ -1,55 +1,181 @@
+@charset "UTF-8";
 .collection-page {
   padding: 2rem;
-}
-.collection-page .collection-tabs {
-  display: flex;
-  justify-content: center;
+  color: white;
+  margin-top: 5rem;
   margin-bottom: 2rem;
 }
-.collection-page .collection-tabs .tab-button {
-  padding: 0.5rem 1rem;
-  margin: 0 0.5rem;
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-.collection-page .collection-tabs .tab-button.active {
-  background-color: #4caf50;
-  color: #fff;
-  border-color: #4caf50;
-}
-.collection-page .collection-tabs .tab-button:hover {
-  background-color: #e0e0e0;
-}
-.collection-page .collection-content {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-.collection-page .collection-content .collection-card {
-  width: calc(33.333% - 1rem);
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-.collection-page .collection-content .collection-card .collection-cover {
-  width: 100%;
-  height: 150px;
-  object-fit: cover;
-}
-.collection-page .collection-content .collection-card .collection-info {
-  padding: 1rem;
-}
-.collection-page .collection-content .collection-card .collection-info h3 {
-  margin: 0;
-  font-size: 1.2rem;
-}
-.collection-page .collection-content .collection-card .collection-info p {
-  margin: 0.5rem 0 0;
-  color: #555;
+
+.collection-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
 }
 
-/*# sourceMappingURL=my_colletion.css.map */
+.collection-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 5px;
+  width: 80%;
+}
+
+.tabs-container {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  z-index: 1;
+  position: relative;
+  overflow-x: visible;
+  white-space: normal;
+  padding: 0;
+  top: 0;
+  left: 0;
+}
+.tabs-container::-webkit-scrollbar {
+  display: none;
+}
+
+.tab-button {
+  flex: 0 0 auto;
+  font-size: 0.85rem;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background-color: #1b1b1b;
+  transition: background-color 0.3s ease, border-bottom 0.3s ease; /* Добавим плавное изменение границы */
+  color: white;
+  position: relative;
+}
+
+.tab-button::after {
+  content: ""; /* Псевдоэлемент для полоски */
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 3px; /* Толщина полоски */
+  background-color: #5e4f4f; /* Цвет полоски */
+  transform: scaleX(0); /* Изначально скрытая полоска */
+  transform-origin: bottom right;
+}
+
+.tab-button:hover::after {
+  transform: scaleX(1); /* Когда наводим, полоска появляется */
+  transform-origin: bottom left;
+}
+
+.tab-button.active::after {
+  transform: scaleX(1); /* Для активных кнопок полоска всегда видна */
+  transform-origin: bottom left;
+}
+
+@media (max-width: 768px) {
+  .tabs-container {
+    overflow-x: auto;
+    white-space: nowrap;
+    flex-wrap: nowrap;
+    padding: 4px 12px;
+    margin: 0 0 1.5rem;
+    gap: 8px;
+    top: -40px;
+    left: -35px;
+    width: 100vw;
+    box-sizing: border-box;
+  }
+  .anime-title-card {
+    width: 115px;
+    height: 140px;
+    margin: 0 5px 15px;
+  }
+  /* Адаптация для мобильных устройств: 3 колонки */
+  .collection-grid {
+    position: relative;
+    right: 37px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin-top: -3rem;
+    min-height: 60vh; /* не даст гриду "сжиматься" */
+    min-width: 300px; /* ширина под твой дизайн */
+  }
+  .loading-text,
+  .empty-text {
+    grid-column: 1/-1; /* Растянуть на весь грид */
+    font-size: 1.2em;
+    padding: 48px 0;
+  }
+  .collection-title {
+    display: none;
+  }
+  .tab-button {
+    flex: 0 0 auto;
+    font-size: 0.85rem;
+    padding: 6px 14px;
+    border-radius: 20px;
+    background-color: #1b1b1b;
+    transition: background-color 0.3s ease, border-bottom 0.3s ease; /* Добавим плавное изменение границы */
+    color: white;
+    position: relative;
+  }
+  .tab-button::after {
+    content: ""; /* Псевдоэлемент для полоски */
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 3px; /* Толщина полоски */
+    background-color: #5e4f4f; /* Цвет полоски */
+    transform: scaleX(0); /* Изначально скрытая полоска */
+    transform-origin: bottom right;
+  }
+  .tab-button:hover::after {
+    transform: scaleX(1); /* Когда наводим, полоска появляется */
+    transform-origin: bottom left;
+  }
+  .tab-button.active::after {
+    transform: scaleX(1); /* Для активных кнопок полоска всегда видна */
+    transform-origin: bottom left;
+  }
+}
+/* Общие стили для карточек */
+.anime-card-fake {
+  position: relative;
+  width: 100%; /* Сделаем ширину 100% на мобильных */
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #1a1a1a;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.anime-image {
+  border-radius: 12px 12px 0 0;
+  -o-object-fit: cover;
+     object-fit: cover;
+  width: 100%;
+  height: auto;
+}
+
+.anime-card-overlay {
+  padding: 10px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.anime-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  word-wrap: break-word;
+  line-height: 1.2;
+}
+
+.collection-type-label {
+  font-size: 0.7rem;
+  background-color: #7c3aed;
+  padding: 3px 8px;
+  border-radius: 6px;
+  align-self: flex-start;
+  opacity: 0.9;
+}/*# sourceMappingURL=my_colletion.css.map */

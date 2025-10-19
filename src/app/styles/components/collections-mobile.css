@@ -1,0 +1,526 @@
+@charset "UTF-8";
+.category-collection-mobile-root {
+  display: flex;
+  margin-top: 80px;
+  flex-direction: column;
+  height: 100vh;
+  color: #ffffff;
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+.category-collection-mobile-navbar-items {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  border-bottom: none;
+  background: #111;
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+  -webkit-overflow-scrolling: touch;
+}
+.category-collection-mobile-navbar-items::-webkit-scrollbar {
+  display: none;
+}
+
+.category-collection-mobile-navbar-item {
+  flex-shrink: 0;
+  padding: 12px 20px;
+  margin-right: 0;
+  border-radius: 25px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  white-space: nowrap;
+  position: relative;
+}
+.category-collection-mobile-navbar-item:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+.category-collection-mobile-navbar-item.active {
+  color: #ffffff;
+}
+
+.category-collection-mobile-underline {
+  position: absolute;
+  bottom: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #ff2e2e, #ff6b6b, #ff2e2e);
+  border-radius: 2px;
+  will-change: transform, width;
+  transform: translateX(var(--underline-x, 0px));
+  width: var(--underline-width, 0px);
+  transition: transform 0.3s ease, width 0.3s ease;
+}
+.category-collection-mobile-underline.swiping {
+  transition: none;
+}
+
+.root-navbar-mobile-anime-grid {
+  position: relative;
+  right: 47px;
+  gap: 8px;
+  margin-bottom: 2rem;
+  top: 30px;
+  overflow-y: auto;
+  padding: 30px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 425px; /* test watcher */
+  -webkit-overflow-scrolling: touch;
+}
+.root-navbar-mobile-anime-grid::-webkit-scrollbar {
+  width: 4px;
+}
+.root-navbar-mobile-anime-grid::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
+}
+.root-navbar-mobile-anime-grid::-webkit-scrollbar-thumb {
+  background: rgba(124, 92, 255, 0.3);
+  border-radius: 2px;
+}
+.root-navbar-mobile-anime-grid::-webkit-scrollbar-thumb:hover {
+  background: rgba(124, 92, 255, 0.5);
+}
+
+@media (max-width: 480px) {
+  .root-navbar-mobile-anime-grid {
+    width: 425px;
+    max-width: 380px;
+    right: 33px;
+    gap: 6px;
+    padding: 20px;
+  }
+}
+@media (min-width: 481px) and (max-width: 768px) {
+  .root-navbar-mobile-anime-grid {
+    width: 100%;
+    max-width: 450px;
+    right: 35px;
+    gap: 10px;
+    padding: 25px;
+  }
+}
+@media (min-width: 769px) {
+  .root-navbar-mobile-anime-grid {
+    grid-template-columns: repeat(4, 1fr);
+    width: 100%;
+    max-width: 600px;
+    right: 30px;
+    gap: 12px;
+  }
+}
+.anime-card-mobile {
+  opacity: 0;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.anime-card-mobile.visible {
+  opacity: 1;
+  transform: none;
+}
+.anime-card-mobile:nth-child(1) {
+  transition-delay: 0ms;
+}
+.anime-card-mobile:nth-child(2) {
+  transition-delay: 100ms;
+}
+.anime-card-mobile:nth-child(3) {
+  transition-delay: 200ms;
+}
+.anime-card-mobile:nth-child(4) {
+  transition-delay: 300ms;
+}
+.anime-card-mobile:nth-child(5) {
+  transition-delay: 400ms;
+}
+.anime-card-mobile:nth-child(6) {
+  transition-delay: 500ms;
+}
+.anime-card-mobile:nth-child(7) {
+  transition-delay: 600ms;
+}
+.anime-card-mobile:nth-child(8) {
+  transition-delay: 700ms;
+}
+.anime-card-mobile:nth-child(9) {
+  transition-delay: 800ms;
+}
+.anime-card-mobile:nth-child(10) {
+  transition-delay: 900ms;
+}
+.anime-card-mobile:nth-child(11) {
+  transition-delay: 1000ms;
+}
+.anime-card-mobile:nth-child(12) {
+  transition-delay: 1100ms;
+}
+
+.mobile-cover-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  border-radius: 9px;
+  gap: 8px;
+}
+
+.mobile-cover-spinner {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top: 3px solid var(--primary-color);
+  animation: mobile-spin 1s linear infinite;
+}
+
+.mobile-loading-text {
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 500;
+  text-align: center;
+  opacity: 0.7;
+}
+
+@keyframes mobile-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.mobile-cover-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #26263b;
+}
+.mobile-cover-placeholder .placeholder-icon {
+  font-size: 24px;
+  opacity: 0.5;
+}
+
+.collection-mobile-anime-grid {
+  position: relative;
+  right: 30px;
+  top: -15px;
+  margin-bottom: 2rem;
+  overflow-y: auto;
+  padding: 30px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 425px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.collection-mobile-anime-card {
+  opacity: 0;
+  width: 125px !important;
+  height: 190px !important;
+  margin: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+  transition: all 0.3s ease-in-out;
+}
+.collection-mobile-anime-card:nth-child(1) {
+  transition-delay: 0ms;
+}
+.collection-mobile-anime-card:nth-child(2) {
+  transition-delay: 60ms;
+}
+.collection-mobile-anime-card:nth-child(3) {
+  transition-delay: 120ms;
+}
+.collection-mobile-anime-card:nth-child(4) {
+  transition-delay: 180ms;
+}
+.collection-mobile-anime-card:nth-child(5) {
+  transition-delay: 240ms;
+}
+.collection-mobile-anime-card:nth-child(6) {
+  transition-delay: 300ms;
+}
+.collection-mobile-anime-card:nth-child(7) {
+  transition-delay: 360ms;
+}
+.collection-mobile-anime-card:nth-child(8) {
+  transition-delay: 420ms;
+}
+.collection-mobile-anime-card:nth-child(9) {
+  transition-delay: 480ms;
+}
+.collection-mobile-anime-card:nth-child(10) {
+  transition-delay: 540ms;
+}
+.collection-mobile-anime-card:nth-child(11) {
+  transition-delay: 600ms;
+}
+.collection-mobile-anime-card:nth-child(12) {
+  transition-delay: 660ms;
+}
+.collection-mobile-anime-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.collection-mobile-anime-card:hover {
+  transform: translateY(-2px);
+}
+.collection-mobile-anime-card .global-anime-card-mobile {
+  width: 100% !important;
+  max-width: 125px !important;
+  height: 100% !important;
+}
+.collection-mobile-anime-card .global-anime-card-mobile .mobile-card-image-container {
+  width: 125px !important;
+  height: 150px !important;
+  overflow: hidden;
+  border-radius: 8px;
+}
+.collection-mobile-anime-card .global-anime-card-mobile .mobile-card-image {
+  width: 100% !important;
+  height: 100% !important;
+  -o-object-fit: cover !important;
+     object-fit: cover !important;
+  -o-object-position: center !important;
+     object-position: center !important;
+}
+.collection-mobile-anime-card .global-anime-card-mobile .mobile-card-info {
+  padding: 5px 3px !important;
+  height: 40px !important;
+  overflow: hidden;
+}
+.collection-mobile-anime-card .global-anime-card-mobile .mobile-card-title {
+  font-size: 10px !important;
+  line-height: 1.2 !important;
+  -webkit-line-clamp: 2 !important;
+  line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  display: -webkit-box !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+.collection-mobile-anime-card .global-anime-card-mobile .mobile-card-bottom {
+  gap: 1px !important;
+  align-items: center !important;
+}
+.collection-mobile-anime-card .global-anime-card-mobile .mobile-card-episodes {
+  font-size: 8px !important;
+  font-weight: 500 !important;
+}
+.collection-mobile-anime-card .global-anime-card-mobile .mobile-card-rating {
+  font-size: 8px !important;
+  padding: 1px 3px !important;
+}
+.collection-mobile-anime-card .global-anime-card-mobile .mobile-card-status {
+  font-size: 7px !important;
+  padding: 2px 4px !important;
+}
+
+@media (max-width: 480px) {
+  .collection-mobile-anime-grid {
+    width: 425px;
+    gap: 8px;
+  }
+  .collection-mobile-anime-card {
+    width: 110px !important;
+    height: 200px !important;
+  }
+  .collection-mobile-anime-card .global-anime-card-mobile .mobile-card-image-container {
+    width: 120px !important;
+    height: 145px !important;
+  }
+  .collection-mobile-anime-card .global-anime-card-mobile .mobile-card-info {
+    height: 40px !important;
+  }
+}
+@media (min-width: 481px) and (max-width: 768px) {
+  .collection-mobile-anime-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 20px;
+    right: 0px;
+  }
+  .collection-mobile-anime-card {
+    width: 130px !important;
+    height: 195px !important;
+  }
+  .collection-mobile-anime-card .global-anime-card-mobile .mobile-card-image-container {
+    width: 130px !important;
+    height: 155px !important;
+  }
+}
+@media (min-width: 769px) {
+  .collection-mobile-anime-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .collection-mobile-anime-card {
+    width: 135px !important;
+    height: 200px !important;
+  }
+  .collection-mobile-anime-card .global-anime-card-mobile .mobile-card-image-container {
+    width: 135px !important;
+    height: 160px !important;
+  }
+}
+.mobile-collection-modal-body {
+  padding: 15px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+.mobile-collection-modal-body .collection-mobile-anime-grid {
+  position: relative;
+  right: 0;
+  top: 0;
+  margin-bottom: 0;
+  padding: 0;
+  max-width: 100%;
+  width: 100%;
+  gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+.mobile-collection-modal-body .collection-mobile-anime-grid .collection-mobile-anime-card {
+  width: 95px !important;
+  height: 160px !important;
+}
+.mobile-collection-modal-body .collection-mobile-anime-grid .collection-mobile-anime-card .global-anime-card-mobile .mobile-card-image-container {
+  width: 85px !important;
+  height: 110px !important;
+}
+.mobile-collection-modal-body .collection-mobile-anime-grid .collection-mobile-anime-card .global-anime-card-mobile .mobile-card-info {
+  padding: 4px !important;
+  gap: 0px !important;
+  min-height: 45px !important;
+}
+.mobile-collection-modal-body .collection-mobile-anime-grid .collection-mobile-anime-card .global-anime-card-mobile .mobile-card-title {
+  font-size: 10px !important;
+  line-height: 1.2 !important;
+  max-height: 24px !important;
+}
+.mobile-collection-modal-body .collection-mobile-anime-grid .collection-mobile-anime-card .global-anime-card-mobile .mobile-card-bottom {
+  gap: 6px !important;
+}
+.mobile-collection-modal-body .collection-mobile-anime-grid .collection-mobile-anime-card .global-anime-card-mobile .mobile-card-bottom .mobile-card-episodes,
+.mobile-collection-modal-body .collection-mobile-anime-grid .collection-mobile-anime-card .global-anime-card-mobile .mobile-card-bottom .mobile-card-rating,
+.mobile-collection-modal-body .collection-mobile-anime-grid .collection-mobile-anime-card .global-anime-card-mobile .mobile-card-bottom .mobile-card-anons {
+  font-size: 8px !important;
+  padding: 1px 3px !important;
+}
+.mobile-collection-modal-body .collection-mobile-anime-grid .collection-mobile-anime-card .global-anime-card-mobile .mobile-card-status {
+  font-size: 7px !important;
+  padding: 1px 3px !important;
+  top: 3px !important;
+  right: 3px !important;
+}
+
+.category-collection-mobile-center-screen-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.category-collection-mobile-spinner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-top-color: #7c5cff;
+  border-left-color: #a78bff;
+  animation: category-collection-mobile-spin 1.2s linear infinite;
+}
+
+@keyframes category-collection-mobile-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.category-collection-mobile-empty {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  padding: 40px 30px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 16px;
+  line-height: 1.5;
+  background: rgba(26, 26, 26, 0.9);
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 85%;
+  max-width: 280px;
+  z-index: 100;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+@media (prefers-color-scheme: light) {
+  .category-collection-mobile-empty {
+    background: rgba(255, 255, 255, 0.95);
+    color: rgba(26, 26, 26, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+}
+
+.category-collection-mobile-error-message {
+  color: #ff2e2e;
+  text-align: center;
+  padding: 10px;
+  margin: 10px 0;
+  background: rgba(255, 46, 46, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 46, 46, 0.3);
+}
+
+.category-collection-mobile-skeleton {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.05) 75%);
+  background-size: 200% 100%;
+  animation: category-collection-mobile-skeleton-loading 1.5s infinite;
+  border-radius: 8px;
+}
+
+@keyframes category-collection-mobile-skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+/* Скрыть вкладки коллекций когда открыта модалка поиска */
+body.search-modal-open .category-collection-mobile-navbar-items {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+body.search-modal-open .category-collection-mobile-root .category-collection-mobile-navbar-items {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}/*# sourceMappingURL=collections-mobile.css.map */

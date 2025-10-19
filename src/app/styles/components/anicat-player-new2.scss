@@ -1,0 +1,1009 @@
+/* Убираем стандартные эффекты браузера для всех кнопок */
+.anime-player *,
+.anime-player *:before,
+.anime-player *:after {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.anime-player button,
+.anime-player input,
+.anime-player [role="button"] {
+  border: none;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.player-page {
+  position: fixed; /* чтобы плеер был поверх всего и всегда виден */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000; /* или твой фон */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000; /* поверх всего */
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  color: #fff;
+}
+
+
+.back-button-fixed {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 11000;
+
+  button {
+    background: #222;
+    color: white;
+    border: 1px solid #555;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+
+    &:hover {
+      background: #444;
+    }
+  }
+
+  /* Компактный вид на мобилках */
+  @media (max-width: 768px) {
+    top: 8px;
+    left: 8px;
+
+    button {
+      padding: 4px 8px;
+      font-size: 12px;
+      border-radius: 3px;
+    }
+  }
+
+  /* Ландшафт (горизонтальная) ориентация на мобилках — центрируем по верхней середине */
+  @media (max-width: 768px) and (orientation: landscape) {
+    left: 17%;
+    top: 8px;
+    transform: translateX(-50%);
+  }
+
+  /* Портрет — сбрасываем трансформ и ставим слева */
+  @media (max-width: 768px) and (orientation: portrait) {
+    left: 8px;
+    top: 8px;
+    transform: none;
+  }
+}
+
+
+
+.player-layout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column; /* колонки: плеер сверху, кнопки снизу */
+  gap: 12px;
+  padding: 0;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 0 12px;
+  }
+}
+
+.player-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}
+
+.episode-list-horizontal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  padding: 8px 0;
+
+  button {
+    background: #222;
+    color: #fff;
+    border: 1px solid #444;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+      background: #444;
+    }
+  }
+}
+
+.player-controls-right {
+  position: fixed;
+  top: 15px;
+  left: 69%;
+  transform: translateX(50%);
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 20px;
+  background: rgba(0,0,0,0.5);
+  padding: 6px 12px;
+  border-radius: 12px;
+  z-index: 10500;
+
+  .player-buttons {
+    display: flex;
+    gap: 8px;
+  }
+
+  button {
+    padding: 6px 14px !important;
+    font-size: 13px !important;
+    border-radius: 6px !important;
+
+    &.active {
+      background: #ff7b7b !important;
+      color: black !important;
+      font-weight: bold !important;
+    }
+
+    &:hover {
+      background: #555 !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    top: 12px;                 /* чуть ближе к верху */
+    right: 12px;               /* справа */
+    left: auto;                /* убираем левое позиционирование */
+    transform: none;           /* убираем сдвиг */
+    padding: 4px 6px;          /* уменьшаем отступы */
+    gap: 6px;                  /* уменьшаем промежутки */
+    background: rgba(0,0,0,0.7); /* чуть более плотный фон */
+    border-radius: 8px;
+
+    button {
+      padding: 4px 8px !important;  /* меньше кнопки */
+      font-size: 11px !important;   /* меньше шрифт */
+      border-radius: 4px !important;
+    }
+  }
+}
+
+
+
+.episode-tile-vertical {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 24px 0;
+  width: 100%;
+
+  .label {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    padding-left: 4px;
+  }
+
+  .episode-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 12px;
+    width: 100%;
+  }
+
+  button {
+    background: #1e1e1e;
+    color: #fff;
+    border: 1px solid #333;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &.active {
+      background: #ff5454;
+      color: black;
+      font-weight: bold;
+    }
+
+    &:hover {
+      background: #333;
+      transform: scale(1.03);
+    }
+  }
+}
+
+.kodik-fullscreen-wrapper {
+  position: fixed;  /* фиксируем поверх всего */
+  top: 40px;        /* сдвиг вниз */
+  left: 0;
+  width: 100vw;     /* 100% ширины окна */
+  height: 95vh;     /* почти вся высота */
+  background: #000;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  aspect-ratio: auto !important; /* отключаем фиксированное соотношение */
+
+  @media screen and (max-width: 768px) {
+    &.landscape {
+      width: 100vw !important;
+      height: calc(100vh - 40px) !important; /* высота экрана минус отступ сверху */
+      aspect-ratio: auto !important;
+      position: fixed;
+      top: 40px;  /* оставляем тот же сдвиг вниз при ландшафте */
+      left: 0;
+      z-index: 9999;
+      background: #000;
+    }
+  }
+}
+
+.kodik-fullscreen-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+
+  @media screen and (max-width: 768px) {
+    .kodik-fullscreen-wrapper.landscape & {
+      width: 100vw !important;
+      height: 100%; /* растягиваем по высоте контейнера с отступом */
+      object-fit: contain;
+    }
+  }
+}
+
+.player-buttons-mobile {
+  display: none;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 16px;
+
+  button {
+    padding: 10px 16px;
+    background: #333;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &.active {
+      background: #ff7b7b;
+      color: black;
+      font-weight: bold;
+    }
+
+    &:hover {
+      background: #555;
+    }
+  }
+
+  @media (max-width: 768px) {
+    display: flex;
+  }
+}
+
+.player-controls-right {
+  @media (max-width: 768px) {
+    display: none; // скрыть правые кнопки на мобилке
+  }
+}
+.center-controls {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  gap: 20px;
+  z-index: 9999 !important;
+  pointer-events: none;
+
+  button {
+    pointer-events: auto;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    font-size: 16px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    &:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    &:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  }
+}
+.plyr-container.is-fullscreen .center-controls {
+  display: flex !important;
+}
+
+.anime-player {
+  position: fixed; /* фиксируем плеер поверх всего */
+  top: 0;
+  left: 0;
+  width: 100vw;  /* полная ширина экрана */
+  height: 100vh; /* полная высота экрана */
+  background-color: #000; /* фон черный */
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  margin: 0;
+  padding: 0;
+
+  .player-wrapper {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto; /* убираем фиксированное соотношение 16/9, чтобы видео могло масштабироваться */
+    max-width: 100vw;
+    max-height: 100vh;
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* видео масштабируется, сохраняя пропорции */
+      background-color: #000;
+    }
+
+    .logo-overlay {
+      position: absolute;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Comic Sans MS', cursive;
+      font-weight: bold;
+      text-align: center;
+      z-index: 2;
+
+      .title {
+        font-size: 1.4rem;
+        background: linear-gradient(90deg, #c8ff00, #ff7cc4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .subtitle {
+        font-size: 0.9rem;
+        color: #ffffffdd;
+      }
+    }
+
+    .playlist-panel {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 300px;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 3;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+
+      scrollbar-width: none; // Firefox
+      -ms-overflow-style: none; // IE 10+
+      &::-webkit-scrollbar {
+        display: none; // Chrome, Safari
+      }
+
+      &.height-full {
+        height: 100% !important;
+      }
+
+      &.height-medium {
+        height: 50vh !important;
+      }
+
+      &.height-desktop {
+        height: 740px !important;
+      }
+
+      .playlist-header {
+        padding: 24px 20px 10px;
+        font-size: 1.8rem;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .playlist-close {
+          position: relative;
+          cursor: pointer;
+          background: #ff3b3b;
+          width: 28px;
+          height: 28px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border-radius: 50%;
+          font-size: 18px;
+          color: white;
+          transition: background 0.2s;
+
+          &:hover {
+            background: #e32e2e;
+          }
+        }
+      }
+
+      .playlist {
+        padding: 0 20px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+
+        .episode-tile {
+          display: flex;
+          flex-direction: column;
+          border-radius: 8px;
+          overflow: hidden;
+          cursor: pointer;
+          transition: background 0.2s;
+
+          &.active {
+            background: rgba(255, 255, 255, 0.15);
+          }
+
+          &:hover {
+            background: rgba(255, 255, 255, 0.1);
+          }
+
+          img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+          }
+
+          .episode-info {
+            padding: 8px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+
+            .episode-number {
+              font-size: 0.85rem;
+              color: #aaa;
+            }
+
+            .episode-title {
+              font-size: 1rem;
+              font-weight: 500;
+            }
+          }
+        }
+      }
+    }
+
+    // Сдвиг прогресс-бара при открытии плейлиста
+    .anime-player {
+      .player-wrapper {
+        .progress-container {
+          bottom: 64px;
+
+          &.with-playlist {
+            bottom: 0;
+            transform: translateY(100%);
+          }
+        }
+      }
+    }
+
+    .controls {
+      position: absolute;
+      bottom: -6px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 0 16px 16px;
+      pointer-events: none;
+      z-index: 2; // ниже, чем playlist-panel (которая z-index: 3)
+
+      &.hidden-under-playlist {
+        z-index: 1; // ещё ниже
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+      }
+
+      .progress-container {
+        position: relative;
+        width: 100%;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+        overflow: hidden;
+        pointer-events: auto;
+        transform: scaleY(1);
+        transform-origin: center;
+        transition: transform 0.2s ease;
+
+        &:hover {
+          transform: scaleY(1.6);
+          cursor: pointer;
+        }
+
+        .buffered-bar {
+          position: absolute;
+          top: 0;
+          left: 0;
+          height: 100%;
+          background: rgba(255, 255, 255, 0.3);
+          width: var(--buffered, 0%);
+          z-index: 1;
+        }
+
+        .progress-bar {
+          position: absolute;
+          top: 0;
+          left: 0;
+          height: 100%;
+          background: #ff4444;
+          width: var(--progress, 0%);
+          z-index: 2;
+        }
+      }
+
+      .bottom-controls {
+        background: rgba(0, 0, 0, 0.6); // 👈 полоса за контролами
+        border-radius: 20px;
+        backdrop-filter: blur(6px);
+        padding: 8px 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        pointer-events: auto;
+        flex-wrap: nowrap;
+
+        .left,
+        .center,
+        .right {
+          display: flex;
+          margin-left: 5px;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .center {
+          margin: 0 auto;
+        }
+
+        .control-icon {
+          width: 36px;
+          height: 36px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: transparent;
+          border: none;
+          outline: none;
+          border-radius: 50%;
+          transition: none;
+          backdrop-filter: blur(4px);
+          cursor: pointer;
+          -webkit-tap-highlight-color: transparent;
+          -webkit-touch-callout: none;
+          -webkit-user-select: none;
+          -khtml-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+
+          svg {
+            stroke: white;
+            width: 20px;
+            height: 20px;
+          }
+        }
+
+        .volume-slider {
+          width: 100px;
+          accent-color: #ff4444;
+        }
+      }
+    }
+  }
+}
+
+.settings-panel {
+  position: absolute;
+  right: 20px;
+  bottom: 90px;
+  width: 220px;
+  background: rgba(0, 0, 0, 0.95);
+  border-radius: 8px;
+  padding: 16px;
+  z-index: 5;
+  color: white;
+  font-size: 14px;
+
+  .settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    margin-bottom: 12px;
+
+    .settings-close {
+      cursor: pointer;
+      font-size: 16px;
+      color: #aaa;
+      &:hover {
+        color: #fff;
+      }
+    }
+  }
+
+  .setting-item {
+    margin-bottom: 12px;
+
+    .setting-label {
+      margin-bottom: 4px;
+      font-size: 13px;
+      color: #ccc;
+    }
+
+    select {
+      width: 100%;
+      padding: 6px;
+      background: #222;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+    }
+  }
+}
+
+.buffer-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  z-index: 10;
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+  .anime-player {
+    .player-wrapper {
+      .playlist-panel {
+        width: 100% !important;
+        height: 90vh !important;
+        margin-top: 40px;
+        position: fixed;
+        left: 0;
+        right: 0;
+        background-color: #111;
+        border-radius: 12px 12px 0 0;
+        padding: 12px;
+        z-index: 999;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+
+        .playlist-header-fixed {
+          position: sticky;
+          top: 0;
+          background-color: #111;
+          padding: 8px 12px;
+          font-size: 1.1rem;
+          font-weight: bold;
+          color: white;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          border-bottom: 1px solid #333;
+
+          .playlist-close {
+            background: transparent;
+            border: none;
+            color: #ccc;
+            cursor: pointer;
+            transition: color 0.2s;
+            &:hover {
+              color: white;
+            }
+          }
+        }
+
+        .playlist-scroll {
+          flex: 1;
+          overflow-y: auto;
+          margin-top: 8px;
+        }
+
+        .playlist {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+          gap: 8px;
+
+          .episode-tile {
+            background-color: #1f1f1f;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 6px;
+
+            img {
+              width: 100%;
+              height: auto;
+              border-radius: 4px;
+              object-fit: cover;
+            }
+
+            .episode-info {
+              margin-top: 4px;
+              text-align: center;
+              font-size: 0.75rem;
+              color: #ccc;
+
+              .episode-number {
+                font-weight: bold;
+                color: #ff4d4f;
+              }
+
+              .episode-title {
+                font-size: 0.7rem;
+                color: #aaa;
+              }
+            }
+
+            &.active {
+              border: 2px solid #ff2e2e;
+            }
+
+            &:hover {
+              transform: scale(1.03);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 960px) {
+      .playlist-panel {
+        width: 30% !important;
+        top: unset;
+        bottom: 0;
+        border-radius: 12px 12px 0 0;
+        padding: 16px 12px;
+      }
+  }
+
+@media (max-width: 480px) {
+  .anime-player {
+    .player-wrapper {
+      .controls {
+        .control-icon {
+          width: 30px;
+          height: 30px;
+
+          svg {
+            width: 18px;
+            height: 18px;
+          }
+        }
+
+        .bottom-controls {
+          margin-left: -27px;
+          .volume-slider {
+            width: 60px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.setting-item2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .setting-label2 {
+    font-size: 14px;
+    color: #ccc;
+    font-weight: 500;
+  }
+
+  div:last-child {
+    font-size: 14px;
+    color: white;
+    font-weight: 600;
+  }
+}
+.skip-buttons {
+  position: absolute;
+  bottom: 100px; // чуть выше прогресс-бара
+  left: 16px;
+  z-index: 2;
+
+  .skip-button {
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    width: 200px;
+    height: 40px;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+
+    &:hover {
+      background: rgb(71, 71, 71);
+    }
+  }
+}
+
+.setting-submenu {
+  padding: 0.5rem 1rem;
+}
+
+.hotkey-title {
+  font-weight: bold;
+  font-size: 12px;
+  margin-bottom: 0.5rem;
+}
+
+.hotkey-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.4rem;
+  font-size: 0.70rem;
+
+  span {
+    font-weight: 500;
+    font-family: monospace;
+  }
+}
+
+.hotkey-note {
+  margin-top: 1rem;
+  font-size: 0.70rem;
+  opacity: 0.7;
+  font-style: italic;
+}
+
+.controls.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.player-wrapper {
+  background-color: #000;
+  aspect-ratio: 16 / 9;
+  width: 80vw;
+  max-width: 1000px;
+  max-height: 70vh;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    max-height: none;
+    aspect-ratio: auto;
+  }
+
+  @media (min-width: 1400px) {
+    width: 70vw;
+  }
+
+  .plyr-container
+  {
+    position: relative;
+  }
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+.progress-tooltip {
+  position: absolute;
+  bottom: 100%; /* над прогресс-баром */
+  transform: translateX(130%);
+  background-color: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 4px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 10;
+  margin-bottom: 6px;
+}
+.progress-wrapper {
+  position: relative;
+  width: 100%;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.time-label {
+  font-size: 12px;
+  color: #ccc;
+  width: 40px;
+  text-align: center;
+  user-select: none;
+}

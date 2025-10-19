@@ -1,0 +1,126 @@
+/* Admin Anime Subtabs Styles */
+.admin-anime-subtabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 0 4px;
+  border-bottom: 1px solid rgba(55, 65, 81, 0.3);
+  
+  // ПОЛНОСТЬЮ отключаем hover эффект для нижней полоски
+  &:hover,
+  &:focus,
+  &:active {
+    border-bottom: 1px solid rgba(55, 65, 81, 0.3) !important;
+    border-bottom-color: rgba(55, 65, 81, 0.3) !important;
+    border-color: rgba(55, 65, 81, 0.3) !important;
+    
+    // Убираем любые дополнительные эффекты
+    border-image: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    
+    // Убираем псевдоэлементы, которые могут создавать линии
+    &::before,
+    &::after {
+      display: none !important;
+      content: none !important;
+      border: none !important;
+      background: none !important;
+    }
+  }
+  
+  // Дополнительная защита - отключаем наследование hover стилей
+  &,
+  &:hover {
+    // Принудительно фиксируем границу
+    border-bottom-width: 1px !important;
+    border-bottom-style: solid !important;
+    border-bottom-color: rgba(55, 65, 81, 0.3) !important;
+  }
+  
+  .admin-subtab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: transparent;
+    border: none;
+    border-radius: 8px 8px 0 0;
+    color: #9ca3af;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    
+    &:hover {
+      color: #f3f4f6;
+      background: rgba(55, 65, 81, 0.3);
+    }
+    
+    &.active {
+      color: var(--primary-color, #3b82f6);
+      background: var(--primary-bg, rgba(59, 130, 246, 0.1));
+      
+      // ПОЛНОСТЬЮ УБИРАЕМ псевдоэлемент - источник цветной полоски!
+      &::after {
+        display: none !important;
+        content: none !important;
+        background: none !important;
+        height: 0 !important;
+        width: 0 !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        
+        // НА ВСЯКИЙ СЛУЧАЙ оставляем закомментированный оригинальный код:
+        // content: '';
+        // position: absolute;
+        // bottom: -1px;
+        // left: 0;
+        // right: 0;
+        // height: 2px;
+        // background: var(--primary-color, #3b82f6);
+        // background: linear-gradient(90deg, var(--primary-color, #3b82f6), var(--primary-hover, #8b5cf6));
+      }
+    }
+    
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+    
+    span {
+      font-weight: 600;
+    }
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .admin-anime-subtabs {
+    gap: 8px;
+    padding: 0 8px;
+    
+    .admin-subtab {
+      padding: 10px 16px;
+      font-size: 13px;
+      
+      span {
+        display: none;
+      }
+      
+      svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-anime-subtabs {
+    .admin-subtab {
+      padding: 8px 12px;
+    }
+  }
+}

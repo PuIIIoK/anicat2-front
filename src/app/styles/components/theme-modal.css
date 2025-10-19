@@ -1,0 +1,328 @@
+.theme-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  -webkit-backdrop-filter: blur(4px);
+          backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.theme-modal {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 12px;
+  max-width: 800px;
+  width: 90%;
+  max-height: 600px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  animation: slideIn 0.2s ease-out;
+  position: relative;
+}
+
+.theme-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.theme-modal-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.theme-modal-close {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.theme-modal-close:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.theme-modal-content {
+  display: flex;
+  min-height: 400px;
+}
+
+.theme-modal-notice {
+  flex: 0 0 280px;
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border-primary);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.theme-modal-notice .notice-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+.theme-modal-notice .notice-content h3 {
+  color: var(--text-primary);
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+}
+.theme-modal-notice .notice-content p {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.theme-modal-settings {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.theme-section,
+.color-section {
+  margin-bottom: 32px;
+}
+.theme-section:last-child,
+.color-section:last-child {
+  margin-bottom: 0;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 16px 0;
+}
+
+.theme-options {
+  display: flex;
+  gap: 12px;
+}
+
+.theme-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 20px;
+  border: 2px solid var(--border-primary);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: var(--bg-secondary);
+  min-width: 100px;
+}
+.theme-option:hover {
+  border-color: var(--border-hover);
+  background: var(--bg-hover);
+}
+.theme-option.active {
+  border-color: var(--primary-color);
+  background: var(--primary-bg);
+}
+.theme-option.active .theme-option-icon {
+  color: var(--primary-color);
+}
+.theme-option.active .theme-option-label {
+  color: var(--primary-color);
+}
+
+.theme-option-icon {
+  color: var(--text-secondary);
+  transition: color 0.2s ease;
+}
+
+.theme-option-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  transition: color 0.2s ease;
+}
+
+.color-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.color-option-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.color-option-wrapper:hover {
+  background: var(--bg-hover);
+}
+.color-option-wrapper:has(.color-option.active) {
+  background: var(--primary-bg);
+}
+
+.color-option {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  position: relative;
+  border: 3px solid transparent;
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+.color-option.active {
+  border-color: var(--primary-color);
+  transform: scale(1.1);
+}
+
+.color-preview {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.color-check {
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.color-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.color-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.color-description {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.theme-modal-footer {
+  padding: 20px 24px;
+  border-top: 1px solid var(--border-primary);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.theme-modal-done {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.theme-modal-done:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.3);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@media (max-width: 768px) {
+  .theme-modal {
+    width: 95%;
+    max-width: none;
+    max-height: 80vh;
+  }
+  .theme-modal-content {
+    flex-direction: column;
+    min-height: auto;
+  }
+  .theme-modal-notice {
+    flex: none;
+    border-right: none;
+    border-bottom: 1px solid var(--border-primary);
+    padding: 20px;
+  }
+  .theme-modal-settings {
+    padding: 20px;
+  }
+  .theme-options {
+    flex-direction: column;
+  }
+  .theme-option {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 12px;
+    min-width: auto;
+  }
+  .color-options {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 480px) {
+  .theme-modal-header {
+    padding: 16px 20px;
+  }
+  .theme-modal-title {
+    font-size: 18px;
+  }
+  .theme-modal-notice,
+  .theme-modal-settings {
+    padding: 16px;
+  }
+  .theme-modal-footer {
+    padding: 16px 20px;
+  }
+  .theme-modal-done {
+    width: 100%;
+  }
+}/*# sourceMappingURL=theme-modal.css.map */

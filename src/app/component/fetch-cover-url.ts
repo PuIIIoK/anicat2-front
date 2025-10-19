@@ -2,18 +2,40 @@
 
 import {API_SERVER} from "../../tools/constants";
 
-export const fetchCoverUrl = async (animeId: number, coverId: number): Promise<string> => {
+export const fetchCoverUrl = async (animeId: number, coverId?: number): Promise<string> => {
     try {
-        const metaRes = await fetch(`${API_SERVER}/api/anime/get-anime/${animeId}/cover/${coverId}`);
-        if (!metaRes.ok) throw new Error('Ошибка получения метаданных обложки');
+        if (coverId) {
+            // Пытаемся загрузить конкретную обложку
+            const coverRes = await fetch(`${API_SERVER}/api/stream/anime/${animeId}/cover/${coverId}`);
+            if (coverRes.ok) {
+                const blob = await coverRes.blob();
+                return URL.createObjectURL(blob);
+            }
+        }
+        
+        // Fallback: пытаемся загрузить первую доступную обложку
+        const coverRes = await fetch(`${API_SERVER}/api/stream/${animeId}/cover`);
+        if (coverRes.ok) {
+            const blob = await coverRes.blob();
+            return URL.createObjectURL(blob);
+        }
+        
+        throw new Error('Обложка не найдена');
+    } catch (error) {
+        console.error(`Ошибка при получении обложки для аниме ID=${animeId}:`, error);
+        return '';
+    }
+};
 
-        const meta = await metaRes.json();
-
-        const coverRes = await fetch(`${API_SERVER}/api/stream/anime/${animeId}/cover/${meta.id}`);
-        if (!coverRes.ok) throw new Error('Ошибка получения ссылки на обложку');
-
-        const coverData = await coverRes.json();
-        return coverData.url;
+// Новая функция для быстрой загрузки обложки без метаданных
+export const fetchCoverBlob = async (animeId: number): Promise<string> => {
+    try {
+        const coverRes = await fetch(`${API_SERVER}/api/stream/${animeId}/cover`);
+        if (coverRes.ok) {
+            const blob = await coverRes.blob();
+            return URL.createObjectURL(blob);
+        }
+        throw new Error('Обложка не найдена');
     } catch (error) {
         console.error(`Ошибка при получении обложки для аниме ID=${animeId}:`, error);
         return '';

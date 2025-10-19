@@ -1,0 +1,288 @@
+.profile-skeleton {
+  width: 100%;
+  color: #000000;
+}
+.profile-skeleton .skeleton-animation {
+  background: linear-gradient(90deg, #2a2a2a 25%, #3a3a3a 50%, #2a2a2a 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+.profile-skeleton .profile-header {
+  position: relative;
+  height: 300px;
+  margin-bottom: 20px;
+}
+.profile-skeleton .banner-skeleton {
+  width: 100%;
+  height: 200px;
+  border-radius: 8px;
+}
+.profile-skeleton .profile-header-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+}
+.profile-skeleton .profile-avatar-block {
+  flex-shrink: 0;
+}
+.profile-skeleton .avatar-skeleton {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+}
+.profile-skeleton .profile-info-block {
+  flex: 1;
+  min-width: 0;
+}
+.profile-skeleton .nickname-line {
+  margin-bottom: 10px;
+}
+.profile-skeleton .nickname-block {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.profile-skeleton .nickname-icons {
+  display: flex;
+  gap: 5px;
+}
+.profile-skeleton .badge-skeleton {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+}
+.profile-skeleton .nickname-skeleton {
+  width: 150px;
+  height: 24px;
+  border-radius: 4px;
+}
+.profile-skeleton .bio-line {
+  margin-bottom: 10px;
+}
+.profile-skeleton .bio-skeleton {
+  width: 300px;
+  height: 16px;
+  border-radius: 4px;
+}
+.profile-skeleton .profile-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+.profile-skeleton .profile-layout {
+  display: flex;
+  gap: 20px;
+}
+.profile-skeleton .profile-sidebar {
+  width: 300px;
+  flex-shrink: 0;
+}
+.profile-skeleton .friends-skeleton {
+  background: #1a1a1a;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.profile-skeleton .friends-header-skeleton {
+  width: 120px;
+  height: 20px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+.profile-skeleton .friends-list-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.profile-skeleton .friend-item-skeleton {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.profile-skeleton .friend-avatar-skeleton {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+.profile-skeleton .friend-info-skeleton {
+  flex: 1;
+  min-width: 0;
+}
+.profile-skeleton .friend-name-skeleton {
+  width: 80px;
+  height: 14px;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+.profile-skeleton .friend-quote-skeleton {
+  width: 120px;
+  height: 12px;
+  border-radius: 4px;
+}
+.profile-skeleton .stats-skeleton {
+  background: #1a1a1a;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.profile-skeleton .stats-header-skeleton {
+  width: 100px;
+  height: 18px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+.profile-skeleton .stats-chart-skeleton {
+  width: 100%;
+  height: 200px;
+  border-radius: 4px;
+}
+.profile-skeleton .profile-main-content-container {
+  flex: 1;
+  min-width: 0;
+}
+.profile-skeleton .profile-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.profile-skeleton .tab-skeleton {
+  width: 100px;
+  height: 36px;
+  border-radius: 6px;
+}
+.profile-skeleton .main-content-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+.profile-skeleton .section-header-skeleton {
+  width: 200px;
+  height: 24px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+.profile-skeleton .anime-grid-skeleton {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+}
+.profile-skeleton .anime-card-skeleton {
+  background: #1a1a1a;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.profile-skeleton .anime-cover-skeleton {
+  width: 100%;
+  height: 120px;
+}
+.profile-skeleton .anime-info-skeleton {
+  padding: 12px;
+}
+.profile-skeleton .anime-title-skeleton {
+  width: 100%;
+  height: 16px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+.profile-skeleton .anime-meta-skeleton {
+  width: 60%;
+  height: 12px;
+  border-radius: 4px;
+}
+.profile-skeleton .activity-list-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.profile-skeleton .activity-item-skeleton {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #1a1a1a;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.profile-skeleton .activity-icon-skeleton {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+.profile-skeleton .activity-content-skeleton {
+  flex: 1;
+  min-width: 0;
+}
+.profile-skeleton .activity-text-skeleton {
+  width: 100%;
+  height: 14px;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+.profile-skeleton .activity-time-skeleton {
+  width: 80px;
+  height: 12px;
+  border-radius: 4px;
+}
+.profile-skeleton .reviews-list-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.profile-skeleton .review-card-skeleton {
+  background: #1a1a1a;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.profile-skeleton .review-header-skeleton {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+.profile-skeleton .review-meta-skeleton {
+  flex: 1;
+  min-width: 0;
+}
+.profile-skeleton .rating-skeleton {
+  width: 80px;
+  height: 14px;
+  border-radius: 4px;
+  margin-top: 5px;
+}
+.profile-skeleton .review-text-skeleton {
+  width: 100%;
+  height: 16px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+.profile-skeleton .review-time-skeleton {
+  width: 120px;
+  height: 12px;
+  border-radius: 4px;
+}
+@media (max-width: 768px) {
+  .profile-skeleton .profile-layout {
+    flex-direction: column;
+  }
+  .profile-skeleton .profile-sidebar {
+    width: 100%;
+  }
+  .profile-skeleton .anime-grid-skeleton {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+}/*# sourceMappingURL=profile-skeleton.css.map */

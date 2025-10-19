@@ -5,8 +5,6 @@ import { useParams } from 'next/navigation';
 import { fetchAllAnime, AnimeInfo } from '../anime-structure/anime-data-info';
 import { fetchAnimeEpisodes, AnimeEpisode } from '../anime-structure/anime-episode-data';
 import Image from 'next/image';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { API_SERVER, KODIK_API_TOKEN, KODIK_API_BASE } from '../../../tools/constants';
 import PlayerSwitch from '../anime-players/player-switch';
 import PlyrPlayer from '../anime-players/plyr-player';
@@ -260,7 +258,6 @@ const AnimePage: React.FC = () => {
                 </div>
             </div>
 
-            <ToastContainer/>
         </div>
     );
 };

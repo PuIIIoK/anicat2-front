@@ -1,0 +1,262 @@
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+.anime-page-skeleton {
+  width: 100%;
+  min-height: 100vh;
+  background: var(--bg-primary);
+  position: relative;
+  animation: fadeIn 0.3s ease;
+}
+.anime-page-skeleton .skeleton-shimmer {
+  background: linear-gradient(90deg, var(--skeleton-base, rgba(255, 255, 255, 0.05)) 0%, var(--skeleton-highlight, rgba(255, 255, 255, 0.1)) 50%, var(--skeleton-base, rgba(255, 255, 255, 0.05)) 100%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 2s infinite linear;
+  border-radius: 8px;
+}
+.anime-page-skeleton .skeleton-banner {
+  width: 100%;
+  height: 400px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, var(--bg-primary) 100%);
+  position: relative;
+  overflow: hidden;
+}
+.anime-page-skeleton .skeleton-banner .skeleton-banner-gradient {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.05) 50%, transparent 100%);
+  animation: skeleton-shimmer 2s infinite linear;
+}
+.anime-page-skeleton .skeleton-content {
+  max-width: 1400px;
+  margin: -150px auto 0;
+  padding: 0 20px;
+  display: flex;
+  gap: 40px;
+  position: relative;
+  z-index: 2;
+}
+@media (max-width: 1024px) {
+  .anime-page-skeleton .skeleton-content {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+.anime-page-skeleton .skeleton-left {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+}
+.anime-page-skeleton .skeleton-left .skeleton-poster {
+  width: 320px;
+  height: 450px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+.anime-page-skeleton .skeleton-left .skeleton-button {
+  width: 320px;
+  height: 50px;
+  border-radius: 12px;
+}
+.anime-page-skeleton .skeleton-left .skeleton-button-group {
+  display: flex;
+  gap: 10px;
+  width: 320px;
+}
+.anime-page-skeleton .skeleton-left .skeleton-button-group .skeleton-button-small {
+  flex: 1;
+  height: 45px;
+  border-radius: 10px;
+}
+.anime-page-skeleton .skeleton-right {
+  flex: 1;
+  padding-top: 50px;
+}
+.anime-page-skeleton .skeleton-right .skeleton-title {
+  width: 70%;
+  height: 40px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+}
+.anime-page-skeleton .skeleton-right .skeleton-subtitle {
+  width: 50%;
+  height: 25px;
+  margin-bottom: 20px;
+  border-radius: 6px;
+  opacity: 0.7;
+}
+.anime-page-skeleton .skeleton-right .skeleton-rating {
+  width: 100px;
+  height: 35px;
+  margin-bottom: 30px;
+  border-radius: 20px;
+}
+.anime-page-skeleton .skeleton-right .skeleton-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+.anime-page-skeleton .skeleton-right .skeleton-info-grid .skeleton-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.anime-page-skeleton .skeleton-right .skeleton-info-grid .skeleton-info-item .skeleton-info-label {
+  width: 80px;
+  height: 16px;
+  border-radius: 4px;
+  opacity: 0.5;
+}
+.anime-page-skeleton .skeleton-right .skeleton-info-grid .skeleton-info-item .skeleton-info-value {
+  width: 120px;
+  height: 20px;
+  border-radius: 4px;
+}
+.anime-page-skeleton .skeleton-right .skeleton-genres {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+.anime-page-skeleton .skeleton-right .skeleton-genres .skeleton-genre {
+  width: 90px;
+  height: 32px;
+  border-radius: 16px;
+}
+.anime-page-skeleton .skeleton-right .skeleton-description {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.anime-page-skeleton .skeleton-right .skeleton-description .skeleton-text {
+  height: 18px;
+  width: 100%;
+  border-radius: 4px;
+  opacity: 0.6;
+}
+.anime-page-skeleton .skeleton-tabs {
+  max-width: 1400px;
+  margin: 40px auto;
+  padding: 0 20px;
+  display: flex;
+  gap: 20px;
+}
+.anime-page-skeleton .skeleton-tabs .skeleton-tab {
+  width: 150px;
+  height: 45px;
+  border-radius: 10px;
+}
+
+.anime-page-skeleton-modern .skeleton-shimmer {
+  background: linear-gradient(90deg, rgba(124, 92, 255, 0.05) 0%, rgba(124, 92, 255, 0.15) 50%, rgba(124, 92, 255, 0.05) 100%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 2s infinite linear;
+}
+.anime-page-skeleton-modern .skeleton-banner {
+  height: 450px;
+  background: linear-gradient(180deg, rgba(124, 92, 255, 0.03) 0%, var(--bg-primary) 100%);
+}
+.anime-page-skeleton-modern .skeleton-banner .skeleton-banner-gradient {
+  background: linear-gradient(90deg, transparent 0%, rgba(124, 92, 255, 0.08) 50%, transparent 100%);
+}
+.anime-page-skeleton-modern .skeleton-left .skeleton-poster {
+  width: 350px;
+  height: 500px;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(124, 92, 255, 0.1);
+}
+.anime-page-skeleton-modern .skeleton-left .skeleton-button {
+  width: 350px;
+  height: 55px;
+  border-radius: 15px;
+  background: linear-gradient(90deg, rgba(124, 92, 255, 0.1) 0%, rgba(124, 92, 255, 0.2) 50%, rgba(124, 92, 255, 0.1) 100%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 2s infinite linear;
+}
+.anime-page-skeleton-modern .skeleton-rating {
+  border-radius: 25px;
+  background: linear-gradient(90deg, rgba(34, 197, 94, 0.1) 0%, rgba(34, 197, 94, 0.2) 50%, rgba(34, 197, 94, 0.1) 100%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 2s infinite linear;
+}
+.anime-page-skeleton-modern .skeleton-genres .skeleton-genre {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.03) 100%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 2s infinite linear;
+}
+
+.anime-page-skeleton-classic .skeleton-shimmer {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.03) 100%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 2.5s infinite linear;
+}
+.anime-page-skeleton-classic .skeleton-banner {
+  height: 350px;
+  opacity: 0.8;
+}
+.anime-page-skeleton-classic .skeleton-left .skeleton-poster {
+  width: 300px;
+  height: 425px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+.anime-page-skeleton-classic .skeleton-left .skeleton-button {
+  border-radius: 8px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.05) 100%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 2.5s infinite linear;
+}
+.anime-page-skeleton-classic .skeleton-info-grid .skeleton-info-item .skeleton-info-label {
+  opacity: 0.4;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (max-width: 768px) {
+  .anime-page-skeleton .skeleton-banner {
+    height: 250px;
+  }
+  .anime-page-skeleton .skeleton-content {
+    margin-top: -100px;
+    padding: 0 15px;
+  }
+  .anime-page-skeleton .skeleton-left {
+    width: 100%;
+  }
+  .anime-page-skeleton .skeleton-left .skeleton-poster {
+    width: 200px;
+    height: 280px;
+  }
+  .anime-page-skeleton .skeleton-left .skeleton-button,
+  .anime-page-skeleton .skeleton-left .skeleton-button-group {
+    width: 100%;
+    max-width: 320px;
+  }
+  .anime-page-skeleton .skeleton-right {
+    padding-top: 30px;
+  }
+  .anime-page-skeleton .skeleton-right .skeleton-title {
+    width: 90%;
+    height: 30px;
+  }
+  .anime-page-skeleton .skeleton-right .skeleton-info-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}/*# sourceMappingURL=anime-page-skeleton.css.map */

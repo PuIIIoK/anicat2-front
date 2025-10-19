@@ -1,0 +1,81 @@
+@charset "UTF-8";
+/* Контейнер для лоадера */
+.loader-container-category {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100vw; /* Растягиваем по ширине экрана */
+  height: 100vh; /* Растягиваем по высоте экрана */
+  display: flex;
+  justify-content: center; /* Центрируем по горизонтали */
+  align-items: center; /* Центрируем по вертикали */
+  z-index: 9999; /* Чтобы лоадер был на переднем плане */
+}
+
+/* HTML: <div class="loader"></div> */
+.loader-category {
+  width: 160px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 8px solid;
+  border-color: #915d00 rgba(255, 217, 88, 0);
+  animation: l1 1s infinite;
+}
+
+@keyframes l1 {
+  to {
+    transform: rotate(0.5turn);
+  }
+}
+@keyframes l1 {
+  to {
+    transform: rotate(1turn); /* Поворот на 360 градусов */
+  }
+}
+/* Стили для сообщения об ошибке */
+.error-message-category {
+  background-color: #2f2f2f; /* Темный фон */
+  color: #f3a847; /* Оранжево-желтый цвет текста */
+  border: 2px solid #f3a847; /* Окружение текста той же оранжево-желтой границей */
+  padding: 20px;
+  margin: 30px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Легкая тень */
+  /* Центрируем по экрану */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Сдвигаем элемент, чтобы центрировать */
+  /* Адаптация под экран */
+  width: 80%; /* Ширина элемента будет составлять 80% от ширины экрана */
+  max-width: 600px; /* Максимальная ширина */
+  height: auto; /* Высота адаптируется под контент */
+  min-width: 300px; /* Минимальная ширина */
+  text-align: center;
+  z-index: 9999; /* Чтобы сообщение было поверх всего */
+}
+
+@media (max-width: 600px) {
+  .error-message-category {
+    font-size: 14px; /* Уменьшаем шрифт на мобильных устройствах */
+    width: 90%; /* Увеличиваем ширину для маленьких экранов */
+  }
+}
+.error-message-category:hover {
+  background-color: #3c3c3c; /* Немного светлее при наведении */
+  border-color: #e69c3d; /* Светлее оранжевый оттенок при наведении */
+  cursor: pointer; /* Курсор изменяется на указатель */
+}
+
+.error-message-category span {
+  font-size: 18px;
+  font-weight: normal;
+  color: #f3a847;
+  padding-left: 10px;
+}/*# sourceMappingURL=category-loading.css.map */

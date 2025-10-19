@@ -1,139 +1,2067 @@
+// ==========================================
+// СТРАНИЦА РЕДАКТИРОВАНИЯ АНИМЕ - В СТИЛЕ ADD-ANIME
+// ==========================================
+
 .edit-anime-page {
-  position: relative;
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
-  top: 90px;
   padding: 2rem;
-  background-color: #1e1e2f;
-  border-radius: 12px;
+  margin-top: 100px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'SF Pro Display', system-ui, sans-serif;
   color: #ffffff;
-  font-family: 'Segoe UI', sans-serif;
+  background: #0a0a0a;
+  min-height: calc(100vh - 120px);
 
-  h1.title {
-    font-size: 2rem;
-    margin-bottom: 2rem;
-    text-align: center;
-    color: #e0e0e0;
-  }
+  // Состояние загрузки
+  &.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 120px);
 
-  .message-box {
-    background-color: #2e2e4f;
-    border: 1px solid #00b894;
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-    border-radius: 8px;
-    color: #00cec9;
-    text-align: center;
-  }
-
-  .form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.2rem;
-
-    label {
+    .loading-spinner {
       display: flex;
       flex-direction: column;
-      font-size: 0.95rem;
+      align-items: center;
+      gap: 1.5rem;
+      color: var(--primary-color);
+      // Явно запрещаем анимацию для контейнера
+      animation: none !important;
+      transform: none !important;
 
-      input, textarea {
-        margin-top: 0.4rem;
-        padding: 0.6rem;
-        background: #2b2b3d;
-        border: 1px solid #444;
-        border-radius: 6px;
-        color: #fff;
+      // Контейнер для иконки чтобы изолировать анимацию
+      .spinner-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        // Явно запрещаем анимацию для контейнера иконки
+        animation: none !important;
+        transform: none !important;
+      }
+
+      p {
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.9);
+        text-align: center;
+        // Явно запрещаем анимацию для текста
+        animation: none !important;
+        transform: none !important;
+      }
+    }
+
+    // Отдельное правило ТОЛЬКО для SVG элемента
+    .loading-spinner .spinner-icon svg {
+      animation: spin 1s linear infinite !important;
+      color: var(--primary-color) !important;
+      filter: drop-shadow(0 0 8px rgba(255, 149, 0, 0.3)) !important;
+      transform-origin: center center !important;
+    }
+  }
+
+  // Интегрированный заголовок
+  .integrated-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    
+    .page-title {
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: #ffffff;
+      background: linear-gradient(135deg, var(--primary-color) 0%, #ffcc00 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-align: center;
+      margin: 0;
+
+      .anime-id {
+        color: #a0a0a0;
+        font-size: 0.875rem;
+        font-weight: 400;
+        background: none;
+        -webkit-text-fill-color: #a0a0a0;
+        margin-left: 0.5rem;
+      }
+    }
+  }
+
+  // Двухколоночная структура
+  .main-content-layout {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 2rem;
+    margin-bottom: 3rem;
+    align-items: start;
+
+    @media (max-width: 1200px) {
+      grid-template-columns: 340px 1fr;
+    }
+
+    @media (max-width: 968px) {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+  }
+
+  .left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: sticky;
+    top: 100px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    
+    // Оранжевый скролл для редактирования
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: rgba(255, 149, 0, 0.1);
+      border-radius: 3px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: rgba(255, 149, 0, 0.5);
+      border-radius: 3px;
+      
+      &:hover {
+        background: rgba(255, 149, 0, 0.7);
+      }
+    }
+    
+    @media (max-width: 968px) {
+      position: static;
+      max-height: none;
+      overflow-y: visible;
+      overflow-x: hidden;
+    }
+  }
+
+  .right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  // Секции контента
+  .content-section {
+    background: rgba(26, 26, 26, 0.8);
+    border-radius: 16px;
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+
+    &:hover {
+      border-color: rgba(255, 149, 0, 0.3);
+      box-shadow: 0 8px 32px rgba(255, 149, 0, 0.1);
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+
+      .icon {
+        width: 24px;
+        height: 24px;
+        color: var(--primary-color);
+      }
+    }
+  }
+
+  // Современные минималистичные уведомления (десктоп)
+  .toast-message {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 200;
+    border-radius: 12px;
+    backdrop-filter: blur(20px);
+    animation: slideInRight 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 
+      0 10px 25px rgba(0, 0, 0, 0.2),
+      0 20px 48px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: 420px;
+    min-width: 320px;
+    overflow: hidden;
+
+    .toast-content {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.25rem 1.5rem;
+      position: relative;
+
+      .toast-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        transition: all 0.2s ease;
+
+        svg {
+          width: 22px;
+          height: 22px;
+          color: currentColor;
+        }
+      }
+
+      .toast-text {
+        font-size: 1rem;
+        font-weight: 500;
+        line-height: 1.4;
+        flex: 1;
+        color: currentColor;
+      }
+    }
+
+    // Градиентная полоска снизу
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2));
+      animation: shimmer 2s ease-in-out infinite;
+    }
+
+    &.success {
+      background: linear-gradient(135deg, #10b981 0%, #065f46 100%);
+      color: #ffffff;
+      
+      .toast-content .toast-icon {
+        background: rgba(255, 255, 255, 0.2);
+      }
+    }
+
+    &.error {
+      background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%);
+      color: #ffffff;
+      
+      .toast-content .toast-icon {
+        background: rgba(255, 255, 255, 0.2);
+      }
+    }
+
+    &.info {
+      background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+      color: #ffffff;
+      
+      .toast-content .toast-icon {
+        background: rgba(255, 255, 255, 0.2);
+      }
+    }
+
+    &.warning {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #ffffff;
+      
+      .toast-content .toast-icon {
+        background: rgba(255, 255, 255, 0.2);
+      }
+    }
+
+    // Hover эффект
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        0 15px 35px rgba(0, 0, 0, 0.3),
+        0 25px 60px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+
+      .toast-content .toast-icon {
+        transform: scale(1.1);
+        background: rgba(255, 255, 255, 0.25);
+      }
+    }
+  }
+
+  // Форма-сетка
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+
+      label {
+        font-weight: 500;
+        font-size: 0.875rem;
+        color: #d1d5db;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      input,
+      textarea,
+      select {
+        padding: 0.875rem 1rem;
+        background: rgba(31, 41, 55, 0.5);
+        border: 1px solid rgba(255, 149, 0, 0.3);
+        border-radius: 8px;
+        color: #ffffff;
+        font-size: 0.925rem;
+        transition: all 0.2s ease;
+        font-family: inherit;
+
+        &:focus {
+          outline: none;
+          border-color: var(--primary-color);
+          background: rgba(31, 41, 55, 0.8);
+          box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.1);
+        }
+
+        &::placeholder {
+          color: #9ca3af;
+          font-size: 0.875rem;
+        }
       }
 
       textarea {
         resize: vertical;
-        min-height: 80px;
+        min-height: 100px;
+      }
+    }
+  }
+}
+
+// ==========================================
+// НАВИГАЦИЯ ДЛЯ РЕДАКТИРОВАНИЯ (СТИЛИ КАК В ADD-ANIME)
+// ==========================================
+
+.section-navigation {
+  position: fixed;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  z-index: 9999;
+  background: rgba(30, 30, 46, 0.98);
+  border: 2px solid rgba(255, 149, 0, 0.6); // Оранжевый для edit
+  border-radius: 12px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
+  max-height: 300px;
+  min-width: 200px;
+  
+  // Делаем навигацию более видимой с оранжевым цветом
+  &::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, rgba(255, 149, 0, 0.3), rgba(255, 149, 0, 0.6));
+    border-radius: 12px;
+    z-index: -1;
+  }
+
+  &.hidden {
+    .navigation-content {
+      display: none;
+    }
+    min-width: 38px;
+    
+    // Убеждаемся что кнопка остается кликабельной
+    .navigation-header {
+      display: flex !important;
+      visibility: visible !important;
+      pointer-events: auto !important;
+      
+      .toggle-nav {
+        display: flex !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+        cursor: pointer !important;
+        opacity: 1 !important;
+        
+        // В закрытом состоянии делаем кнопку более заметной с оранжевым
+        background: rgba(255, 149, 0, 0.3) !important;
+        border-color: rgba(255, 149, 0, 0.7) !important;
+        
+        // Пульсирующий эффект для привлечения внимания
+        animation: pulse-edit 2s infinite;
+
+        &:hover {
+          background: rgba(255, 149, 0, 0.5) !important;
+          border-color: rgba(255, 149, 0, 0.9) !important;
+          transform: scale(1.1) !important;
+          box-shadow: 0 4px 12px rgba(255, 149, 0, 0.6) !important;
+        }
+        
+        &:active {
+          transform: scale(0.9) !important;
+        }
+      }
+      
+      .nav-title {
+        display: none;
       }
     }
   }
 
-  .episode-section {
-    margin-top: 2rem;
-    background: #252539;
-    padding: 1rem;
-    border-radius: 10px;
+  .navigation-header {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    border-bottom: 1px solid rgba(255, 149, 0, 0.2); // Оранжевый для edit
+    gap: 0.375rem;
 
-    h3 {
-      font-size: 1.3rem;
-      margin-bottom: 1rem;
-      color: #74b9ff;
-    }
-
-    .episode-block {
-      border: 1px solid #555;
-      border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 1.5rem;
-      background: #2c2c44;
-
-      input[type="text"] {
-        width: 100%;
-        margin-bottom: 0.8rem;
+    .toggle-nav {
+      background: rgba(255, 149, 0, 0.1); // Оранжевый для edit
+      border: 2px solid rgba(255, 149, 0, 0.3); // Оранжевый для edit
+      color: rgba(255, 255, 255, 0.9);
+      cursor: pointer !important;
+      padding: 6px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+      min-width: 26px;
+      min-height: 26px;
+      
+      // Принудительно устанавливаем pointer cursor
+      &, &:hover, &:active, &:focus {
+        cursor: pointer !important;
       }
 
-      .audio-block {
-        background: #3c3c5a;
-        padding: 0.5rem;
-        margin-bottom: 0.8rem;
-        border-radius: 6px;
+      .w-4 {
+        transition: transform 0.3s ease;
+        width: 14px !important;
+        height: 14px !important;
 
-        input[type="text"] {
-          margin-bottom: 0.4rem;
+        &.rotated {
+          transform: rotate(90deg);
+        }
+      }
+
+      &:hover {
+        background: rgba(255, 149, 0, 0.3); // Оранжевый для edit
+        border-color: rgba(255, 149, 0, 0.6); // Оранжевый для edit
+        color: white;
+        transform: scale(1.05);
+        box-shadow: 0 2px 8px rgba(255, 149, 0, 0.4); // Оранжевый для edit
+      }
+
+      &:active {
+        transform: scale(0.95);
+        background: rgba(255, 149, 0, 0.4); // Оранжевый для edit
+      }
+    }
+
+    .nav-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.9);
+      white-space: nowrap;
+    }
+  }
+
+  .navigation-content {
+    padding: 0.375rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    width: 100%;
+
+    &:hover {
+      background: rgba(255, 149, 0, 0.15); // Оранжевый для edit
+      color: white;
+      
+      .nav-item-icon {
+        color: var(--primary-color); // Оранжевый для edit
+      }
+    }
+
+    &.active {
+      background: linear-gradient(90deg, rgba(255, 149, 0, 0.4), rgba(255, 149, 0, 0.2)); // Оранжевый для edit
+      color: white;
+      border-left: 4px solid var(--primary-color); // Оранжевый для edit
+      box-shadow: 0 2px 8px rgba(255, 149, 0, 0.3); // Оранжевый для edit
+      
+      .nav-item-icon {
+        color: var(--primary-color); // Оранжевый для edit
+      }
+      
+      .nav-item-label {
+        font-weight: 600;
+      }
+    }
+
+    .nav-item-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: rgba(255, 255, 255, 0.6);
+      transition: color 0.2s ease;
+    }
+
+    .nav-item-label {
+      flex: 1;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+  }
+
+  // Убеждаемся что навигация всегда видна
+  display: block !important;
+  visibility: visible !important;
+  
+  @media (max-width: 1024px) {
+    display: none;
+  }
+}
+
+// ==========================================
+// ПЛАВАЮЩИЕ КНОПКИ ДЕЙСТВИЙ
+// ==========================================
+
+.edit-floating-action-buttons {
+  position: fixed;
+  z-index: 1000;
+  display: flex;
+  gap: 1rem;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &.bottom-right {
+    bottom: 2rem;
+    right: 2rem;
+    flex-direction: column;
+  }
+
+  &.bottom-center {
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    flex-direction: row;
+  }
+
+  .floating-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.75rem 1.25rem;
+    border: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    min-width: 130px;
+    justify-content: center;
+
+    &:hover {
+      transform: scale(1.05) translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+  }
+
+  .btn-edit-primary {
+    background: linear-gradient(135deg, var(--primary-color), #ffcc00);
+    color: white;
+
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, #e6850e, #e6b800);
+      box-shadow: 0 12px 40px rgba(255, 149, 0, 0.4);
+    }
+  }
+
+  .btn-edit-secondary {
+    background: rgba(55, 65, 81, 0.9);
+    color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 149, 0, 0.3);
+
+    &:hover:not(:disabled) {
+      background: rgba(75, 85, 99, 0.9);
+      border-color: rgba(255, 149, 0, 0.5);
+      box-shadow: 0 12px 40px rgba(55, 65, 81, 0.4);
+    }
+  }
+
+  @media (max-width: 768px) {
+    gap: 0.75rem;
+
+    .floating-btn {
+      padding: 0.875rem 1.25rem;
+      font-size: 0.875rem;
+      min-width: 140px;
+    }
+  }
+}
+
+// ==========================================
+// МЕДИА ЗАГРУЗКА ДЛЯ РЕДАКТИРОВАНИЯ
+// ==========================================
+
+.edit-media-upload-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.banner-section,
+.cover-screenshots-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cover-screenshots-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  .cover-section,
+  .screenshots-section {
+    flex: 1;
+  }
+}
+
+.edit-upload-card {
+  background: rgba(17, 24, 39, 0.8);
+  border: 2px dashed rgba(255, 149, 0, 0.3);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &.has-file {
+    border-style: solid;
+    border-color: rgba(255, 149, 0, 0.5);
+    background: rgba(17, 24, 39, 0.9);
+  }
+
+  &.deleted {
+    border-color: rgba(239, 68, 68, 0.5);
+    background: rgba(239, 68, 68, 0.1);
+  }
+
+  &.banner-upload {
+    min-height: 200px;
+
+    .file-preview img {
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      max-height: 180px;
+    }
+  }
+
+  &:hover {
+    border-color: rgba(255, 149, 0, 0.6);
+    background: rgba(17, 24, 39, 0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(255, 149, 0, 0.1);
+  }
+
+  .deleted-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: #ef4444;
+    margin-bottom: 1rem;
+
+    svg {
+      background: rgba(239, 68, 68, 0.2);
+      border-radius: 50%;
+      padding: 0.5rem;
+    }
+
+    span {
+      font-weight: 500;
+      font-size: 0.875rem;
+    }
+  }
+
+  .upload-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+
+    .edit-indicator {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: var(--primary-color);
+      color: white;
+      border-radius: 50%;
+      padding: 0.25rem;
+      font-size: 0.75rem;
+    }
+
+    svg:not(.edit-indicator) {
+      width: 48px;
+      height: 48px;
+    }
+  }
+
+  .upload-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+    text-align: center;
+    margin: 0 0 0.5rem 0;
+
+    .count {
+      color: var(--primary-color);
+      font-size: 0.875rem;
+      margin-left: 0.5rem;
+    }
+  }
+
+  .upload-subtitle {
+    color: #9ca3af;
+    font-size: 0.875rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
+    margin: 0 0 1.5rem 0;
+  }
+
+  .file-input {
+    position: relative;
+
+    input {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .file-input-button,
+    .edit-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.875rem 1.5rem;
+      background: linear-gradient(135deg, var(--primary-color), #ffcc00);
+      color: white;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.925rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+
+      &:hover {
+        background: linear-gradient(135deg, #e6850e, #e6b800);
+        transform: scale(1.05);
+        box-shadow: 0 4px 16px rgba(255, 149, 0, 0.3);
+      }
+    }
+
+    &.add-more {
+      margin-top: 1rem;
+
+      .edit-button {
+        background: rgba(255, 149, 0, 0.2);
+        border: 1px solid rgba(255, 149, 0, 0.5);
+        color: var(--primary-color);
+
+        &:hover {
+          background: rgba(255, 149, 0, 0.3);
+        }
+      }
+    }
+  }
+
+  .file-preview {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 8px;
+    }
+
+    .file-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      .file-status {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+
+        &.new {
+          color: #10b981;
+        }
+
+        &.existing {
+          color: #3b82f6;
+        }
+      }
+
+      .file-name {
+        color: white;
+        font-weight: 500;
+        font-size: 0.875rem;
+      }
+
+      .remove-button {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: rgba(0, 0, 0, 0.6);
+        border: none;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.8);
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background: rgba(239, 68, 68, 0.8);
+          color: white;
+          transform: scale(1.1);
+        }
+      }
+    }
+
+    &.new-file .file-info .file-status {
+      color: #10b981;
+    }
+
+    &.existing-file .file-info .file-status {
+      color: #3b82f6;
+    }
+  }
+
+  .screenshots-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+
+    .upload-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0;
+    }
+  }
+
+  .edit-screenshots-grid-display {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+
+    .screenshot-item {
+      position: relative;
+      aspect-ratio: 16/9;
+      border-radius: 8px;
+      overflow: hidden;
+      background: rgba(17, 24, 39, 0.5);
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .screenshot-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 0.5rem;
+        opacity: 0;
+        transition: all 0.3s ease;
+
+        .screenshot-status {
+          font-size: 0.7rem;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          color: #3b82f6;
+
+          &.new-label {
+            color: #10b981;
+          }
+        }
+
+        .remove-screenshot {
+          position: absolute;
+          top: 0.5rem;
+          right: 0.5rem;
+          background: rgba(0, 0, 0, 0.6);
+          border: none;
+          border-radius: 50%;
+          width: 24px;
+          height: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: rgba(255, 255, 255, 0.9);
+          cursor: pointer;
+          transition: all 0.3s ease;
+          opacity: 0;
+          backdrop-filter: blur(4px);
+
+          svg {
+            width: 12px;
+            height: 12px;
+          }
+
+          &:hover {
+            background: rgba(239, 68, 68, 0.8);
+            color: white;
+            transform: scale(1.1);
+          }
+        }
+      }
+
+      &:hover .screenshot-overlay {
+        opacity: 1;
+      }
+
+      &:hover .remove-screenshot {
+        opacity: 1;
+      }
+
+      &.new {
+        border: 2px solid #10b981;
+      }
+
+      &.existing {
+        border: 2px solid #3b82f6;
+      }
+    }
+  }
+}
+
+// ==========================================
+// УЛУЧШЕННЫЕ ФОРМЫ ДЛЯ РЕДАКТИРОВАНИЯ
+// ==========================================
+
+.form-grid-enhanced {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.form-group-section {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 149, 0, 0.15);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  overflow: visible;
+  
+  &:hover {
+    border-color: rgba(255, 149, 0, 0.3);
+    background: rgba(255, 255, 255, 0.04);
+  }
+  
+  &.full-width {
+    grid-column: 1 / -1;
+  }
+}
+
+.form-group-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 1.25rem 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
+  font-weight: 600;
+  
+  svg {
+    color: var(--primary-color);
+  }
+}
+
+.form-fields-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  overflow: visible;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+.form-field-with-icon {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  overflow: visible;
+}
+
+.field-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  flex-direction: column;
+  
+  svg {
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 0.2rem;
+    flex-shrink: 0;
+  }
+  
+  label {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .field-hint {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-style: italic;
+    margin-top: 0.25rem;
+    line-height: 1.3;
+  }
+}
+
+.form-field-with-icon input,
+.form-field-with-icon select,
+.form-field-with-icon textarea {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 149, 0, 0.2);
+  border-radius: 8px;
+  padding: 0.875rem 1rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  
+  &:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 2px rgba(255, 149, 0, 0.2);
+  }
+  
+  &:hover {
+    border-color: rgba(255, 149, 0, 0.4);
+  }
+  
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+  }
+}
+
+// Кастомные селекты
+.custom-select {
+  position: relative;
+  width: 100%;
+  z-index: 1;
+}
+
+.select-trigger {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 149, 0, 0.2);
+  border-radius: 8px;
+  padding: 0.875rem 1rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  font-family: inherit;
+  
+  &:hover {
+    border-color: rgba(255, 149, 0, 0.4);
+    background: rgba(255, 255, 255, 0.08);
+  }
+  
+  &:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 2px rgba(255, 149, 0, 0.2);
+  }
+  
+  .select-value {
+    flex: 1;
+    
+    .selected-option {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      
+      svg {
+        color: var(--primary-color);
+        flex-shrink: 0;
+      }
+    }
+    
+    .placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+  }
+  
+  .chevron {
+    color: rgba(255, 255, 255, 0.6);
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+    
+    &.open {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.select-dropdown {
+  position: fixed !important;
+  background: #1f2937;
+  border: 1px solid rgba(255, 149, 0, 0.3);
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  z-index: 99999 !important;
+  overflow: hidden;
+  animation: slideDown 0.2s ease-out;
+  backdrop-filter: blur(20px);
+  min-width: 200px;
+  
+  .select-option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+    color: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+    
+    &:hover {
+      background: rgba(255, 149, 0, 0.15);
+      color: var(--primary-color);
+      
+      svg {
+        color: var(--primary-color);
+        transform: scale(1.1);
+      }
+    }
+    
+    &:active {
+      background: rgba(255, 149, 0, 0.25);
+      transform: scale(0.98);
+    }
+    
+    svg {
+      color: rgba(255, 255, 255, 0.7);
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+    
+    span {
+      flex: 1;
+    }
+    
+    &:not(:last-child) {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+  }
+}
+
+// ==========================================
+// АНИМАЦИИ
+// ==========================================
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes pulse-edit {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(255, 149, 0, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(255, 149, 0, 0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+// ==========================================
+// RESPONSIVE
+// ==========================================
+
+@media (max-width: 768px) {
+  .edit-anime-page {
+    padding: 1rem;
+    margin-top: 80px;
+
+    .integrated-header {
+      .page-title {
+        font-size: 1.5rem;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    }
+
+    .main-content-layout {
+      gap: 1rem;
+    }
+
+    .content-section {
+      padding: 1.5rem;
+    }
+  }
+
+  .edit-floating-action-buttons {
+    &.bottom-right {
+      right: 1rem;
+      bottom: 1rem;
+    }
+
+    &.bottom-center {
+      bottom: 1rem;
+    }
+  }
+
+  .toast-message {
+    right: 1rem;
+    left: 1rem;
+    top: auto;
+    bottom: 6rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .edit-media-upload-layout {
+    gap: 1rem;
+  }
+
+  .edit-upload-card {
+    padding: 1rem;
+
+    .upload-icon svg:not(.edit-indicator) {
+      width: 32px;
+      height: 32px;
+    }
+
+    .upload-title {
+      font-size: 1rem;
+    }
+
+    .upload-subtitle {
+      font-size: 0.8rem;
+    }
+  }
+
+  .edit-screenshots-grid-display {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 1rem;
+  }
+}
+
+// ==========================================
+// СТИЛИ ДЛЯ СКРИНШОТОВ В EDIT СТРАНИЦЕ
+// ==========================================
+
+.edit-anime-page .screenshots-grid-display {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+
+  .screenshot-item {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    aspect-ratio: 16/9;
+    min-height: 120px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .screenshot-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 0.5rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+
+      .screenshot-status {
+        align-self: flex-start;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 500;
+
+        &.new-label {
+          color: #10b981;
+        }
+      }
+
+      .remove-screenshot {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        width: 24px;
+        height: 24px;
+        background: rgba(0, 0, 0, 0.6);
+        border: none;
+        border-radius: 50%;
+        color: rgba(255, 255, 255, 0.9);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(4px);
+        transition: all 0.3s ease;
+
+        svg {
+          width: 12px;
+          height: 12px;
+        }
+
+        &:hover {
+          background: rgba(239, 68, 68, 0.8);
+          color: white;
+          transform: scale(1.1);
+        }
+      }
+    }
+
+    &:hover .screenshot-overlay {
+      opacity: 1;
+    }
+
+    &.new {
+      border: 2px solid #10b981;
+    }
+
+    &.existing {
+      border: 2px solid #3b82f6;
+    }
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ==========================================
+// МОБИЛЬНАЯ АДАПТАЦИЯ - УПРОЩЕННЫЙ ДИЗАЙН
+// ==========================================
+
+@media (max-width: 768px) {
+  .edit-anime-page {
+    padding: 1rem 0.75rem;
+    margin-top: 70px;
+    background: #1a1a1a;
+
+    // Упрощенное состояние загрузки
+    &.loading {
+      .loading-spinner {
+        gap: 1rem;
+
+        .spinner-icon {
+          width: 40px;
+          height: 40px;
         }
 
         p {
-          margin: 0.2rem 0 0.4rem;
-          font-size: 0.85rem;
-          color: #dfe6e9;
+          font-size: 1rem;
+        }
+      }
+    }
+
+    // Упрощенный заголовок для мобильных
+    .integrated-header {
+      margin-bottom: 1rem;
+      padding: 0.75rem;
+      border-bottom: 1px solid #333;
+      background: #2a2a2a;
+      border-radius: 8px;
+      
+      .page-title {
+        font-size: 1.3rem;
+        background: none;
+        -webkit-text-fill-color: #fff;
+        color: #fff;
+        text-align: center;
+
+        .anime-id {
+          display: block;
+          margin-left: 0;
+          margin-top: 0.25rem;
+          font-size: 0.8rem;
+          color: #999;
+        }
+      }
+    }
+
+    // Убираем двухколоночный layout - делаем одну колонку  
+    .main-content-layout {
+      display: block;
+      gap: 0;
+      margin-bottom: 1rem; // Минимальный отступ
+    }
+
+    .left-column,
+    .right-column {
+      position: static;
+      max-height: none;
+      overflow: visible;
+      gap: 1rem;
+    }
+
+    // Упрощенные секции без эффектов
+    .content-section {
+      background: #2a2a2a;
+      border-radius: 8px;
+      padding: 1rem;
+      border: 1px solid #404040;
+      backdrop-filter: none;
+      transition: none;
+      margin-bottom: 1rem;
+      box-shadow: none;
+
+      &:hover {
+        border-color: #404040;
+        box-shadow: none;
+        transform: none;
+      }
+
+      .section-title {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        
+        .icon {
+          width: 20px;
+          height: 20px;
+        }
+      }
+    }
+
+    // Упрощенные формы - увеличенные для touch
+    .form-group {
+      margin-bottom: 1rem;
+
+      label {
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        color: #ccc;
+        font-weight: 500;
+      }
+
+      input,
+      textarea,
+      select {
+        width: 100%;
+        padding: 0.875rem;
+        font-size: 16px; // Предотвращает зум на iOS
+        border: 1px solid #505050;
+        border-radius: 8px;
+        background: #333;
+        color: #fff;
+        transition: border-color 0.2s ease;
+        box-shadow: none;
+
+        &:focus {
+          border-color: var(--primary-color);
+          outline: none;
+          box-shadow: none;
         }
       }
 
-      .small {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.85rem;
+      textarea {
+        min-height: 120px;
+        resize: vertical;
+      }
+    }
+
+    // Скрываем навигацию секций на мобильных
+    .section-navigation {
+      display: none !important;
+    }
+
+    // Упрощенные кнопки действий - только иконки
+    .floating-action-buttons {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+      left: auto;
+      width: auto;
+      background: transparent;
+      border: none;
+      padding: 0;
+      z-index: 100;
+      box-shadow: none;
+
+      .action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: flex-end;
+
+        .btn {
+          width: 56px;
+          height: 56px;
+          padding: 0;
+          font-size: 0;
+          border-radius: 50%;
+          border: none;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.2s ease;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+          // Скрываем текст, показываем только иконки
+          span:not(.icon) {
+            display: none;
+          }
+
+          svg,
+          .icon {
+            width: 24px;
+            height: 24px;
+            color: currentColor;
+          }
+
+          &.primary {
+            background: var(--primary-color);
+            color: #fff;
+
+            &:hover {
+              background: #e6850e;
+              transform: scale(1.1);
+            }
+          }
+
+          &.secondary {
+            background: #6b7280;
+            color: #fff;
+
+            &:hover {
+              background: #4b5563;
+              transform: scale(1.1);
+            }
+          }
+
+          &.danger {
+            background: #ef4444;
+            color: #fff;
+
+            &:hover {
+              background: #dc2626;
+              transform: scale(1.1);
+            }
+          }
+        }
+      }
+    }
+
+    // Упрощенная загрузка файлов
+    .file-upload-area {
+      border: 2px dashed #505050;
+      border-radius: 8px;
+      padding: 2rem 1rem;
+      text-align: center;
+      background: #333;
+      transition: border-color 0.2s ease;
+
+      &:hover,
+      &.dragover {
+        border-color: var(--primary-color);
+        background: #3a3a3a;
+      }
+
+      .upload-icon {
+        width: 32px;
+        height: 32px;
+        margin-bottom: 0.5rem;
+        color: var(--primary-color);
+      }
+
+      .upload-text {
+        font-size: 0.9rem;
+        color: #ccc;
+        margin-bottom: 1rem;
+      }
+
+      .upload-button {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9rem;
+        background: var(--primary-color);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        min-height: 44px;
+      }
+    }
+
+    // Упрощенные превью файлов
+    .file-preview {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.75rem;
+
+      .preview-item {
+        background: #333;
+        border-radius: 8px;
+        padding: 0.75rem;
+        border: 1px solid #505050;
+
+        .preview-image {
+          border-radius: 6px;
+          width: 100%;
+          height: 100px;
+          object-fit: cover;
+        }
+
+        .preview-info {
+          font-size: 0.8rem;
+          color: #ccc;
+          margin-top: 0.5rem;
+        }
+
+        .remove-button {
+          background: #ef4444;
+          color: #fff;
+          border: none;
+          border-radius: 6px;
+          padding: 0.5rem;
+          font-size: 0.8rem;
+          width: 100%;
+          margin-top: 0.5rem;
+          min-height: 40px;
+        }
+      }
+    }
+
+    // Современные минималистичные уведомления
+    .toast-message {
+      position: fixed;
+      top: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 200;
+      border-radius: 12px;
+      backdrop-filter: blur(20px);
+      animation: slideInTop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.2),
+        0 20px 48px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      max-width: 400px;
+      min-width: 300px;
+      overflow: hidden;
+
+      .toast-content {
+        display: flex;
+        align-items: center;
+        gap: 0.875rem;
+        padding: 1.125rem 1.375rem;
+        position: relative;
+
+        .toast-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.15);
+          backdrop-filter: blur(10px);
+          transition: all 0.2s ease;
+
+          svg {
+            width: 20px;
+            height: 20px;
+            color: currentColor;
+          }
+        }
+
+        .toast-text {
+          font-size: 0.95rem;
+          font-weight: 500;
+          line-height: 1.4;
+          flex: 1;
+          color: currentColor;
+        }
+      }
+
+      // Градиентная полоска снизу
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2));
+        animation: shimmer 2s ease-in-out infinite;
+      }
+
+      &.success {
+        background: linear-gradient(135deg, #10b981 0%, #065f46 100%);
+        color: #ffffff;
+        
+        .toast-content .toast-icon {
+          background: rgba(255, 255, 255, 0.2);
+        }
+      }
+
+      &.error {
+        background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%);
+        color: #ffffff;
+        
+        .toast-content .toast-icon {
+          background: rgba(255, 255, 255, 0.2);
+        }
+      }
+
+      &.info {
+        background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+        color: #ffffff;
+        
+        .toast-content .toast-icon {
+          background: rgba(255, 255, 255, 0.2);
+        }
+      }
+
+      &.warning {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: #ffffff;
+        
+        .toast-content .toast-icon {
+          background: rgba(255, 255, 255, 0.2);
+        }
+      }
+
+      // Hover эффект
+      &:hover {
+        transform: translateX(-50%) translateY(-2px);
+        box-shadow: 
+          0 15px 35px rgba(0, 0, 0, 0.3),
+          0 25px 60px rgba(0, 0, 0, 0.15),
+          inset 0 1px 0 rgba(255, 255, 255, 0.15);
+
+        .toast-content .toast-icon {
+          transform: scale(1.1);
+          background: rgba(255, 255, 255, 0.25);
+        }
+      }
+    }
+
+    // Анимации для уведомлений
+    @keyframes slideInTop {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-100px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
+    @keyframes shimmer {
+      0% {
+        opacity: 0.3;
+      }
+      50% {
+        opacity: 0.8;
+      }
+      100% {
+        opacity: 0.3;
+      }
+    }
+
+    // Скрываем сложные элементы на мобильных
+    .advanced-effects,
+    .complex-animations,
+    .desktop-only,
+    .blur-effects {
+      display: none !important;
+    }
+
+    // Упрощенный прогресс загрузки
+    .upload-progress {
+      background: #333;
+      border-radius: 8px;
+      padding: 1rem;
+      border: 1px solid #505050;
+
+      .progress-bar {
+        background: #505050;
+        border-radius: 4px;
+        height: 6px;
+        overflow: hidden;
+        margin-top: 0.5rem;
+
+        .progress-fill {
+          background: var(--primary-color);
+          height: 100%;
+          transition: width 0.3s ease;
+        }
+      }
+
+      .progress-text {
+        font-size: 0.9rem;
+        color: #ccc;
+        text-align: center;
+      }
+    }
+
+    // Упрощенные табы
+    .tab-content {
+      background: transparent;
+      border: none;
+      padding: 0;
+    }
+
+    .tab-navigation {
+      background: #2a2a2a;
+      border-radius: 8px;
+      padding: 0.25rem;
+      margin-bottom: 1rem;
+
+      .tab-button {
+        flex: 1;
+        padding: 0.75rem;
+        font-size: 0.9rem;
+        border: none;
+        background: transparent;
+        color: #ccc;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+
+        &.active {
+          background: var(--primary-color);
+          color: #fff;
+        }
+      }
+    }
+
+    // Упрощенные сетки
+    .current-covers-grid,
+    .current-screenshots-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+
+      .image-item {
+        border-radius: 8px;
+        border: 1px solid #505050;
+        background: #333;
+        padding: 0.5rem;
+
+        .image-preview {
+          border-radius: 6px;
+        }
+
+        .image-actions {
+          .action-button {
+            padding: 0.5rem;
+            font-size: 0.8rem;
+            border-radius: 6px;
+            min-height: 40px;
+          }
+        }
       }
     }
   }
+}
 
-  .buttons {
-    margin-top: 2rem;
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
+// Очень маленькие экраны (iPhone SE и аналогичные)
+@media (max-width: 375px) {
+  .edit-anime-page {
+    padding: 0.5rem;
 
-    button {
-      padding: 0.75rem 1.5rem;
-      font-size: 1rem;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.2s ease;
-    }
+    .integrated-header {
+      padding: 0.5rem;
 
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .danger {
-      background-color: #d63031;
-      color: white;
-      &:hover {
-        background-color: #c0392b;
+      .page-title {
+        font-size: 1.2rem;
       }
     }
 
-    button:not(.danger) {
-      background-color: #00cec9;
-      color: #1e1e1e;
-      &:hover {
-        background-color: #00b894;
+    .content-section {
+      padding: 0.75rem;
+      margin-bottom: 0.75rem;
+
+      .section-title {
+        font-size: 1rem;
       }
+    }
+
+    .form-group {
+      margin-bottom: 0.75rem;
+
+      input,
+      textarea,
+      select {
+        padding: 0.75rem;
+        font-size: 16px;
+      }
+    }
+
+    .floating-action-buttons {
+      bottom: 0.5rem;
+      right: 0.5rem;
+
+      .action-buttons {
+        gap: 0.5rem;
+
+        .btn {
+          width: 52px;
+          height: 52px;
+
+          svg,
+          .icon {
+            width: 22px;
+            height: 22px;
+          }
+        }
+      }
+    }
+
+    .current-covers-grid,
+    .current-screenshots-grid {
+      grid-template-columns: 1fr;
     }
   }
 }

@@ -1,0 +1,110 @@
+/* Crunchyroll Theme Variables and Styles */
+
+:root {
+  // Основные цвета Crunchyroll
+  --cr-primary-orange: #FF640A;
+  --cr-secondary-orange: #CC4F08;
+  --cr-dark-orange: #992D05;
+  
+  // Фоновые цвета
+  --cr-bg-primary: #0b0b0b;
+  --cr-bg-secondary: #191919;
+  --cr-bg-tertiary: #252525;
+  
+  // Текстовые цвета
+  --cr-text-primary: #f1f1f1;
+  --cr-text-secondary: #b5b5b5;
+  --cr-text-muted: #808080;
+  
+  // Размеры и отступы
+  --cr-max-width: 1400px;
+  --cr-container-padding: 20px;
+  --cr-border-radius: 12px;
+  
+  // Тени
+  --cr-shadow-light: 0px 4px 15px rgba(0, 0, 0, 0.2);
+  --cr-shadow-medium: 0px 8px 25px rgba(0, 0, 0, 0.3);
+  --cr-shadow-heavy: 0px 12px 30px rgba(255, 100, 10, 0.15);
+  
+  // Переходы
+  --cr-transition-fast: 0.2s ease;
+  --cr-transition-normal: 0.3s ease;
+  --cr-transition-slow: 0.4s ease;
+}
+
+// Глобальные стили Crunchyroll
+.crunchyroll-container {
+  max-width: var(--cr-max-width);
+  margin: 0 auto;
+  padding: 0 var(--cr-container-padding);
+}
+
+.crunchyroll-card {
+  background: var(--cr-bg-secondary);
+  border-radius: var(--cr-border-radius);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: var(--cr-shadow-medium);
+  transition: all var(--cr-transition-normal);
+  
+  &:hover {
+    transform: scale(1.02);
+    box-shadow: var(--cr-shadow-heavy), var(--cr-shadow-medium);
+  }
+}
+
+.crunchyroll-button {
+  background: transparent;
+  color: var(--cr-text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 8px 16px;
+  border-radius: var(--cr-border-radius);
+  transition: all var(--cr-transition-fast);
+  cursor: pointer;
+  
+  &:hover {
+    background: rgba(255, 100, 10, 0.1);
+    color: var(--cr-primary-orange);
+    border-color: var(--cr-primary-orange);
+  }
+  
+  &.primary {
+    background: var(--cr-primary-orange);
+    color: white;
+    border-color: var(--cr-primary-orange);
+    
+    &:hover {
+      background: var(--cr-secondary-orange);
+      border-color: var(--cr-secondary-orange);
+    }
+  }
+}
+
+.crunchyroll-title {
+  color: var(--cr-text-primary);
+  font-weight: 600;
+  margin-bottom: 10px;
+  transition: color var(--cr-transition-normal);
+  
+  &:hover {
+    color: var(--cr-primary-orange);
+  }
+}
+
+// Адаптивность для Crunchyroll темы
+@media (max-width: 1024px) {
+  :root {
+    --cr-container-padding: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --cr-container-padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --cr-container-padding: 5px;
+  }
+}

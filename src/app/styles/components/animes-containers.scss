@@ -1,25 +1,77 @@
+/* ===== ОСНОВНЫЕ КОНТЕЙНЕРЫ ===== */
+
 .container-wrapper {
-  padding-top: 30px;
+  padding-top: 40px;
+  padding-bottom: 25px;
   position: relative;
-}
-.category
-{
-  position: relative;
-  margin: 15px 0px 0px 70px;
+  margin-bottom: 30px;
+  overflow: visible;
+  background: linear-gradient(135deg, rgba(15, 15, 15, 0.3) 0%, rgba(25, 25, 25, 0.1) 100%);
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  backdrop-filter: blur(10px);
 }
 
-/* Центрирование контейнера с анимацией */
+.category {
+  position: relative;
+  margin: 0;
+  padding: 0 2rem;
+  overflow: visible;
+  background: rgba(26, 26, 26, 0.4);
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 2rem;
+  transition: all 0.25s cubic-bezier(0.4, 0.0, 0.2, 1);
+  backdrop-filter: blur(16px) saturate(180%);
+
+  &:hover {
+    border-color: var(--primary-bg-hover);
+    background: rgba(26, 26, 26, 0.5);
+    box-shadow: 
+      0 4px 12px rgba(0, 0, 0, 0.1),
+      0 2px 6px rgba(0, 0, 0, 0.2);
+  }
+  
+  @media (prefers-color-scheme: light) {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: rgba(0, 0, 0, 0.08);
+    
+    &:hover {
+      border-color: var(--primary-bg-hover);
+      background: var(--text-secondary);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    padding: 0 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.category-list-container {
+  position: relative;
+  margin-top: 6rem;
+  max-width: 1600px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 25px;
+  overflow: visible;
+}
+
+/* ===== ЗАГРУЗКА ===== */
+
 .loading-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 70vh;
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #1b1b1b;
+  background-color: var(--bg-primary);
+  z-index: 999;
 }
 
 .loading-box {
@@ -30,91 +82,462 @@
   margin-top: 20px;
   font-size: 18px;
   font-weight: bold;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
+/* ===== ЗАГОЛОВКИ КАТЕГОРИЙ ===== */
 
-.category-title
-{
-  color: white;
-  font-size: 26px;
+.category-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  transition: all 0.25s cubic-bezier(0.4, 0.0, 0.2, 1);
+  cursor: pointer;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  position: relative;
+  
+  // Современный градиент текста
+  background: linear-gradient(135deg, var(--text-primary) 0%, rgba(255, 255, 255, 0.8) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    transition: width 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    border-radius: 2px;
+    box-shadow: 0 1px 4px rgba(255, 106, 53, 0.4);
+  }
+  
+  &:hover {
+    background: linear-gradient(135deg, var(--primary-light) 0%, #FFB366 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    transform: translateX(6px);
+    
+    &::before {
+      width: 60px;
+    }
+  }
+  
+  @media (prefers-color-scheme: light) {
+    background: linear-gradient(135deg, #1a1a1a 0%, rgba(26, 26, 26, 0.8) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    
+    &:hover {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
 }
+
+.categoryname {
+  position: relative;
+  padding: 15px;
+  font-size: 30px;
+  margin-left: 0;
+  color: var(--text-primary);
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  letter-spacing: 0.5px;
+}
+
+/* ===== КОНТЕЙНЕРЫ АНИМЕ ===== */
 
 .anime-title {
-  margin-top: 0px;
-  padding: 0 0 0px 10px;
+  margin-top: 0;
+  padding: 0 0 0 15px;
   display: flex;
-  gap: 15px;
-  transition: all 0.2s ease-in-out;
-  color: #ffffff;
+  gap: 20px;
+  transition: all 0.3s ease-in-out;
+  color: var(--text-primary);
 }
 
 .anime-line-container {
   display: flex;
   overflow-x: auto;
-  padding-top: 20px;
+  overflow-y: visible;
+  padding: 25px 0;
   scrollbar-width: none;
   position: relative;
   flex-wrap: nowrap;
+  gap: 5px;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   .anime-line-container-padding {
     display: flex;
     overflow-x: auto;
     position: relative;
     flex-wrap: nowrap;
+    gap: 5px;
   }
+}
+
+/* ===== АНИМЕ КАРТОЧКИ ===== */
+
+.anime-cards-container {
+  position: relative;
+  perspective: 1000px;
 }
 
 .anime-title-card {
   position: relative;
-  width: 200px;
-  height: 300px;
-  border-radius: 20px;
-  margin: 0 10px;
+  width: 220px;
+  height: 320px;
+  border-radius: 16px;
+  margin: 0 12px 24px;
   overflow: hidden;
-  margin-bottom: 20px;
-  transition: all 0.3s ease;
-  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2); /* расплывчатая тень */
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 
+    0px 12px 30px rgba(0, 0, 0, 0.4),
+    0px 4px 15px rgba(0, 0, 0, 0.2);
   flex: 0 0 auto;
-  background: rgb(41, 41, 41);
+  background: linear-gradient(145deg, #1a1a1a 0%, #2a2a2a 100%);
+  border: 2px solid var(--border-color);
+  cursor: pointer;
+  transform-style: preserve-3d;
 
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 100, 10, 0.1) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+    border-radius: 16px;
+  }
 
   &:hover {
-    transform: scale(1.05);
-    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.7); /* плотная тень при наведении */
+    transform: translateY(-8px) rotateX(5deg);
+    box-shadow: 
+      0px 25px 60px rgba(255, 100, 10, 0.4), 
+      0px 15px 40px rgba(0, 0, 0, 0.6),
+      inset 0px 1px 0px var(--border-color);
+    border-color: rgba(255, 100, 10, 0.5);
+
+    &::before {
+      opacity: 1;
+    }
+
     .anime-thumbnail {
-      opacity: 0.6;
+      transform: scale(1.05);
+      filter: brightness(1.1) contrast(1.1) saturate(1.3);
     }
 
     .anime-info {
-      opacity: 1;
-      transform: translateY(0);
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.8) 60%, transparent 100%);
+      
       .anime-title-text {
-        opacity: 0; /* Скрываем название с сезоном */
-        transform: translateY(-60px);
-        left: 5px;
+        transform: translateX(-50%) translateY(-5px);
+        color: var(--text-primary);
+        text-shadow: 0 3px 6px rgba(0, 0, 0, 0.9);
       }
-      .anime-title-text-no-season {
-        opacity: 1; /* Показываем название без сезона */
-        transform: translateY(0);
+      
+      .season-text {
+        color: var(--primary-light);
+        text-shadow: 0 2px 4px rgba(255, 100, 10, 0.5);
       }
-      .anime-detailed-info {
-        opacity: 1;
-        transform: translateY(0);
-      }
-      .anime-hover-text {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    }
+
+    .collection-tag {
+      opacity: 0;
+      transform: translateY(15px) scale(0.9);
+    }
+
+    .anime-hover-card {
+      opacity: 1;
+      visibility: visible;
+      transform: translate(-50%, -50%) scale(1) rotateX(0deg);
+      pointer-events: auto;
     }
   }
 }
+
+/* ===== КОЛЛЕКЦИЯ ТЕГОВ ===== */
+
+.collection-tag {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(135deg, rgba(255, 100, 10, 0.95) 0%, rgba(255, 140, 66, 0.95) 100%);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 12px;
+  text-align: center;
+  border-radius: 0 0 16px 16px;
+  z-index: 4;
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  border-top: 1px solid var(--border-color);
+  box-shadow: 0px -2px 8px var(--shadow-md);
+}
+
+/* ===== HOVER КАРТОЧКА ===== */
+
+.anime-hover-card {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) scale(0.85) rotateX(10deg) !important;
+  width: 380px !important;
+  height: 220px !important;
+  background: linear-gradient(145deg, rgba(20, 20, 20, 0.98) 0%, rgba(30, 30, 30, 0.99) 100%) !important;
+  border-radius: 20px !important;
+  box-shadow: 
+    0px 60px 120px rgba(0, 0, 0, 0.95),
+    0px 30px 80px rgba(255, 100, 10, 0.4),
+    0px 15px 40px rgba(0, 0, 0, 0.8),
+    inset 0px 1px 0px rgba(255, 255, 255, 0.15) !important;
+  border: 2px solid rgba(255, 100, 10, 0.5) !important;
+  backdrop-filter: blur(25px) saturate(1.2) !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+  z-index: 2147483647 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+  will-change: transform, opacity !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  max-width: none !important;
+  max-height: none !important;
+  min-width: auto !important;
+  min-height: auto !important;
+  clip: auto !important;
+  clip-path: none !important;
+  contain: none !important;
+
+  .hover-banner {
+    position: relative;
+    height: 100px;
+    overflow: hidden;
+    border-radius: 20px 20px 0 0;
+    background: linear-gradient(135deg, #FF640A 0%, var(--primary-light) 30%, #FFB366 70%, #FFD700 100%);
+
+    .banner-gradient {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.1) 100%);
+    }
+
+    .hover-cover {
+      position: absolute;
+      left: 16px;
+      bottom: -30px;
+      width: 80px;
+      height: 120px;
+      border-radius: 12px;
+      box-shadow: 
+        0px 15px 35px rgba(0, 0, 0, 0.7),
+        0px 8px 20px rgba(0, 0, 0, 0.5);
+      border: 3px solid rgba(255, 255, 255, 0.95);
+      overflow: hidden;
+      z-index: 2;
+      transition: transform 0.3s ease;
+    }
+
+    .banner-content {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      display: flex;
+      gap: 10px;
+      z-index: 3;
+
+      .anime-type-badge {
+        background: rgba(0, 0, 0, 0.8);
+        color: var(--primary-light);
+        padding: 6px 12px;
+        border-radius: 15px;
+        font-size: 12px;
+        font-weight: 700;
+        backdrop-filter: blur(15px);
+        border: 1px solid var(--border-color);
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+      }
+
+      .rating-badge {
+        background: linear-gradient(135deg, rgba(255, 215, 0, 0.95) 0%, rgba(255, 193, 7, 0.95) 100%);
+        color: #000;
+        padding: 6px 12px;
+        border-radius: 15px;
+        font-size: 12px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        text-shadow: 0 1px 2px var(--shadow-md);
+
+        .rating-star {
+          color: #FF8C00;
+          font-size: 11px;
+          filter: drop-shadow(0 1px 1px var(--shadow-md));
+        }
+      }
+    }
+  }
+
+  .hover-info {
+    padding: 16px 16px 16px 110px;
+    background: linear-gradient(145deg, rgba(20, 20, 20, 0.98) 0%, rgba(25, 25, 25, 0.95) 100%);
+
+    .hover-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      line-height: 1.3;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
+      letter-spacing: 0.3px;
+    }
+
+    .hover-meta {
+      .meta-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 6px;
+        font-size: 12px;
+        padding: 2px 0;
+
+        .meta-label {
+          color: var(--primary-light);
+          font-weight: 600;
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .meta-value {
+          color: #f0f0f0;
+          font-weight: 500;
+          text-shadow: 0 1px 2px var(--shadow-md);
+        }
+
+        &.genres .meta-value {
+          max-width: 160px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          color: #e0e0e0;
+        }
+      }
+    }
+  }
+
+  &:hover {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translate(-50%, -50%) scale(1) rotateX(0deg) !important;
+    pointer-events: auto !important;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(145deg, rgba(255, 100, 10, 0.08) 0%, transparent 50%);
+    border-radius: 20px;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  &:hover::before {
+    opacity: 1;
+  }
+}
+
+/* ===== ИЗОБРАЖЕНИЯ И ИНФОРМАЦИЯ ===== */
 
 .anime-thumbnail {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  filter: brightness(0.95) contrast(1.05) saturate(1.1);
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 14px;
+    transition: transform 0.4s ease;
+  }
+
+  .anime-tag {
+    position: absolute;
+    top: 12px;
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 8px;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    z-index: 3;
+    pointer-events: none;
+    border: 1px solid var(--border-color);
+    box-shadow: 0px 4px 12px var(--shadow-md);
+    transition: all 0.3s ease;
+  }
+
+  .type-tag {
+    left: 12px;
+    background: linear-gradient(135deg, rgba(255, 100, 10, 0.9) 0%, rgba(255, 140, 66, 0.9) 100%);
+    color: var(--text-primary);
+    font-size: 11px;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  }
+
+  .episodes-tag {
+    right: 12px;
+    background: linear-gradient(135deg, rgba(100, 100, 100, 0.9) 0%, rgba(150, 150, 150, 0.9) 100%);
+    color: var(--text-primary);
+    font-size: 11px;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  }
 }
 
 .anime-info {
@@ -122,126 +545,119 @@
   bottom: 0;
   left: 0;
   width: 100%;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-  padding: 10px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.8) 70%, transparent 100%);
+  padding: 16px 12px 20px;
   text-align: center;
   color: white;
-  font-family: 'Arial', sans-serif;
-  opacity: 1;
-  transform: translateY(10px);
-  transition: all 0.3s ease;
+  font-family: 'Rubik', sans-serif;
+  transition: all 0.4s ease;
+  border-radius: 0 0 16px 16px;
 
   .anime-title-text {
     position: absolute;
-    bottom: 25px; /* Оставляем пространство снизу */
-    left: 50%; /* Центрируем по горизонтали */
-    transform: translateX(-50%) translateY(0); /* Центрируем по горизонтали и сохраняем положение снизу */
-    font-size: 16px;
-    font-weight: bold;
-    width: 100%;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(0);
+    font-size: 15px;
+    font-weight: 700;
+    width: 92%;
     margin: 0;
     opacity: 1;
-    transition: all 0.3s ease;
+    color: var(--text-primary);
+    text-shadow: 0 3px 6px rgba(0, 0, 0, 0.9);
+    line-height: 1.3;
+    transition: all 0.4s ease;
+    letter-spacing: 0.3px;
   }
-  .anime-title-text-info
-  {
+
+  .anime-title-text-info {
     position: relative;
-    font-size: 14.5px;
-    color: rgb(250, 255, 177);
-    font-weight: bold;
+    font-size: 15px;
+    color: var(--text-primary);
+    font-weight: 700;
   }
+
   .anime-title-text-no-season {
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 700;
     margin: 0;
     opacity: 0;
-    transform: translateY(10px); /* Поднимем название вверх при отсутствии сезона */
+    transform: translateY(10px);
     transition: all 0.3s ease;
   }
 
   .season-text {
-    font-size: 20px;
-    color: #ff0000;
+    font-size: 14px;
+    color: var(--primary-light);
     position: relative;
-    bottom: 1px;
-    transition: all 0.3s ease;
-  }
-
-  .anime-detailed-info {
-    opacity: 0;
-    transform: translateY(10px);
-    transition: all 0.3s ease;
-    p {
-      font-size: 14px;
-      margin: 5px 0;
-    }
-  }
-
-  .anime-hover-text {
-    position: relative;
-    display: inline-block;
-    font-size: 18px;
-    font-weight: bold;
-    margin: 0;
-    color: #ff0000;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: all 0.3s ease;
-    background-color: rgba(255, 0, 0, 0.14);
-    padding: 3px;
-    border-radius: 20px;
-    width: 140px;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(255, 100, 10, 0.6);
+    transition: all 0.4s ease;
+    margin-top: 4px;
+    display: block;
   }
 }
+
+/* ===== КНОПКА ПРОСМОТРА ВСЕГО ===== */
 
 .view-all-button {
   position: absolute;
-  color: red;
   top: 0;
   right: 0;
   bottom: 0;
-  font-weight: bold;
+  width: 180px;
   display: flex;
   align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  background: linear-gradient(
+    135deg, 
+    rgba(255, 100, 10, 0.1) 0%, 
+    rgba(255, 140, 66, 0.05) 50%,
+    rgba(20, 20, 20, 0.8) 100%
+  );
+  color: var(--primary-light);
+  border: 2px solid rgba(255, 100, 10, 0.3);
+  border-radius: 0 16px 16px 0;
+  font-size: 15px;
+  font-weight: 600;
   text-decoration: none;
-  padding: 0;
-  padding-left: 60px;
-  padding-right: 10px;
-  padding-bottom: 50px;
-  text-align: center;
-  margin: 0;
-  background: linear-gradient(to left, #111111, transparent);
-  transition: all 200ms ease-out, box-shadow 300ms ease-out; /* Добавлена плавная анимация тени */
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+  z-index: 5;
+  backdrop-filter: blur(10px);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+
+  &:hover {
+    background: linear-gradient(
+      135deg, 
+      rgba(255, 100, 10, 0.2) 0%, 
+      rgba(255, 140, 66, 0.15) 50%,
+      rgba(20, 20, 20, 0.9) 100%
+    );
+    border-color: rgba(255, 100, 10, 0.6);
+    transform: scale(1.05) translateX(-5px);
+    color: var(--text-primary);
+    box-shadow: 0px 8px 25px rgba(255, 100, 10, 0.3);
+  }
 
   a {
     text-decoration: none;
-  }
-
-  &:hover {
-    background-color: rgba(255, 47, 47, 0.34);
-    transform: scale(1.05);
-    opacity: 1;
-    box-shadow: 0 4px 15px rgba(255, 0, 0, 0.5); /* Добавлена тень при наведении */
-  }
-
-  &:focus {
-    outline: none;
-    box-shadow: 0 0 5px rgba(255, 0, 0, 0.7);
+    color: inherit;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
+
+/* ===== СПИСОК АНИМЕ ===== */
 
 .anime-list-page {
   padding: 0.6rem;
   background: #1c1c1c;
   color: #fff;
-}
-
-.categoryname
-{
-  position: relative;
-  padding: 10px;
-  font-size: 28px;
-  margin-left: 30px;
 }
 
 .anime-list {
@@ -250,53 +666,92 @@
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
 
+/* ===== АНИМАЦИИ ЗАГРУЗКИ ===== */
 
+.anime-container-card-loading {
+  opacity: 0;
+  animation: fadeInDissolve 0.6s ease forwards;
+}
 
-.anime-thumbnail {
-  position: relative;
-  border-radius: 10px;
-  overflow: hidden;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 10px;
+@keyframes fadeInDissolve {
+  from {
+    opacity: 0;
+    filter: blur(4px);
   }
-
-  .anime-tag {
-    position: absolute;
-    top: 8px;
-    padding: 5px 10px;
-    font-size: 12px;
-    font-weight: bold;
-    border-radius: 6px;
-    color: #fff;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(3px);
-    z-index: 2;
-    pointer-events: none;
-  }
-
-  .type-tag {
-    left: 8px;
-    background-color: #ff4655; // красный стиль для типа
-  }
-
-  .episodes-tag {
-    right: 8px;
-    background-color: #ff0f0f; // жёлтый стиль для кол-ва серий
-    color: #ffffff;
+  to {
+    opacity: 1;
+    filter: blur(0);
   }
 }
 
-//АДАПТАЦИЯ
+.anime-spinner-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 120px;
+}
 
-// 📱 Адаптивность для мобильных, планшетов и больших экранов
+.anime-loading-spinner {
+  width: 40px;
+  aspect-ratio: 1;
+  --c: linear-gradient(#FF640A 0 0);
+  --r1: radial-gradient(farthest-side at bottom, #CC4F08 93%, #0000);
+  --r2: radial-gradient(farthest-side at top, #992D05 93%, #0000);
+  background:
+    var(--c), var(--r1), var(--r2),
+    var(--c), var(--r1), var(--r2),
+    var(--c), var(--r1), var(--r2);
+  background-repeat: no-repeat;
+  animation: spinnerAnimation 1s infinite alternate;
+}
+
+@keyframes spinnerAnimation {
+  0%, 25% {
+    background-size: 8px 0, 8px 4px, 8px 4px, 8px 0, 8px 4px, 8px 4px, 8px 0, 8px 4px, 8px 4px;
+    background-position: 0 50%, 0 calc(50% - 2px), 0 calc(50% + 2px), 50% 50%, 50% calc(50% - 2px), 50% calc(50% + 2px), 100% 50%, 100% calc(50% - 2px), 100% calc(50% + 2px);
+  }
+  50% {
+    background-size: 8px 100%, 8px 4px, 8px 4px, 8px 0, 8px 4px, 8px 4px, 8px 0, 8px 4px, 8px 4px;
+    background-position: 0 50%, 0 calc(0% - 2px), 0 calc(100% + 2px), 50% 50%, 50% calc(50% - 2px), 50% calc(50% + 2px), 100% 50%, 100% calc(50% - 2px), 100% calc(50% + 2px);
+  }
+  75% {
+    background-size: 8px 100%, 8px 4px, 8px 4px, 8px 100%, 8px 4px, 8px 4px, 8px 0, 8px 4px, 8px 4px;
+    background-position: 0 50%, 0 calc(0% - 2px), 0 calc(100% + 2px), 50% 50%, 50% calc(0% - 2px), 50% calc(100% + 2px), 100% 50%, 100% calc(50% - 2px), 100% calc(50% + 2px);
+  }
+  95%, 100% {
+    background-size: 8px 100%, 8px 4px, 8px 4px, 8px 100%, 8px 4px, 8px 4px, 8px 100%, 8px 4px, 8px 4px;
+    background-position: 0 50%, 0 calc(0% - 2px), 0 calc(100% + 2px), 50% 50%, 50% calc(0% - 2px), 50% calc(100% + 2px), 100% 50%, 100% calc(0% - 2px), 100% calc(100% + 2px);
+  }
+}
+
+/* ===== АДАПТИВНОСТЬ ===== */
 
 @media (max-width: 1024px) {
   .category {
-    margin: 15px 0 0 40px;
+    margin: 15px 0 0 0;
+    padding: 0 12px;
+  }
+  
+  .category-list-container {
+    padding: 0 20px;
+  }
+  
+  .category-title {
+    font-size: 24px;
+  }
+  
+  .anime-title-card {
+    width: 220px; // Увеличили ширину
+    height: 270px; // Уменьшили высоту
+    margin: 0 12px 24px;
+  }
+
+  .anime-title-text-info {
+    font-size: 12px;
+  }
+
+  .anime-detailed-info p {
+    font-size: 11px;
   }
 
   .anime-title {
@@ -305,9 +760,9 @@
   }
 
   .anime-title-card {
-    width: 160px;
-    height: 240px;
-    margin: 0 8px 20px 8px;
+    width: 180px;
+    height: 260px;
+    margin: 0 10px 22px 10px;
   }
 
   .anime-line-container {
@@ -316,6 +771,11 @@
 
   .anime-info .anime-title-text,
   .anime-info .anime-title-text-no-season {
+    font-size: 10px;
+    bottom: 25px;
+  }
+
+  .season-text {
     font-size: 14px;
   }
 
@@ -328,20 +788,49 @@
 
 @media (max-width: 768px) {
   .category {
-    margin-left: 20px;
+    margin-left: 0;
+    padding: 0 8px;
+  }
+  
+  .category-list-container {
+    padding: 0 15px;
+  }
+  
+  .category-title {
+    font-size: 22px;
+  }
+  
+  .container-wrapper {
+    padding-top: 30px;
+    margin-bottom: 20px;
+  }
+
+  .collection-tag {
+    font-size: 9px;
+    padding: 1px 0px;
+    left: 7px;
+    width: 85%;
+    bottom: 3px;
+    border-radius: 100px;
+    letter-spacing: 0.3px;
+  }
+
+  .anime-title-card:hover .collection-tag {
+    opacity: 0;
+    transform: translateY(10px);
   }
 
   .category-title,
   .categoryname {
     font-size: 24px;
-    margin-left: 20px;
+    margin-left: 0;
   }
 
   .anime-title-card {
-    width: 140px;
-    height: 210px;
-    margin: 0 6px 16px 6px;
-    border-radius: 15px;
+    width: 160px;
+    height: 230px;
+    margin: 0 8px 18px 8px;
+    border-radius: 16px;
   }
 
   .anime-info {
@@ -355,7 +844,7 @@
   }
 
   .anime-info .season-text {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .view-all-button {
@@ -368,17 +857,35 @@
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     margin-left: 10px;
   }
+
+  .anime-hover-card {
+    width: 320px;
+    height: 180px;
+  }
 }
 
 @media (max-width: 480px) {
   .category {
-    margin: 10px 0 0 30px;
+    margin: 10px 0 0 0;
+    padding: 0 6px;
+  }
+  
+  .category-list-container {
+    padding: 0 10px;
+  }
+
+  .anime-title-text-info {
+    font-size: 8px;
+  }
+
+  .anime-detailed-info p {
+    font-size: 8px;
   }
 
   .category-title,
   .categoryname {
-    font-size: 20px;
-    margin-left: 10px;
+    font-size: 18px;
+    margin-left: 0;
   }
 
   .anime-title {
@@ -388,9 +895,9 @@
   }
 
   .anime-title-card {
-    width: 120px;
-    height: 180px;
-    margin: 0 5px 15px 5px;
+    width: 140px;
+    height: 200px;
+    margin: 0 6px 16px 6px;
   }
 
   .anime-info {
@@ -400,11 +907,11 @@
   .anime-info .anime-title-text,
   .anime-info .anime-title-text-no-season,
   .anime-info .anime-hover-text {
-    font-size: 12px;
+    font-size: 11.2px;
   }
 
   .anime-info .season-text {
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .view-all-button {
@@ -417,6 +924,18 @@
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     margin-left: 0;
     padding: 0 5px;
+  }
+
+  .anime-thumbnail .anime-tag {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    top: 6px;
+  }
+
+  .anime-hover-card {
+    width: 280px;
+    height: 160px;
   }
 }
 
@@ -437,4 +956,48 @@
   .anime-line-container {
     padding-top: 25px;
   }
+}
+
+/* ===== ГЛОБАЛЬНАЯ ЗАЩИТА ОТ ОБРЕЗАНИЯ HOVER КАРТОЧЕК ===== */
+
+/* Принудительно показываем hover карточки поверх ВСЕХ элементов */
+.anime-hover-card {
+  position: fixed !important;
+  z-index: 2147483647 !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) scale(0.9) !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  /* Убираем любые ограничения */
+  clip: unset !important;
+  clip-path: unset !important;
+  overflow: visible !important;
+  contain: unset !important;
+  isolation: unset !important;
+}
+
+/* Активное состояние hover карточки */
+.anime-title-card:hover .anime-hover-card,
+.anime-cards-container:hover .anime-hover-card,
+.anime-hover-card:hover {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translate(-50%, -50%) scale(1) !important;
+  pointer-events: auto !important;
+}
+
+/* Убираем ограничения с родительских контейнеров */
+.anime-cards-container,
+.anime-title-card,
+.anime-line-container,
+.category-list-container,
+.container-wrapper,
+.category {
+  overflow: visible !important;
+  contain: unset !important;
+  isolation: unset !important;
+  perspective: unset !important;
+  transform-style: unset !important;
 }

@@ -1,0 +1,393 @@
+@charset "UTF-8";
+/* ===========================
+   🔔 Админ панель - Обновления сайта
+   =========================== */
+.admin-site-updates {
+  padding: 24px;
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  min-height: 100vh;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+.admin-site-updates .loading-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 300px;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+.admin-site-updates .loading-message svg {
+  color: var(--primary-color);
+}
+.admin-site-updates .admin-site-updates-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+.admin-site-updates .admin-site-updates-header h1 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 2rem;
+  font-weight: 700;
+}
+.admin-site-updates .admin-site-updates-header h1 svg {
+  color: var(--primary-color);
+}
+.admin-site-updates .admin-site-updates-header .create-update-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.admin-site-updates .admin-site-updates-header .create-update-btn:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+.admin-site-updates .admin-site-updates-header .create-update-btn:active {
+  transform: translateY(0);
+}
+.admin-site-updates .update-form-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  -webkit-backdrop-filter: blur(4px);
+          backdrop-filter: blur(4px);
+}
+.admin-site-updates .update-form-modal .update-form {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 32px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+.admin-site-updates .update-form-modal .update-form h3 {
+  margin: 0 0 24px 0;
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+.admin-site-updates .update-form-modal .update-form .form-group {
+  margin-bottom: 20px;
+}
+.admin-site-updates .update-form-modal .update-form .form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+.admin-site-updates .update-form-modal .update-form .form-group input,
+.admin-site-updates .update-form-modal .update-form .form-group select,
+.admin-site-updates .update-form-modal .update-form .form-group textarea {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+.admin-site-updates .update-form-modal .update-form .form-group input:focus,
+.admin-site-updates .update-form-modal .update-form .form-group select:focus,
+.admin-site-updates .update-form-modal .update-form .form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.1);
+}
+.admin-site-updates .update-form-modal .update-form .form-group input::-moz-placeholder, .admin-site-updates .update-form-modal .update-form .form-group select::-moz-placeholder, .admin-site-updates .update-form-modal .update-form .form-group textarea::-moz-placeholder {
+  color: var(--text-muted);
+}
+.admin-site-updates .update-form-modal .update-form .form-group input::placeholder,
+.admin-site-updates .update-form-modal .update-form .form-group select::placeholder,
+.admin-site-updates .update-form-modal .update-form .form-group textarea::placeholder {
+  color: var(--text-muted);
+}
+.admin-site-updates .update-form-modal .update-form .form-group select {
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  padding-right: 40px;
+}
+.admin-site-updates .update-form-modal .update-form .form-group select option {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  padding: 8px 12px;
+}
+.admin-site-updates .update-form-modal .update-form .form-group select option:hover, .admin-site-updates .update-form-modal .update-form .form-group select option:focus, .admin-site-updates .update-form-modal .update-form .form-group select option:checked, .admin-site-updates .update-form-modal .update-form .form-group select option:active {
+  background: var(--primary-color);
+  color: white;
+}
+@media (prefers-color-scheme: dark) {
+  .admin-site-updates .update-form-modal .update-form .form-group select option {
+    background: #2d3748;
+    color: #e2e8f0;
+  }
+  .admin-site-updates .update-form-modal .update-form .form-group select option:hover, .admin-site-updates .update-form-modal .update-form .form-group select option:focus, .admin-site-updates .update-form-modal .update-form .form-group select option:checked, .admin-site-updates .update-form-modal .update-form .form-group select option:active {
+    background: var(--primary-color);
+    color: white;
+  }
+}
+.admin-site-updates .update-form-modal .update-form .form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+  font-family: inherit;
+  line-height: 1.6;
+}
+.admin-site-updates .update-form-modal .update-form .form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+.admin-site-updates .update-form-modal .update-form .form-actions button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.admin-site-updates .update-form-modal .update-form .form-actions button.save-btn {
+  background: var(--primary-color);
+  color: white;
+}
+.admin-site-updates .update-form-modal .update-form .form-actions button.save-btn:hover {
+  background: var(--primary-hover);
+}
+.admin-site-updates .update-form-modal .update-form .form-actions button.cancel-btn {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+.admin-site-updates .update-form-modal .update-form .form-actions button.cancel-btn:hover {
+  background: var(--bg-active);
+  color: var(--text-primary);
+}
+.admin-site-updates .updates-list {
+  display: grid;
+  gap: 24px;
+}
+.admin-site-updates .updates-list .empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 32px;
+  text-align: center;
+  color: var(--text-muted);
+}
+.admin-site-updates .updates-list .empty-state svg {
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+.admin-site-updates .updates-list .empty-state h3 {
+  margin: 0 0 8px 0;
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+}
+.admin-site-updates .updates-list .empty-state p {
+  margin: 0;
+  font-size: 1rem;
+}
+.admin-site-updates .updates-list .update-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 24px;
+  transition: all 0.3s ease;
+}
+.admin-site-updates .updates-list .update-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  border-color: var(--border-hover);
+}
+.admin-site-updates .updates-list .update-card.inactive {
+  opacity: 0.6;
+  border-color: var(--text-muted);
+}
+.admin-site-updates .updates-list .update-card .update-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.admin-site-updates .updates-list .update-card .update-header .update-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.admin-site-updates .updates-list .update-card .update-header .update-info .update-version {
+  margin: 0;
+  color: var(--primary-color);
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+.admin-site-updates .updates-list .update-card .update-header .update-info .update-type {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.admin-site-updates .updates-list .update-card .update-header .update-info .update-type.major {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+  color: white;
+}
+.admin-site-updates .updates-list .update-card .update-header .update-info .update-type.regular {
+  background: linear-gradient(135deg, #4ecdc4, #44a08d);
+  color: white;
+}
+.admin-site-updates .updates-list .update-card .update-header .update-info .inactive-badge {
+  padding: 4px 8px;
+  background: var(--text-muted);
+  color: var(--bg-primary);
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.admin-site-updates .updates-list .update-card .update-header .update-actions {
+  display: flex;
+  gap: 8px;
+}
+.admin-site-updates .updates-list .update-card .update-header .update-actions .action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.admin-site-updates .updates-list .update-card .update-header .update-actions .action-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.admin-site-updates .updates-list .update-card .update-header .update-actions .action-btn.edit-btn:hover {
+  border-color: #3b82f6;
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
+}
+.admin-site-updates .updates-list .update-card .update-header .update-actions .action-btn.toggle-btn:hover {
+  border-color: #10b981;
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.1);
+}
+.admin-site-updates .updates-list .update-card .update-header .update-actions .action-btn.delete-btn:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+.admin-site-updates .updates-list .update-card .update-content {
+  margin-bottom: 16px;
+}
+.admin-site-updates .updates-list .update-card .update-content h4 {
+  margin: 0 0 12px 0;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.admin-site-updates .updates-list .update-card .update-content .changes-list .change-item {
+  padding: 6px 0;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  border-left: 3px solid var(--primary-color);
+  padding-left: 16px;
+  margin: 8px 0;
+  background: var(--primary-bg);
+  border-radius: 0 8px 8px 0;
+}
+.admin-site-updates .updates-list .update-card .update-content .changes-list .change-item:hover {
+  background: var(--primary-bg-hover);
+}
+.admin-site-updates .updates-list .update-card .update-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+}
+.admin-site-updates .updates-list .update-card .update-footer .created-at {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+@media (max-width: 768px) {
+  .admin-site-updates {
+    padding: 16px;
+  }
+  .admin-site-updates .admin-site-updates-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+  .admin-site-updates .admin-site-updates-header h1 {
+    font-size: 1.5rem;
+    justify-content: center;
+  }
+  .admin-site-updates .admin-site-updates-header .create-update-btn {
+    justify-content: center;
+    width: 100%;
+  }
+  .admin-site-updates .update-form-modal .update-form {
+    padding: 24px 16px;
+    margin: 16px;
+    width: calc(100% - 32px);
+  }
+  .admin-site-updates .update-card .update-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+  .admin-site-updates .update-card .update-header .update-info {
+    justify-content: center;
+  }
+  .admin-site-updates .update-card .update-header .update-actions {
+    justify-content: center;
+  }
+}
+@media (max-width: 480px) {
+  .admin-site-updates .update-card .update-header .update-info {
+    flex-direction: column;
+    gap: 8px;
+  }
+}/*# sourceMappingURL=admin-site-updates.css.map */

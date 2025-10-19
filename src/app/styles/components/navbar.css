@@ -1,0 +1,514 @@
+@charset "UTF-8";
+.mobile-category-navbar {
+  display: flex;
+  margin-top: 80px;
+  flex-direction: column;
+  height: 100vh;
+  color: #ffffff;
+  overflow: hidden;
+}
+
+.mobile-category-navbar-items {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  border-bottom: none;
+  background: #111;
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+  -webkit-overflow-scrolling: touch;
+}
+.mobile-category-navbar-items::-webkit-scrollbar {
+  display: none;
+}
+
+.mobile-category-navbar-item {
+  flex-shrink: 0;
+  padding: 12px 20px;
+  margin-right: 0;
+  border-radius: 25px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  white-space: nowrap;
+  position: relative;
+}
+.mobile-category-navbar-item a {
+  text-decoration: none;
+  color: inherit;
+}
+.mobile-category-navbar-item:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+.mobile-category-navbar-item.active {
+  color: #ffffff;
+}
+
+.mobile-category-underline {
+  position: absolute;
+  bottom: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #ff2e2e, #ff6b6b, #ff2e2e);
+  border-radius: 2px;
+  will-change: transform, width;
+  transform: translateX(var(--underline-x, 0px));
+  width: var(--underline-width, 0px);
+  transition: transform 0.3s ease, width 0.3s ease;
+}
+.mobile-category-underline.swiping {
+  transition: none;
+}
+
+.mobile-anime-grid {
+  position: relative;
+  right: 55px;
+  top: 15px;
+  margin-bottom: 2rem;
+  overflow-y: auto;
+  padding: 30px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 425px;
+  -webkit-overflow-scrolling: touch;
+}
+.mobile-anime-grid::-webkit-scrollbar {
+  width: 4px;
+}
+.mobile-anime-grid::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
+}
+.mobile-anime-grid::-webkit-scrollbar-thumb {
+  background: rgba(124, 92, 255, 0.3);
+  border-radius: 2px;
+}
+.mobile-anime-grid::-webkit-scrollbar-thumb:hover {
+  background: rgba(124, 92, 255, 0.5);
+}
+
+.mobile-anime-card {
+  opacity: 0;
+  width: 100% !important;
+  height: auto !important;
+  margin: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+  transition: all 0.3s ease-in-out;
+}
+.mobile-anime-card .anime-title-card {
+  width: 100% !important;
+  height: 150px !important;
+  margin: 0 !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  transition: all 0.2s ease-in-out !important;
+}
+.mobile-anime-card .anime-title-card:active {
+  transform: scale(0.95);
+}
+.mobile-anime-card .anime-title-card .anime-thumbnail {
+  width: 100% !important;
+  height: 100% !important;
+  -o-object-fit: cover !important;
+     object-fit: cover !important;
+}
+.mobile-anime-card .anime-title-text {
+  font-size: 11px !important;
+  line-height: 1.3 !important;
+  margin-top: 8px !important;
+  text-align: center !important;
+  color: #fff !important;
+  font-weight: 500 !important;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.mobile-anime-card:hover {
+  transform: translateY(-2px);
+}
+.mobile-anime-card:nth-child(1) {
+  transition-delay: 0ms;
+}
+.mobile-anime-card:nth-child(2) {
+  transition-delay: 60ms;
+}
+.mobile-anime-card:nth-child(3) {
+  transition-delay: 120ms;
+}
+.mobile-anime-card:nth-child(4) {
+  transition-delay: 180ms;
+}
+.mobile-anime-card:nth-child(5) {
+  transition-delay: 240ms;
+}
+.mobile-anime-card:nth-child(6) {
+  transition-delay: 300ms;
+}
+.mobile-anime-card:nth-child(7) {
+  transition-delay: 360ms;
+}
+.mobile-anime-card:nth-child(8) {
+  transition-delay: 420ms;
+}
+.mobile-anime-card:nth-child(9) {
+  transition-delay: 480ms;
+}
+.mobile-anime-card:nth-child(10) {
+  transition-delay: 540ms;
+}
+.mobile-anime-card:nth-child(11) {
+  transition-delay: 600ms;
+}
+.mobile-anime-card:nth-child(12) {
+  transition-delay: 660ms;
+}
+.mobile-anime-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mobile-spinner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.mobile-spinner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-top-color: #7c5cff;
+  border-left-color: #a78bff;
+  animation: mobile-spin 1.2s linear infinite;
+}
+
+@keyframes mobile-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.mobile-anime-loading-container {
+  position: relative;
+  width: 100%;
+  height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-category-center-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  z-index: 10;
+}
+
+.mobile-category-spinner {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-top: 4px solid var(--primary-color);
+  border-right: 4px solid #FF8C42;
+  animation: mobile-spin 1.2s linear infinite;
+}
+
+.mobile-category-loading-text {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  opacity: 0.8;
+}
+
+.mobile-cover-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  border-radius: 12px;
+  gap: 8px;
+}
+
+.mobile-cover-spinner {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top: 3px solid var(--primary-color);
+  animation: mobile-spin 1s linear infinite;
+}
+
+.mobile-loading-text {
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 500;
+  text-align: center;
+  opacity: 0.7;
+}
+
+.desktop-cover-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  border-radius: 12px;
+  gap: 10px;
+}
+
+.desktop-cover-spinner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-top: 4px solid var(--primary-color);
+  animation: mobile-spin 1s linear infinite;
+}
+
+.desktop-loading-text {
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  opacity: 0.7;
+}
+
+.mobile-empty-category {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  padding: 60px 20px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 18px;
+  line-height: 1.6;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  width: 80%;
+  max-width: 300px;
+}
+
+.mobile-error-message {
+  color: #ff2e2e;
+  text-align: center;
+  padding: 10px;
+  margin: 10px 0;
+  background: rgba(255, 46, 46, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 46, 46, 0.3);
+}
+
+.mobile-skeleton {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.05) 75%);
+  background-size: 200% 100%;
+  animation: mobile-skeleton-loading 1.5s infinite;
+  border-radius: 8px;
+}
+
+@keyframes mobile-skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+/* ===========================
+   📱 Мобильный стиль
+   =========================== */
+@media (max-width: 768px) {
+  .mobile-category-navbar {
+    position: relative;
+    padding: 0 16px 0;
+    top: -2rem;
+  }
+  .logo,
+  .logo-left,
+  .profile {
+    display: none !important;
+  }
+  .search-bar-anime {
+    width: 285px !important;
+    height: 40px;
+    padding: 8px 12px;
+    margin: 0 8px;
+    left: -12px !important;
+  }
+  .search-bar-anime .search-placeholder {
+    font-size: 12px;
+  }
+  .search-bar-anime .search-icon-button {
+    font-size: 16px;
+  }
+  .mobile-category-navbar-items {
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .mobile-category-navbar-items::-webkit-scrollbar {
+    display: none;
+  }
+  .mobile-category-navbar-item {
+    flex-shrink: 0;
+    margin-right: 0;
+    border-radius: 25px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+            user-select: none;
+    white-space: nowrap;
+    position: relative;
+  }
+  .mobile-category-navbar-item:hover {
+    color: #fff;
+  }
+  .mobile-category-navbar-item.active {
+    color: #fff;
+    font-weight: 600;
+  }
+  .mobile-category-navbar-item:active {
+    transform: scale(0.96);
+    outline: 2px solid rgba(255, 255, 255, 0.3);
+    outline-offset: 2px;
+  }
+}
+/* ===========================
+   🔄 Мобильная / Десктоп версия
+   =========================== */
+.mobile-only {
+  display: none;
+}
+
+.desktop-only {
+  display: block;
+  margin-bottom: 5rem;
+}
+
+@media (max-width: 768px) {
+  .mobile-only {
+    display: block;
+  }
+  .desktop-only {
+    display: none;
+  }
+}
+/* Скрыть loader на маленьких экранах */
+@media (max-width: 600px) {
+  .loader-container-category {
+    display: none !important;
+  }
+}
+@media (max-width: 480px) {
+  .mobile-anime-grid {
+    width: 425px;
+  }
+  .mobile-anime-card .anime-title-card {
+    height: 140px !important;
+    border-radius: 10px !important;
+  }
+  .mobile-anime-card .anime-title-text {
+    font-size: 10px !important;
+    margin-top: 6px !important;
+  }
+}
+@media (min-width: 481px) and (max-width: 768px) {
+  .mobile-anime-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    padding: 20px;
+    right: 30px;
+  }
+  .mobile-anime-card .anime-title-card {
+    height: 160px !important;
+    border-radius: 12px !important;
+  }
+  .mobile-anime-card .anime-title-text {
+    font-size: 11px !important;
+    margin-top: 8px !important;
+  }
+}
+@media (min-width: 769px) {
+  .mobile-anime-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+/* ===========================
+   🚪 Кнопка выхода
+   =========================== */
+.mobile-logout-btn {
+  position: relative;
+  width: 290px;
+  display: inline-block;
+  padding: 12px 30px;
+  top: -13px;
+  background: none !important;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  border: 2px solid #ff2e2e;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: none !important;
+  transition: all 0.2s ease;
+}
+
+.mobile-logout-btn:hover {
+  background-color: rgba(255, 46, 46, 0.1);
+}
+
+.mobile-logout-btn:active {
+  transform: scale(0.96);
+  outline: 2px solid rgba(255, 46, 46, 0.5);
+  outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+  .mobile-logout-btn {
+    font-size: 0.9rem;
+    padding: 10px 25px;
+  }
+}
+/* Скрыть категории когда открыта модалка поиска */
+body.search-modal-open .mobile-only {
+  display: none !important;
+}/*# sourceMappingURL=navbar.css.map */

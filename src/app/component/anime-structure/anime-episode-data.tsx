@@ -12,7 +12,12 @@ export interface AnimeEpisode {
     id: number;
     title: string;
     availableLanguages: AudioOption[];
-    url: string; // <-- обязательно наличие поля url
+    url: string;
+    duration: string;
+    watched: boolean;
+    thumbnailUrl?: string;
+    releaseDate?: string;
+    language: string;
 }
 
 

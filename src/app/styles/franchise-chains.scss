@@ -1,0 +1,769 @@
+// Менеджер цепочек франшизы
+.franchise-chain-manager {
+  margin-top: 30px;
+  padding: 25px;
+  background: #1a1a1a;
+  border-radius: 12px;
+  border: 1px solid #333;
+
+  // Заголовок секции
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+
+    h3 {
+      color: #fff;
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+
+      .btn-create-chain,
+      .btn-add-to-chain {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 16px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:hover:not(:disabled) {
+          transform: translateY(-2px);
+        }
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+      }
+
+      .btn-create-chain {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+
+        &:hover:not(:disabled) {
+          box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+      }
+
+      .btn-add-to-chain {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+
+        &:hover:not(:disabled) {
+          box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+      }
+    }
+  }
+
+  // Текущие цепочки
+  .current-chains {
+    .loading-text,
+    .empty-text {
+      text-align: center;
+      color: #888;
+      padding: 30px;
+      font-style: italic;
+      background: #2a2a2a;
+      border-radius: 10px;
+      border: 1px solid #333;
+    }
+
+    .franchise-chain-card {
+      background: #2a2a2a;
+      border: 1px solid #444;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+
+      &:hover {
+        border-color: #555;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
+
+      .chain-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        border-bottom: 1px solid #333;
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+
+        .chain-info {
+          flex: 1;
+
+          .chain-name {
+            color: #fff;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+
+            svg {
+              color: #3b82f6;
+            }
+          }
+
+          .chain-description {
+            color: #cbd5e1;
+            font-size: 14px;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            font-style: italic;
+          }
+
+          .chain-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            color: #94a3b8;
+
+            .anime-count {
+              padding: 3px 10px;
+              background: rgba(16, 185, 129, 0.2);
+              border-radius: 14px;
+              color: #10b981;
+              font-weight: 600;
+              border: 1px solid rgba(16, 185, 129, 0.3);
+            }
+
+            .separator {
+              color: #64748b;
+            }
+
+            .created-date {
+              color: #94a3b8;
+            }
+          }
+        }
+
+        .chain-actions {
+          display: flex;
+          gap: 8px;
+
+          .btn-remove,
+          .btn-delete-chain {
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #555;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+
+            &:hover {
+              transform: scale(1.05);
+            }
+          }
+
+          .btn-remove {
+            color: #fbbf24;
+
+            &:hover {
+              background: rgba(251, 191, 36, 0.15);
+              border-color: #fbbf24;
+              box-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
+            }
+          }
+
+          .btn-delete-chain {
+            color: #ef4444;
+
+            &:hover {
+              background: rgba(239, 68, 68, 0.15);
+              border-color: #ef4444;
+              box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+            }
+          }
+        }
+      }
+
+      .animes-in-chain {
+        padding: 20px;
+
+        .animes-header {
+          margin-bottom: 15px;
+
+          h4 {
+            color: #e2e8f0;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #374151;
+          }
+        }
+
+        .animes-list {
+          .anime-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+
+            &.dragging {
+              background: #374151;
+              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+              transform: rotate(2deg);
+            }
+
+            &.current {
+              border-left: 4px solid #10b981;
+              background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%);
+
+              .anime-title {
+                font-weight: 700;
+              }
+            }
+
+            &:hover:not(.dragging) {
+              background: #374151;
+              border-color: #4b5563;
+            }
+
+            .drag-handle {
+              color: #6b7280;
+              margin-right: 12px;
+              cursor: grab;
+              padding: 4px;
+              border-radius: 4px;
+              transition: all 0.2s ease;
+
+              &:hover {
+                background: rgba(107, 114, 128, 0.2);
+                color: #9ca3af;
+              }
+
+              &:active {
+                cursor: grabbing;
+              }
+            }
+
+            .anime-order {
+              color: #9ca3af;
+              font-weight: 700;
+              font-size: 14px;
+              margin-right: 12px;
+              min-width: 25px;
+            }
+
+            .anime-details {
+              flex: 1;
+
+              .anime-title-row {
+                display: flex;
+                align-items: center;
+                margin-bottom: 4px;
+
+                .anime-title {
+                  color: #f1f5f9;
+                  font-size: 15px;
+                  font-weight: 600;
+                  display: flex;
+                  align-items: center;
+
+                  .current-marker {
+                    display: flex;
+                    align-items: center;
+                    color: #10b981;
+                    font-size: 11px;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+
+                    svg {
+                      color: #fbbf24;
+                    }
+                  }
+                }
+              }
+
+              .anime-alttitle {
+                color: #94a3b8;
+                font-size: 13px;
+                font-style: italic;
+                margin-bottom: 6px;
+              }
+
+              .anime-meta {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 12px;
+                color: #6b7280;
+
+                .anime-year {
+                  padding: 1px 6px;
+                  background: rgba(59, 130, 246, 0.2);
+                  border-radius: 10px;
+                  color: #3b82f6;
+                  font-weight: 600;
+                }
+
+                .separator {
+                  color: #4b5563;
+                }
+
+                .anime-status {
+                  padding: 1px 6px;
+                  background: rgba(168, 85, 247, 0.2);
+                  border-radius: 10px;
+                  color: #a855f7;
+                  font-weight: 500;
+                }
+
+                .episodes {
+                  padding: 1px 6px;
+                  background: rgba(34, 197, 94, 0.2);
+                  border-radius: 10px;
+                  color: #22c55e;
+                  font-weight: 500;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+  }
+
+  // Модальное окно
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+
+    .modal-content {
+      background: #1a1a1a;
+      border: 1px solid #444;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        border-bottom: 1px solid #333;
+
+        h3 {
+          color: #fff;
+          font-size: 1.3rem;
+          font-weight: 600;
+          margin: 0;
+        }
+
+        .modal-close {
+          background: transparent;
+          border: none;
+          color: #888;
+          cursor: pointer;
+          padding: 4px;
+          border-radius: 4px;
+          transition: all 0.2s ease;
+
+          &:hover {
+            color: #fff;
+            background: #333;
+          }
+        }
+      }
+
+      .modal-body {
+        padding: 20px;
+        overflow-y: auto;
+        flex: 1;
+
+        .form-group {
+          margin-bottom: 20px;
+
+          label {
+            display: block;
+            color: #ccc;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+          }
+
+          .form-input,
+          .form-textarea {
+            width: 100%;
+            padding: 12px;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+            transition: border-color 0.2s ease;
+
+            &:focus {
+              outline: none;
+              border-color: #667eea;
+            }
+
+            &::placeholder {
+              color: #888;
+            }
+          }
+
+          .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+          }
+        }
+
+        .search-container {
+          .search-input-container {
+            position: relative;
+            margin-bottom: 20px;
+
+            .search-input {
+              width: 100%;
+              padding: 12px 40px 12px 12px;
+              background: #2a2a2a;
+              border: 1px solid #444;
+              border-radius: 8px;
+              color: #fff;
+              font-size: 14px;
+
+              &:focus {
+                outline: none;
+                border-color: #667eea;
+              }
+
+              &::placeholder {
+                color: #888;
+              }
+            }
+
+            .search-icon {
+              position: absolute;
+              right: 12px;
+              top: 50%;
+              transform: translateY(-50%);
+              color: #888;
+              width: 16px;
+              height: 16px;
+            }
+          }
+
+          .search-loading {
+            text-align: center;
+            color: #888;
+            padding: 10px;
+            font-style: italic;
+          }
+
+          .chains-list {
+            max-height: 400px;
+            overflow-y: auto;
+
+            .empty-text {
+              text-align: center;
+              color: #888;
+              padding: 30px 20px;
+              font-style: italic;
+              background: #2a2a2a;
+              border-radius: 10px;
+              border: 1px dashed #444;
+            }
+
+            .chains-scroll-container {
+              display: flex;
+              flex-direction: column;
+              gap: 0;
+
+              .chain-item.selectable {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 16px;
+                margin-bottom: 12px;
+                background: #2a2a2a;
+                border: 1px solid #444;
+                border-radius: 10px;
+                transition: background-color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+                cursor: pointer;
+                border-left: 4px solid #667eea;
+                position: relative;
+
+                &:hover {
+                  background: #333;
+                  border-color: #555;
+                }
+
+                &.disabled {
+                  opacity: 0.5;
+                  cursor: not-allowed;
+                  border-left-color: #888;
+                  
+                  &:hover {
+                    background: #2a2a2a;
+                    border-color: #444;
+                  }
+                }
+
+                .chain-info {
+                  flex: 1;
+
+                  .chain-name {
+                    color: #fff;
+                    font-size: 16px;
+                    font-weight: 600;
+                    margin-bottom: 6px;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+
+                    svg {
+                      color: #667eea;
+                      flex-shrink: 0;
+                    }
+
+                    .badge-added {
+                      font-size: 12px;
+                      color: #10b981;
+                      font-weight: 500;
+                      padding: 2px 8px;
+                      background: rgba(16, 185, 129, 0.15);
+                      border-radius: 12px;
+                      border: 1px solid rgba(16, 185, 129, 0.3);
+                    }
+                  }
+
+                  .chain-description {
+                    color: #cbd5e1;
+                    font-size: 13px;
+                    margin-bottom: 10px;
+                    line-height: 1.5;
+                    font-style: italic;
+                    opacity: 0.9;
+                  }
+
+                  .chain-meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 12px;
+                    color: #888;
+                    flex-wrap: wrap;
+
+                    .anime-count {
+                      padding: 4px 10px;
+                      background: rgba(16, 185, 129, 0.15);
+                      border-radius: 14px;
+                      color: #10b981;
+                      font-weight: 600;
+                      border: 1px solid rgba(16, 185, 129, 0.3);
+                      display: inline-flex;
+                      align-items: center;
+                    }
+
+                    .separator {
+                      color: #555;
+                    }
+
+                    .created-date {
+                      color: #94a3b8;
+                      font-size: 11px;
+                    }
+                  }
+                }
+              }
+            }
+
+            /* Кастомный скроллбар */
+            &::-webkit-scrollbar {
+              width: 8px;
+            }
+
+            &::-webkit-scrollbar-track {
+              background: #1a1a1a;
+              border-radius: 4px;
+              margin: 4px 0;
+            }
+
+            &::-webkit-scrollbar-thumb {
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              border-radius: 4px;
+              border: 2px solid #1a1a1a;
+
+              &:hover {
+                background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
+              }
+            }
+          }
+        }
+      }
+
+      .modal-footer {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        padding: 20px;
+        border-top: 1px solid #333;
+
+        .btn-save {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 10px 16px;
+          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+          color: white;
+          border: none;
+          border-radius: 6px;
+          font-size: 14px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.2s ease;
+
+          &:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+          }
+
+          &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+          }
+        }
+
+        .btn-cancel {
+          padding: 10px 16px;
+          background: transparent;
+          color: #ccc;
+          border: 1px solid #555;
+          border-radius: 6px;
+          font-size: 14px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.2s ease;
+
+          &:hover {
+            background: #333;
+            border-color: #666;
+            color: #fff;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Адаптивность
+@media (max-width: 768px) {
+  .franchise-chain-manager {
+    padding: 20px;
+
+    .section-header {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 15px;
+
+      .header-actions {
+        justify-content: center;
+      }
+    }
+
+    .current-chains {
+      .chain-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+
+        .chain-actions {
+          justify-content: center;
+        }
+      }
+    }
+
+    .modal-overlay {
+      .modal-content {
+        width: 95%;
+        max-height: 90vh;
+
+        .modal-body {
+          padding: 15px;
+
+          .search-container {
+            .chains-list {
+              max-height: 300px;
+
+              .chains-scroll-container {
+                .chain-item.selectable {
+                  padding: 12px;
+                  margin-bottom: 10px;
+
+                  .chain-info {
+                    .chain-name {
+                      font-size: 15px;
+                    }
+
+                    .chain-description {
+                      font-size: 12px;
+                    }
+
+                    .chain-meta {
+                      font-size: 11px;
+                      gap: 8px;
+
+                      .anime-count {
+                        padding: 3px 8px;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        .modal-footer {
+          padding: 15px;
+          flex-direction: column;
+
+          .btn-save,
+          .btn-cancel {
+            width: 100%;
+            justify-content: center;
+          }
+        }
+      }
+    }
+  }
+}
+

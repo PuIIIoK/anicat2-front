@@ -1,0 +1,34 @@
+.bottom-navbar {
+  display: none;
+}
+@media (max-width: 768px) {
+  .bottom-navbar {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    background: #1c1c1c;
+    justify-content: space-around;
+    align-items: center;
+    border-top: 1px solid #333;
+    z-index: 1000;
+  }
+  .bottom-navbar a {
+    color: #888;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    height: 100%;
+    transition: color 0.2s;
+  }
+  .bottom-navbar a.active {
+    color: #e63946;
+  }
+  .bottom-navbar a:hover {
+    color: #fff;
+  }
+}/*# sourceMappingURL=bottom-navbar.css.map */

@@ -1,0 +1,574 @@
+/* ===========================
+   🔔 Модальные окна уведомлений
+   =========================== */
+
+// Общие стили для модальных окон
+.welcome-modal-overlay,
+.update-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(8px);
+  animation: overlayFadeIn 0.3s ease-out;
+}
+
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(8px);
+  }
+}
+
+// ===== ПРИВЕТСТВЕННОЕ МОДАЛЬНОЕ ОКНО =====
+.welcome-modal {
+  position: relative;
+  background: var(--bg-primary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 32px;
+  width: 90%;
+  max-width: 480px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  animation: welcomeModalSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  backdrop-filter: blur(20px);
+  
+  // Кнопка закрытия
+  .welcome-modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: var(--text-primary);
+      transform: scale(1.05);
+    }
+  }
+
+  // Заголовок
+  .welcome-modal-header {
+    text-align: center;
+    margin-bottom: 28px;
+    
+    .welcome-icons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+      
+      .welcome-icon {
+        transition: transform 0.2s ease;
+        
+        &:hover {
+          transform: scale(1.1);
+        }
+        
+        &.heart {
+          color: #ef4444;
+        }
+        
+        &.sparkles {
+          color: var(--primary-color);
+        }
+        
+        &.star {
+          color: #fbbf24;
+        }
+      }
+    }
+    
+    h1 {
+      margin: 0 0 8px 0;
+      color: var(--text-primary);
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    
+    .welcome-subtitle {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: 1rem;
+      font-weight: 400;
+      opacity: 0.8;
+    }
+  }
+
+  // Контент
+  .welcome-modal-content {
+    margin-bottom: 28px;
+    
+    .welcome-feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 16px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.12);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      }
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+      
+      .welcome-feature-icon {
+        flex-shrink: 0;
+        width: 44px;
+        height: 44px;
+        background: var(--primary-color);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        
+        &.mobile {
+          background: #10b981;
+        }
+        
+        &.performance {
+          background: #f59e0b;
+        }
+      }
+      
+      p {
+        margin: 0;
+        color: var(--text-secondary);
+        line-height: 1.5;
+        font-size: 0.95rem;
+        
+        strong {
+          color: var(--text-primary);
+          font-weight: 600;
+        }
+      }
+    }
+  }
+
+  // Футер
+  .welcome-modal-footer {
+    text-align: center;
+    padding-top: 8px;
+    
+    .welcome-ok-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      
+      &:hover {
+        background: var(--primary-hover);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+      }
+      
+      &:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      }
+    }
+  }
+
+}
+
+// ===== МОДАЛЬНОЕ ОКНО ОБНОВЛЕНИЯ =====
+.update-modal {
+  position: relative;
+  background: var(--bg-primary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 32px;
+  width: 90%;
+  max-width: 520px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  animation: updateModalSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  backdrop-filter: blur(20px);
+  
+  &.major-update {
+    border-color: rgba(229, 9, 20, 0.3);
+    box-shadow: 
+      0 20px 40px rgba(0, 0, 0, 0.6),
+      0 0 0 1px rgba(229, 9, 20, 0.2),
+      0 0 20px rgba(229, 9, 20, 0.1);
+  }
+  
+  // Кнопка закрытия
+  .update-modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: var(--text-primary);
+      transform: scale(1.05);
+    }
+  }
+
+  // Заголовок
+  .update-modal-header {
+    text-align: center;
+    margin-bottom: 28px;
+    
+    .update-type-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: var(--primary-color);
+      color: white;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      
+      .update-icon {
+        transition: transform 0.2s ease;
+        
+        &:hover {
+          transform: scale(1.1);
+        }
+      }
+    }
+    
+    h1 {
+      margin: 0 0 12px 0;
+      color: var(--text-primary);
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    
+    .update-sparkles {
+      position: relative;
+      
+      .sparkle {
+        display: none; // Убираем декоративные элементы
+      }
+    }
+  }
+
+  // Контент
+  .update-modal-content {
+    margin-bottom: 28px;
+    
+    h3 {
+      margin: 0 0 16px 0;
+      color: var(--text-primary);
+      font-size: 1.2rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    
+    .changes-list {
+      .change-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 12px;
+        padding: 16px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        transition: all 0.2s ease;
+        
+        &:hover {
+          background: rgba(255, 255, 255, 0.05);
+          border-color: rgba(255, 255, 255, 0.12);
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+        
+        .check-icon {
+          flex-shrink: 0;
+          color: #10b981;
+          margin-top: 2px;
+        }
+        
+        span {
+          color: var(--text-secondary);
+          line-height: 1.5;
+          font-size: 0.95rem;
+        }
+      }
+    }
+  }
+
+  // Футер
+  .update-modal-footer {
+    text-align: center;
+    padding-top: 8px;
+    
+    .update-ok-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      
+      &:hover {
+        background: var(--primary-hover);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+      }
+      
+      &:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      }
+    }
+  }
+
+}
+
+// ===== АНИМАЦИИ =====
+@keyframes welcomeModalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes updateModalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+
+
+// ===== АДАПТИВНОСТЬ =====
+@media (max-width: 768px) {
+  .welcome-modal {
+    padding: 24px 20px;
+    margin: 16px;
+    width: calc(100% - 32px);
+    max-height: calc(100vh - 32px);
+    border-radius: 12px;
+    
+    .welcome-modal-header h1 {
+      font-size: 1.4rem;
+    }
+    
+    .welcome-feature {
+      padding: 16px;
+      gap: 12px;
+    }
+  }
+  
+  .update-modal {
+    padding: 24px 20px;
+    margin: 16px;
+    width: calc(100% - 32px);
+    max-height: calc(100vh - 32px);
+    
+    .update-modal-header h1 {
+      font-size: 1.4rem;
+    }
+  }
+  
+  .update-sparkles .sparkle {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .welcome-modal {
+    padding: 20px 16px;
+    
+    .welcome-modal-header h1 {
+      font-size: 1.3rem;
+    }
+    
+    .welcome-icons .welcome-icon {
+      width: 22px;
+      height: 22px;
+    }
+    
+    .welcome-feature {
+      padding: 14px;
+      
+      .welcome-feature-icon {
+        width: 40px;
+        height: 40px;
+      }
+      
+      p {
+        font-size: 0.9rem;
+      }
+    }
+  }
+  
+  .update-modal {
+    padding: 20px 16px;
+    
+    .update-modal-header h1 {
+      font-size: 1.2rem;
+    }
+    
+    .update-type-badge .update-icon {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+/* ===========================
+   🔔 Обычные уведомления (для обратной совместимости)
+   =========================== */
+
+.notification-container {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 400px;
+  
+  .notification {
+    padding: 12px 16px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    animation: notificationSlideIn 0.3s ease-out;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    
+    &:hover {
+      transform: translateX(-4px);
+      opacity: 0.9;
+    }
+    
+    &.notification-success {
+      background: linear-gradient(135deg, #10b981, #059669);
+      border-left: 4px solid #047857;
+    }
+    
+    &.notification-error {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      border-left: 4px solid #b91c1c;
+    }
+    
+    &.notification-info {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      border-left: 4px solid #1d4ed8;
+    }
+    
+    &.notification-warning {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      border-left: 4px solid #b45309;
+    }
+  }
+}
+
+@keyframes notificationSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .notification-container {
+    top: 80px;
+    right: 12px;
+    left: 12px;
+    max-width: none;
+    
+    .notification {
+      text-align: center;
+    }
+  }
+}

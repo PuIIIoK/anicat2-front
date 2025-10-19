@@ -1,6 +1,95 @@
 .footer {
-  background-color: #1a1a1a;
-  color: #fff;
-  padding: 5px 0;
-  text-align: center;
+  background-color: var(--bg-primary);
+  color: var(--text-secondary);
+  padding: 40px 20px;
+  border-top: 1px solid var(--border-color);
+  font-size: 14px;
+  @media (max-width: 768px) {
+    display: none;
+  }
+
+  .footer-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    text-align: left;
+    gap: 40px;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      text-align: center;
+      align-items: center;
+    }
+  }
+
+  .footer-column {
+    flex: 1 1 30%;
+    min-width: 250px;
+
+    &.center {
+      text-align: center;
+    }
+
+    &.right {
+      text-align: right;
+
+      @media (max-width: 768px) {
+        text-align: center;
+      }
+    }
+
+    a {
+      color: var(--primary-color);
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    .footer-logo {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .footer-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .footer-description {
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .footer-warning {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+  }
+}
+.footer-column.right {
+  position: relative;
+  padding-bottom: 36px; // если нужен отступ снизу
+
+  .footer-branches {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    font-size: 0.93em;
+    opacity: 0.7;
+    a.footer-branches-link {
+      color: var(--primary-light);
+      text-decoration: underline;
+      margin-left: 4px;
+      &:hover {
+        color: var(--text-primary);
+        text-decoration: underline;
+      }
+    }
+  }
 }

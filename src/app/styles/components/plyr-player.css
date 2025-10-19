@@ -1,0 +1,16 @@
+@charset "UTF-8";
+.plyr-player-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* соотношение сторон 16:9 */
+  background-color: black;
+}
+
+.plyr-player-wrapper video,
+.plyr-player-wrapper .plyr {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}/*# sourceMappingURL=plyr-player.css.map */

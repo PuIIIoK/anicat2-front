@@ -158,7 +158,10 @@ export default function LibriaPlayer({ animeId }: Props) {
 
                 // Ждём пока обновится эпизод и перезапускаем
                 setTimeout(() => {
-                    video.play().catch(err => console.warn('⛔ Не удалось воспроизвести:', err));
+                    video.play()
+                        .catch(err => {
+                            console.warn('⛔ Не удалось воспроизвести:', err);
+                        });
                 }, 1000); // даём HLS подгрузиться
             }
         };

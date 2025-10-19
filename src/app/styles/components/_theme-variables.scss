@@ -1,0 +1,251 @@
+// Система переменных для тем и цветовых схем
+// ==========================================
+
+// Основные цвета приложения
+:root {
+  // ===== ЦВЕТА ТЕМЫ (по умолчанию - тёмная) =====
+  
+  // Фоны
+  --bg-primary: #0a0a0a;        // Основной фон страницы
+  --bg-secondary: #1a1a1a;      // Фон карточек и контейнеров
+  --bg-tertiary: #252525;       // Фон вложенных элементов
+  --bg-elevated: #2a2a2a;       // Приподнятые элементы
+  --bg-hover: rgba(255, 255, 255, 0.05);    // Фон при наведении
+  --bg-active: rgba(255, 255, 255, 0.08);   // Фон активного элемента
+  
+  // Текст
+  --text-primary: #ffffff;                   // Основной текст
+  --text-secondary: rgba(255, 255, 255, 0.8); // Второстепенный текст
+  --text-muted: rgba(255, 255, 255, 0.5);    // Приглушенный текст
+  --text-disabled: rgba(255, 255, 255, 0.3); // Неактивный текст
+  
+  // Границы
+  --border-color: rgba(255, 255, 255, 0.1);     // Основные границы
+  --border-hover: rgba(255, 255, 255, 0.2);     // Границы при наведении
+  --border-active: var(--primary-color);        // Активная граница
+  
+  // Тени
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 12px 48px rgba(0, 0, 0, 0.5);
+  
+  // ===== АКЦЕНТНЫЕ ЦВЕТА (оранжевая схема по умолчанию) =====
+  
+  --primary-color: #ff9500;        // Основной акцент
+  --primary-hover: #ffb143;        // Акцент при наведении
+  --primary-dark: #e68600;         // Тёмный вариант акцента
+  --primary-light: #ffc166;        // Светлый вариант акцента
+  --primary-bg: rgba(255, 149, 0, 0.1);     // Фон с акцентом
+  --primary-bg-hover: rgba(255, 149, 0, 0.15); // Фон с акцентом при наведении
+  
+  // Дополнительные цвета
+  --success-color: #4caf50;
+  --success-bg: rgba(76, 175, 80, 0.1);
+  --success-light: #66bb6a;
+  --success-dark: #388e3c;
+  
+  --error-color: #f44336;
+  --error-bg: rgba(244, 67, 54, 0.1);
+  --error-light: #ef5350;
+  --error-dark: #c62828;
+  
+  --warning-color: #ff9800;
+  --warning-bg: rgba(255, 152, 0, 0.1);
+  --warning-light: #ffb74d;
+  --warning-dark: #f57c00;
+  
+  --info-color: #2196f3;
+  --info-bg: rgba(33, 150, 243, 0.1);
+  --info-light: #42a5f5;
+  --info-dark: #1976d2;
+
+  // Цвета состояний аниме
+  --anime-completed: #4caf50;
+  --anime-watching: #2196f3;
+  --anime-planned: #ff9800;
+  --anime-on-hold: #9c27b0;
+  --anime-dropped: #f44336;
+  
+  // Цвета рейтингов
+  --rating-gold: #ffd700;
+  --rating-silver: #c0c0c0;
+  --rating-bronze: #cd7f32;
+  
+  // Специальные цвета
+  --accent-purple: #9c27b0;
+  --accent-blue: #2196f3;
+  --accent-red: #f44336;
+  --accent-green: #4caf50;
+  --accent-cyan: #00bcd4;
+  --accent-pink: #e91e63;
+  
+  // Цвета для плеера
+  --player-bg: rgba(0, 0, 0, 0.8);
+  --player-controls: rgba(255, 255, 255, 0.9);
+  --player-progress: var(--primary-color);
+  
+  // Нейтральные цвета
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+  
+  // Градиенты
+  --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  --gradient-bg: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+  --gradient-card: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+  
+  // Элементы UI
+  --input-bg: rgba(255, 255, 255, 0.05);
+  --input-border: rgba(255, 255, 255, 0.1);
+  --input-focus-border: var(--primary-color);
+  
+  --button-bg: var(--primary-color);
+  --button-hover: var(--primary-hover);
+  --button-text: #ffffff;
+  
+  --modal-overlay: rgba(0, 0, 0, 0.75);
+  --dropdown-bg: var(--bg-elevated);
+  
+  // Прокрутка
+  --scrollbar-track: transparent;
+  --scrollbar-thumb: rgba(255, 255, 255, 0.1);
+  --scrollbar-thumb-hover: rgba(255, 255, 255, 0.25);
+}
+
+// ===== ТЁМНАЯ ТЕМА =====
+body.theme-dark,
+html.theme-dark,
+.theme-dark {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #252525;
+  --bg-elevated: #2a2a2a;
+  --bg-hover: rgba(255, 255, 255, 0.05);
+  --bg-active: rgba(255, 255, 255, 0.08);
+  
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.8);
+  --text-muted: rgba(255, 255, 255, 0.5);
+  --text-disabled: rgba(255, 255, 255, 0.3);
+  
+  --border-color: rgba(255, 255, 255, 0.1);
+  --border-hover: rgba(255, 255, 255, 0.2);
+  
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 12px 48px rgba(0, 0, 0, 0.5);
+  
+  --gradient-bg: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+  --gradient-card: linear-gradient(135deg, #1a1a1a, #252525);
+  
+  --input-bg: rgba(255, 255, 255, 0.05);
+  --input-border: rgba(255, 255, 255, 0.1);
+  
+  --modal-overlay: rgba(0, 0, 0, 0.75);
+  --dropdown-bg: #2a2a2a;
+  
+  --scrollbar-thumb: rgba(255, 255, 255, 0.1);
+  --scrollbar-thumb-hover: rgba(255, 255, 255, 0.25);
+}
+
+// ===== СВЕТЛАЯ ТЕМА =====
+body.theme-light,
+html.theme-light,
+.theme-light {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f5;
+  --bg-tertiary: #e8e8e8;
+  --bg-elevated: #ffffff;
+  --bg-hover: rgba(0, 0, 0, 0.03);
+  --bg-active: rgba(0, 0, 0, 0.05);
+  
+  --text-primary: #000000;
+  --text-secondary: rgba(0, 0, 0, 0.8);
+  --text-muted: rgba(0, 0, 0, 0.5);
+  --text-disabled: rgba(0, 0, 0, 0.3);
+  
+  --border-color: rgba(0, 0, 0, 0.1);
+  --border-hover: rgba(0, 0, 0, 0.15);
+  
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.16);
+  --shadow-xl: 0 12px 48px rgba(0, 0, 0, 0.2);
+  
+  --gradient-bg: linear-gradient(135deg, #ffffff, #f5f5f5);
+  --gradient-card: linear-gradient(135deg, #f5f5f5, #e8e8e8);
+  
+  --input-bg: rgba(0, 0, 0, 0.03);
+  --input-border: rgba(0, 0, 0, 0.1);
+  
+  --modal-overlay: rgba(0, 0, 0, 0.5);
+  --dropdown-bg: #ffffff;
+  
+  --scrollbar-thumb: rgba(0, 0, 0, 0.2);
+  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.35);
+}
+
+// ===== ЦВЕТОВЫЕ СХЕМЫ =====
+// Цвета применяются динамически через JavaScript в ThemeContext.tsx
+// Это гарантирует, что цветовая схема применится ко всем элементам сайта
+
+// ===== МИКСИНЫ ДЛЯ УДОБСТВА =====
+
+@mixin card-style {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: var(--bg-hover);
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+}
+
+@mixin button-primary {
+  background: var(--primary-color);
+  color: var(--button-text);
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  
+  &:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+@mixin input-style {
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  padding: 0.75rem;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+  
+  &:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--primary-bg);
+    outline: none;
+  }
+}

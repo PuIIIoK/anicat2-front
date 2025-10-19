@@ -1,81 +1,62 @@
-'use client';
-
-import React from 'react';
-import { useEffect, useState } from 'react';
-import {API_SERVER} from "../../../tools/constants";
+// category-data.tsx
+import { API_SERVER } from "../../../tools/constants";
+import { AnimeInfo } from './anime-data-info';
 
 export interface Category {
-    name: string;
     id: string;
+    name: string;
     animeIds: string[];
     link: string;
     position: number;
+    animeList?: AnimeInfo[];
 }
 
-// ✅ Первый запрос — получить все категории
-export const fetchAllCategories = async (): Promise<Category[]> => {
-    try {
-        const response = await fetch(`${API_SERVER}/api/anime/category/get-category`);
-        if (!response.ok) throw new Error('Не удалось загрузить категории');
+export const fetchAllCategories = async (signal?: AbortSignal): Promise<Category[]> => {
+    const response = await fetch(`${API_SERVER}/api/anime/category/get-category`, { signal });
+    if (!response.ok) throw new Error('Не удалось загрузить категории');
 
-        const data = await response.json();
-        return data.categories || [];
-    } catch (error) {
-        console.error('Ошибка при загрузке категорий:', error);
-        return [];
-    }
+    const data = await response.json();
+    console.log('[fetchAllCategories] Загружены категории:', data.categories);
+    return data.categories || [];
 };
 
-// ✅ Второй запрос — получить подробности одной категории
-export const fetchCategoryById = async (categoryId: string): Promise<Category | null> => {
-    try {
-        const response = await fetch(`${API_SERVER}/api/anime/category/get-category/${categoryId}`);
-        if (!response.ok) throw new Error(`Ошибка при загрузке категории ${categoryId}`);
+export const fetchCategoryAnimeList = async (animeIds: string[], signal?: AbortSignal): Promise<AnimeInfo[]> => {
+    console.log('[fetchCategoryAnimeList] Загрузка аниме по ID:', animeIds);
 
-        return await response.json();
+    const animeData = await Promise.all(
+        animeIds.map(async (id) => {
+            try {
+                const res = await fetch(`${API_SERVER}/api/anime/get-anime/${id}`, { signal });
+                if (!res.ok) {
+                    console.warn(`[fetchCategoryAnimeList] Аниме ID ${id} не найден (res.ok = false)`);
+                    return null;
+                }
+
+                const data = await res.json();
+                console.log(`[fetchCategoryAnimeList] Загружено аниме ID ${id}:`, data);
+                return data;
+            } catch (error) {
+                console.error(`[fetchCategoryAnimeList] Ошибка при загрузке аниме ID ${id}:`, error);
+                return null;
+            }
+        })
+    );
+
+    const filtered = animeData.filter((item): item is AnimeInfo => item !== null);
+    console.log('[fetchCategoryAnimeList] Отфильтрованный список аниме:', filtered);
+
+    return filtered;
+};
+
+export const fetchCategoryById = async (categoryId: string, signal?: AbortSignal): Promise<Category | null> => {
+    try {
+        const response = await fetch(`${API_SERVER}/api/anime/category/get-category/${categoryId}`, { signal });
+        if (!response.ok) throw new Error(`Ошибка при загрузке категории ${categoryId}`);
+        const data = await response.json();
+        console.log(`[fetchCategoryById] Категория ${categoryId}:`, data);
+        return data;
     } catch (error) {
-        console.error('Ошибка при загрузке категории:', error);
+        console.error(`[fetchCategoryById] Ошибка:`, error);
         return null;
     }
 };
-
-// Компонент (если нужен)
-const CategoryData = ({ onCategoriesLoaded }: { onCategoriesLoaded: (categories: Category[]) => void }) => {
-    const [categories, setCategories] = useState<Category[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                setLoading(true);
-
-                const baseCategories = await fetchAllCategories();
-
-                const detailedCategories = await Promise.all(
-                    baseCategories.map(async (cat) => {
-                        const detail = await fetchCategoryById(cat.id);
-                        return detail ? { ...cat, ...detail } : cat;
-                    })
-                );
-
-                setCategories(detailedCategories);
-                onCategoriesLoaded(detailedCategories);
-            } catch {
-                setError('Ошибка при загрузке данных');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        if (categories.length === 0) {
-            fetchCategories();
-        }
-    }, [categories, onCategoriesLoaded]);
-
-    if (loading) return <p>Загрузка...</p>;
-    if (error) return <p>{error}</p>;
-    return null;
-};
-
-export default CategoryData;

@@ -251,14 +251,6 @@
     padding: 16px 12px;
     border-radius: 14px;
   }
-
-  .video-wrapper, video, .custom-player {
-    width: 100% !important;
-    height: auto !important;
-    aspect-ratio: 9/16; // ⚡ вертикальный формат на мобиле
-    border-radius: 12px;
-    overflow: hidden;
-  }
 }
 
 @media (max-width: 480px) {
