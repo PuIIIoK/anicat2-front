@@ -9,7 +9,7 @@ import UploadProgressModal from "../admin_panel/UploadProgressModalAnime";
 import EditSectionNavigation from "./EditSectionNavigation";
 import EditFloatingActionButtons from "./EditFloatingActionButtons";
 import FranchiseChainManager from "../franchise-chains/FranchiseChainManager";
-import { CheckCircle, FileEdit, ImageUp, Edit3, XCircle, RefreshCw, ImagePlus, RotateCcw, AlertTriangle, CheckCircle2, BarChart3, GitCompare, Clock } from "lucide-react";
+import { CheckCircle, FileEdit, ImageUp, Edit3, XCircle, RefreshCw, ImagePlus, RotateCcw, AlertTriangle, CheckCircle2, BarChart3, GitCompare } from "lucide-react";
 import { AnimeInfo } from "../anime-structure/anime-data-info";
 
 type ScreenshotData = {
@@ -36,8 +36,18 @@ const getTokenFromCookie = () => {
     return match ? decodeURIComponent(match[1]) : null;
 };
 
+// Интерфейс для данных аниме
+interface AnimeData {
+    title?: string;
+    description?: string;
+    genres?: string;
+    type?: string;
+    status?: string;
+    [key: string]: string | undefined;
+}
+
 // Компонент статистики изменений
-const EditStatsPanel = ({ originalData, currentData }: any) => {
+const EditStatsPanel = ({ originalData, currentData }: { originalData: AnimeData | null; currentData: AnimeData }) => {
     const countChanges = () => {
         if (!originalData) return { modified: 0, total: 5 };
         let modified = 0;
@@ -80,8 +90,22 @@ type ChangeItem = {
     type: 'added' | 'removed' | 'modified';
 };
 
+// Интерфейс для данных сравнения
+interface ComparisonData {
+    title?: string;
+    alttitle?: string;
+    description?: string;
+    genres?: string;
+    type?: string;
+    status?: string;
+    rating?: string;
+    episodeAll?: string;
+    currentEpisode?: string;
+    [key: string]: string | undefined;
+}
+
 // Компонент сравнения изменений
-const ChangesComparisonPanel = ({ originalData, currentData }: any) => {
+const ChangesComparisonPanel = ({ originalData, currentData }: { originalData: ComparisonData | null; currentData: ComparisonData }) => {
     const getChanges = (): ChangeItem[] => {
         if (!originalData) return [];
         const changes: ChangeItem[] = [];
@@ -855,17 +879,17 @@ const EditAnimePage = () => {
                 <div className="right-column">
                     {/* Панель статистики изменений */}
                     <EditStatsPanel 
-                        originalData={originalData}
-                        currentData={{title, description, genres, type, status}}
+                        originalData={originalData as AnimeData | null}
+                        currentData={{title, description, genres, type, status} as AnimeData}
                     />
                     
                     {/* Панель сравнения изменений */}
                     <ChangesComparisonPanel 
-                        originalData={originalData}
+                        originalData={originalData as ComparisonData | null}
                         currentData={{
                             title, alttitle, description, genres, type, 
                             status, rating, episodeAll, currentEpisode
-                        }}
+                        } as ComparisonData}
                     />
                 </div>
 

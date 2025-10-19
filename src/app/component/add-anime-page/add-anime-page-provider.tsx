@@ -10,7 +10,7 @@ import SectionNavigation from "./SectionNavigation";
 import FloatingActionButtons from "./FloatingActionButtons";
 import AddAnimeNotification from "./AddAnimeNotification";
 import FranchiseChainManager from "../franchise-chains/FranchiseChainManager";
-import {CheckCircle, FileEdit, FolderPlus, ImagePlus, ImageUp, UploadCloud, XCircle, Activity, Lightbulb, Keyboard, CheckCircle2} from "lucide-react";
+import {CheckCircle, FileEdit, FolderPlus, ImagePlus, ImageUp, UploadCloud, XCircle, Activity, Lightbulb, Keyboard} from "lucide-react";
 
 const getTokenFromCookie = () => {
     const match = document.cookie.match(/(?:^|; )token=([^;]*)/);
@@ -18,7 +18,7 @@ const getTokenFromCookie = () => {
 };
 
 // Компонент панели прогресса заполнения
-const CompletionProgressPanel = ({ title, description, genres, type, status, cover, banner }: any) => {
+const CompletionProgressPanel = ({ title, description, genres, type, status, cover, banner }: { title: string; description: string; genres: string; type: string; status: string; cover: File | null; banner: File | null }) => {
     const calculateProgress = () => {
         const fields = {
             title: Boolean(title && title.trim()),
