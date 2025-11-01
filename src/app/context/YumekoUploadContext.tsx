@@ -50,6 +50,7 @@ export const YumekoUploadProvider: React.FC<{ children: ReactNode }> = ({ childr
     React.useEffect(() => {
         if (typeof window !== 'undefined' && uploads.length > 0) {
             // Сохраняем в sessionStorage без функции onCancel
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const toSave = uploads.map(({ onCancel, ...rest }) => rest);
             sessionStorage.setItem('yumeko-uploads', JSON.stringify(toSave));
         } else if (typeof window !== 'undefined' && uploads.length === 0) {

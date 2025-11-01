@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
-import { X, Upload, CheckCircle, Clock, AlertCircle, Mic, Minimize2, Maximize2, RefreshCw } from 'lucide-react';
+import { X, CheckCircle, Clock, AlertCircle, Mic, Minimize2, Maximize2, RefreshCw } from 'lucide-react';
 import { useYumekoUpload } from '../../context/YumekoUploadContext';
 import { API_SERVER } from '../../../tools/constants';
 import './yumeko-upload-notification.scss';

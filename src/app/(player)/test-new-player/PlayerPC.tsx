@@ -44,7 +44,7 @@ type OverlayKind = 'volume' | 'seek-forward' | 'seek-backward' | 'notice' | 'pla
 
 export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPrevEpisode }: PlayerPCProps) {
     console.log('[player] component mounted');
-    const router = useRouter();
+    // const router = useRouter(); // Не используется
     // const pathname = usePathname(); // Не используется после отключения URL синхронизации
     // const searchParams = useSearchParams(); // Не используется после отключения URL синхронизации
     const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -104,8 +104,10 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
     const [selectedSource, setSelectedSource] = useState<'kodik' | 'libria' | 'yumeko'>('kodik');
     const [selectedKodikVoice, setSelectedKodikVoice] = useState<string | null>(null);
     const [isLibriaAvailable, setIsLibriaAvailable] = useState(false);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [yumekoVoices, setYumekoVoices] = useState<YumekoVoice[]>([]);
     const [selectedYumekoVoice, setSelectedYumekoVoice] = useState<YumekoVoice | null>(null);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [yumekoEpisodes, setYumekoEpisodes] = useState<YumekoEpisode[]>([]);
     const [kodikPlaylistMap, setKodikPlaylistMap] = useState<Record<string, Array<{ id: number; title: string; duration?: string; raw?: unknown }>>>({});
     const [, setIsSwitchingSource] = useState(false);

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import Hls from 'hls.js';
 import '@/styles/components/test-hls-player.scss';
 
@@ -42,6 +42,7 @@ export default function TestHLSPlayer() {
                 hlsRef.current.destroy();
             }
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // НЕ автоматически обновляем плеер - только после 100% в initializePlayer
@@ -510,7 +511,7 @@ export default function TestHLSPlayer() {
                     <li>Убедитесь, что backend запущен (http://localhost:8080)</li>
                     <li>Конвертируйте видео в HLS формат с помощью скрипта</li>
                     <li>Загрузите HLS файлы в S3</li>
-                    <li>Нажмите "Играть" для начала воспроизведения</li>
+                    <li>Нажмите &quot;Играть&quot; для начала воспроизведения</li>
                     <li>Выберите качество из выпадающего списка</li>
                 </ol>
             </div>

@@ -36,7 +36,7 @@ const getTokenFromCookie = () => {
 };
 
 const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
-    const { uploads, addUpload, updateUpload, removeUpload, setIsMinimized } = useYumekoUpload();
+    const { uploads, addUpload, updateUpload, removeUpload } = useYumekoUpload();
     const uploadXhrRef = useRef<Map<string, XMLHttpRequest>>(new Map()); // Для отмены загрузки по uploadId
     const trackingIntervalRef = useRef<Map<string, NodeJS.Timeout>>(new Map()); // Для отслеживания статуса по uploadId
     const episodeIdRef = useRef<Map<string, number>>(new Map()); // Для хранения episodeId по uploadId для отмены
@@ -60,6 +60,7 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
 
     useEffect(() => {
         loadVoices();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [animeId]);
 
     useEffect(() => {
@@ -77,21 +78,24 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
             // Cleanup при размонтировании
             return () => {
                 clearInterval(refreshInterval);
-                // Очищаем все активные intervals трекинга
-                trackingIntervalRef.current.forEach((interval) => {
+                // Сохраняем текущее значение ref для cleanup
+                const currentIntervals = trackingIntervalRef.current;
+                currentIntervals.forEach((interval) => {
                     clearInterval(interval);
                 });
-                trackingIntervalRef.current.clear();
+                currentIntervals.clear();
             };
         }
         
         // Cleanup если озвучка не выбрана
         return () => {
-            trackingIntervalRef.current.forEach((interval) => {
+            const currentIntervals = trackingIntervalRef.current;
+            currentIntervals.forEach((interval) => {
                 clearInterval(interval);
             });
-            trackingIntervalRef.current.clear();
+            currentIntervals.clear();
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedVoiceId]);
 
     const loadVoices = async () => {
@@ -402,7 +406,7 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                     try {
                         const errorData = JSON.parse(xhr.responseText);
                         errorMessage = errorData.message || errorData.error || xhr.statusText;
-                    } catch (e) {
+                    } catch {
                         errorMessage = xhr.responseText || xhr.statusText;
                     }
                     
