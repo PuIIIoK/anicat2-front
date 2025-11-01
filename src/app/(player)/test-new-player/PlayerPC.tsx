@@ -25,7 +25,6 @@ import {
     RotateCcw,
     RotateCw
 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getEpisodeProgress, upsertEpisodeProgress, markEpisodeOpened, getEpisodeProgressLibriaAnyVoice, setEpisodeProgress, upsertEpisodeProgressWithSync, fetchAndMergeFromServer, pushAllCacheForAnimeToServer } from '@/utils/player/progressCache';
 import { loadSettings, saveSettings } from '@/utils/player/settings';
