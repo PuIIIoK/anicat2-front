@@ -16,6 +16,7 @@ import FranchiseSection from './FranchiseSection';
 import SimilarAnimeSection from './SimilarAnimeSection';
 import ServerErrorPage from '../common/ServerErrorPage';
 import AnimatedMedia from '../../../components/AnimatedMedia';
+import SourceSelectionModal from './SourceSelectionModal';
 
 const statusOptions = [
     { label: 'Не выбрано', icon: <X size={16} />, value: 'none' },
@@ -60,6 +61,11 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
         // Доступность и блокировки
         isAccessible,
         zametka_blocked,
+
+        // Модальное окно выбора источника
+        showSourceModal,
+        setShowSourceModal,
+        handleSourceSelect,
     } = useAnimePageLogic(animeId);
 
     // Локальные состояния для отзывов и комментариев перенесены в useAnimePageLogic
@@ -1141,6 +1147,15 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
                 onConfirm={confirmDelete}
                 commentText={deleteTarget?.text || ''}
                 isReply={deleteTarget?.type === 'reply'}
+            />
+
+            <SourceSelectionModal
+                isOpen={showSourceModal}
+                onClose={() => setShowSourceModal(false)}
+                animeId={animeId}
+                animeTitle={anime.title}
+                animeCover={anime.coverUrl}
+                onSourceSelect={handleSourceSelect}
             />
         </div>
     );

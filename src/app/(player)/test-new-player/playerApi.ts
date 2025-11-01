@@ -2,12 +2,22 @@ import { API_SERVER } from '../../../tools/constants';
 
 // --- DTO / response interfaces ---
 export interface AnimeMeta {
+    // Для внешних источников (Kodik)
     kodik?: string;
+    alias?: string;
+    
+    // Для источника Yumeko
+    source?: 'kodik' | 'yumeko';
+    voiceId?: number;
+    voiceName?: string;
+    episodeId?: number;
+    episodeNumber?: number;
+    
+    // Общие поля
     title?: string;
     name?: string;
     ru?: string;
     en?: string;
-    alias?: string;
     coverUrl?: string;
     season?: string;
     [key: string]: unknown;
@@ -71,8 +81,13 @@ export interface ProgressEntryDto {
     opened?: boolean | null;
 }
 
-export async function fetchPlayerHls(animeId: string, source: 'kodik' | 'libria' = 'kodik'): Promise<string | null> {
+export async function fetchPlayerHls(animeId: string, source: 'kodik' | 'libria' | 'yumeko' = 'kodik'): Promise<string | null> {
     // Kept for backward compatibility but prefer specialized endpoints below
+    // For Yumeko, return null as it uses episode-specific streams
+    if (source === 'yumeko') {
+        return null;
+    }
+    
     try {
         const res = await fetch(`${API_SERVER}/api/player/${source}/${animeId}`);
         if (!res.ok) {
@@ -250,6 +265,69 @@ export async function upsertProgressBulk(entries: Array<Partial<ProgressEntryDto
         return await res.json() as ProgressEntryDto[];
     } catch (err) {
         console.error('upsertProgressBulk error', err);
+        return null;
+    }
+}
+
+// --- Yumeko API ---
+
+export interface YumekoVoice {
+    id: number;
+    animeId: number;
+    name: string;
+    voiceType: string;
+    language: string;
+    episodesCount: number;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface YumekoEpisode {
+    id: number;
+    voiceId: number;
+    episodeNumber: number;
+    title: string | null;
+    durationSeconds: number;
+    maxQuality: string;
+    screenshotPath: string | null;
+    videoStatus: string;
+    conversionProgress: number | null;
+    hlsBasePath: string;
+}
+
+// Получить список готовых озвучек для аниме
+export async function fetchYumekoVoices(animeId: string): Promise<YumekoVoice[] | null> {
+    try {
+        const res = await fetch(`${API_SERVER}/api/yumeko/anime/${animeId}/voices`);
+        if (!res.ok) return null;
+        return await res.json() as YumekoVoice[];
+    } catch (err) {
+        console.error('fetchYumekoVoices error', err);
+        return null;
+    }
+}
+
+// Получить список готовых эпизодов для озвучки
+export async function fetchYumekoEpisodes(voiceId: number): Promise<YumekoEpisode[] | null> {
+    try {
+        const res = await fetch(`${API_SERVER}/api/yumeko/voices/${voiceId}/episodes`);
+        if (!res.ok) return null;
+        return await res.json() as YumekoEpisode[];
+    } catch (err) {
+        console.error('fetchYumekoEpisodes error', err);
+        return null;
+    }
+}
+
+// Получить HLS ссылку для конкретного эпизода Yumeko
+export async function fetchYumekoEpisodeStream(episodeId: number): Promise<string | null> {
+    try {
+        const res = await fetch(`${API_SERVER}/api/yumeko/episodes/${episodeId}/stream`);
+        if (!res.ok) return null;
+        const data = await res.json();
+        return data.hlsUrl || data.url || null;
+    } catch (err) {
+        console.error('fetchYumekoEpisodeStream error', err);
         return null;
     }
 }

@@ -1,0 +1,120 @@
+.video-source-selector {
+    margin-bottom: 20px;
+
+    .source-label {
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 12px;
+        color: #e0e0e0;
+    }
+
+    .source-options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .source-option {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        &.active {
+            background: rgba(147, 51, 234, 0.2);
+            border-color: #9333ea;
+            box-shadow: 0 0 20px rgba(147, 51, 234, 0.3);
+        }
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        svg {
+            color: #9333ea;
+            flex-shrink: 0;
+        }
+
+        .option-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .option-desc {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+    }
+}
+
+.yumeko-section {
+    margin-bottom: 20px;
+
+    .btn-yumeko-manage {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        padding: 14px 20px;
+        background: linear-gradient(135deg, #9333ea 0%, #7c3aed 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:hover:not(:disabled) {
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(147, 51, 234, 0.4);
+        }
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        svg {
+            flex-shrink: 0;
+        }
+    }
+
+    .yumeko-info-box {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 18px;
+        background: rgba(251, 191, 36, 0.1);
+        border: 1px solid rgba(251, 191, 36, 0.3);
+        border-radius: 10px;
+
+        svg {
+            color: #fbbf24;
+            flex-shrink: 0;
+        }
+
+        p {
+            margin: 0;
+            font-size: 14px;
+            color: #fbbf24;
+        }
+    }
+}
+

@@ -359,7 +359,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: 50000;
     backdrop-filter: blur(4px);
 
     .modal-content {
@@ -684,65 +684,598 @@
   }
 }
 
-// Адаптивность
-@media (max-width: 768px) {
+// =============================================
+// АДАПТИВНЫЕ СТИЛИ ДЛЯ РАЗНЫХ УСТРОЙСТВ
+// =============================================
+
+// Планшеты и маленькие десктопы (до 1024px)
+@media (max-width: 1024px) {
   .franchise-chain-manager {
     padding: 20px;
+    margin-top: 20px;
 
     .section-header {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 15px;
+      h3 {
+        font-size: 1.2rem;
+      }
 
       .header-actions {
-        justify-content: center;
+        .btn-create-chain,
+        .btn-add-to-chain {
+          padding: 8px 14px;
+          font-size: 13px;
+        }
       }
     }
 
     .current-chains {
-      .chain-item {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 15px;
+      .franchise-chain-card {
+        .chain-header {
+          padding: 16px;
 
-        .chain-actions {
-          justify-content: center;
+          .chain-info {
+            .chain-name {
+              font-size: 16px;
+            }
+
+            .chain-description {
+              font-size: 13px;
+            }
+          }
+        }
+
+        .animes-in-chain {
+          padding: 16px;
+
+          .animes-list {
+            .anime-item {
+              .anime-details {
+                .anime-title-row {
+                  .anime-title {
+                    font-size: 14px;
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
 
     .modal-overlay {
       .modal-content {
-        width: 95%;
-        max-height: 90vh;
+        max-width: 95%;
+      }
+    }
+  }
+}
+
+// Мобильные устройства (до 768px)
+@media (max-width: 768px) {
+  .franchise-chain-manager {
+    margin-top: 16px;
+    padding: 16px;
+    border-radius: 10px;
+
+    .section-header {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      margin-bottom: 20px;
+
+      h3 {
+        font-size: 1.1rem;
+        text-align: center;
+      }
+
+      .header-actions {
+        flex-direction: column;
+        gap: 10px;
+
+        .btn-create-chain,
+        .btn-add-to-chain {
+          width: 100%;
+          justify-content: center;
+          padding: 12px 16px;
+          font-size: 14px;
+        }
+      }
+    }
+
+    .current-chains {
+      .franchise-chain-card {
+        margin-bottom: 16px;
+        border-radius: 10px;
+
+        .chain-header {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 12px;
+          padding: 16px;
+
+          .chain-info {
+            .chain-name {
+              font-size: 16px;
+              justify-content: space-between;
+              flex-wrap: wrap;
+            }
+
+            .chain-description {
+              font-size: 13px;
+              margin-bottom: 8px;
+            }
+
+            .chain-meta {
+              flex-wrap: wrap;
+              gap: 8px;
+              justify-content: flex-start;
+            }
+          }
+
+          .chain-actions {
+            justify-content: flex-end;
+            width: 100%;
+
+            .btn-remove,
+            .btn-delete-chain {
+              padding: 8px 12px;
+              flex: 0 0 auto;
+            }
+          }
+        }
+
+        .animes-in-chain {
+          padding: 14px;
+
+          .animes-header {
+            margin-bottom: 12px;
+
+            h4 {
+              font-size: 15px;
+            }
+          }
+
+          .animes-list {
+            .anime-item {
+              flex-direction: column;
+              align-items: flex-start;
+              padding: 10px;
+              gap: 8px;
+
+              .drag-handle {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                margin: 0;
+              }
+
+              .anime-order {
+                font-size: 13px;
+                min-width: 20px;
+              }
+
+              .anime-details {
+                width: 100%;
+                padding-right: 30px;
+
+                .anime-title-row {
+                  margin-bottom: 6px;
+
+                  .anime-title {
+                    font-size: 14px;
+                    flex-wrap: wrap;
+
+                    .current-marker {
+                      font-size: 10px;
+                      margin-left: 6px;
+                    }
+                  }
+                }
+
+                .anime-alttitle {
+                  font-size: 12px;
+                  margin-bottom: 6px;
+                }
+
+                .anime-meta {
+                  flex-wrap: wrap;
+                  gap: 6px;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Модальное окно для мобильных
+    .modal-overlay {
+      padding: 0;
+      align-items: flex-end;
+
+      .modal-content {
+        width: 100%;
+        max-width: 100%;
+        max-height: 95vh;
+        border-radius: 20px 20px 0 0;
+        animation: slideUpMobile 0.3s ease-out;
+
+        @keyframes slideUpMobile {
+          from {
+            transform: translateY(100%);
+          }
+          to {
+            transform: translateY(0);
+          }
+        }
+
+        .modal-header {
+          padding: 16px 20px;
+
+          h3 {
+            font-size: 1.1rem;
+          }
+
+          .modal-close {
+            padding: 6px;
+          }
+        }
 
         .modal-body {
-          padding: 15px;
+          padding: 16px 20px;
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+
+          .form-group {
+            margin-bottom: 16px;
+
+            label {
+              font-size: 13px;
+              margin-bottom: 6px;
+            }
+
+            .form-input,
+            .form-textarea {
+              padding: 10px 12px;
+              font-size: 14px;
+            }
+          }
 
           .search-container {
+            .search-input-container {
+              margin-bottom: 16px;
+
+              .search-input {
+                padding: 10px 36px 10px 12px;
+                font-size: 14px;
+              }
+            }
+
             .chains-list {
-              max-height: 300px;
+              max-height: 45vh;
 
               .chains-scroll-container {
                 .chain-item.selectable {
-                  padding: 12px;
+                  padding: 12px 14px;
                   margin-bottom: 10px;
 
                   .chain-info {
                     .chain-name {
                       font-size: 15px;
+                      flex-wrap: wrap;
+                      gap: 6px;
+
+                      svg {
+                        width: 18px;
+                        height: 18px;
+                      }
+
+                      .badge-added {
+                        font-size: 11px;
+                        padding: 2px 6px;
+                      }
                     }
 
                     .chain-description {
                       font-size: 12px;
+                      margin-bottom: 8px;
                     }
 
                     .chain-meta {
                       font-size: 11px;
-                      gap: 8px;
+                      gap: 6px;
 
                       .anime-count {
                         padding: 3px 8px;
+                        font-size: 11px;
+                      }
+
+                      .created-date {
+                        font-size: 10px;
+                      }
+                    }
+                  }
+                }
+              }
+
+              &::-webkit-scrollbar {
+                width: 4px;
+              }
+
+              &::-webkit-scrollbar-thumb {
+                background: rgba(102, 126, 234, 0.5);
+              }
+            }
+          }
+        }
+
+        .modal-footer {
+          padding: 16px 20px;
+          flex-direction: column-reverse;
+          gap: 8px;
+
+          .btn-save,
+          .btn-cancel {
+            width: 100%;
+            justify-content: center;
+            padding: 12px 16px;
+          }
+
+          .btn-save {
+            order: 1;
+          }
+
+          .btn-cancel {
+            order: 2;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Очень маленькие мобильные (до 480px)
+@media (max-width: 480px) {
+  .franchise-chain-manager {
+    padding: 12px;
+    margin-top: 12px;
+
+    .section-header {
+      margin-bottom: 16px;
+
+      h3 {
+        font-size: 1rem;
+      }
+
+      .header-actions {
+        .btn-create-chain,
+        .btn-add-to-chain {
+          padding: 10px 14px;
+          font-size: 13px;
+          gap: 6px;
+
+          svg {
+            width: 16px;
+            height: 16px;
+          }
+        }
+      }
+    }
+
+    .current-chains {
+      .franchise-chain-card {
+        margin-bottom: 12px;
+        border-radius: 8px;
+
+        .chain-header {
+          padding: 12px;
+
+          .chain-info {
+            .chain-name {
+              font-size: 15px;
+
+              svg {
+                width: 18px;
+                height: 18px;
+              }
+            }
+
+            .chain-description {
+              font-size: 12px;
+              line-height: 1.4;
+            }
+
+            .chain-meta {
+              font-size: 11px;
+
+              .anime-count {
+                padding: 2px 8px;
+                font-size: 11px;
+              }
+
+              .created-date {
+                font-size: 10px;
+              }
+            }
+          }
+
+          .chain-actions {
+            gap: 6px;
+
+            .btn-remove,
+            .btn-delete-chain {
+              padding: 7px 10px;
+
+              svg {
+                width: 16px;
+                height: 16px;
+              }
+            }
+          }
+        }
+
+        .animes-in-chain {
+          padding: 12px;
+
+          .animes-header {
+            h4 {
+              font-size: 14px;
+              padding-bottom: 6px;
+            }
+          }
+
+          .animes-list {
+            .anime-item {
+              padding: 8px;
+
+              .anime-order {
+                font-size: 12px;
+              }
+
+              .drag-handle {
+                top: 8px;
+                right: 8px;
+
+                svg {
+                  width: 14px;
+                  height: 14px;
+                }
+              }
+
+              .anime-details {
+                .anime-title-row {
+                  .anime-title {
+                    font-size: 13px;
+
+                    .current-marker {
+                      font-size: 9px;
+
+                      svg {
+                        width: 12px;
+                        height: 12px;
+                      }
+                    }
+                  }
+                }
+
+                .anime-alttitle {
+                  font-size: 11px;
+                }
+
+                .anime-meta {
+                  font-size: 11px;
+                  gap: 4px;
+
+                  .anime-year,
+                  .anime-status,
+                  .episodes {
+                    font-size: 10px;
+                    padding: 1px 5px;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .modal-overlay {
+      .modal-content {
+        max-height: 98vh;
+        border-radius: 16px 16px 0 0;
+
+        .modal-header {
+          padding: 14px 16px;
+
+          h3 {
+            font-size: 1rem;
+          }
+        }
+
+        .modal-body {
+          padding: 14px 16px;
+
+          .form-group {
+            margin-bottom: 14px;
+
+            label {
+              font-size: 12px;
+            }
+
+            .form-input,
+            .form-textarea {
+              padding: 9px 11px;
+              font-size: 13px;
+            }
+
+            .form-textarea {
+              min-height: 70px;
+            }
+          }
+
+          .search-container {
+            .search-input-container {
+              margin-bottom: 14px;
+
+              .search-input {
+                padding: 9px 32px 9px 11px;
+                font-size: 13px;
+              }
+
+              .search-icon {
+                right: 10px;
+                width: 14px;
+                height: 14px;
+              }
+            }
+
+            .chains-list {
+              max-height: 40vh;
+
+              .empty-text {
+                padding: 20px 16px;
+                font-size: 13px;
+              }
+
+              .chains-scroll-container {
+                .chain-item.selectable {
+                  padding: 10px 12px;
+                  margin-bottom: 8px;
+                  border-left-width: 3px;
+
+                  .chain-info {
+                    .chain-name {
+                      font-size: 14px;
+
+                      svg {
+                        width: 16px;
+                        height: 16px;
+                      }
+
+                      .badge-added {
+                        font-size: 10px;
+                        padding: 1px 5px;
+                      }
+                    }
+
+                    .chain-description {
+                      font-size: 11px;
+                      line-height: 1.4;
+                      margin-bottom: 6px;
+                    }
+
+                    .chain-meta {
+                      font-size: 10px;
+                      gap: 5px;
+
+                      .anime-count {
+                        padding: 2px 6px;
+                        font-size: 10px;
+                      }
+
+                      .created-date {
+                        font-size: 9px;
                       }
                     }
                   }
@@ -753,14 +1286,39 @@
         }
 
         .modal-footer {
-          padding: 15px;
-          flex-direction: column;
+          padding: 14px 16px;
 
           .btn-save,
           .btn-cancel {
-            width: 100%;
-            justify-content: center;
+            padding: 10px 14px;
+            font-size: 13px;
           }
+        }
+      }
+    }
+  }
+}
+
+// Улучшенные скроллбары для мобильных
+@media (max-width: 768px) {
+  .franchise-chain-manager {
+    .current-chains,
+    .animes-list {
+      &::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.2);
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: rgba(102, 126, 234, 0.4);
+        border-radius: 2px;
+
+        &:hover {
+          background: rgba(102, 126, 234, 0.6);
         }
       }
     }

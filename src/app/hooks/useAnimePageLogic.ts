@@ -105,6 +105,7 @@ export const useAnimePageLogic = (animeId: string) => {
     const [showStatusDropdown, setShowStatusDropdown] = useState(false);
     const [showCommentsModal, setShowCommentsModal] = useState(false);
     const [showAuthPrompt, setShowAuthPrompt] = useState(false);
+    const [showSourceModal, setShowSourceModal] = useState(false);
 
     // Коллекции и избранное
     const [favorites, setFavorites] = useState(false);
@@ -563,16 +564,14 @@ export const useAnimePageLogic = (animeId: string) => {
     const handleWatchClick = () => {
         if (!anime?.opened) return;
         
-        // Базовые параметры для идентификации аниме (без источника, озвучки, серии, прогресса)
-        const baseParams = new URLSearchParams({
-            kodik: anime.kodik || anime.title || '',
-            alias: anime.alias || '',
-            title: anime.title || '',
-            cover: anime.coverUrl || ''
-        });
-        
-        console.log('[handleWatchClick] Navigating to player with base params:', baseParams.toString());
-        router.push(`/watch/anime/${animeId}?${baseParams.toString()}`);
+        // Открываем модальное окно выбора источника
+        setShowSourceModal(true);
+    };
+
+    // Обработчик выбора источника из модального окна
+    const handleSourceSelect = (url: string) => {
+        console.log('[handleSourceSelect] Navigating to:', url);
+        router.push(url);
     };
 
 
@@ -1855,5 +1854,10 @@ export const useAnimePageLogic = (animeId: string) => {
         // Доступность и блокировки
         isAccessible,
         zametka_blocked,
+
+        // Модальное окно выбора источника
+        showSourceModal,
+        setShowSourceModal,
+        handleSourceSelect,
     };
 };

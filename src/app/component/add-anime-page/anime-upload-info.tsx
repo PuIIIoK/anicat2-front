@@ -7,11 +7,13 @@ import {
     Film, Languages, Star, Hash, Play, Tag, Tags,
     Calendar, CalendarDays, CalendarCheck, Building, FileText,
     Tv, Clapperboard, Disc3, Sparkles, Snowflake, Sun, 
-    Flower2, Leaf, ChevronDown
+    Flower2, Leaf, ChevronDown, Video
 } from 'lucide-react';
 import StatusFAQ from './StatusFAQ';
 import CountrySelector from './CountrySelector';
 import StatusToggle from './StatusToggle';
+import YumekoVideoManager from '../yumeko-video/YumekoVideoManager';
+import '../../styles/components/video-source-selector.scss';
 
 interface Props {
     title: string;
@@ -31,6 +33,7 @@ interface Props {
     alias: string;
     kodik: string;
     zametka: string;
+    animeId?: string | null; // Добавляем animeId для Yumeko
 
     // новые пропсы
     opened: boolean;
@@ -67,7 +70,7 @@ interface Props {
 const AnimeMainInfo: React.FC<Props> = ({
                                             title, alttitle, rating, alias, kodik, episodeAll, currentEpisode,
                                             type, status, genres, realesedFor, mouthSeason,
-                                            season, year, studio, description,
+                                            season, year, studio, description, animeId,
                                             opened, anons, countries, zametka_blocked, onValidateBlocking,
                                             setTitle, setAlttitle, setRating, setEpisodeAll, setCurrentEpisode,
                                             setType, setStatus, setGenres, setRealesedFor, setMouthSeason,
@@ -85,6 +88,10 @@ const AnimeMainInfo: React.FC<Props> = ({
     const [seasonDropdownPosition, setSeasonDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
     const typeButtonRef = React.useRef<HTMLButtonElement>(null);
     const seasonButtonRef = React.useRef<HTMLButtonElement>(null);
+    
+    // Новое состояние для выбора источника видео
+    const [videoSource, setVideoSource] = useState<'external' | 'yumeko'>('external');
+    const [showYumekoModal, setShowYumekoModal] = useState(false);
 
     // Синхронизируем статус с переданным значением status
     React.useEffect(() => {
@@ -359,33 +366,98 @@ const AnimeMainInfo: React.FC<Props> = ({
                         {!opened && (
                             <span className="section-status">
                                 (Доступно только для онгоингов и завершенных аниме)
-        </span>
+                            </span>
                         )}
                     </h4>
-                    <div className="form-grid">
-                        <div className="form-field">
-                            <label>Alias для плеера Anilibria*</label>
-                    <input
-                        value={alias}
-                        onChange={(e) => setAlias(e.target.value)}
-                                placeholder="sousou-no-frieren"
-                        required
+                    
+                    {/* Выбор источника видео */}
+                    <div className="video-source-selector">
+                        <label className="source-label">Источник видео</label>
+                        <div className="source-options">
+                            <button
+                                type="button"
+                                className={`source-option ${videoSource === 'external' ? 'active' : ''}`}
+                                onClick={() => setVideoSource('external')}
                                 disabled={!opened}
-                    />
-                        </div>
-
-                        <div className="form-field">
-                            <label>Название для плеера Kodik*</label>
-                    <input
-                        value={kodik}
-                        onChange={(e) => setKodik(e.target.value)}
-                                placeholder="Фрирен [ТВ-1]"
-                        required
+                            >
+                                <Film size={20} />
+                                <div>
+                                    <div className="option-title">Сторонний источник</div>
+                                    <div className="option-desc">Либрия, Кодик</div>
+                                </div>
+                            </button>
+                            <button
+                                type="button"
+                                className={`source-option ${videoSource === 'yumeko' ? 'active' : ''}`}
+                                onClick={() => setVideoSource('yumeko')}
                                 disabled={!opened}
-                            />
+                            >
+                                <Video size={20} />
+                                <div>
+                                    <div className="option-title">Yumeko</div>
+                                    <div className="option-desc">Собственная система</div>
+                                </div>
+                            </button>
                         </div>
                     </div>
+
+                    {/* Настройки для стороннего источника */}
+                    {videoSource === 'external' && (
+                        <div className="form-grid">
+                            <div className="form-field">
+                                <label>Alias для плеера Anilibria*</label>
+                                <input
+                                    value={alias}
+                                    onChange={(e) => setAlias(e.target.value)}
+                                    placeholder="sousou-no-frieren"
+                                    required
+                                    disabled={!opened}
+                                />
+                            </div>
+
+                            <div className="form-field">
+                                <label>Название для плеера Kodik*</label>
+                                <input
+                                    value={kodik}
+                                    onChange={(e) => setKodik(e.target.value)}
+                                    placeholder="Фрирен [ТВ-1]"
+                                    required
+                                    disabled={!opened}
+                                />
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Кнопка для открытия Yumeko модалки */}
+                    {videoSource === 'yumeko' && (
+                        <div className="yumeko-section">
+                            {animeId ? (
+                                <button
+                                    type="button"
+                                    className="btn-yumeko-manage"
+                                    onClick={() => setShowYumekoModal(true)}
+                                    disabled={!opened}
+                                >
+                                    <Video size={20} />
+                                    Управление видео Yumeko
+                                </button>
+                            ) : (
+                                <div className="yumeko-info-box">
+                                    <AlertTriangle size={20} />
+                                    <p>Сначала сохраните аниме, чтобы загружать видео через Yumeko</p>
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
+
+                {/* Модалка Yumeko */}
+                {showYumekoModal && animeId && (
+                    <YumekoVideoManager
+                        animeId={parseInt(animeId)}
+                        onClose={() => setShowYumekoModal(false)}
+                    />
+                )}
 
                 {/* Модальное окно настройки блокировки через Portal */}
                 {showBlockingModal && (() => {

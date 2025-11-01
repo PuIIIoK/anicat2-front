@@ -1,6 +1,6 @@
 type ProgressKey = {
   animeId: string;
-  source: 'kodik' | 'libria';
+  source: 'kodik' | 'libria' | 'yumeko';
   voice?: string | null;
   episodeId: number;
 };
@@ -82,7 +82,7 @@ async function fetchProgressForAnimeFromServer(animeId: string): Promise<Array<{
     const list = await fetchProgressForAnime(animeId);
     if (!Array.isArray(list) || !list.length) return [];
     return list.map((entry) => {
-      const src: 'kodik' | 'libria' = (entry.source === 'libria' || entry.source === 'kodik') ? entry.source : 'kodik';
+      const src: 'kodik' | 'libria' | 'yumeko' = (entry.source === 'libria' || entry.source === 'kodik' || entry.source === 'yumeko') ? entry.source as 'kodik' | 'libria' | 'yumeko' : 'kodik';
       const key: ProgressKey = { animeId: entry.animeId, source: src, voice: entry.voice ?? null, episodeId: Number(entry.episodeId) };
       const progress: EpisodeProgress = { time: Number(entry.time ?? 0), duration: Number(entry.duration ?? 0), updatedAt: Number(entry.updatedAt ?? Date.now()), opened: Boolean(entry.opened) };
       return { key, progress };

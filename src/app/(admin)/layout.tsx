@@ -7,6 +7,8 @@ import AdminRoleChecker from '@/component/AdminRoleChecker';
 import SyncProgressNotification from '@/component/sync/SyncProgressNotification';
 import { API_SERVER } from '@/tools/constants';
 import { ThemeProvider } from '../context/ThemeContext';
+import { YumekoUploadProvider } from '../context/YumekoUploadContext';
+import YumekoUploadNotification from '@/component/yumeko-video/YumekoUploadNotification';
 
 type LayoutProps = {
   children: ReactNode;
@@ -23,18 +25,21 @@ const RootLayout: React.FC<LayoutProps> = ({ children }) => {
       <body>
         <ThemeProvider>
           <NotificationProvider>
-            <BanChecker>
-              <AdminRoleChecker>
-                <ElectronBodyClass />
-                <CustomTitleBar />
-                <DiscordStatusTracker />
-                <Header />
-                <main className="main">{children}</main>
-                
-                {/* Глобальный компонент синхронизации */}
-                <SyncProgressNotification apiServer={API_SERVER} />
-              </AdminRoleChecker>
-            </BanChecker>
+            <YumekoUploadProvider>
+              <BanChecker>
+                <AdminRoleChecker>
+                  <ElectronBodyClass />
+                  <CustomTitleBar />
+                  <DiscordStatusTracker />
+                  <Header />
+                  <main className="main">{children}</main>
+                  
+                  {/* Глобальные компоненты */}
+                  <SyncProgressNotification apiServer={API_SERVER} />
+                  <YumekoUploadNotification />
+                </AdminRoleChecker>
+              </BanChecker>
+            </YumekoUploadProvider>
           </NotificationProvider>
         </ThemeProvider>
       </body>

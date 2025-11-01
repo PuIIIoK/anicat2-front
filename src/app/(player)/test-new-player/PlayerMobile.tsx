@@ -722,7 +722,18 @@ export default function PlayerMobile({ animeId, animeMeta, initError }: PlayerMo
         try { hlsRef.current?.destroy(); } catch {}
         hlsRef.current = null;
         if (Hls.isSupported()) {
-            const hls = new Hls({ enableWorker: true });
+            const hls = new Hls({ 
+                enableWorker: true,
+                // Настройки для поддержки длинных видео (фильмов) на мобильных
+                maxBufferLength: 30, // Меньше для мобильных устройств
+                maxMaxBufferLength: 60, 
+                maxBufferSize: 30 * 1000 * 1000, // 30MB для мобильных
+                maxBufferHole: 0.5,
+                highBufferWatchdogPeriod: 3,
+                nudgeOffset: 0.1,
+                nudgeMaxRetry: 3,
+                backBufferLength: 15, // Меньше для экономии памяти на мобильных
+            });
             hlsRef.current = hls;
             try { video.crossOrigin = 'anonymous'; } catch {}
             hls.attachMedia(video);

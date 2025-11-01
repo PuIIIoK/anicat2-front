@@ -2,7 +2,7 @@
 
 import { useSearchParams, useRouter } from 'next/navigation';
 import React, { useState, useEffect, useCallback } from 'react';
-import AnimeMainInfo from '../add-anime-page/anime-upload-info';
+import AnimeMainInfo from './edit-anime-info';
 import AnimeFileAndEpisode from "./anime-edit-upload";
 import { API_SERVER } from "../../../tools/constants";
 import UploadProgressModal from "../admin_panel/UploadProgressModalAnime";
@@ -843,14 +843,13 @@ const EditAnimePage = () => {
                         description={description}
                         alias={alias}
                         kodik={kodik}
+                        animeId={animeId}
                         opened={opened}
+                        anons={anons}
                         countries={countries}
                         zametka_blocked={zametka_blocked}
                         zametka={zametka}
-                        anons={anons}
                         onValidateBlocking={setValidateBlockingFn}
-                        setAnons={setAnons}
-                        setZametka={setZametka}
 
                         setTitle={setTitle}
                         setAlttitle={setAlttitle}
@@ -868,10 +867,11 @@ const EditAnimePage = () => {
                         setDescription={setDescription}
                         setAlias={setAlias}
                         setKodik={setKodik}
-
                         setOpened={setOpened}
+                        setAnons={setAnons}
                         setCountries={setCountries}
                         setZametka_blocked={setZametka_blocked}
+                        setZametka={setZametka}
                     />
                 </div>
 

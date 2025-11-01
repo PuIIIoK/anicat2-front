@@ -11,15 +11,15 @@
 }
 
 .search-modal {
-  background: rgba(18, 18, 18, 0.95);
+  background: linear-gradient(135deg, rgba(20, 20, 25, 0.98) 0%, rgba(15, 15, 20, 0.98) 100%);
   backdrop-filter: blur(20px);
   padding: 1.5rem;
   border-radius: 16px;
   width: 90%;
   max-width: 800px;
   color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--primary-bg-hover);
+  box-shadow: 0 20px 40px var(--primary-bg);
 }
 
 .search-modal-content {
@@ -46,9 +46,9 @@
 }
 
 .search-modal-input:focus {
-  border-color: rgba(255, 165, 0, 0.4);
+  border-color: var(--primary-color);
   background: rgba(35, 35, 35, 0.9);
-  box-shadow: 0 0 0 3px rgba(255, 165, 0, 0.1);
+  box-shadow: 0 0 0 3px var(--primary-bg);
 }
 
 .search-mode-toggle {
@@ -72,9 +72,10 @@
     transition: all 0.25s ease;
 
     &.active {
-      background: rgba(255, 165, 0, 0.2);
+      background: linear-gradient(135deg, var(--primary-bg-hover) 0%, var(--primary-bg) 100%);
       color: var(--primary-color);
-      box-shadow: 0 2px 8px rgba(255, 165, 0, 0.15);
+      box-shadow: 0 2px 8px var(--primary-bg-hover);
+      border: 1px solid var(--primary-bg-hover);
     }
 
     &:hover:not(.active) {
@@ -92,7 +93,7 @@
   overflow-y: auto;
   padding-right: 8px;
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 165, 0, 0.5) transparent;
+  scrollbar-color: var(--primary-color) transparent;
   
   // GPU-ускорение для плавной прокрутки
   will-change: scroll-position;
@@ -114,11 +115,11 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    background: rgba(255, 165, 0, 0.3);
+    background: var(--primary-bg-hover);
     border-radius: 3px;
     
     &:hover {
-      background: rgba(255, 165, 0, 0.5);
+      background: var(--primary-color);
     }
   }
 }
@@ -148,7 +149,7 @@
 
   &:hover {
     background: rgba(25, 25, 25, 0.7);
-    border-color: rgba(255, 165, 0, 0.15);
+    border-color: var(--primary-bg);    
     transform: translateY(-2px) translateZ(0);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   }
@@ -191,14 +192,14 @@
 
       .anime-episodes-search {
         display: inline-block;
-        background: rgba(255, 165, 0, 0.15);
+        background: var(--primary-bg);
         color: var(--primary-color);
         margin-left: 6px;
         padding: 2px 6px;
         font-size: 11px;
         font-weight: 500;
         border-radius: 4px;
-        border: 1px solid rgba(255, 165, 0, 0.2);
+        border: 1px solid var(--primary-bg-hover);
       }
     }
 
@@ -242,7 +243,7 @@
   justify-content: center;
 
   &:hover {
-    background: rgba(255, 165, 0, 0.1);
+    background: var(--primary-bg);
     color: var(--primary-color);
     transform: scale(1.1);
   }
@@ -259,7 +260,7 @@
 }
 
 .search-results::-webkit-scrollbar-thumb {
-  background-color: #ffc14d;
+  background-color: var(--primary-color);
   border-radius: 10px;
   border: 2px solid #111;
 }
@@ -339,7 +340,7 @@
 
       &.active {
         color: var(--primary-color);
-        background: rgba(255, 165, 0, 0.15);
+        background: var(--primary-bg);
       }
 
       &:hover:not(.active) {
@@ -359,9 +360,9 @@
     color: #fff;
 
     &:focus {
-      border-color: rgba(255, 165, 0, 0.4);
+      border-color: var(--primary-color);
       background: rgba(30, 30, 30, 0.9);
-      box-shadow: 0 0 0 2px rgba(255, 165, 0, 0.1);
+      box-shadow: 0 0 0 2px var(--primary-bg);
     }
 
     &::placeholder {
@@ -398,11 +399,11 @@
     }
 
     &::-webkit-scrollbar-thumb {
-      background: rgba(255, 165, 0, 0.3);
+      background: var(--primary-bg-hover);
       border-radius: 2px;
 
       &:hover {
-        background: rgba(255, 165, 0, 0.5);
+        background: var(--primary-color);
       }
     }
   }
@@ -429,7 +430,7 @@
 
     &:hover {
       background: rgba(22, 22, 22, 0.9);
-      border-color: rgba(255, 165, 0, 0.2);
+      border-color: var(--primary-bg-hover);
       transform: translateY(-1px) translateZ(0);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
@@ -472,7 +473,7 @@
 
       .anime-episodes-search {
         display: inline-block;
-        background: rgba(255, 165, 0, 0.2);
+        background: var(--primary-bg);
         color: var(--primary-color);
         margin-left: 4px;
         padding: 1px 5px;
@@ -514,7 +515,7 @@
     border-radius: 50%;
 
     &:hover {
-      background: rgba(255, 165, 0, 0.1);
+      background: var(--primary-bg);
       color: var(--primary-color);
     }
   }

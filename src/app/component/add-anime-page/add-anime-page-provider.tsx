@@ -479,6 +479,7 @@ const AddAnimePage = () => {
                         zametka_blocked={zametka_blocked}
                         zametka={zametka}
                         anons={anons}
+                        animeId={animeId}
                         onValidateBlocking={setValidateBlockingFn}
                         setAnons={setAnons}
                         setZametka={setZametka}

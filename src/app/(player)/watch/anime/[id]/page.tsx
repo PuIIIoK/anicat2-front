@@ -12,17 +12,36 @@ export default function WatchAnimePage() {
 
     const animeId = Array.isArray(params?.id) ? params.id[0] : (params?.id as string);
 
+    // Параметры для внешних источников (Kodik)
     const passedKodik = searchParams.get('kodik') || undefined;
     const passedAlias = searchParams.get('alias') || undefined;
     const passedTitle = searchParams.get('title') || undefined;
     const passedCover = searchParams.get('cover') || undefined;
 
+    // Параметры для источника Yumeko
+    const passedSource = searchParams.get('source') as 'kodik' | 'yumeko' | undefined;
+    const passedVoiceId = searchParams.get('voiceId') || undefined;
+    const passedVoiceName = searchParams.get('voiceName') || undefined;
+    const passedEpisodeId = searchParams.get('episodeId') || undefined;
+    const passedEpisodeNumber = searchParams.get('episodeNumber') || undefined;
+
     const animeMeta = useMemo<AnimeMeta>(() => ({
+        // Внешние источники
         kodik: passedKodik,
         alias: passedAlias,
+        
+        // Yumeko источник
+        source: passedSource,
+        voiceId: passedVoiceId ? parseInt(passedVoiceId) : undefined,
+        voiceName: passedVoiceName,
+        episodeId: passedEpisodeId ? parseInt(passedEpisodeId) : undefined,
+        episodeNumber: passedEpisodeNumber ? parseInt(passedEpisodeNumber) : undefined,
+        
+        // Общие параметры
         title: passedTitle,
         coverUrl: passedCover
-    }), [passedKodik, passedAlias, passedTitle, passedCover]);
+    }), [passedKodik, passedAlias, passedSource, passedVoiceId, passedVoiceName, 
+         passedEpisodeId, passedEpisodeNumber, passedTitle, passedCover]);
 
     const [isMobile, setIsMobile] = useState<boolean>(true);
     useEffect(() => {

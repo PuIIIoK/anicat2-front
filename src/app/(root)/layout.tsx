@@ -11,6 +11,8 @@ import { API_SERVER } from '@/tools/constants';
 import { ThemeProvider } from '../context/ThemeContext';
 import NotificationManager, { NotificationProvider } from '@/component/notifications/NotificationManager';
 import { cleanupOldPlayerStates } from '@/utils/player/playerState';
+import { YumekoUploadProvider } from '../context/YumekoUploadContext';
+import YumekoUploadNotification from '@/component/yumeko-video/YumekoUploadNotification';
 
 const CustomTitleBar = dynamic(() => import('@/component/layout').then(m => m.CustomTitleBar), { ssr: false });
 const DiscordStatusTracker = dynamic(() => import('@/component/layout').then(m => m.DiscordStatusTracker), { ssr: false });
@@ -49,21 +51,24 @@ const RootLayout: React.FC<LayoutProps> = ({ children }) => {
         <body>
             <ThemeProvider>
                 <NotificationProvider>
-                    <BanChecker>
-                        <CustomTitleBar />
-                        <DiscordStatusTracker />
+                    <YumekoUploadProvider>
+                        <BanChecker>
+                            <CustomTitleBar />
+                            <DiscordStatusTracker />
 
-                        <div className="mobile-only">
-                            <BottomNavBar />
-                        </div>
-                        <Header />
-                        <main className="main">{children}</main>
-                        <Footer />
-                        
-                        {/* Глобальные компоненты */}
-                        <SyncProgressNotification apiServer={API_SERVER} />
-                        <NotificationManager />
-                    </BanChecker>
+                            <div className="mobile-only">
+                                <BottomNavBar />
+                            </div>
+                            <Header />
+                            <main className="main">{children}</main>
+                            <Footer />
+                            
+                            {/* Глобальные компоненты */}
+                            <SyncProgressNotification apiServer={API_SERVER} />
+                            <YumekoUploadNotification />
+                            <NotificationManager />
+                        </BanChecker>
+                    </YumekoUploadProvider>
                 </NotificationProvider>
             </ThemeProvider>
         </body>

@@ -16,6 +16,7 @@ import SimilarAnimeSection from './SimilarAnimeSection';
 import TitlesModal from './TitlesModal';
 import DiscordStatusTracker from '../DiscordStatusTracker';
 import ServerErrorPage from '../common/ServerErrorPage';
+import SourceSelectionModal from './SourceSelectionModal';
 
 const statusOptions = [
     { label: 'Не выбрано', icon: <X size={14} />, value: 'none' },
@@ -51,6 +52,11 @@ const AnimePageMobile: React.FC<AnimePageMobileProps> = ({ animeId }) => {
         // Доступность и блокировки
         isAccessible,
         zametka_blocked,
+
+        // Модальное окно выбора источника
+        showSourceModal,
+        setShowSourceModal,
+        handleSourceSelect,
     } = useAnimePageLogic(animeId);
 
     // Локальные состояния для модалок
@@ -878,6 +884,15 @@ const AnimePageMobile: React.FC<AnimePageMobileProps> = ({ animeId }) => {
                     </div>
                 </div>
             )}
+
+            <SourceSelectionModal
+                isOpen={showSourceModal}
+                onClose={() => setShowSourceModal(false)}
+                animeId={animeId}
+                animeTitle={anime.title}
+                animeCover={anime.coverUrl}
+                onSourceSelect={handleSourceSelect}
+            />
         </div>
     );
 };

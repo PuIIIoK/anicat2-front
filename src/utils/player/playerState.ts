@@ -4,7 +4,7 @@
 
 export interface PlayerState {
     episode?: number;
-    source?: 'kodik' | 'libria';
+    source?: 'kodik' | 'libria' | 'yumeko';
     voice?: string;
     time?: number;
 }

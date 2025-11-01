@@ -46,17 +46,45 @@ function AnimePlayerInner() {
                     // Получаем параметры из URL и добавляем их к animeMeta
                     const urlParams: Partial<AnimeMeta> = {};
                     
-                    // Читаем kodik из URL параметров
-                    const kodikParam = searchParams?.get('kodik');
-                    if (kodikParam) {
-                        urlParams.kodik = decodeURIComponent(kodikParam);
-                        console.log('[Page] Found kodik in URL:', urlParams.kodik);
-                    }
+                    // Проверяем источник - если Yumeko, НЕ читаем kodik и alias
+                    const sourceParam = searchParams?.get('source');
                     
-                    // Читаем другие параметры из URL
-                    const aliasParam = searchParams?.get('alias');
-                    if (aliasParam) {
-                        urlParams.alias = decodeURIComponent(aliasParam);
+                    if (sourceParam === 'yumeko') {
+                        // Для источника Yumeko читаем специфичные параметры
+                        console.log('[Page] Using Yumeko source - loading Yumeko parameters');
+                        urlParams.source = 'yumeko';
+                        
+                        const voiceIdParam = searchParams?.get('voiceId');
+                        if (voiceIdParam) {
+                            urlParams.voiceId = parseInt(voiceIdParam);
+                        }
+                        
+                        const voiceNameParam = searchParams?.get('voiceName');
+                        if (voiceNameParam) {
+                            urlParams.voiceName = decodeURIComponent(voiceNameParam);
+                        }
+                        
+                        const episodeIdParam = searchParams?.get('episodeId');
+                        if (episodeIdParam) {
+                            urlParams.episodeId = parseInt(episodeIdParam);
+                        }
+                        
+                        const episodeNumberParam = searchParams?.get('episodeNumber');
+                        if (episodeNumberParam) {
+                            urlParams.episodeNumber = parseInt(episodeNumberParam);
+                        }
+                    } else {
+                        // Для внешних источников (Kodik) читаем kodik и alias
+                        const kodikParam = searchParams?.get('kodik');
+                        if (kodikParam) {
+                            urlParams.kodik = decodeURIComponent(kodikParam);
+                            console.log('[Page] Found kodik in URL:', urlParams.kodik);
+                        }
+                        
+                        const aliasParam = searchParams?.get('alias');
+                        if (aliasParam) {
+                            urlParams.alias = decodeURIComponent(aliasParam);
+                        }
                     }
                     
                     const titleParam = searchParams?.get('title');
