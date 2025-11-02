@@ -14,6 +14,8 @@ export interface YumekoUploadProgress {
     status: 'uploading' | 'converting' | 'ready' | 'error';
     errorMessage?: string;
     onCancel?: () => void;
+    screenshotUrl?: string; // URL скриншота эпизода
+    duration?: number; // Длительность в секундах
 }
 
 interface YumekoUploadContextType {

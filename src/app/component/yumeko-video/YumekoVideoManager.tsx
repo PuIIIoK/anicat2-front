@@ -318,14 +318,19 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                     return true;
                 }
                 
+                // Обновляем список эпизодов, чтобы подтянуть скриншот и другие данные
+                if (selectedVoiceId) await loadEpisodes(selectedVoiceId);
+                
                 switch (episode.videoStatus) {
                     case 'uploading':
                         updateUpload(uploadId, {
-                            step: 'Ожидание конвертации...',
-                            progress: 15,
-                            status: 'uploading'
+                            step: 'Получение данных эпизода...',
+                            progress: 18,
+                            status: 'uploading',
+                            screenshotUrl: episode.screenshotPath 
+                                ? `${API_SERVER}/api/video/screenshot/${episode.screenshotPath}` 
+                                : undefined
                         });
-                        if (selectedVoiceId) await loadEpisodes(selectedVoiceId);
                         return false;
                         
                     case 'converting':
@@ -348,10 +353,12 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                         updateUpload(uploadId, {
                             step,
                             progress: Math.min(95, totalProgress),
-                            status: 'converting'
+                            status: 'converting',
+                            screenshotUrl: episode.screenshotPath 
+                                ? `${API_SERVER}/api/video/screenshot/${episode.screenshotPath}` 
+                                : undefined,
+                            duration: episode.durationSeconds
                         });
-                        
-                        if (selectedVoiceId) await loadEpisodes(selectedVoiceId);
                         return false;
                         
                     case 'ready':
@@ -364,10 +371,10 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                         
                         if (selectedVoiceId) await loadEpisodes(selectedVoiceId);
                         
-                        // Автоматически удаляем из списка через 3 секунды
+                        // Автоматически удаляем из списка через 1 секунду
                         setTimeout(() => {
                             removeUpload(uploadId);
-                        }, 3000);
+                        }, 1000);
                         
                         // Запускаем следующую конвертацию
                         isConvertingRef.current = false;
@@ -1039,19 +1046,101 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                             )}
 
                             <div className="episodes-list">
-                                {/* Загружающиеся эпизоды */}
+                                {/* Готовые эпизоды (исключая те, что сейчас загружаются) */}
+                                {episodes
+                                    .filter(episode => {
+                                        // Проверяем, нет ли этого эпизода в списке загружаемых (любой статус)
+                                        const isInUploads = uploads.some(u => 
+                                            u.voiceName === selectedVoice?.name && 
+                                            u.episodeNumber === episode.episodeNumber
+                                        );
+                                        return !isInUploads;
+                                    })
+                                    .map(episode => (
+                                    <div key={episode.id} className={`episode-card ${episode.videoStatus === 'ready' ? 'ready' : episode.videoStatus}`}>
+                                        <div className="episode-thumbnail">
+                                            {episode.screenshotPath ? (
+                                                <img 
+                                                    src={`${API_SERVER}/api/video/screenshot/${episode.screenshotPath}`} 
+                                                    alt={`Episode ${episode.episodeNumber}`}
+                                                    onError={(e) => {
+                                                        e.currentTarget.style.display = 'none';
+                                                    }}
+                                                />
+                                            ) : (
+                                                <Film size={32} />
+                                            )}
+                                        </div>
+                                        <div className="episode-info">
+                                            <h4>Эпизод {episode.episodeNumber}</h4>
+                                            <div className="episode-meta">
+                                                <span className="quality-badge">{episode.maxQuality}</span>
+                                                {episode.durationSeconds && episode.durationSeconds > 0 && (
+                                                    <span className="duration">
+                                                        {Math.floor(episode.durationSeconds / 60)} мин {episode.durationSeconds % 60} сек
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <div className="episode-status-detailed">
+                                                {getStatusIcon(episode.videoStatus)}
+                                                <div className="status-text-wrapper">
+                                                    <span className="status-main">{getStatusText(episode.videoStatus)}</span>
+                                                    {episode.videoStatus === 'converting' && episode.conversionProgress != null && episode.conversionProgress < 95 && (
+                                                        <div className="conversion-progress">
+                                                            <div className="mini-progress-bar">
+                                                                <div 
+                                                                    className="mini-progress-fill" 
+                                                                    style={{ width: `${episode.conversionProgress}%` }}
+                                                                />
+                                                            </div>
+                                                            <span>{Math.round(episode.conversionProgress)}%</span>
+                                                        </div>
+                                                    )}
+                                                    {episode.videoStatus === 'converting' && episode.conversionProgress != null && episode.conversionProgress >= 95 && (
+                                                        <div className="processing-indicator">
+                                                            <RefreshCw size={14} className="spinning-icon" />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button
+                                            className="btn-delete-episode"
+                                            onClick={() => handleDeleteEpisode(episode.id)}
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+                                    </div>
+                                ))}
+                                
+                                {/* Загружающиеся эпизоды внизу */}
                                 {uploads
                                     .filter(u => selectedVoice && u.voiceName === selectedVoice.name)
-                                    .sort((a, b) => a.episodeNumber - b.episodeNumber)
                                     .map(upload => (
-                                        <div key={upload.uploadId} className={`episode-card uploading ${upload.status}`}>
-                                            <div className="episode-thumbnail uploading-placeholder">
-                                                <Upload size={32} />
+                                        <div key={upload.uploadId} className={`episode-card ${upload.status}`}>
+                                            <div className={`episode-thumbnail ${upload.screenshotUrl ? '' : 'uploading-placeholder'}`}>
+                                                {upload.screenshotUrl ? (
+                                                    <img 
+                                                        src={upload.screenshotUrl} 
+                                                        alt={`Episode ${upload.episodeNumber}`}
+                                                        className="fade-in"
+                                                        onError={(e) => {
+                                                            e.currentTarget.style.display = 'none';
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    <Upload size={32} />
+                                                )}
                                             </div>
                                             <div className="episode-info">
                                                 <h4>Эпизод {upload.episodeNumber}</h4>
                                                 <div className="episode-meta">
                                                     <span className="quality-badge">{upload.quality}</span>
+                                                    {upload.duration && upload.duration > 0 && (
+                                                        <span className="duration">
+                                                            {Math.floor(upload.duration / 60)} мин {upload.duration % 60} сек
+                                                        </span>
+                                                    )}
                                                 </div>
                                                 <div className="episode-status-detailed">
                                                     {getStatusIcon(upload.status)}
@@ -1099,55 +1188,7 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                                             )}
                                         </div>
                                     ))}
-                                
-                                {/* Готовые эпизоды */}
-                                {episodes.map(episode => (
-                                    <div key={episode.id} className="episode-card">
-                                        {episode.screenshotPath && (
-                                            <div className="episode-thumbnail">
-                                                <img 
-                                                    src={`${API_SERVER}/api/video/screenshot/${episode.screenshotPath}`} 
-                                                    alt={`Episode ${episode.episodeNumber}`}
-                                                    onError={(e) => {
-                                                        e.currentTarget.style.display = 'none';
-                                                    }}
-                                                />
-                                            </div>
-                                        )}
-                                        <div className="episode-info">
-                                            <h4>Эпизод {episode.episodeNumber}</h4>
-                                            <div className="episode-meta">
-                                                <span className="quality-badge">{episode.maxQuality}</span>
-                                                {episode.durationSeconds && episode.durationSeconds > 0 && (
-                                                    <span className="duration">
-                                                        {Math.floor(episode.durationSeconds / 60)} мин {episode.durationSeconds % 60} сек
-                                                    </span>
-                                                )}
-                                            </div>
-                                            <div className="episode-status">
-                                                {getStatusIcon(episode.videoStatus)}
-                                                <span>{getStatusText(episode.videoStatus)}</span>
-                                                {episode.videoStatus === 'converting' && episode.conversionProgress != null && (
-                                                    <div className="conversion-progress">
-                                                        <div className="mini-progress-bar">
-                                                            <div 
-                                                                className="mini-progress-fill" 
-                                                                style={{ width: `${episode.conversionProgress}%` }}
-                                                            />
-                                                        </div>
-                                                        <span>{episode.conversionProgress}%</span>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                        <button
-                                            className="btn-delete-episode"
-                                            onClick={() => handleDeleteEpisode(episode.id)}
-                                        >
-                                            <Trash2 size={16} />
-                                        </button>
-                                    </div>
-                                ))}
+                                    
                                 {episodes.length === 0 && uploads.filter(u => selectedVoice && u.voiceName === selectedVoice.name).length === 0 && (
                                     <div className="empty-state">
                                         Нет эпизодов. Загрузите первый!

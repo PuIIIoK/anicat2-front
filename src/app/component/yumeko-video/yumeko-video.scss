@@ -662,29 +662,46 @@
             gap: 12px;
             transition: all 0.2s;
 
+            // Анимация появления для всех карточек
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            // Плавные переходы для фона, границы и трансформации
+            transition: 
+                background 0.4s ease,
+                border-color 0.4s ease,
+                transform 0.2s ease,
+                box-shadow 0.3s ease;
+
             &:hover {
                 background: rgba(255, 255, 255, 0.06);
-                border-color: rgba(16, 185, 129, 0.2);
+                border-color: rgba(16, 185, 129, 0.3);
+                transform: translateY(-2px);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
             }
             
+            // Статусы карточек с плавными переходами
             &.uploading {
-                border-color: rgba(168, 85, 247, 0.3);
-                background: rgba(168, 85, 247, 0.05);
-                
-                &.converting {
-                    border-color: rgba(16, 185, 129, 0.3);
-                    background: rgba(16, 185, 129, 0.05);
-                }
-                
-                &.ready {
-                    border-color: rgba(16, 185, 129, 0.5);
-                    background: rgba(16, 185, 129, 0.08);
-                }
-                
-                &.error {
-                    border-color: rgba(239, 68, 68, 0.5);
-                    background: rgba(239, 68, 68, 0.05);
-                }
+                border-color: rgba(168, 85, 247, 0.4);
+                background: rgba(168, 85, 247, 0.08);
+                box-shadow: 0 0 20px rgba(168, 85, 247, 0.15);
+            }
+            
+            &.converting {
+                border-color: rgba(59, 130, 246, 0.4);
+                background: rgba(59, 130, 246, 0.08);
+                box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+            }
+            
+            &.ready {
+                border-color: rgba(16, 185, 129, 0.4);
+                background: rgba(16, 185, 129, 0.08);
+                box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+            }
+            
+            &.error {
+                border-color: rgba(239, 68, 68, 0.5);
+                background: rgba(239, 68, 68, 0.08);
+                box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
             }
 
             .episode-thumbnail {
@@ -695,20 +712,29 @@
                 overflow: hidden;
                 background: rgba(0, 0, 0, 0.3);
                 border: 1px solid rgba(255, 255, 255, 0.1);
+                position: relative;
 
                 img {
                     width: 100%;
                     height: 100%;
                     object-fit: cover;
                     display: block;
+                    
+                    &.fade-in {
+                        animation: fadeIn 0.6s ease-in;
+                    }
                 }
                 
                 &.uploading-placeholder {
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    color: #a855f7;
-                    animation: pulse 2s ease-in-out infinite;
+                    background: rgba(0, 0, 0, 0.4);
+                    
+                    svg {
+                        color: rgba(255, 255, 255, 0.3);
+                        animation: pulse 2s ease-in-out infinite;
+                    }
                 }
             }
 
@@ -797,6 +823,7 @@
                     svg {
                         flex-shrink: 0;
                         margin-top: 2px;
+                        transition: all 0.3s ease;
                     }
                     
                     .status-text-wrapper {
@@ -808,24 +835,43 @@
                         .status-main {
                             color: rgba(255, 255, 255, 0.9);
                             font-weight: 500;
+                            animation: fadeIn 0.4s ease-in;
                         }
                         
                         .conversion-progress {
                             display: flex;
                             align-items: center;
                             gap: 8px;
+                            animation: fadeIn 0.4s ease-in;
 
                             .mini-progress-bar {
                                 width: 100px;
-                                height: 4px;
-                                background: rgba(0, 0, 0, 0.3);
-                                border-radius: 2px;
+                                height: 6px;
+                                background: rgba(0, 0, 0, 0.4);
+                                border-radius: 3px;
                                 overflow: hidden;
+                                box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
 
                                 .mini-progress-fill {
                                     height: 100%;
                                     background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
-                                    transition: width 0.3s ease;
+                                    transition: width 0.5s ease-out;
+                                    box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+                                    position: relative;
+                                    
+                                    &::after {
+                                        content: '';
+                                        position: absolute;
+                                        top: 0;
+                                        left: 0;
+                                        right: 0;
+                                        bottom: 0;
+                                        background: linear-gradient(90deg, 
+                                            rgba(255, 255, 255, 0) 0%, 
+                                            rgba(255, 255, 255, 0.3) 50%, 
+                                            rgba(255, 255, 255, 0) 100%);
+                                        animation: shimmer 2s infinite;
+                                    }
                                 }
                             }
 
@@ -833,6 +879,7 @@
                                 font-size: 12px;
                                 font-weight: 700;
                                 color: #10b981;
+                                text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
                             }
                         }
                         
@@ -840,10 +887,12 @@
                             display: flex;
                             align-items: center;
                             gap: 6px;
+                            animation: fadeIn 0.4s ease-in;
                             
                             .spinning-icon {
                                 color: #10b981;
                                 animation: spin 1s linear infinite;
+                                filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.6));
                             }
                         }
                     }
@@ -1576,5 +1625,59 @@
     }
     50% {
         opacity: 0.6;
+    }
+}
+
+// Анимация вращения для спиннеров
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+// Анимация плавного появления
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+// Анимация появления снизу
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+// Анимация масштабирования
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+// Анимация блика для прогресс-бара
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
     }
 }
