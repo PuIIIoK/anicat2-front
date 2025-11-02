@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
-import { X, Plus, Upload, Trash2, CheckCircle, Clock, AlertCircle, Film, Mic, XCircle } from 'lucide-react';
+import { X, Plus, Upload, Trash2, CheckCircle, Clock, AlertCircle, Film, Mic, XCircle, RefreshCw } from 'lucide-react';
 import { API_SERVER } from '../../../tools/constants';
 import { useYumekoUpload } from '../../context/YumekoUploadContext';
 import './yumeko-video.scss';
@@ -35,12 +35,25 @@ const getTokenFromCookie = () => {
     return match ? decodeURIComponent(match[1]) : null;
 };
 
+// Тип для задачи в очереди конвертации
+interface ConversionTask {
+    uploadId: string;
+    episodeId: number;
+    voiceName: string;
+    episodeNumber: number;
+    quality: string;
+}
+
 const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
     const { uploads, addUpload, updateUpload, removeUpload } = useYumekoUpload();
     const uploadXhrRef = useRef<Map<string, XMLHttpRequest>>(new Map()); // Для отмены загрузки по uploadId
     const trackingIntervalRef = useRef<Map<string, NodeJS.Timeout>>(new Map()); // Для отслеживания статуса по uploadId
     const episodeIdRef = useRef<Map<string, number>>(new Map()); // Для хранения episodeId по uploadId для отмены
     const cancelledRef = useRef<Map<string, boolean>>(new Map()); // Флаг отмены для каждого uploadId
+    
+    // Очередь конвертации (только для конвертации, загрузка идет параллельно)
+    const conversionQueueRef = useRef<ConversionTask[]>([]);
+    const isConvertingRef = useRef<boolean>(false);
     
     const [voices, setVoices] = useState<Voice[]>([]);
     const [selectedVoiceId, setSelectedVoiceId] = useState<number | null>(null);
@@ -231,6 +244,184 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
         ).length;
     };
 
+    // Функция для подсчета задач в очереди конвертации для конкретной озвучки
+    const getQueuedCountForVoice = (voiceName: string) => {
+        return conversionQueueRef.current.filter(t => t.voiceName === voiceName).length;
+    };
+
+    // Функция для обработки следующей задачи в очереди конвертации
+    const processNextConversion = async () => {
+        if (isConvertingRef.current || conversionQueueRef.current.length === 0) {
+            return;
+        }
+        
+        isConvertingRef.current = true;
+        const task = conversionQueueRef.current.shift()!;
+        
+        console.log('🎬 Начинаем конвертацию из очереди:', task.uploadId, 'Episode ID:', task.episodeId);
+        
+        // Обновляем статус - конвертация начинается
+        updateUpload(task.uploadId, {
+            step: 'Запуск конвертации...',
+            progress: 20,
+            status: 'converting'
+        });
+        
+        // Отправляем запрос на начало конвертации
+        try {
+            const token = getTokenFromCookie();
+            await fetch(`${API_SERVER}/api/admin/yumeko/episodes/${task.episodeId}/start-conversion`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+        } catch (error) {
+            console.error('Ошибка запуска конвертации:', error);
+        }
+        
+        // Начинаем отслеживать статус конвертации
+        await startConversionTracking(task);
+    };
+
+    // Функция отслеживания статуса конвертации
+    const startConversionTracking = async (task: ConversionTask) => {
+        const { uploadId, episodeId } = task;
+        const token = getTokenFromCookie();
+        
+        const checkStatus = async () => {
+            try {
+                const res = await fetch(`${API_SERVER}/api/admin/yumeko/episodes/${episodeId}/status`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (!res.ok) {
+                    if (res.status === 404) {
+                        console.log('ℹ️ Эпизод не найден (404) в БД');
+                        const currentInterval = trackingIntervalRef.current.get(uploadId);
+                        if (currentInterval) {
+                            clearInterval(currentInterval);
+                            trackingIntervalRef.current.delete(uploadId);
+                        }
+                        removeUpload(uploadId);
+                        isConvertingRef.current = false;
+                        processNextConversion();
+                        return true;
+                    }
+                    return false;
+                }
+                
+                const episode = await res.json();
+                console.log('📊 Статус конвертации:', episode.videoStatus, 'Прогресс:', episode.conversionProgress);
+                
+                // Проверяем отмену
+                if (cancelledRef.current.get(uploadId)) {
+                    console.log('ℹ️ Конвертация отменена');
+                    return true;
+                }
+                
+                switch (episode.videoStatus) {
+                    case 'uploading':
+                        updateUpload(uploadId, {
+                            step: 'Ожидание конвертации...',
+                            progress: 15,
+                            status: 'uploading'
+                        });
+                        if (selectedVoiceId) await loadEpisodes(selectedVoiceId);
+                        return false;
+                        
+                    case 'converting':
+                        const progress = episode.conversionProgress || 0;
+                        let step: string;
+                        let totalProgress: number;
+                        
+                        if (progress === 0) {
+                            step = 'Запуск конвертации в HLS формат...';
+                            totalProgress = 35;
+                        } else if (progress >= 95) {
+                            // При 95%+ показываем "Обработка" без процентов
+                            step = 'Обработка';
+                            totalProgress = 95;
+                        } else {
+                            step = `Конвертация видео... ${Math.round(progress)}%`;
+                            totalProgress = 35 + (progress * 0.6);
+                        }
+                        
+                        updateUpload(uploadId, {
+                            step,
+                            progress: Math.min(95, totalProgress),
+                            status: 'converting'
+                        });
+                        
+                        if (selectedVoiceId) await loadEpisodes(selectedVoiceId);
+                        return false;
+                        
+                    case 'ready':
+                        console.log('✅ Конвертация завершена!');
+                        updateUpload(uploadId, {
+                            step: 'Готово!',
+                            progress: 100,
+                            status: 'ready'
+                        });
+                        
+                        if (selectedVoiceId) await loadEpisodes(selectedVoiceId);
+                        
+                        // Автоматически удаляем из списка через 3 секунды
+                        setTimeout(() => {
+                            removeUpload(uploadId);
+                        }, 3000);
+                        
+                        // Запускаем следующую конвертацию
+                        isConvertingRef.current = false;
+                        processNextConversion();
+                        return true;
+                        
+                    case 'error':
+                        updateUpload(uploadId, {
+                            step: 'Ошибка',
+                            progress: 0,
+                            status: 'error',
+                            errorMessage: episode.errorMessage || 'Неизвестная ошибка'
+                        });
+                        
+                        // Запускаем следующую конвертацию даже при ошибке
+                        isConvertingRef.current = false;
+                        processNextConversion();
+                        return true;
+                        
+                    default:
+                        return false;
+                }
+            } catch (error) {
+                console.error('❌ Ошибка проверки статуса:', error);
+                return false;
+            }
+        };
+        
+        // Первый запрос
+        const initialDone = await checkStatus();
+        if (initialDone) return;
+        
+        // Затем проверяем каждые 1.5 секунды
+        const interval = setInterval(async () => {
+            if (cancelledRef.current.get(uploadId)) {
+                clearInterval(interval);
+                trackingIntervalRef.current.delete(uploadId);
+                cancelledRef.current.delete(uploadId);
+                isConvertingRef.current = false;
+                processNextConversion();
+                return;
+            }
+            
+            const done = await checkStatus();
+            if (done) {
+                clearInterval(interval);
+                trackingIntervalRef.current.delete(uploadId);
+                cancelledRef.current.delete(uploadId);
+            }
+        }, 1500);
+        
+        trackingIntervalRef.current.set(uploadId, interval);
+    };
+
     const handleUploadEpisode = async () => {
         if (!selectedVoiceId || !newEpisodeNumber || !videoFile) return;
         
@@ -261,41 +452,52 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
         setNewEpisodeQuality('1080p');
         setVideoFile(null);
         
+        // Запускаем загрузку файла ПАРАЛЛЕЛЬНО (не в очереди)
+        startFileUpload(uploadId, episodeNumberToUpload, qualityToUpload, fileToUpload, voiceNameToUpload, selectedVoiceId);
+    };
+    
+    // Функция загрузки файла на сервер (выполняется параллельно)
+    const startFileUpload = async (
+        uploadId: string,
+        episodeNumber: number,
+        quality: string,
+        file: File,
+        voiceName: string,
+        voiceId: number
+    ) => {
         try {
             const token = getTokenFromCookie();
             const formData = new FormData();
-            formData.append('episodeNumber', episodeNumberToUpload.toString());
-            formData.append('maxQuality', qualityToUpload);
-            formData.append('video', fileToUpload);
+            formData.append('episodeNumber', episodeNumber.toString());
+            formData.append('maxQuality', quality);
+            formData.append('video', file);
             
             const xhr = new XMLHttpRequest();
-            uploadXhrRef.current.set(uploadId, xhr); // Сохраняем xhr для возможности отмены
+            uploadXhrRef.current.set(uploadId, xhr);
             
-            // Функция отмены для этой конкретной загрузки
+            // Функция отмены загрузки
             const cancelUploadFn = async () => {
                 console.log('🛑 Отмена загрузки:', uploadId);
-                
-                // Устанавливаем флаг отмены
                 cancelledRef.current.set(uploadId, true);
                 
-                // СНАЧАЛА останавливаем все процессы
-                // Отменяем загрузку файла
                 const currentXhr = uploadXhrRef.current.get(uploadId);
                 if (currentXhr) {
-                    console.log('🛑 Отменяем XHR загрузку');
                     currentXhr.abort();
                     uploadXhrRef.current.delete(uploadId);
                 }
                 
-                // Останавливаем трекинг статуса
                 const currentInterval = trackingIntervalRef.current.get(uploadId);
                 if (currentInterval) {
-                    console.log('🛑 Останавливаем трекинг');
                     clearInterval(currentInterval);
                     trackingIntervalRef.current.delete(uploadId);
                 }
                 
-                // Обновляем статус на отменено
+                // Удаляем из очереди конвертации если там есть
+                const queueIndex = conversionQueueRef.current.findIndex(t => t.uploadId === uploadId);
+                if (queueIndex !== -1) {
+                    conversionQueueRef.current.splice(queueIndex, 1);
+                }
+                
                 updateUpload(uploadId, {
                     step: 'Отменено',
                     progress: 0,
@@ -303,64 +505,45 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                     errorMessage: 'Загрузка отменена пользователем'
                 });
                 
-                // ПОТОМ проверяем и удаляем эпизод с бэкенда, если он был создан
+                // Удаляем эпизод с сервера если он был создан
                 const episodeId = episodeIdRef.current.get(uploadId);
                 if (episodeId && episodeId > 0) {
                     try {
-                        console.log('🛑 Проверяем и удаляем эпизод:', episodeId);
                         const token = getTokenFromCookie();
-                        
-                        // Сначала проверяем, существует ли эпизод
                         const checkRes = await fetch(`${API_SERVER}/api/admin/yumeko/episodes/${episodeId}/status`, {
                             headers: { 'Authorization': `Bearer ${token}` }
                         });
                         
                         if (checkRes.ok) {
-                            // Эпизод существует, удаляем его
-                            console.log('🛑 Эпизод существует, удаляем');
-                            const deleteRes = await fetch(`${API_SERVER}/api/admin/yumeko/episodes/${episodeId}`, {
+                            await fetch(`${API_SERVER}/api/admin/yumeko/episodes/${episodeId}`, {
                                 method: 'DELETE',
                                 headers: { 'Authorization': `Bearer ${token}` }
                             });
                             
-                            if (deleteRes.ok) {
-                                console.log('✅ Эпизод успешно удален');
-                                // Обновляем список эпизодов после удаления
                                 if (selectedVoiceId) {
                                     await loadEpisodes(selectedVoiceId);
                                     await loadVoices();
                                 }
-                            }
-                        } else if (checkRes.status === 404) {
-                            console.log('ℹ️ Эпизод уже удален или не существует');
                         }
                         
                         episodeIdRef.current.delete(uploadId);
                     } catch (error) {
-                        console.error('❌ Ошибка при проверке/удалении эпизода:', error);
-                        // Продолжаем даже если была ошибка
+                        console.error('❌ Ошибка при удалении эпизода:', error);
                     }
-                } else {
-                    console.log('ℹ️ Эпизод еще не был создан, пропускаем удаление');
                 }
                 
-                // ВСЕГДА удаляем из контекста (закрывает модальное окно)
-                console.log('🛑 Закрываем модальное окно');
                 removeUpload(uploadId);
-                
-                // Очищаем флаг отмены
                 cancelledRef.current.delete(uploadId);
-                episodeIdRef.current.delete(uploadId);
             };
             
-            // Добавляем новую загрузку в глобальный список
+            // Добавляем в список загрузок
             addUpload({
                 uploadId,
-                episodeId: 0, // Будет обновлено после ответа сервера
-                voiceName: voiceNameToUpload,
-                episodeNumber: episodeNumberToUpload,
+                episodeId: 0,
+                voiceName,
+                episodeNumber,
                 animeId: animeId,
-                quality: qualityToUpload,
+                quality,
                 step: 'Загрузка видео на сервер...',
                 progress: 0,
                 status: 'uploading',
@@ -381,24 +564,36 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
             xhr.onload = async () => {
                 if (xhr.status === 200) {
                     const episode = JSON.parse(xhr.responseText);
-                    
-                    // Сохраняем episodeId в ref для возможности отмены
                     episodeIdRef.current.set(uploadId, episode.id);
                     
                     updateUpload(uploadId, {
                         episodeId: episode.id,
-                        step: 'Получение видео...',
-                        progress: 15
+                        step: 'В очереди на конвертацию...',
+                        progress: 15,
+                        status: 'uploading',
+                        onCancel: cancelUploadFn
                     });
                     
-                    // Сразу обновляем список эпизодов, чтобы показать новый
                     if (selectedVoiceId) {
                         await loadEpisodes(selectedVoiceId);
                     }
                     
-                    // Начинаем отслеживать статус конвертации
-                    await trackEpisodeStatus(uploadId, episode.id, voiceNameToUpload, episodeNumberToUpload, qualityToUpload, cancelUploadFn);
                     uploadXhrRef.current.delete(uploadId);
+                    
+                    // Добавляем в очередь конвертации
+                    const conversionTask: ConversionTask = {
+                        uploadId,
+                        episodeId: episode.id,
+                        voiceName,
+                        episodeNumber,
+                        quality
+                    };
+                    
+                    conversionQueueRef.current.push(conversionTask);
+                    console.log(`🎬 Добавлено в очередь конвертации. Всего в очереди: ${conversionQueueRef.current.length}`);
+                    
+                    // Запускаем конвертацию если она еще не запущена
+                    processNextConversion();
                 } else {
                     console.error('Ошибка сервера:', xhr.status, xhr.responseText);
                     
@@ -410,10 +605,8 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                         errorMessage = xhr.responseText || xhr.statusText;
                     }
                     
-                    // Если это ошибка дубликата, показываем специфичное сообщение
                     if (errorMessage.includes('уже существует') || errorMessage.includes('duplicate')) {
-                        errorMessage = `Эпизод ${episodeNumberToUpload} уже существует для данной озвучки`;
-                        alert(errorMessage);
+                        errorMessage = `Эпизод ${episodeNumber} уже существует для данной озвучки`;
                     }
                     
                     updateUpload(uploadId, {
@@ -442,7 +635,7 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                 uploadXhrRef.current.delete(uploadId);
             };
             
-            xhr.open('POST', `${API_SERVER}/api/admin/yumeko/voices/${selectedVoiceId}/episodes`);
+            xhr.open('POST', `${API_SERVER}/api/admin/yumeko/voices/${voiceId}/episodes`);
             xhr.setRequestHeader('Authorization', `Bearer ${token}`);
             xhr.send(formData);
             
@@ -457,177 +650,6 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
         }
     };
 
-    const trackEpisodeStatus = async (
-        uploadId: string, 
-        episodeId: number, 
-        voiceName: string, 
-        episodeNumber: number,
-        quality: string,
-        cancelFn: () => void
-    ) => {
-        const token = getTokenFromCookie();
-        
-        const checkStatus = async () => {
-            try {
-                const res = await fetch(`${API_SERVER}/api/admin/yumeko/episodes/${episodeId}/status`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                
-                if (!res.ok) {
-                    console.error('Ошибка получения статуса:', res.status);
-                    if (res.status === 404) {
-                        // Эпизод удален или не существует в БД
-                        console.log('ℹ️ Эпизод не найден (404) в БД, удаляем загрузку');
-                        
-                        // Останавливаем трекинг
-                        const currentInterval = trackingIntervalRef.current.get(uploadId);
-                        if (currentInterval) {
-                            clearInterval(currentInterval);
-                            trackingIntervalRef.current.delete(uploadId);
-                        }
-                        
-                        // Очищаем refs
-                        cancelledRef.current.delete(uploadId);
-                        episodeIdRef.current.delete(uploadId);
-                        
-                        // Удаляем из контекста (закрывает модалку)
-                        removeUpload(uploadId);
-                        
-                        return true;
-                    }
-                    return false;
-                }
-                
-                const episode = await res.json();
-                console.log('📊 Статус эпизода:', episode.videoStatus, 'Прогресс:', episode.conversionProgress, 'Episode ID:', episodeId);
-                
-                // Проверяем, не была ли отменена загрузка
-                if (cancelledRef.current.get(uploadId)) {
-                    console.log('ℹ️ Загрузка отменена, игнорируем обновление статуса');
-                    return true;
-                }
-                
-                // Обновляем глобальное уведомление в зависимости от статуса
-                switch (episode.videoStatus) {
-                    case 'uploading':
-                        updateUpload(uploadId, {
-                            episodeId,
-                            step: 'Получение видео...',
-                            progress: 20,
-                            status: 'uploading',
-                            onCancel: cancelFn
-                        });
-                        
-                        // Обновляем список эпизодов
-                        if (selectedVoiceId) {
-                            await loadEpisodes(selectedVoiceId);
-                        }
-                        
-                        return false;
-                        
-                    case 'converting':
-                        const progress = episode.conversionProgress || 0;
-                        
-                        // Всегда показываем конвертацию если статус "converting"
-                        let step: string;
-                        let totalProgress: number;
-                        
-                        if (progress === 0) {
-                            step = 'Запуск конвертации в HLS формат...';
-                            totalProgress = 35;
-                        } else if (progress >= 99) {
-                            // Финальная стадия - избегаем зависания на 100%
-                            step = 'Финализация видео...';
-                            totalProgress = 95;
-                        } else {
-                            step = `Конвертация видео... ${Math.round(progress)}%`;
-                            // Конвертация занимает диапазон 35-95%
-                            // При progress=100% -> totalProgress=95%
-                            totalProgress = 35 + (progress * 0.6);
-                        }
-                        
-                        updateUpload(uploadId, {
-                            episodeId,
-                            step,
-                            progress: Math.min(95, totalProgress), // Ограничиваем до 95%
-                            status: 'converting',
-                            onCancel: cancelFn
-                        });
-                        
-                        // Обновляем список эпизодов, чтобы показать прогресс конвертации
-                        if (selectedVoiceId) {
-                            await loadEpisodes(selectedVoiceId);
-                        }
-                        
-                        return false;
-                        
-                    case 'ready':
-                        console.log('✅ Эпизод готов! Завершаем трекинг для uploadId:', uploadId);
-                        updateUpload(uploadId, {
-                            episodeId,
-                            step: 'Готово!',
-                            progress: 100,
-                            status: 'ready'
-                        });
-                        
-                        if (selectedVoiceId) {
-                            await loadEpisodes(selectedVoiceId);
-                        }
-                        return true; // Завершаем отслеживание (interval очистится в основной функции)
-                        
-                    case 'error':
-                        updateUpload(uploadId, {
-                            episodeId,
-                            step: 'Ошибка',
-                            progress: 0,
-                            status: 'error',
-                            errorMessage: episode.errorMessage || 'Неизвестная ошибка'
-                        });
-                        return true; // Завершаем отслеживание
-                        
-                    default:
-                        console.log('⚠️ Неизвестный статус:', episode.videoStatus);
-                        return false;
-                }
-            } catch (error) {
-                console.error('❌ Ошибка проверки статуса для uploadId:', uploadId, 'episodeId:', episodeId, error);
-                // Не завершаем трекинг при ошибке сети, продолжаем попытки
-                return false;
-            }
-        };
-        
-        // Первый запрос сразу
-        console.log('🔍 Начинаем трекинг для uploadId:', uploadId, 'episodeId:', episodeId);
-        const initialDone = await checkStatus();
-        if (initialDone) {
-            console.log('✅ Трекинг завершен после первого запроса для uploadId:', uploadId);
-            return;
-        }
-        
-        // Затем проверяем статус каждые 1.5 секунды
-        const interval = setInterval(async () => {
-            // Проверяем флаг отмены
-            if (cancelledRef.current.get(uploadId)) {
-                console.log('ℹ️ Загрузка отменена, прекращаем трекинг для uploadId:', uploadId);
-                clearInterval(interval);
-                trackingIntervalRef.current.delete(uploadId);
-                cancelledRef.current.delete(uploadId);
-                return;
-            }
-            
-            console.log('🔄 Проверяем статус эпизода (interval) для uploadId:', uploadId);
-            const done = await checkStatus();
-            if (done) {
-                console.log('✅ Трекинг завершен для uploadId:', uploadId);
-                clearInterval(interval);
-                trackingIntervalRef.current.delete(uploadId);
-                cancelledRef.current.delete(uploadId);
-            }
-        }, 1500);
-        
-        trackingIntervalRef.current.set(uploadId, interval);
-        console.log('⏱️ Интервал установлен для uploadId:', uploadId);
-    };
 
     // Drag-n-Drop обработчики
     const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
@@ -647,20 +669,85 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
         e.stopPropagation();
     };
 
-    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
         e.stopPropagation();
         setIsDragging(false);
 
         const files = e.dataTransfer.files;
-        if (files && files.length > 0) {
-            const file = files[0];
-            // Проверяем что это MP4 файл
-            if (file.type === 'video/mp4' || file.name.toLowerCase().endsWith('.mp4')) {
-                setVideoFile(file);
-            } else {
-                alert('Пожалуйста, выберите MP4 файл');
+        if (!files || files.length === 0) return;
+        
+        if (!selectedVoiceId) return;
+        const selectedVoice = getSelectedVoice();
+        if (!selectedVoice) return;
+        
+        // Фильтруем только MP4 файлы
+        const mp4Files = Array.from(files).filter(file => 
+            file.type === 'video/mp4' || file.name.toLowerCase().endsWith('.mp4')
+        );
+        
+        if (mp4Files.length === 0) {
+            alert('Пожалуйста, выберите MP4 файл(ы)');
+            return;
+        }
+        
+        // Если один файл - устанавливаем в форму
+        if (mp4Files.length === 1) {
+            setVideoFile(mp4Files[0]);
+            return;
+        }
+        
+        // Если несколько файлов - спрашиваем пользователя
+        const autoNumbering = confirm(
+            `Вы загружаете ${mp4Files.length} файлов. ` +
+            `Хотите автоматически присвоить им последовательные номера эпизодов? ` +
+            `(Нажмите ОК для автонумерации или Отмена для ручного выбора каждого)`
+        );
+        
+        if (autoNumbering) {
+            // Находим максимальный номер эпизода и начинаем с него
+            const maxEpisodeNumber = episodes.length > 0 
+                ? Math.max(...episodes.map(ep => ep.episodeNumber))
+                : 0;
+            
+            const startingEpisode = prompt(
+                `Начать нумерацию с эпизода:`,
+                `${maxEpisodeNumber + 1}`
+            );
+            
+            if (!startingEpisode) return;
+            
+            const startNum = parseInt(startingEpisode);
+            if (isNaN(startNum) || startNum < 1) {
+                alert('Некорректный номер эпизода');
+                return;
             }
+            
+            // Закрываем форму
+            setShowAddEpisode(false);
+            
+            // Запускаем загрузку всех файлов ПАРАЛЛЕЛЬНО
+            mp4Files.forEach((file, index) => {
+                const episodeNumber = startNum + index;
+                
+                // Проверяем существование эпизода
+                const existingEpisode = episodes.find(ep => ep.episodeNumber === episodeNumber);
+                if (existingEpisode) {
+                    console.log(`⚠️ Эпизод ${episodeNumber} уже существует, пропускаем файл ${file.name}`);
+            return;
+        }
+        
+                const uploadId = `${animeId}-${selectedVoiceId}-${episodeNumber}-${Date.now()}-${index}`;
+                
+                // Запускаем загрузку параллельно
+                startFileUpload(uploadId, episodeNumber, newEpisodeQuality, file, selectedVoice.name, selectedVoiceId);
+            });
+            
+            console.log(`📤 Начата параллельная загрузка ${mp4Files.length} файлов`);
+            } else {
+            // Ручной режим - загружаем первый файл в форму
+            setVideoFile(mp4Files[0]);
+            alert(`Выбран файл ${mp4Files[0].name}. Укажите номер эпизода вручную.`);
         }
     };
 
@@ -797,6 +884,7 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                             <div className="voices-list">
                                 {voices.map(voice => {
                                     const uploadingCount = getUploadingCountForVoice(voice.name);
+                                    const queuedCount = getQueuedCountForVoice(voice.name);
                                     return (
                                         <div 
                                             key={voice.id}
@@ -809,7 +897,12 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                                                     {voice.episodesCount} {voice.episodesCount === 1 ? 'эпизод' : voice.episodesCount > 1 && voice.episodesCount < 5 ? 'эпизода' : 'эпизодов'}
                                                     {uploadingCount > 0 && (
                                                         <span className="uploading-indicator">
-                                                            {' '}+ {uploadingCount} загружается
+                                                            {' '}+ {uploadingCount} обрабатывается
+                                                        </span>
+                                                    )}
+                                                    {queuedCount > 0 && (
+                                                        <span className="queued-indicator">
+                                                            {' '}({queuedCount} в очереди)
                                                         </span>
                                                     )}
                                                 </div>
@@ -851,7 +944,12 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                                     Список эпизодов:
                                     {selectedVoice && getUploadingCountForVoice(selectedVoice.name) > 0 && (
                                         <span className="uploading-indicator">
-                                            {' '}({getUploadingCountForVoice(selectedVoice.name)} загружается)
+                                            {' '}({getUploadingCountForVoice(selectedVoice.name)} обрабатывается)
+                                        </span>
+                                    )}
+                                    {selectedVoice && getQueuedCountForVoice(selectedVoice.name) > 0 && (
+                                        <span className="queued-indicator">
+                                            {' '}({getQueuedCountForVoice(selectedVoice.name)} в очереди)
                                         </span>
                                     )}
                                 </div>
@@ -881,13 +979,30 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                                         <input
                                             type="file"
                                             accept=".mp4"
-                                            onChange={(e) => setVideoFile(e.target.files?.[0] || null)}
+                                            multiple
+                                            onChange={(e) => {
+                                                const files = e.target.files;
+                                                if (files && files.length > 0) {
+                                                    // Если один файл - устанавливаем в форму
+                                                    if (files.length === 1) {
+                                                        setVideoFile(files[0]);
+                                                    } else {
+                                                        // Множественная загрузка через handleDrop
+                                                        const event = {
+                                                            preventDefault: () => {},
+                                                            stopPropagation: () => {},
+                                                            dataTransfer: { files }
+                                                        } as any;
+                                                        handleDrop(event);
+                                                    }
+                                                }
+                                            }}
                                             id="video-file-input"
                                             className="file-input"
                                         />
                                         <label htmlFor="video-file-input" className={`file-upload-label ${videoFile ? 'has-file' : ''}`}>
                                             <Upload size={20} />
-                                            <span>{videoFile ? videoFile.name : isDragging ? 'Отпустите файл здесь' : 'Выберите или перетащите MP4 файл'}</span>
+                                            <span>{videoFile ? videoFile.name : isDragging ? 'Отпустите файл(ы) здесь' : 'Выберите или перетащите MP4 файл(ы)'}</span>
                                         </label>
                                         {videoFile && (
                                             <button 
@@ -924,6 +1039,68 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                             )}
 
                             <div className="episodes-list">
+                                {/* Загружающиеся эпизоды */}
+                                {uploads
+                                    .filter(u => selectedVoice && u.voiceName === selectedVoice.name)
+                                    .sort((a, b) => a.episodeNumber - b.episodeNumber)
+                                    .map(upload => (
+                                        <div key={upload.uploadId} className={`episode-card uploading ${upload.status}`}>
+                                            <div className="episode-thumbnail uploading-placeholder">
+                                                <Upload size={32} />
+                                            </div>
+                                            <div className="episode-info">
+                                                <h4>Эпизод {upload.episodeNumber}</h4>
+                                                <div className="episode-meta">
+                                                    <span className="quality-badge">{upload.quality}</span>
+                                                </div>
+                                                <div className="episode-status-detailed">
+                                                    {getStatusIcon(upload.status)}
+                                                    <div className="status-text-wrapper">
+                                                        <span className="status-main">{upload.step}</span>
+                                                        {upload.status === 'converting' && upload.progress < 95 && (
+                                                            <div className="conversion-progress">
+                                                                <div className="mini-progress-bar">
+                                                                    <div 
+                                                                        className="mini-progress-fill" 
+                                                                        style={{ width: `${upload.progress}%` }}
+                                                                    />
+                                                                </div>
+                                                                <span>{Math.round(upload.progress)}%</span>
+                                                            </div>
+                                                        )}
+                                                        {upload.step === 'Обработка' && (
+                                                            <div className="processing-indicator">
+                                                                <RefreshCw size={14} className="spinning-icon" />
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {upload.status === 'ready' ? (
+                                                <button
+                                                    className="btn-delete-episode"
+                                                    onClick={() => removeUpload(upload.uploadId)}
+                                                    title="Закрыть"
+                                                >
+                                                    <X size={16} />
+                                                </button>
+                                            ) : upload.onCancel && (upload.status === 'uploading' || upload.status === 'converting') && (
+                                                <button
+                                                    className="btn-delete-episode btn-cancel-upload"
+                                                    onClick={() => {
+                                                        if (confirm('Вы уверены, что хотите отменить загрузку?')) {
+                                                            upload.onCancel?.();
+                                                        }
+                                                    }}
+                                                    title="Отменить загрузку"
+                                                >
+                                                    <X size={16} />
+                                                </button>
+                                            )}
+                                        </div>
+                                    ))}
+                                
+                                {/* Готовые эпизоды */}
                                 {episodes.map(episode => (
                                     <div key={episode.id} className="episode-card">
                                         {episode.screenshotPath && (
@@ -971,7 +1148,7 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                                         </button>
                                     </div>
                                 ))}
-                                {episodes.length === 0 && (
+                                {episodes.length === 0 && uploads.filter(u => selectedVoice && u.voiceName === selectedVoice.name).length === 0 && (
                                     <div className="empty-state">
                                         Нет эпизодов. Загрузите первый!
                                     </div>

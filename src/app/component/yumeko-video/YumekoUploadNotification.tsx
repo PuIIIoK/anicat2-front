@@ -73,9 +73,9 @@ const YumekoUploadNotification: React.FC = () => {
                 if (progress === 0) {
                     step = 'Запуск конвертации в HLS формат...';
                     totalProgress = 35;
-                } else if (progress >= 99) {
-                    // Финальная стадия - избегаем зависания на 100%
-                    step = 'Финализация видео...';
+                } else if (progress >= 95) {
+                    // При 95%+ показываем "Обработка" без процентов
+                    step = 'Обработка';
                     totalProgress = 95;
                 } else {
                     step = `Конвертация видео... ${Math.round(progress)}%`;
@@ -88,7 +88,12 @@ const YumekoUploadNotification: React.FC = () => {
                     progress: Math.min(95, totalProgress),
                     status: 'converting'
                 });
-                alert(`⏳ Конвертация в процессе: ${Math.round(progress)}%`);
+                
+                if (progress >= 95) {
+                    alert(`⏳ Финальная обработка видео...`);
+                } else {
+                    alert(`⏳ Конвертация в процессе: ${Math.round(progress)}%`);
+                }
             } else if (episode.videoStatus === 'error') {
                 updateUpload(currentUpload.uploadId, {
                     step: 'Ошибка',
@@ -262,7 +267,12 @@ const YumekoUploadNotification: React.FC = () => {
                             </div>
 
                             <div className="upload-progress-section">
-                                <div className="progress-text">{currentUpload.step}</div>
+                                <div className="progress-text">
+                                    {currentUpload.step}
+                                    {currentUpload.step === 'Обработка' && (
+                                        <RefreshCw size={16} className="processing-spinner" />
+                                    )}
+                                </div>
                                 <div className="progress-bar-wrapper">
                                     <div className="progress-bar">
                                         <div 
@@ -270,7 +280,9 @@ const YumekoUploadNotification: React.FC = () => {
                                             style={{ width: `${currentUpload.progress}%` }}
                                         />
                                     </div>
-                                    <div className="progress-percent">{Math.round(currentUpload.progress)}%</div>
+                                    {currentUpload.step !== 'Обработка' && (
+                                        <div className="progress-percent">{Math.round(currentUpload.progress)}%</div>
+                                    )}
                                 </div>
                                 
                                 {/* Кнопка проверки статуса */}
