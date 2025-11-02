@@ -84,12 +84,31 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
         const currentIntervals = trackingIntervalRef.current;
         
         if (selectedVoiceId) {
-            loadEpisodes(selectedVoiceId);
+            // Загружаем эпизоды сразу
+            loadEpisodes(selectedVoiceId).then((episodesData) => {
+                // Проверяем наличие конвертирующихся эпизодов
+                const hasConverting = episodesData.some((ep: Episode) => 
+                    ep.videoStatus === 'converting' || ep.videoStatus === 'uploading'
+                );
+                
+                if (hasConverting) {
+                    console.log('🔄 Найдены конвертирующиеся эпизоды, запускаем автообновление');
+                }
+            });
             
             // Периодическое обновление списка для динамического отображения прогресса конвертации
-            const refreshInterval = setInterval(() => {
-                loadEpisodes(selectedVoiceId);
-            }, 3000); // Обновляем каждые 3 секунды
+            const refreshInterval = setInterval(async () => {
+                const episodesData = await loadEpisodes(selectedVoiceId);
+                
+                // Останавливаем обновление если нет конвертирующихся эпизодов
+                const hasConverting = episodesData.some((ep: Episode) => 
+                    ep.videoStatus === 'converting' || ep.videoStatus === 'uploading'
+                );
+                
+                if (!hasConverting && uploads.filter(u => u.voiceName === selectedVoice?.name).length === 0) {
+                    console.log('✅ Нет активных конвертаций, автообновление продолжается на случай новых загрузок');
+                }
+            }, 2000); // Обновляем каждые 2 секунды
             
             // Cleanup при размонтировании
             return () => {
@@ -110,6 +129,42 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedVoiceId]);
+
+    // Восстанавливаем отслеживание для загрузок из localStorage
+    useEffect(() => {
+        if (!selectedVoiceId) return;
+        
+        // Проверяем загрузки для текущей озвучки
+        const voiceUploads = uploads.filter(u => 
+            u.animeId === animeId && 
+            (u.status === 'uploading' || u.status === 'converting')
+        );
+        
+        voiceUploads.forEach(upload => {
+            // Проверяем, не отслеживаем ли мы уже этот эпизод
+            if (trackingIntervalRef.current.has(upload.uploadId)) {
+                return; // Уже отслеживаем
+            }
+            
+            console.log('🔄 Возобновляем отслеживание для загрузки:', upload.uploadId);
+            
+            // Если статус converting, запускаем отслеживание конвертации
+            if (upload.status === 'converting' && upload.episodeId > 0) {
+                const selectedVoice = voices.find(v => v.id === selectedVoiceId);
+                if (selectedVoice) {
+                    startConversionTracking({
+                        uploadId: upload.uploadId,
+                        episodeId: upload.episodeId,
+                        voiceName: selectedVoice.name,
+                        episodeNumber: upload.episodeNumber,
+                        quality: upload.quality
+                    });
+                }
+            }
+            // Для uploading статуса XHR уже потерян, но отслеживание конвертации начнется автоматически
+            // когда мы увидим episodeId в БД
+        });
+    }, [uploads, selectedVoiceId, animeId]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const loadVoices = async () => {
         try {
@@ -136,11 +191,51 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
             const data = await res.json();
             setEpisodes(data);
             
+            // Связываем восстановленные загрузки с эпизодами в БД
+            uploads.forEach(upload => {
+                if (upload.animeId !== animeId) return;
+                
+                // Ищем эпизод по номеру
+                const episode = data.find((ep: Episode) => ep.episodeNumber === upload.episodeNumber);
+                
+                if (episode) {
+                    // Если нашли эпизод и у загрузки еще нет episodeId, обновляем
+                    if (upload.episodeId === 0 || upload.episodeId !== episode.id) {
+                        console.log('🔗 Связываем загрузку с эпизодом:', upload.uploadId, '→', episode.id);
+                        
+                        episodeIdRef.current.set(upload.uploadId, episode.id);
+                        updateUpload(upload.uploadId, {
+                            episodeId: episode.id,
+                            status: 'converting',
+                            step: 'Конвертация в очереди...',
+                            screenshotUrl: episode.screenshotPath 
+                                ? `${API_SERVER}/api/video/screenshot/${episode.screenshotPath}` 
+                                : undefined,
+                            duration: episode.durationSeconds
+                        });
+                        
+                        // Начинаем отслеживание конвертации
+                        if (!trackingIntervalRef.current.has(upload.uploadId)) {
+                            const selectedVoice = voices.find(v => v.id === voiceId);
+                            if (selectedVoice) {
+                                startConversionTracking({
+                                    uploadId: upload.uploadId,
+                                    episodeId: episode.id,
+                                    voiceName: selectedVoice.name,
+                                    episodeNumber: upload.episodeNumber,
+                                    quality: upload.quality
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+            
             // Очищаем висящие загрузки, которых нет в БД
             const existingEpisodeIds = new Set(data.map((ep: Episode) => ep.id));
             
             uploads.forEach(upload => {
-                // Проверяем только загрузки для текущей озвучки
+                // Проверяем только загрузки для текущей озвучки с установленным episodeId
                 if (upload.episodeId > 0 && !existingEpisodeIds.has(upload.episodeId)) {
                     console.log('🧹 Очищаем висящую загрузку для несуществующего эпизода:', upload.episodeId);
                     
@@ -160,8 +255,11 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                     removeUpload(upload.uploadId);
                 }
             });
+            
+            return data;
         } catch (error) {
             console.error('Ошибка загрузки эпизодов:', error);
+            return [];
         }
     };
 
@@ -336,23 +434,21 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                     case 'converting':
                         const progress = episode.conversionProgress || 0;
                         let step: string;
-                        let totalProgress: number;
                         
                         if (progress === 0) {
-                            step = 'Запуск конвертации в HLS формат...';
-                            totalProgress = 35;
+                            // В очереди на конвертацию
+                            step = 'Конвертация в очереди...';
                         } else if (progress >= 95) {
                             // При 95%+ показываем "Обработка" без процентов
                             step = 'Обработка';
-                            totalProgress = 95;
                         } else {
-                            step = `Конвертация видео... ${Math.round(progress)}%`;
-                            totalProgress = 35 + (progress * 0.6);
+                            // Идёт конвертация
+                            step = `Конвертация видео...`;
                         }
                         
                         updateUpload(uploadId, {
                             step,
-                            progress: Math.min(95, totalProgress),
+                            progress: progress,
                             status: 'converting',
                             screenshotUrl: episode.screenshotPath 
                                 ? `${API_SERVER}/api/video/screenshot/${episode.screenshotPath}` 
@@ -821,10 +917,17 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
         }
     };
 
-    const getStatusText = (status: string) => {
+    const getStatusText = (status: string, progress?: number) => {
         switch (status) {
             case 'ready': return 'Готово';
-            case 'converting': return 'Конвертация...';
+            case 'converting': 
+                if (progress === 0 || progress === undefined) {
+                    return 'Конвертация в очереди...';
+                } else if (progress >= 95) {
+                    return 'Обработка';
+                } else {
+                    return 'Конвертация видео...';
+                }
             case 'uploading': return 'Загрузка...';
             case 'error': return 'Ошибка';
             default: return status;
@@ -1084,8 +1187,8 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                                             <div className="episode-status-detailed">
                                                 {getStatusIcon(episode.videoStatus)}
                                                 <div className="status-text-wrapper">
-                                                    <span className="status-main">{getStatusText(episode.videoStatus)}</span>
-                                                    {episode.videoStatus === 'converting' && episode.conversionProgress != null && episode.conversionProgress < 95 && (
+                                                    <span className="status-main">{getStatusText(episode.videoStatus, episode.conversionProgress)}</span>
+                                                    {episode.videoStatus === 'converting' && episode.conversionProgress != null && episode.conversionProgress > 0 && episode.conversionProgress < 95 && (
                                                         <div className="conversion-progress">
                                                             <div className="mini-progress-bar">
                                                                 <div 
@@ -1146,7 +1249,7 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                                                     {getStatusIcon(upload.status)}
                                                     <div className="status-text-wrapper">
                                                         <span className="status-main">{upload.step}</span>
-                                                        {upload.status === 'converting' && upload.progress < 95 && (
+                                                        {upload.status === 'converting' && upload.progress > 0 && upload.progress < 95 && (
                                                             <div className="conversion-progress">
                                                                 <div className="mini-progress-bar">
                                                                     <div 

@@ -35,30 +35,44 @@ export const YumekoUploadProvider: React.FC<{ children: ReactNode }> = ({ childr
     const [uploads, setUploads] = useState<YumekoUploadProgress[]>([]);
     const [isMinimized, setIsMinimized] = useState(false);
     const [activeTab, setActiveTab] = useState<string | null>(null);
+    const [isInitialized, setIsInitialized] = useState(false);
 
-    // НЕ загружаем состояние из localStorage после перезагрузки страницы
-    // Прогресс конвертации теперь отображается динамически в основной модалке
-    // Это предотвращает проблемы с потерянной функцией onCancel и устаревшими данными
-    
-    // Очищаем localStorage при монтировании (начало новой сессии)
+    // Восстанавливаем состояние из localStorage при монтировании
     React.useEffect(() => {
-        if (typeof window !== 'undefined') {
-            localStorage.removeItem('yumeko-uploads');
+        if (typeof window !== 'undefined' && !isInitialized) {
+            try {
+                const saved = localStorage.getItem('yumeko-uploads');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    // Восстанавливаем только активные загрузки (не ready и не error)
+                    const activeUploads = parsed.filter((u: YumekoUploadProgress) => 
+                        u.status === 'uploading' || u.status === 'converting'
+                    );
+                    if (activeUploads.length > 0) {
+                        setUploads(activeUploads);
+                        console.log('📦 Восстановлено загрузок из localStorage:', activeUploads.length);
+                    }
+                }
+            } catch (error) {
+                console.error('Ошибка восстановления загрузок:', error);
+            }
+            setIsInitialized(true);
         }
-    }, []);
+    }, [isInitialized]);
 
-    // Сохраняем состояние в sessionStorage (только для текущей вкладки)
-    // НЕ в localStorage, чтобы не сохранялось между перезагрузками
+    // Сохраняем состояние в localStorage
     React.useEffect(() => {
-        if (typeof window !== 'undefined' && uploads.length > 0) {
-            // Сохраняем в sessionStorage без функции onCancel
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const toSave = uploads.map(({ onCancel, ...rest }) => rest);
-            sessionStorage.setItem('yumeko-uploads', JSON.stringify(toSave));
-        } else if (typeof window !== 'undefined' && uploads.length === 0) {
-            sessionStorage.removeItem('yumeko-uploads');
+        if (typeof window !== 'undefined' && isInitialized) {
+            if (uploads.length > 0) {
+                // Сохраняем в localStorage без функции onCancel
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                const toSave = uploads.map(({ onCancel, ...rest }) => rest);
+                localStorage.setItem('yumeko-uploads', JSON.stringify(toSave));
+            } else {
+                localStorage.removeItem('yumeko-uploads');
+            }
         }
-    }, [uploads]);
+    }, [uploads, isInitialized]);
 
     const addUpload = (upload: YumekoUploadProgress) => {
         setUploads(prev => [...prev, upload]);
