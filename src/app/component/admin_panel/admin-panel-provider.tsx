@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { API_SERVER } from '../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 import AdminUsers from '@/component/admin_panel/admin-users';
 import AdminCategory from '@/component/admin_panel/admin-category';
 import AdminTesting from '@/component/admin_panel/admin-testing';

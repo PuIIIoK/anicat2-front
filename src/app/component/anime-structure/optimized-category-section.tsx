@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { AnimeBasicInfo } from './anime-basic-info';
-import { API_SERVER } from '../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 import GlobalAnimeCard from './GlobalAnimeCard';
 
 interface OptimizedCategorySectionProps {

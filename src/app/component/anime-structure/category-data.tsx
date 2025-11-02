@@ -1,5 +1,5 @@
 // category-data.tsx
-import { API_SERVER } from "../../../tools/constants";
+import { API_SERVER } from '@/hosts/constants';
 import { AnimeInfo } from './anime-data-info';
 
 export interface Category {

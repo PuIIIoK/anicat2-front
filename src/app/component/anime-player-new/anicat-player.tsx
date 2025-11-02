@@ -15,7 +15,7 @@ import {
     Maximize,
     X
 } from 'lucide-react';
-import {API_SERVER} from "../../../tools/constants";
+import {API_SERVER} from '@/hosts/constants';
 
 
 

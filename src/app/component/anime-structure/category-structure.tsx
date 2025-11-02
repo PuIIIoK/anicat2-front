@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import GlobalAnimeCard from './GlobalAnimeCard';
 import { AnimeInfo } from './anime-data-info';
 import Link from 'next/link';
-import { API_SERVER } from '../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 
 interface CategoryProps {
     categoryId: string;

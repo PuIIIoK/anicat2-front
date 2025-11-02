@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { X, ExternalLink, Crown, ChevronLeft } from 'lucide-react';
-import { API_SERVER } from '../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 import Image from 'next/image';
 import { getEpisodeProgress } from '@/utils/player/progressCache';
 import '@/styles/components/source-selection-modal.scss';

@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Play, Clock, Headphones, Monitor } from 'lucide-react';
 import type { WatchingItem } from '../profile-page-old/types';
-import { API_SERVER } from '../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 
 interface ContinueWatchingCardProps {
     item: WatchingItem;

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { API_SERVER } from '../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';

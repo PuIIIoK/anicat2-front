@@ -1,4 +1,4 @@
-import { API_SERVER } from '../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 
 // --- DTO / response interfaces ---
 export interface AnimeMeta {

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { EpisodeEntry } from "../../../utils/anime";
-import { API_SERVER } from "../../../tools/constants";
+import { API_SERVER } from '@/hosts/constants';
 
 interface Props {
     animeId: string | null;

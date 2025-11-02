@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { GITHUB_TOKEN, REPOS } from '../../../tools/constants';
+import { GITHUB_TOKEN, REPOS } from '@/hosts/constants';
 
 type RepoKey = keyof typeof REPOS; // 'front' | 'frontDev'
 

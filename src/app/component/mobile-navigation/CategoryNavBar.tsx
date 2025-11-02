@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { API_SERVER } from '../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 import { AnimeInfo } from '../anime-structure/anime-data-info';
 import { AnimeBasicInfo } from '../anime-structure/anime-basic-info';
 import GlobalAnimeCard from '../anime-structure/GlobalAnimeCard';

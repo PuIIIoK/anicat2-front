@@ -8,7 +8,7 @@ import { Category as CategoryType } from '@/component/anime-structure/category-d
 import CategoryNavBar from '@/component/mobile-navigation/CategoryNavBar';
 import ServerErrorPage from '@/component/common/ServerErrorPage';
 import ContinueWatchingSection from '@/component/continue-watching/ContinueWatchingSection';
-import { API_SERVER } from '../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 
 interface CategoriesApiResponse {
     categories: Omit<CategoryType, 'animeList'>[];

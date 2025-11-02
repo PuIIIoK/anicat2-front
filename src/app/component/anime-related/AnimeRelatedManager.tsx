@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { API_SERVER } from "../../../tools/constants";
+import { API_SERVER } from '@/hosts/constants';
 import {
     Plus,
     Trash2,

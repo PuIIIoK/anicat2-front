@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { X, CheckCircle, Clock, AlertCircle, Mic, Minimize2, Maximize2, RefreshCw } from 'lucide-react';
 import { useYumekoUpload } from '../../context/YumekoUploadContext';
-import { API_SERVER } from '../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 import './yumeko-upload-notification.scss';
 
 const getTokenFromCookie = () => {

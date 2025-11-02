@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import { fetchAllAnime, AnimeInfo } from '../anime-structure/anime-data-info';
 import { fetchAnimeEpisodes, AnimeEpisode } from '../anime-structure/anime-episode-data';
 import Image from 'next/image';
-import { API_SERVER, KODIK_API_TOKEN, KODIK_API_BASE } from '../../../tools/constants';
+import { API_SERVER, KODIK_API_TOKEN, KODIK_API_BASE } from '@/hosts/constants';
 import PlayerSwitch from '../anime-players/player-switch';
 import PlyrPlayer from '../anime-players/plyr-player';
 import KinescopePlayer from "../anime-players/KinescopePlayer";

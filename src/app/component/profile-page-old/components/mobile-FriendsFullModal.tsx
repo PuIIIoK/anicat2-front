@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { API_SERVER } from '../../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 import type { Friend } from '../types';
 import { OptimizedImage } from './OptimizedImage';
 import { useRouter } from 'next/navigation';

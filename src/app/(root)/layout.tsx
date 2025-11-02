@@ -7,7 +7,7 @@ import '@/styles/index.scss';
 import dynamic from 'next/dynamic';
 import BanChecker from '@/component/BanChecker';
 import SyncProgressNotification from '@/component/sync/SyncProgressNotification';
-import { API_SERVER } from '@/tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 import { ThemeProvider } from '../context/ThemeContext';
 import NotificationManager, { NotificationProvider } from '@/component/notifications/NotificationManager';
 import { cleanupOldPlayerStates } from '@/utils/player/playerState';

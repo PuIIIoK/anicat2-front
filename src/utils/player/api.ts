@@ -1,7 +1,7 @@
 // src/utils/player/api.ts
 
 import { Episode } from './types';
-import {API_SERVER, KODIK_API_BASE, KODIK_API_TOKEN} from "../../tools/constants";
+import {API_SERVER, KODIK_API_BASE, KODIK_API_TOKEN} from '@/hosts/constants';
 
 // Функция для получения эпизодов аниме
 export const fetchEpisodes = async (animeId: string): Promise<Episode[]> => {

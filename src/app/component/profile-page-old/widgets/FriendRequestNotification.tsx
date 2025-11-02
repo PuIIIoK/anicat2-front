@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNotifications } from '../../notifications/NotificationManager';
-import { API_SERVER } from '../../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 
 // API response type
 interface ApiFriendRequest {

@@ -4,7 +4,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import AnimeMainInfo from './anime-upload-info';
 import AnimeFileAndEpisode from "./add-upload-upload";
-import { API_SERVER } from "../../../tools/constants";
+import { API_SERVER } from '@/hosts/constants';
 import UploadProgressModal from "../admin_panel/UploadProgressModalAnime";
 import SectionNavigation from "./SectionNavigation";
 import FloatingActionButtons from "./FloatingActionButtons";

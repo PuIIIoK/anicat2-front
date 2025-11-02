@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { X, Plus, Upload, Trash2, CheckCircle, Clock, AlertCircle, Film, Mic, XCircle, RefreshCw } from 'lucide-react';
-import { API_SERVER } from '../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 import { useYumekoUpload } from '../../context/YumekoUploadContext';
 import './yumeko-video.scss';
 
@@ -80,6 +80,9 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
         // ВАЖНО: Сначала очищаем список эпизодов при переключении озвучки
         setEpisodes([]);
         
+        // Сохраняем текущее значение ref для использования в cleanup
+        const currentIntervals = trackingIntervalRef.current;
+        
         if (selectedVoiceId) {
             loadEpisodes(selectedVoiceId);
             
@@ -91,8 +94,6 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
             // Cleanup при размонтировании
             return () => {
                 clearInterval(refreshInterval);
-                // Сохраняем текущее значение ref для cleanup
-                const currentIntervals = trackingIntervalRef.current;
                 currentIntervals.forEach((interval) => {
                     clearInterval(interval);
                 });
@@ -102,7 +103,6 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
         
         // Cleanup если озвучка не выбрана
         return () => {
-            const currentIntervals = trackingIntervalRef.current;
             currentIntervals.forEach((interval) => {
                 clearInterval(interval);
             });
@@ -992,7 +992,7 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                                                             preventDefault: () => {},
                                                             stopPropagation: () => {},
                                                             dataTransfer: { files }
-                                                        } as any;
+                                                        } as React.DragEvent<HTMLDivElement>;
                                                         handleDrop(event);
                                                     }
                                                 }

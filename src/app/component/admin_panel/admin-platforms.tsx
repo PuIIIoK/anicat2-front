@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { API_SERVER } from '@/tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 
 type Release = { version: string; build: number; notes?: string; apkUrl?: string };
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { API_SERVER } from '../../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 import { jwtDecode } from 'jwt-decode';
 import type { WatchingItem, FavoriteItem, UserReview } from '../types';
 

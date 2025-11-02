@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { API_SERVER } from '../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 import { RefreshCw, AlertCircle, X } from 'lucide-react';
 
 interface AnimeUpdateLog {

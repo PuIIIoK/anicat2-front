@@ -5,7 +5,7 @@ import { NotificationProvider } from '@/component/notifications/NotificationMana
 import BanChecker from '@/component/BanChecker';
 import AdminRoleChecker from '@/component/AdminRoleChecker';
 import SyncProgressNotification from '@/component/sync/SyncProgressNotification';
-import { API_SERVER } from '@/tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 import { ThemeProvider } from '../context/ThemeContext';
 import { YumekoUploadProvider } from '../context/YumekoUploadContext';
 

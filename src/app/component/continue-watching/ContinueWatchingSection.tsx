@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getCurrentUser } from '../../utils/auth';
-import { API_SERVER } from '../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 import ContinueWatchingCard from './ContinueWatchingCard';
 import type { WatchingItem } from '../profile-page-old/types';
 

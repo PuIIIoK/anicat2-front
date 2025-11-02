@@ -24,3 +24,4 @@ export const REPOS = {
         name: 'anicat2-front-dev',
     }
 };
+

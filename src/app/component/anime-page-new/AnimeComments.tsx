@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowBigUp, ArrowBigDown } from 'lucide-react';
 import CommentsModalNew from './CommentsModalNew';
-import { API_SERVER } from "../../../tools/constants";
+import { API_SERVER } from '@/hosts/constants';
 
 interface Comment {
     id: number;

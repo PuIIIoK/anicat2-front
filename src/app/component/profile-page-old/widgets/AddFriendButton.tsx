@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { API_SERVER } from '../../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 import { FaUserPlus, FaUserCheck, FaHourglassHalf } from 'react-icons/fa';
 
 type FriendStatus = 'ADD' | 'FRIENDS' | 'REQUEST_SENT' | 'REQUEST_INCOMING' | 'UNKNOWN';

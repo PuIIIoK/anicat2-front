@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Pie, PieChart, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { API_SERVER } from '../../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 
 interface StatsItem {
   name: string;

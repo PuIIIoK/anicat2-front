@@ -2,7 +2,7 @@
 
 import GlobalAnimeCard from '../../anime-structure/GlobalAnimeCard';
 import type { AnimeBasicInfo } from '../../anime-structure/anime-basic-info';
-import { API_SERVER } from '../../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 
 type CollectionType = 'FAVORITE' | 'WATCHING' | 'PLANNED' | 'COMPLETED' | 'PAUSED' | 'DROPPED';
 

@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { Coins, Plus, Star, ChevronDown, ChevronRight } from 'lucide-react';
 import SubscriptionsTab from '@/component/shop/SubscriptionsTab';
 import TopUpModal from "@/component/shop/ModelPopUt";
-import { API_SERVER } from "../../../tools/constants";
+import { API_SERVER } from '@/hosts/constants';
 
 export default function BalanceShopPage() {
     const router = useRouter();

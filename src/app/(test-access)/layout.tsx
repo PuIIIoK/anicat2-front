@@ -7,7 +7,7 @@ import '@/styles/index.scss';
 import dynamic from 'next/dynamic';
 import { NotificationProvider } from '@/component/notifications/NotificationManager';
 import SyncProgressNotification from '@/component/sync/SyncProgressNotification';
-import { API_SERVER } from '@/tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 
 
 const CustomTitleBar = dynamic(() => import('@/component/layout').then(m => m.CustomTitleBar), { ssr: false });

@@ -6,7 +6,7 @@ import { AnimeInfo } from '../../../component/anime-structure/anime-data-info';
 import GlobalAnimeCard from '../../../component/anime-structure/GlobalAnimeCard';
 import { MiniCardProvider } from '../../../component/anime-structure/mini-card-context';
 import Head from 'next/head';
-import {API_SERVER} from "../../../../tools/constants";
+import { API_SERVER } from '@/hosts/constants';
 
 // Кэш для страниц категории (живёт, пока открыта вкладка)
 const CATEGORY_CACHE_TTL_MS = 30 * 60 * 1000; // 30 минут

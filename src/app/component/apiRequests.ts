@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { API_SERVER, KODIK_API_BASE, KODIK_API_TOKEN } from "../../tools/constants";
+import { API_SERVER, KODIK_API_BASE, KODIK_API_TOKEN } from '@/hosts/constants';
 import { AnimeInfo } from "./anime-structure/anime-data-info";
 
 export type PlayerType = 'kodik' | 'anicat' | 'kinescope';

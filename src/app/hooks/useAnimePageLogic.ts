@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { API_SERVER } from '../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 import { getAuthToken, getCurrentUser, hasToken } from '../utils/auth';
 import { useNotifications } from '../component/notifications/NotificationManager';
 

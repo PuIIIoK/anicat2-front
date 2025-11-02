@@ -1,6 +1,6 @@
 'use client';
 
-import {API_SERVER} from "../../tools/constants";
+import {API_SERVER} from '@/hosts/constants';
 
 export const fetchCoverUrl = async (animeId: number, coverId?: number): Promise<string> => {
     try {

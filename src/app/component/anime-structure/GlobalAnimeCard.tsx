@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { AnimeInfo } from './anime-data-info';
 import { AnimeBasicInfo } from './anime-basic-info';
-import { API_SERVER } from '../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 
 interface GlobalAnimeCardProps {
     anime: AnimeInfo | AnimeBasicInfo;

@@ -3,7 +3,7 @@
 import * as LucideIcons from 'lucide-react';
 import { BADGE_META } from '../badgeMeta';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { API_SERVER } from '../../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 import { FaUserPlus, FaHourglassHalf, FaUserCheck, FaUserFriends, FaTimes } from 'react-icons/fa';
 
 // Тип для иконок Lucide

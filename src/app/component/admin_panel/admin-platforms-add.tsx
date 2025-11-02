@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { API_SERVER } from '@/tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 
 export default function AdminPlatformsAdd() {
   const sp = useSearchParams();

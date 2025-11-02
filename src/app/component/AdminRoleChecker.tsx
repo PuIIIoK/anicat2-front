@@ -2,7 +2,7 @@
 
 import React, { ReactNode, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { API_SERVER } from '../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 
 type Props = {
     children: ReactNode;

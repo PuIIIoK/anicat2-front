@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { API_SERVER } from '../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 import { useProfile } from './hooks/useProfile';
 import * as LucideIcons from 'lucide-react';
 import { StatsChart } from './components/StatsChart';

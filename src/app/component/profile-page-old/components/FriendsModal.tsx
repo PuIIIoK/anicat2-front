@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import type { Friend } from '../types';
-import { API_SERVER } from '@/tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 import { OptimizedImage } from './OptimizedImage';
 import { useRouter } from 'next/navigation';
 

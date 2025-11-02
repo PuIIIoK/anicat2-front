@@ -1,4 +1,4 @@
-import {API_SERVER} from "../../tools/constants";
+import {API_SERVER} from '@/hosts/constants';
 
 
 export async function fetchLibriaEpisodes(animeId: string): Promise<LibriaEpisode[]> {

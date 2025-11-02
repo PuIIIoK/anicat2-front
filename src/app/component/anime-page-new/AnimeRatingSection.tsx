@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import StarRating from '@/component/StarRating';
-import { API_SERVER } from '../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 import { useNotifications } from '../notifications/NotificationManager';
 
 interface UserRating {

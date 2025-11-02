@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
-import { API_SERVER } from '../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 import Chart from 'chart.js/auto';
 import Head from "next/head";
 import { performLogout } from '../../utils/logoutUtils';

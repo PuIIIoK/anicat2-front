@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import '@/styles/index.scss';
-import { API_SERVER } from '../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 import { performLogout } from '../utils/logoutUtils';
 import ThemeModal from './ThemeModal';
 import { useTheme } from '../context/ThemeContext';

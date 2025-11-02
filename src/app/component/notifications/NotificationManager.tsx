@@ -3,7 +3,7 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import WelcomeModal from './WelcomeModal';
 import UpdateNotificationModal from './UpdateNotificationModal';
-import { API_SERVER } from '../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 import { getAuthToken } from '../../utils/auth';
 import { CheckCircle, XCircle, AlertTriangle, Info, X } from 'lucide-react';
 import './NotificationManager.scss';

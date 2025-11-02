@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { API_SERVER } from '../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 import { AnimeInfo } from '../anime-structure/anime-data-info';
 
 export interface AnimeCollectionItem {

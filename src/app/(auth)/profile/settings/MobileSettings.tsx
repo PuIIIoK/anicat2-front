@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { API_SERVER } from '../../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 import { performLogout } from '../../../utils/logoutUtils';
 import { updateProfileCache } from '../../../component/profile-page-old/hooks/useProfile';
 import VideoTrimModal from '../../../../components/VideoTrimModal';

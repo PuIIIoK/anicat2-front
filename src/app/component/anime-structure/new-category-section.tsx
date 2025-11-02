@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { AnimeInfo } from './anime-data-info';
-import { API_SERVER } from '../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 import GlobalAnimeCard from './GlobalAnimeCard';
 
 interface NewCategorySectionProps {

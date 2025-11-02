@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import '@/styles/index.scss';
-import {API_SERVER} from '@/tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 
 interface PCBuildResponse {
     platform: string;

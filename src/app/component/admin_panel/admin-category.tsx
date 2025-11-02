@@ -2,7 +2,7 @@
 
 // Импортируй необходимые пакеты
 import React, { useEffect, useRef, useState } from 'react';
-import { API_SERVER } from '../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 import { Pencil, Save, X, Trash2, Plus, ArrowLeft, ArrowRight, Film, Image, Check, Loader2, Database } from 'lucide-react';
 import {toast, Toaster} from 'react-hot-toast';
 // import { useNotifications } from '../notifications/NotificationManager';

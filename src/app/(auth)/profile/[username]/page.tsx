@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { API_SERVER } from '../../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 
 import NEWProfileMainInfoID from "../../../component/profile-page-old/new-id-profile-page-provider";
 import NEWProfileMainInfoIDMobile from "../../../component/profile-page-old/new-id-profile-page-mobile-provider";

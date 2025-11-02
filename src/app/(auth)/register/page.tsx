@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { API_SERVER } from '../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 import Image from 'next/image';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 import {Film, FolderKanban, MessageCircle, Sparkles, Trophy, ShieldAlert} from "lucide-react";

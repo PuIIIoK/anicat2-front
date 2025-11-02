@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { AnimeEpisode, AudioOption } from '../anime-structure/anime-episode-data';
-import {API_SERVER} from "../../../tools/constants";
+import {API_SERVER} from '@/hosts/constants';
 
 interface SelectorProps {
     episodes: AnimeEpisode[];

@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { tabMap, AnimeCollectionItem } from './useCollections';
-import { API_SERVER } from '../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 import GlobalAnimeCard from '../anime-structure/GlobalAnimeCard';
 import type { AnimeBasicInfo } from '../anime-structure/anime-basic-info';
 

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { API_SERVER } from '../../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 import { useTheme } from '../../../context/ThemeContext';
 import * as LucideIcons from 'lucide-react';
 

@@ -15,7 +15,7 @@ import {NowWatching} from './components/NowWatching';
 import {Favorites} from './components/Favorites';
 import {RecentActivity} from './components/RecentActivity';
 import {UserCollections} from './components/UserCollections';
-import {API_SERVER} from '@/tools/constants';
+import {API_SERVER} from '@/hosts/constants';
 import {BADGE_META} from './badgeMeta';
 import * as LucideIcons from 'lucide-react';
 

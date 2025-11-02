@@ -6,7 +6,7 @@ import '@/styles/index.scss';
 import { NotificationProvider } from '@/component/notifications/NotificationManager';
 import BanChecker from '@/component/BanChecker';
 import SyncProgressNotification from '@/component/sync/SyncProgressNotification';
-import { API_SERVER } from '@/tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 
 type LayoutProps = {
     children: ReactNode;

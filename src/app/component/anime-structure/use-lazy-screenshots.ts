@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { API_SERVER } from '../../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 
 interface Screenshot {
     id: number;

@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import {Play, Heart, Calendar, Check, Pause, X, Film, ListVideo, Info, BookMarked, Building2, Tags} from 'lucide-react';
 import { AnimeInfo } from '../anime-structure/anime-data-info';
-import { API_SERVER } from "../../../tools/constants";
+import { API_SERVER } from '@/hosts/constants';
 import AnimeRatingSection from "./AnimeRatingSection";
 import AnimeCommentsSimple from "./AnimeComments";
 import CollectionStats from "./CollectionStats";

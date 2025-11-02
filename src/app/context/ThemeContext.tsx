@@ -1,6 +1,6 @@
 'use client';
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { API_SERVER } from '../../tools/constants';
+import { API_SERVER } from '@/hosts/constants';
 import { getAuthToken } from '../utils/auth';
 
 // Типы тем - только светлая и тёмная
