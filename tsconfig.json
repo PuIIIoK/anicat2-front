@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -11,24 +15,44 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "incremental": true,
-    "baseUrl": "src",
+    "baseUrl": ".",
     "plugins": [
       {
         "name": "next"
       }
     ],
     "paths": {
-      "@/*": ["*"],
-      "@/layout/*": ["app/*"],
-      "@/styles/*": ["app/styles/*"],
-      "@/styles/components/*": ["app/styles/components/*"],
-      "@/component/*": ["app/component/*"]
-    },
-
+      "@/*": [
+        "src/*"
+      ],
+      "@/layout/*": [
+        "src/app/*"
+      ],
+      "@/styles/*": [
+        "src/app/styles/*"
+      ],
+      "@/styles/components/*": [
+        "src/app/styles/components/*"
+      ],
+      "@/component/*": [
+        "src/app/component/*"
+      ],
+      "@/hosts/*": [
+        "hosts/*"
+      ]
+    }
   },
-
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "acfront2/**"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "acfront2/**"
+  ]
 }
