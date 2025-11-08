@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { cookieStorage, UserData } from '@/utils/cookies';
-
-const AUTH_SITE_URL = process.env.NEXT_PUBLIC_AUTH_SITE_URL || 'http://localhost:3000';
+import { AUTH_SITE_URL } from '@/hosts/constants';
 
 export default function AuthButton() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);

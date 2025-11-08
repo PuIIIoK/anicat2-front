@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import '@/styles/index.scss';
-import { API_SERVER } from '@/hosts/constants';
+import { API_SERVER, AUTH_SITE_URL } from '@/hosts/constants';
 import { performLogout } from '../utils/logoutUtils';
 import ThemeModal from './ThemeModal';
 import { useTheme } from '../context/ThemeContext';
@@ -379,7 +379,7 @@ const Header: React.FC = () => {
                                                 const token = getCookieToken();
                                                 
                                                 // Передаем токен через URL (будет удален сразу после чтения)
-                                                const authUrl = new URL('http://localhost:3000');
+                                                const authUrl = new URL(AUTH_SITE_URL);
                                                 authUrl.searchParams.set('redirect_url', currentUrl);
                                                 authUrl.searchParams.set('mode', 'switch');
                                                 if (token) {
@@ -397,7 +397,7 @@ const Header: React.FC = () => {
                                         <>
                                             <li><button onClick={() => {
                                                 const currentUrl = window.location.origin;
-                                                window.location.href = `http://localhost:3000?redirect_url=${encodeURIComponent(currentUrl)}`;
+                                                window.location.href = `${AUTH_SITE_URL}?redirect_url=${encodeURIComponent(currentUrl)}`;
                                             }}>Авторизация</button></li>
                                         </>
                                     )}
