@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { cookieStorage, UserData } from '../../../utils/cookies';
+import { cookieStorage, UserData } from '@/utils/cookies';
 
 const AUTH_SITE_URL = process.env.NEXT_PUBLIC_AUTH_SITE_URL || 'http://localhost:3000';
 
