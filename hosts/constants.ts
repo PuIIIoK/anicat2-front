@@ -1,9 +1,12 @@
-export const API_SERVER = 'https://server.yumeko.ru';
-//export const API_SERVER = 'http://localhost:8080';
+//export const API_SERVER = 'https://server.yumeko.ru';
+export const API_SERVER = 'http://localhost:8080';
 export const FRONTEND_URL = 'https://anicat.fun';
 export const CDN_URL = 'https://storage.yandexcloud.net/anicat2';
 export const S3_ENDPOINT = 'https://storage.yandexcloud.net/anicat2';
 export const DEBUG = true;
+
+// Домен авторизации
+export const AUTH_SITE_URL = 'https://auth.yumeko.ru';
 
 
 export const KODIK_API_TOKEN = 'e2013488792846196906e93e7e5eb623';
@@ -24,4 +27,3 @@ export const REPOS = {
         name: 'anicat2-front-dev',
     }
 };
-
