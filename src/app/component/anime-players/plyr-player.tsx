@@ -10,9 +10,15 @@ interface PlyrPlayerProps {
     onPrev?: () => void;
 }
 
+// Тип для Plyr player - используем unknown, так как Plyr импортируется динамически
+interface PlyrInstance {
+    destroy: () => void;
+    [key: string]: unknown;
+}
+
 const PlyrPlayer: React.FC<PlyrPlayerProps> = ({ videoUrl, onNext, onPrev }) => {
     const videoRef = useRef<HTMLVideoElement>(null);
-    const playerRef = useRef<any>(null);
+    const playerRef = useRef<PlyrInstance | null>(null);
     const hlsRef = useRef<Hls | null>(null);
     const [isClient, setIsClient] = useState(false);
     const spaceKeyPressTimeRef = useRef<number | null>(null);
@@ -35,6 +41,7 @@ const PlyrPlayer: React.FC<PlyrPlayerProps> = ({ videoUrl, onNext, onPrev }) => 
             
             // Инициализируем Plyr один раз
             if (!playerRef.current) {
+                // Приводим к unknown, затем к PlyrInstance для обхода проверки типов
                 playerRef.current = new Plyr(video, {
                     controls: [
                         'play-large', 'rewind', 'play', 'fast-forward',
@@ -42,7 +49,7 @@ const PlyrPlayer: React.FC<PlyrPlayerProps> = ({ videoUrl, onNext, onPrev }) => 
                         'mute', 'volume', 'settings', 'fullscreen'
                     ],
                     settings: ['quality', 'speed'],
-                });
+                }) as unknown as PlyrInstance;
 
                 // Кастомные действия на кнопки вперед/назад
                 setTimeout(() => {
@@ -141,9 +148,22 @@ const PlyrPlayer: React.FC<PlyrPlayerProps> = ({ videoUrl, onNext, onPrev }) => 
                 if (document.fullscreenElement) {
                     document.exitFullscreen();
                 } else {
-                    video.requestFullscreen?.() || 
-                    (video as any).webkitRequestFullscreen?.() || 
-                    (video as any).mozRequestFullScreen?.();
+                    // Стандартный API
+                    if (video.requestFullscreen) {
+                        video.requestFullscreen();
+                    } else {
+                        // WebKit префикс (Safari)
+                        const webkitRequestFullscreen = (video as HTMLVideoElement & { webkitRequestFullscreen?: () => Promise<void> }).webkitRequestFullscreen;
+                        if (webkitRequestFullscreen) {
+                            webkitRequestFullscreen.call(video);
+                        } else {
+                            // Mozilla префикс (Firefox)
+                            const mozRequestFullScreen = (video as HTMLVideoElement & { mozRequestFullScreen?: () => Promise<void> }).mozRequestFullScreen;
+                            if (mozRequestFullScreen) {
+                                mozRequestFullScreen.call(video);
+                            }
+                        }
+                    }
                 }
                 return;
             }

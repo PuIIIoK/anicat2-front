@@ -1,13 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { cookieStorage } from '../../../utils/cookies';
+import { cookieStorage, UserData } from '../../../utils/cookies';
 
 const AUTH_SITE_URL = process.env.NEXT_PUBLIC_AUTH_SITE_URL || 'http://localhost:3000';
 
 export default function AuthButton() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<UserData | null>(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
