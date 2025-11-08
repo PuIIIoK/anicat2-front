@@ -4,6 +4,17 @@ const TOKEN_KEY = 'yumeko_auth_token';
 const USER_KEY = 'yumeko_user';
 const TOKEN_EXPIRES = 365; // Дней до истечения токена (1 год)
 
+// Интерфейс для данных пользователя в cookies
+export interface UserData {
+  id?: number;
+  username?: string;
+  name?: string;
+  email?: string;
+  nickname?: string;
+  roles?: string | string[];
+  [key: string]: unknown; // Для дополнительных полей
+}
+
 export const cookieStorage = {
   // Сохранение токена в cookies на 1 год
   setAuthToken: (token: string) => {
@@ -26,7 +37,7 @@ export const cookieStorage = {
   },
 
   // Сохранение данных пользователя
-  setUser: (user: object) => {
+  setUser: (user: UserData | Record<string, unknown>) => {
     Cookies.set(USER_KEY, JSON.stringify(user), {
       expires: TOKEN_EXPIRES,
       sameSite: 'lax',
@@ -36,9 +47,9 @@ export const cookieStorage = {
   },
 
   // Получение данных пользователя
-  getUser: (): any | null => {
+  getUser: (): UserData | null => {
     const user = Cookies.get(USER_KEY);
-    return user ? JSON.parse(user) : null;
+    return user ? (JSON.parse(user) as UserData) : null;
   },
 
   // Удаление данных пользователя
