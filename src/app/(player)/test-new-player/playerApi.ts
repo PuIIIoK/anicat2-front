@@ -7,7 +7,7 @@ export interface AnimeMeta {
     alias?: string;
     
     // Для источника Yumeko
-    source?: 'kodik' | 'yumeko';
+    source?: 'kodik' | 'yumeko' | 'libria';
     voiceId?: number;
     voiceName?: string;
     episodeId?: number;

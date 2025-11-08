@@ -505,9 +505,9 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
         // Используем уже переданный animeMeta из страницы; если его нет — ждём
         if (!animeMeta) return;
         
-        // Для Yumeko источника пропускаем этот useEffect полностью
-        if (animeMeta.source === 'yumeko') {
-            console.log('[Init] Yumeko source detected, skipping standard initialization');
+        // Для Yumeko или Libria источника пропускаем этот useEffect полностью
+        if (animeMeta.source === 'yumeko' || animeMeta.source === 'libria') {
+            console.log('[Init] Yumeko/Libria source detected, skipping standard initialization');
             return;
         }
         
@@ -732,6 +732,12 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
             if (animeMeta.source === 'yumeko') {
                 console.log('[Init] Setting source to Yumeko from animeMeta');
                 setSelectedSource('yumeko');
+            } else if (animeMeta.source === 'libria') {
+                console.log('[Init] Setting source to Libria from animeMeta');
+                setSelectedSource('libria');
+            } else if (animeMeta.source === 'kodik') {
+                console.log('[Init] Setting source to Kodik from animeMeta');
+                setSelectedSource('kodik');
             }
         }
     }, [animeMeta]);
@@ -744,7 +750,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
         
         const initializeFromServerProgress = async () => {
             try {
-                // ВАЖНО: Если явно указан источник Yumeko в URL - инициализируем только Yumeko
+                // ВАЖНО: Если явно указан источник Yumeko или Libria в URL - инициализируем только его
                 if (animeMeta.source === 'yumeko') {
                     console.log('[Server-init] Yumeko source detected in URL, initializing Yumeko directly');
                     setSelectedSource('yumeko');
@@ -1300,9 +1306,11 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
         const reinitializeSource = async () => {
             if (!animeId || !animeMeta) return;
             
-            // Если в URL явно указан источник Yumeko - не пытаемся переключиться на Kodik/Libria
-            if (animeMeta.source === 'yumeko' && selectedSource !== 'yumeko') {
-                console.log('[Source-Switch] Skipping reinit - Yumeko source is set in URL');
+            // Если в URL явно указан источник Yumeko или Libria - не пытаемся переключиться на другие
+            if ((animeMeta.source === 'yumeko' && selectedSource !== 'yumeko') || 
+                (animeMeta.source === 'libria' && selectedSource !== 'libria') ||
+                (animeMeta.source === 'kodik' && selectedSource !== 'kodik')) {
+                console.log('[Source-Switch] Skipping reinit - source is set in URL');
                 return;
             }
             

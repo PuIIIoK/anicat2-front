@@ -40,8 +40,12 @@ export const performLogout = (
     // Очищаем данные пользователя
     localStorage.removeItem('currentUser');
     
-    // Удаляем токен авторизации
+    // Удаляем токен авторизации (старый)
     removeAuthToken();
+    
+    // Удаляем новые куки от Yumeko Auth
+    document.cookie = 'yumeko_auth_token=; Max-Age=0; path=/;';
+    document.cookie = 'yumeko_user=; Max-Age=0; path=/;';
     
     // Сбрасываем тему к дефолтной
     if (resetToDefaultTheme && typeof resetToDefaultTheme === 'function') {

@@ -54,7 +54,12 @@ const Header: React.FC = () => {
     const [isWaitingForSearch, setIsWaitingForSearch] = useState(false);
 
     const getCookieToken = () => {
-        const match = document.cookie.match(/token=([^;]+)/);
+        // Сначала проверяем yumeko_auth_token
+        let match = document.cookie.match(/yumeko_auth_token=([^;]+)/);
+        if (match) return match[1];
+        
+        // Fallback на старый token
+        match = document.cookie.match(/token=([^;]+)/);
         return match ? match[1] : '';
     };
 
@@ -369,6 +374,20 @@ const Header: React.FC = () => {
                                             <li><Link href="/profile">Мой профиль</Link></li>
                                             <li><Link href="/profile/collection">Коллекции</Link></li>
                                             <li><Link href="/profile/settings">Настройки</Link></li>
+                                            <li><button onClick={() => {
+                                                const currentUrl = window.location.origin;
+                                                const token = getCookieToken();
+                                                
+                                                // Передаем токен через URL (будет удален сразу после чтения)
+                                                const authUrl = new URL('http://localhost:3000');
+                                                authUrl.searchParams.set('redirect_url', currentUrl);
+                                                authUrl.searchParams.set('mode', 'switch');
+                                                if (token) {
+                                                    authUrl.searchParams.set('ct', btoa(token)); // Кодируем в base64
+                                                }
+                                                
+                                                window.location.href = authUrl.toString();
+                                            }}>Сменить аккаунт</button></li>
                                             <li><button onClick={handleLogout}>Выйти</button></li>
                                             {['MODERATOR', 'ADMIN', 'SUPER_ADMIN'].some(role => userRoles.includes(role)) && (
                                                 <li><Link href="/admin_panel">Админ панель</Link></li>
@@ -376,8 +395,10 @@ const Header: React.FC = () => {
                                         </>
                                     ) : (
                                         <>
-                                            <li><Link href="/login">Войти</Link></li>
-                                            <li><Link href="/register">Регистрация</Link></li>
+                                            <li><button onClick={() => {
+                                                const currentUrl = window.location.origin;
+                                                window.location.href = `http://localhost:3000?redirect_url=${encodeURIComponent(currentUrl)}`;
+                                            }}>Авторизация</button></li>
                                         </>
                                     )}
                                 </ul>

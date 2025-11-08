@@ -109,14 +109,19 @@ export default function SourceSelectionModal({
     };
 
     const handleKodikSelect = () => {
-        // Переход на обычный плеер с Kodik (сторонний источник)
+        // Переход на страницу выбора стороннего источника (Kodik/Анилибрия)
         const baseParams = new URLSearchParams({
             kodik: animeTitle || '',
-            title: animeTitle || '',
-            cover: animeCover || ''
+            alias: animeTitle || '',
+            title: animeTitle || ''
         });
-        onSourceSelect(`/watch/anime/${animeId}?${baseParams.toString()}`);
+        onSourceSelect(`/watch-another-source/${animeId}?${baseParams.toString()}`);
         onClose();
+    };
+
+    const handleOurPlayerSelect = () => {
+        // Этот источник пока отключен
+        return;
     };
 
     const handleYumekoSelect = () => {
@@ -173,7 +178,7 @@ export default function SourceSelectionModal({
                         </div>
 
                         <div className="source-selection-content">
-                            {/* Сторонний источник (Kodik) */}
+                            {/* Сторонний источник (Со сторонними плеерами) */}
                             <div className="source-option" onClick={handleKodikSelect}>
                                 <div className="source-option-icon">
                                     <ExternalLink size={32} strokeWidth={2} />
@@ -181,8 +186,24 @@ export default function SourceSelectionModal({
                                 <div className="source-option-content">
                                     <h3 className="source-option-title">Сторонний источник</h3>
                                     <p className="source-option-description">
-                                        Большой выбор озвучек, но нету 2K. В некоторых источниках есть 1080p качество
+                                        Со сторонними плеерами, без наших плюшек
                                     </p>
+                                </div>
+                            </div>
+
+                            {/* Сторонний источник (НАШ ПЛЕЕР+НАШИ ПЛЮШКИ) - Отключен */}
+                            <div className="source-option disabled" onClick={handleOurPlayerSelect}>
+                                <div className="source-option-icon">
+                                    <ExternalLink size={32} strokeWidth={2} />
+                                </div>
+                                <div className="source-option-content">
+                                    <h3 className="source-option-title">Сторонний источник</h3>
+                                    <p className="source-option-description">
+                                        НАШ ПЛЕЕР+НАШИ ПЛЮШКИ
+                                    </p>
+                                </div>
+                                <div className="source-option-tooltip">
+                                    Данный параметр пока отключен, так как у сайта пока нету средств на поддержания данного вида источника, воспользуйтесь пока-что стороним источником от ихних плееров
                                 </div>
                             </div>
 

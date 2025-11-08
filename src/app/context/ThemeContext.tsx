@@ -32,8 +32,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     try {
       const token = getAuthToken();
       if (!token) {
-        // Если пользователь не авторизован, используем дефолтные настройки
-        resetToDefaultTheme();
+        // Если пользователь не авторизован, просто используем локальные настройки
+        console.log('Пользователь не авторизован, используем локальные настройки');
         return;
       }
 
@@ -57,12 +57,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           localStorage.setItem('colorScheme', data.colorScheme);
         }
       } else {
-        console.warn('Не удалось загрузить настройки темы с сервера, используем локальные');
-        loadLocalThemeSettings();
+        console.warn('Не удалось загрузить настройки темы с сервера (статус ' + response.status + '), используем локальные');
       }
     } catch (error) {
       console.error('Ошибка загрузки настроек темы:', error);
-      loadLocalThemeSettings();
     }
   };
 
@@ -4138,7 +4136,12 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       if (newTheme) settings.theme = newTheme;
       if (newColorScheme) settings.colorScheme = newColorScheme;
 
-      if (Object.keys(settings).length === 0) return;
+      if (Object.keys(settings).length === 0) {
+        console.log('Нечего сохранять - настройки пусты');
+        return;
+      }
+
+      console.log('Отправка настроек темы на сервер:', settings);
 
       const response = await fetch(`${API_SERVER}/api/profile/theme-settings`, {
         method: 'POST',
@@ -4151,12 +4154,13 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Настройки темы сохранены на сервер:', data);
+        console.log('✅ Настройки темы успешно сохранены на сервер:', data);
       } else {
-        console.warn('Не удалось сохранить настройки темы на сервер');
+        const errorText = await response.text();
+        console.error('❌ Не удалось сохранить настройки темы на сервер. Статус:', response.status, 'Ответ:', errorText);
       }
     } catch (error) {
-      console.error('Ошибка сохранения настроек темы на сервер:', error);
+      console.error('❌ Ошибка сохранения настроек темы на сервер:', error);
     }
   };
 
