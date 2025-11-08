@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { cookieStorage } from '@/utils/cookies';
 import { API_SERVER } from '@/hosts/constants';
 
-export default function AuthCallbackPage() {
+function AuthCallbackContent() {
   const [status, setStatus] = useState<'processing' | 'success' | 'error'>('processing');
   const [message, setMessage] = useState('Обработка авторизации...');
   const searchParams = useSearchParams();
@@ -147,6 +147,73 @@ export default function AuthCallbackPage() {
         }
       `}</style>
     </div>
+  );
+}
+
+export default function AuthCallbackPage() {
+  return (
+    <Suspense fallback={
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'linear-gradient(135deg, #1e3a8a 0%, #7e22ce 100%)',
+      }}>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '24px',
+          padding: '48px',
+          background: 'rgba(255, 255, 255, 0.95)',
+          borderRadius: '24px',
+          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
+        }}>
+          <div style={{
+            width: '80px',
+            height: '80px',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            color: 'white',
+            fontSize: '48px',
+            fontWeight: 'bold',
+          }}>
+            <div style={{
+              width: '48px',
+              height: '48px',
+              border: '4px solid rgba(255, 255, 255, 0.3)',
+              borderTopColor: 'white',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite',
+            }}></div>
+          </div>
+          <h1 style={{
+            fontSize: '24px',
+            fontWeight: '700',
+            color: '#1f2937',
+            textAlign: 'center',
+            margin: 0,
+          }}>
+            Загрузка...
+          </h1>
+          <style>{`
+            @keyframes spin {
+              to { transform: rotate(360deg); }
+            }
+          `}</style>
+        </div>
+      </div>
+    }>
+      <AuthCallbackContent />
+    </Suspense>
   );
 }
 
