@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import '@/styles/index.scss';
 import { API_SERVER, AUTH_SITE_URL } from '@/hosts/constants';
 import { performLogout } from '../utils/logoutUtils';
+import { getAuthToken } from '../utils/auth';
 import ThemeModal from './ThemeModal';
 import { useTheme } from '../context/ThemeContext';
 
@@ -53,19 +54,9 @@ const Header: React.FC = () => {
     const [currentSearchQuery, setCurrentSearchQuery] = useState('');
     const [isWaitingForSearch, setIsWaitingForSearch] = useState(false);
 
-    const getCookieToken = () => {
-        // Сначала проверяем yumeko_auth_token
-        let match = document.cookie.match(/yumeko_auth_token=([^;]+)/);
-        if (match) return match[1];
-        
-        // Fallback на старый token
-        match = document.cookie.match(/token=([^;]+)/);
-        return match ? match[1] : '';
-    };
-
     useEffect(() => {
         const checkAuth = async () => {
-            const token = getCookieToken();
+            const token = getAuthToken();
             if (!token) return setIsAuthenticated(false);
 
             try {
@@ -376,7 +367,7 @@ const Header: React.FC = () => {
                                             <li><Link href="/profile/settings">Настройки</Link></li>
                                             <li><button onClick={() => {
                                                 const currentUrl = window.location.origin;
-                                                const token = getCookieToken();
+                                                const token = getAuthToken();
                                                 
                                                 // Передаем токен через URL (будет удален сразу после чтения)
                                                 const authUrl = new URL(AUTH_SITE_URL);

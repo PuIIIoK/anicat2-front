@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { API_SERVER } from '@/hosts/constants';
+import { getAuthToken } from '../../utils/auth';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface LogEntry {
@@ -20,12 +21,7 @@ interface PageData {
     size: number;
 }
 
-const getTokenFromCookie = () => {
-    const match = document.cookie.match(/(?:^|; )token=([^;]*)/);
-    return match ? decodeURIComponent(match[1]) : null;
-};
-
-const AdminLogs = () => {
+const AdminLogs: React.FC = () => {
     const [logs, setLogs] = useState<LogEntry[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -49,7 +45,7 @@ const AdminLogs = () => {
     const fetchLogs = useCallback(async () => {
         try {
             setLoading(true);
-            const token = getTokenFromCookie();
+            const token = getAuthToken();
             if (!token) throw new Error('Токен не найден');
 
             const params = new URLSearchParams({
@@ -92,7 +88,7 @@ const AdminLogs = () => {
     
     const fetchAvailableDates = useCallback(async () => {
         try {
-            const token = getTokenFromCookie();
+            const token = getAuthToken();
             if (!token) return;
 
             const res = await fetch(`${API_SERVER}/api/admin/logs/available-dates`, {

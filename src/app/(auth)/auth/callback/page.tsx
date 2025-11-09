@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { cookieStorage } from '@/utils/cookies';
+import { setAuthToken } from '@/app/utils/auth';
 import { API_SERVER } from '@/hosts/constants';
 
 function AuthCallbackContent() {
@@ -22,6 +23,10 @@ function AuthCallbackContent() {
 
         // Сохраняем токен в cookies на 365 дней
         cookieStorage.setAuthToken(token);
+        
+        // Также сохраняем в localStorage для доступа из JavaScript
+        // (на случай если кука HttpOnly и недоступна через document.cookie)
+        setAuthToken(token);
 
         if (userString) {
           try {

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState} from 'react';
 import { API_SERVER } from '@/hosts/constants';
+import { getAuthToken } from '../../utils/auth';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import DeleteAnimeModal from './DeleteAnimeModal';
@@ -35,11 +36,6 @@ interface Props {
     } | null) => void;
     userRoles: string[];
 }
-
-const getTokenFromCookie = () => {
-    const match = document.cookie.match(/(?:^|; )token=([^;]*)/);
-    return match ? decodeURIComponent(match[1]) : null;
-};
 
 const AdminAnime: React.FC<Props> = ({ setNotification, userRoles }) => {
     const [animeList, setAnimeList] = useState<Anime[]>([]);
@@ -281,7 +277,7 @@ const AdminAnime: React.FC<Props> = ({ setNotification, userRoles }) => {
             // Запускаем анимацию перехода
             setIsTransitioning(true);
             
-            const token = getTokenFromCookie();
+            const token = getAuthToken();
             if (!token) throw new Error('Токен не найден');
 
             const res = await fetch(`${API_SERVER}/api/admin/create-anime`, {
@@ -319,7 +315,7 @@ const AdminAnime: React.FC<Props> = ({ setNotification, userRoles }) => {
 
 
     const removeAnimeFromAllCategory = async (id: number) => {
-        const token = getTokenFromCookie();
+        const token = getAuthToken();
         if (!token) return;
 
         try {
@@ -348,7 +344,7 @@ const AdminAnime: React.FC<Props> = ({ setNotification, userRoles }) => {
         if (!animeToDelete) return;
 
         try {
-            const token = getTokenFromCookie();
+            const token = getAuthToken();
             if (!token) throw new Error('Токен не найден');
             
             // Сначала удаляем из категории "все аниме"

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { API_SERVER } from '@/hosts/constants';
+import { getAuthToken } from '../../utils/auth';
 import AdminUsers from '@/component/admin_panel/admin-users';
 import AdminCategory from '@/component/admin_panel/admin-category';
 import AdminTesting from '@/component/admin_panel/admin-testing';
@@ -55,14 +56,9 @@ const AdminPanelPage = () => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [appsOpen, setAppsOpen] = useState(true);
 
-    const getCookieToken = (): string | null => {
-        const match = document.cookie.match(/token=([^;]+)/);
-        return match ? match[1] : null;
-    };
-
     useEffect(() => {
         const checkAdminAccess = async () => {
-            const token = getCookieToken();
+            const token = getAuthToken();
             if (!token) {
                 router.push('/');
                 return;

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { API_SERVER } from '@/hosts/constants';
+import { getAuthToken } from '../../utils/auth';
 import { Plus, Edit2, Trash2, Eye, EyeOff, Save, X, AlertCircle, Bell } from 'lucide-react';
 
 interface SiteUpdate {
@@ -33,14 +34,9 @@ const AdminSiteUpdates: React.FC<Props> = ({ setNotification }) => {
         changesList: ''
     });
 
-    const getCookieToken = (): string | null => {
-        const match = document.cookie.match(/token=([^;]+)/);
-        return match ? match[1] : null;
-    };
-
     const fetchUpdates = async () => {
         try {
-            const token = getCookieToken();
+            const token = getAuthToken();
             if (!token) throw new Error('Токен не найден');
 
             const response = await fetch(`${API_SERVER}/api/admin/site-updates`, {
@@ -66,7 +62,7 @@ const AdminSiteUpdates: React.FC<Props> = ({ setNotification }) => {
 
     const handleCreateUpdate = async () => {
         try {
-            const token = getCookieToken();
+            const token = getAuthToken();
             if (!token) throw new Error('Токен не найден');
 
             const response = await fetch(`${API_SERVER}/api/admin/site-updates`, {
@@ -97,7 +93,7 @@ const AdminSiteUpdates: React.FC<Props> = ({ setNotification }) => {
         if (!editingUpdate) return;
 
         try {
-            const token = getCookieToken();
+            const token = getAuthToken();
             if (!token) throw new Error('Токен не найден');
 
             const response = await fetch(`${API_SERVER}/api/admin/site-updates/${editingUpdate.id}`, {
@@ -128,7 +124,7 @@ const AdminSiteUpdates: React.FC<Props> = ({ setNotification }) => {
         if (!confirm('Вы уверены, что хотите удалить это обновление?')) return;
 
         try {
-            const token = getCookieToken();
+            const token = getAuthToken();
             if (!token) throw new Error('Токен не найден');
 
             const response = await fetch(`${API_SERVER}/api/admin/site-updates/${id}`, {
@@ -151,7 +147,7 @@ const AdminSiteUpdates: React.FC<Props> = ({ setNotification }) => {
 
     const handleToggleActive = async (id: number) => {
         try {
-            const token = getCookieToken();
+            const token = getAuthToken();
             if (!token) throw new Error('Токен не найден');
 
             const response = await fetch(`${API_SERVER}/api/admin/site-updates/${id}/toggle`, {

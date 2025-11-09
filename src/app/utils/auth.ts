@@ -17,7 +17,17 @@ export const getAuthToken = (): string | null => {
     
     // Fallback на cookies для совместимости
     if (typeof document !== 'undefined') {
-        const match = document.cookie.match(/(?:^|;\s*)token\s*=\s*([^;]+)/);
+        // Сначала проверяем yumeko_auth_token
+        let match = document.cookie.match(/(?:^|;\s*)yumeko_auth_token\s*=\s*([^;]+)/);
+        if (match) {
+            const cookieToken = match[1];
+            // Сохраняем в localStorage для постоянного хранения
+            localStorage.setItem('token', cookieToken);
+            return cookieToken;
+        }
+        
+        // Fallback на старый token
+        match = document.cookie.match(/(?:^|;\s*)token\s*=\s*([^;]+)/);
         if (match) {
             const cookieToken = match[1];
             // Сохраняем в localStorage для постоянного хранения
@@ -55,9 +65,10 @@ export const removeAuthToken = (): void => {
     // Удаляем из localStorage
     localStorage.removeItem('token');
     
-    // Удаляем из cookies
+    // Удаляем из cookies (обе версии)
     if (typeof document !== 'undefined') {
         document.cookie = 'token=; path=/; max-age=0; SameSite=Lax';
+        document.cookie = 'yumeko_auth_token=; path=/; max-age=0; SameSite=Lax';
     }
 };
 

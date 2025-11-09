@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { API_SERVER } from '@/hosts/constants';
+import { getAuthToken } from '../../utils/auth';
 import { RefreshCw, AlertCircle, X } from 'lucide-react';
 
 interface AnimeUpdateLog {
@@ -15,11 +16,6 @@ interface AnimeUpdateLog {
     updateSource: 'KODIK_AUTO' | 'MANUAL';
     timestamp: string;
 }
-
-const getTokenFromCookie = () => {
-    const match = document.cookie.match(/(?:^|; )token=([^;]*)/);
-    return match ? decodeURIComponent(match[1]) : null;
-};
 
 const AdminAnimeUpdates: React.FC = () => {
     const [updateLogs, setUpdateLogs] = useState<AnimeUpdateLog[]>([]);
@@ -35,7 +31,7 @@ const AdminAnimeUpdates: React.FC = () => {
 
     const fetchUpdateLogs = async () => {
         try {
-            const token = getTokenFromCookie();
+            const token = getAuthToken();
             if (!token) throw new Error('Токен не найден');
 
             const res = await fetch(`${API_SERVER}/api/admin/anime-updates`, {
@@ -58,7 +54,7 @@ const AdminAnimeUpdates: React.FC = () => {
 
     const fetchLastSyncTime = async () => {
         try {
-            const token = getTokenFromCookie();
+            const token = getAuthToken();
             if (!token) return;
 
             const res = await fetch(`${API_SERVER}/api/admin/anime-updates/last-sync`, {
@@ -158,7 +154,7 @@ const AdminAnimeUpdates: React.FC = () => {
     // Проверяем текущий статус синхронизации при загрузке
     const checkSyncStatus = async () => {
         try {
-            const token = getTokenFromCookie();
+            const token = getAuthToken();
             if (!token) return;
 
             const res = await fetch(`${API_SERVER}/api/admin/anime-updates/sync/status`, {
@@ -192,7 +188,7 @@ const AdminAnimeUpdates: React.FC = () => {
             setIsSyncActive(true);
             setError(null);
             
-            const token = getTokenFromCookie();
+            const token = getAuthToken();
             if (!token) {
                 setIsManualSyncRunning(false);
                 setIsSyncActive(false);
@@ -315,7 +311,7 @@ const AdminAnimeUpdates: React.FC = () => {
         setLoadingSummary(true);
         
         try {
-            const token = getTokenFromCookie();
+            const token = getAuthToken();
             if (!token) return;
 
             // Загружаем детальные результаты синхронизации по времени

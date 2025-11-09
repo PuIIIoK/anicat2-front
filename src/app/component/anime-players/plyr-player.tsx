@@ -13,6 +13,12 @@ interface PlyrPlayerProps {
 // Тип для Plyr player - используем unknown, так как Plyr импортируется динамически
 interface PlyrInstance {
     destroy: () => void;
+    fullscreen: {
+        enter: () => void;
+        exit: () => void;
+        toggle: () => void;
+        active: boolean;
+    };
     [key: string]: unknown;
 }
 
@@ -145,25 +151,9 @@ const PlyrPlayer: React.FC<PlyrPlayerProps> = ({ videoUrl, onNext, onPrev }) => 
             // F(А) - полноэкранный режим
             if (key === 'f' || key === 'а') {
                 e.preventDefault();
-                if (document.fullscreenElement) {
-                    document.exitFullscreen();
-                } else {
-                    // Стандартный API
-                    if (video.requestFullscreen) {
-                        video.requestFullscreen();
-                    } else {
-                        // WebKit префикс (Safari)
-                        const webkitRequestFullscreen = (video as HTMLVideoElement & { webkitRequestFullscreen?: () => Promise<void> }).webkitRequestFullscreen;
-                        if (webkitRequestFullscreen) {
-                            webkitRequestFullscreen.call(video);
-                        } else {
-                            // Mozilla префикс (Firefox)
-                            const mozRequestFullScreen = (video as HTMLVideoElement & { mozRequestFullScreen?: () => Promise<void> }).mozRequestFullScreen;
-                            if (mozRequestFullScreen) {
-                                mozRequestFullScreen.call(video);
-                            }
-                        }
-                    }
+                // Используем Plyr API для fullscreen, чтобы интерфейс был виден
+                if (playerRef.current?.fullscreen) {
+                    playerRef.current.fullscreen.toggle();
                 }
                 return;
             }
@@ -249,9 +239,19 @@ const PlyrPlayer: React.FC<PlyrPlayerProps> = ({ videoUrl, onNext, onPrev }) => 
         document.addEventListener('keydown', handleKeyDown);
         document.addEventListener('keyup', handleKeyUp);
 
+        // Двойной клик для fullscreen
+        const handleDoubleClick = () => {
+            if (playerRef.current?.fullscreen) {
+                playerRef.current.fullscreen.toggle();
+            }
+        };
+
+        video.addEventListener('dblclick', handleDoubleClick);
+
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
             document.removeEventListener('keyup', handleKeyUp);
+            video.removeEventListener('dblclick', handleDoubleClick);
             if (spaceKeyTimeoutRef.current) {
                 clearTimeout(spaceKeyTimeoutRef.current);
             }
