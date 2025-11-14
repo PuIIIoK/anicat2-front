@@ -24,10 +24,9 @@ interface YumekoFriendsModalProps {
     isOpen: boolean;
     onClose: () => void;
     friends: Friend[];
-    incomingCount: number;
 }
 
-const YumekoFriendsModal: React.FC<YumekoFriendsModalProps> = ({ isOpen, onClose, friends, incomingCount }) => {
+const YumekoFriendsModal: React.FC<YumekoFriendsModalProps> = ({ isOpen, onClose, friends }) => {
     if (!isOpen) return null;
 
     const modalContent = (

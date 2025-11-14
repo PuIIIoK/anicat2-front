@@ -42,9 +42,13 @@ export interface YumekoProfileData {
   muteEndDate?: string;
   friends: Friend[];
   incomingCount: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   watchingAnime: any[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   favoriteAnime: any[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   userReviews: any[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   recentActivity: any[];
   refresh: () => void;
 }
@@ -93,9 +97,13 @@ export function useYumekoProfile(username?: string): YumekoProfileData {
   const [muteEndDate, setMuteEndDate] = useState<string | undefined>(undefined);
   const [friends, setFriends] = useState<Friend[]>([]);
   const [incomingCount, setIncomingCount] = useState<number>(0);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [watchingAnime, setWatchingAnime] = useState<any[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [favoriteAnime, setFavoriteAnime] = useState<any[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [userReviews, setUserReviews] = useState<any[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [recentActivity, setRecentActivity] = useState<any[]>([]);
 
   const getCookieToken = useCallback((): string => {
@@ -212,6 +220,7 @@ export function useYumekoProfile(username?: string): YumekoProfileData {
 
       if (badgesRes.ok) {
         const data = await badgesRes.json();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const badgeList = Array.isArray(data) ? data.map((b: any) => b.badgeName) : [];
         setBadges(badgeList);
       }
@@ -253,6 +262,7 @@ export function useYumekoProfile(username?: string): YumekoProfileData {
       const friendsRes = await fetch(`${API_SERVER}/api/friends/list/${encodeURIComponent(canonicalUsername)}`);
       if (friendsRes.ok) {
         const friendsData = await friendsRes.json();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const mapped = (friendsData || []).map((d: any, idx: number) => ({
           id: d.id ?? idx,
           name: d.nickname || d.username,

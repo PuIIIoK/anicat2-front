@@ -17,7 +17,9 @@ interface AnimeDetail {
     currentEpisodes?: number;
     episode_all?: string;
     current_episode?: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     voiceProgress?: Record<string, any>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     progressDetails?: any[];
 }
 
@@ -40,6 +42,7 @@ interface EpisodeProgress {
 const YumekoAnimeDetailModal: React.FC<YumekoAnimeDetailModalProps> = ({ isOpen, onClose, anime, username }) => {
     const [progressData, setProgressData] = useState<Record<number, EpisodeProgress[]>>({});
     const [isLoadingProgress, setIsLoadingProgress] = useState(false);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [animeDetails, setAnimeDetails] = useState<any>(null);
 
     useEffect(() => {

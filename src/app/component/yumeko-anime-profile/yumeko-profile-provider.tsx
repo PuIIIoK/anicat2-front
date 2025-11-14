@@ -27,9 +27,7 @@ const YumekoProfileProvider: React.FC<YumekoProfileProviderProps> = ({ username 
         profileColor1,
         profileColor2,
         profileColorScheme,
-        isOwnProfile,
         isPermanentBan,
-        canonicalUsername,
         backgroundAnimatedUrl,
         backgroundStaticUrl,
         backgroundUrl
@@ -158,7 +156,6 @@ const YumekoProfileProvider: React.FC<YumekoProfileProviderProps> = ({ username 
                     isOpen={isFriendsModalOpen}
                     onClose={() => setIsFriendsModalOpen(false)}
                     friends={profileData.friends}
-                    incomingCount={profileData.incomingCount}
                 />
             </div>
         </>

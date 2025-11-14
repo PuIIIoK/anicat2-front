@@ -18,9 +18,11 @@ interface YumekoProfileContentProps {
 
 const YumekoProfileContent: React.FC<YumekoProfileContentProps> = ({ profileData, activeTab, setActiveTab }) => {
     const { watchingAnime, favoriteAnime, userReviews, recentActivity, isLoadingContent } = profileData;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [selectedAnime, setSelectedAnime] = useState<any>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleAnimeClick = (anime: any) => {
         setSelectedAnime(anime);
         setIsModalOpen(true);
@@ -69,6 +71,7 @@ const YumekoProfileContent: React.FC<YumekoProfileContentProps> = ({ profileData
                             <SkeletonLoader type="activity" count={5} />
                         ) : recentActivity.length > 0 ? (
                             <div className="yumeko-activity-list">
+                                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                                 {recentActivity.slice(0, 10).map((activity: any, idx: number) => {
                                     const getActivityIcon = () => {
                                         const type = activity.activityType || activity.type || '';
@@ -137,6 +140,7 @@ const YumekoProfileContent: React.FC<YumekoProfileContentProps> = ({ profileData
                         <h2>Недавно просмотренное</h2>
                         {watchingAnime.length > 0 ? (
                             <div className="yumeko-anime-grid">
+                                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                                 {watchingAnime.map((anime: any) => {
                                     const totalEps = anime.episode_all || anime.totalEpisodes || '?';
                                     
@@ -146,6 +150,7 @@ const YumekoProfileContent: React.FC<YumekoProfileContentProps> = ({ profileData
                                     // Сортируем озвучки по количеству просмотренных серий (от большего к меньшему)
                                     const voiceProgress = anime.voiceProgress || {};
                                     const sortedVoices = Object.entries(voiceProgress)
+                                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                         .sort(([, a]: any, [, b]: any) => b - a);
                                     
                                     // Берем топ-2 озвучки
@@ -211,6 +216,7 @@ const YumekoProfileContent: React.FC<YumekoProfileContentProps> = ({ profileData
                         <h2>Избранное</h2>
                         {favoriteAnime.length > 0 ? (
                             <div className="yumeko-favorites-grid">
+                                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                                 {favoriteAnime.map((item: any) => {
                                     const anime = item.anime || item;
                                     return (
@@ -241,6 +247,7 @@ const YumekoProfileContent: React.FC<YumekoProfileContentProps> = ({ profileData
                         <h2>Отзывы</h2>
                         {userReviews.length > 0 ? (
                             <div className="yumeko-reviews-list">
+                                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                                 {userReviews.map((review: any) => (
                                     <div key={review.id} className="yumeko-review-card">
                                         <div className="yumeko-review-cover">

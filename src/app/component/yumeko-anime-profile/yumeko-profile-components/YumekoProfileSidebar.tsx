@@ -1,14 +1,13 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { YumekoProfileData } from '../hooks/useYumekoProfile';
+import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import * as LucideIcons from 'lucide-react';
-import SkeletonLoader from './SkeletonLoader';
-import { API_SERVER } from '@/hosts/constants';
 import GlobalAnimeCard from '../../anime-structure/GlobalAnimeCard';
+import { API_SERVER } from '@/hosts/constants';
+import SkeletonLoader from './SkeletonLoader';
+import { YumekoProfileData } from '../hooks/useYumekoProfile';
 
 interface YumekoProfileSidebarProps {
     profileData: YumekoProfileData;
@@ -46,12 +45,11 @@ interface CollectionAnime {
 }
 
 const YumekoProfileSidebar: React.FC<YumekoProfileSidebarProps> = ({ profileData, onOpenFriendsModal }) => {
-    const { friends, incomingCount, isOwnProfile, watchingAnime, favoriteAnime, userReviews, isLoadingFriends, isLoadingStats, userName } = profileData;
+    const { friends, watchingAnime, favoriteAnime, isLoadingFriends, isLoadingStats, userName } = profileData;
     const [isStatsModalOpen, setIsStatsModalOpen] = useState(false);
     const [activeTab, setActiveTab] = useState<CollectionType>('FAVORITE');
     const [collectionData, setCollectionData] = useState<CollectionAnime[]>([]);
     const [isLoadingCollection, setIsLoadingCollection] = useState(false);
-    const router = useRouter();
 
     // Данные для круговой диаграммы
     const stats = {
@@ -76,7 +74,7 @@ const YumekoProfileSidebar: React.FC<YumekoProfileSidebarProps> = ({ profileData
     };
     
     // Функция загрузки коллекции
-    const loadCollection = async (type: CollectionType) => {
+    const loadCollection = useCallback(async (type: CollectionType) => {
         if (!userName) return;
         
         setIsLoadingCollection(true);
@@ -84,6 +82,7 @@ const YumekoProfileSidebar: React.FC<YumekoProfileSidebarProps> = ({ profileData
             const res = await fetch(`${API_SERVER}/api/collection/user/${encodeURIComponent(userName)}?type=${type}`);
             if (res.ok) {
                 const data = await res.json();
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const formatted = data.map((item: any) => {
                     const animeId = item.anime?.id || item.id;
                     const anime = item.anime || item;
@@ -123,14 +122,14 @@ const YumekoProfileSidebar: React.FC<YumekoProfileSidebarProps> = ({ profileData
         } finally {
             setIsLoadingCollection(false);
         }
-    };
+    }, [userName]);
     
     // Загрузка коллекции при открытии модалки или смене вкладки
     useEffect(() => {
         if (isStatsModalOpen) {
             loadCollection(activeTab);
         }
-    }, [isStatsModalOpen, activeTab]);
+    }, [isStatsModalOpen, activeTab, loadCollection]);
     
     // Вычисляем проценты и углы для SVG
     const chartData = [
@@ -140,10 +139,8 @@ const YumekoProfileSidebar: React.FC<YumekoProfileSidebarProps> = ({ profileData
         { label: 'ПРОСМОТРЕНО', value: stats.completed, color: '#8b5cf6', angle: 0 }
     ];
     
-    let currentAngle = 0;
     chartData.forEach(item => {
         item.angle = total > 0 ? (item.value / total) * 360 : 0;
-        currentAngle += item.angle;
     });
 
     // Функция для создания SVG path для сегмента
@@ -174,12 +171,6 @@ const YumekoProfileSidebar: React.FC<YumekoProfileSidebarProps> = ({ profileData
             <div className="yumeko-sidebar-section">
                 <div className="yumeko-section-header">
                     <h3>Друзья</h3>
-                    {isOwnProfile && incomingCount > 0 && (
-                        <button className="yumeko-friend-requests-btn" onClick={onOpenFriendsModal}>
-                            <LucideIcons.UserPlus size={14} />
-                            <span>+{incomingCount}</span>
-                        </button>
-                    )}
                 </div>
 
                 {isLoadingFriends ? (
@@ -408,6 +399,7 @@ const YumekoProfileSidebar: React.FC<YumekoProfileSidebarProps> = ({ profileData
                                         {collectionData.map((anime) => (
                                             <div key={anime.id} onClick={() => setIsStatsModalOpen(false)}>
                                                 <GlobalAnimeCard
+                                                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                                     anime={anime as any}
                                                     collectionType={activeTab}
                                                     showCollectionStatus={true}

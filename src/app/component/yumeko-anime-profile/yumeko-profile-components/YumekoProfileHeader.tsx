@@ -5,7 +5,6 @@ import { YumekoProfileData } from '../hooks/useYumekoProfile';
 import AnimatedMedia from '@/components/AnimatedMedia';
 import Image from 'next/image';
 import * as LucideIcons from 'lucide-react';
-import Link from 'next/link';
 import { BADGE_META } from '../../profile-page-old/badgeMeta';
 import SkeletonLoader from './SkeletonLoader';
 
@@ -24,15 +23,6 @@ const YumekoProfileHeader: React.FC<YumekoProfileHeaderProps> = ({ profileData }
         bannerAnimatedUrl,
         isVerified,
         badges,
-        profileColor1,
-        profileColor2,
-        isBanned,
-        banReason,
-        banEndDate,
-        isMuted,
-        muteReason,
-        muteEndDate,
-        isPermanentBan,
         isLoading
     } = profileData;
 
