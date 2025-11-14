@@ -29,7 +29,7 @@ declare global {
     };
 
     // Кеш профилей
-    __profileCache?: Map<string, { data: any }>;
+    __profileCache?: Map<string, { data: Record<string, unknown> }>;
   }
 }
 
