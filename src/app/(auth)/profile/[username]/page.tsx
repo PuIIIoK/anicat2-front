@@ -1,33 +1,18 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { API_SERVER } from '@/hosts/constants';
-
-import NEWProfileMainInfoID from "../../../component/profile-page-old/new-id-profile-page-provider";
-import NEWProfileMainInfoIDMobile from "../../../component/profile-page-old/new-id-profile-page-mobile-provider";
+import YumekoProfileProvider from "../../../component/yumeko-anime-profile/yumeko-profile-provider";
 
 export default function Page() {
     const router = useRouter();
     const { username } = useParams() as { username: string };
-    const [isMobile, setIsMobile] = useState<boolean>(false);
 
     const getToken = () => {
         const match = document.cookie.match(/token=([^;]+)/);
         return match ? match[1] : '';
     };
-
-    useEffect(() => {
-        // --- Определяем, мобилка или нет (ширина окна или юзер-агент) ---
-        const checkMobile = () => {
-            if (typeof window === 'undefined') return;
-            // Можно кастомно подправить порог ширины
-            setIsMobile(window.innerWidth <= 700 || /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|Mobile/i.test(navigator.userAgent));
-        };
-        checkMobile();
-        window.addEventListener('resize', checkMobile);
-        return () => window.removeEventListener('resize', checkMobile);
-    }, []);
 
     useEffect(() => {
         const checkProfileBeta = async () => {
@@ -50,12 +35,5 @@ export default function Page() {
         checkProfileBeta();
     }, [username, router]);
 
-    return (
-        <div>
-            {isMobile
-                ? <NEWProfileMainInfoIDMobile username={username} />
-                : <NEWProfileMainInfoID username={username} />
-            }
-        </div>
-    );
+    return <YumekoProfileProvider username={username} />;
 }

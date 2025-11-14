@@ -115,10 +115,76 @@
     }
 }
 
-@media (min-width: 481px) and (max-width: 768px) {
+@media (min-width: 386px) {
     .root-navbar-mobile-anime-grid {
-        width: 100%;
-        max-width: 450px;
+        width: 420px;
+        max-width: 420px;
+        right: 33px;
+        gap: 6px;
+        padding: 20px;
+    }
+}
+@media (min-width: 420px) {
+    .root-navbar-mobile-anime-grid {
+        width: 470px;
+        max-width: 470px;
+        right: 33px;
+        gap: 6px;
+        padding: 20px;
+    }
+}
+@media (min-width: 460px) {
+    .root-navbar-mobile-anime-grid {
+        width: 500px;
+        max-width: 500px;
+        right: 33px;
+        gap: 6px;
+        padding: 20px;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 514px) {
+    .root-navbar-mobile-anime-grid {
+        width: 560px !important;
+        max-width: 560px;
+        right: 35px;
+        gap: 10px;
+        padding: 25px;
+    }
+}
+@media (min-width: 515px) and (max-width: 561px) {
+    .root-navbar-mobile-anime-grid {
+        width: 600px !important;
+        max-width: 600px;
+        right: 35px;
+        gap: 10px;
+        padding: 25px;
+    }
+}
+
+@media (min-width: 560px) {
+    .root-navbar-mobile-anime-grid {
+        width: 660px !important;
+        max-width: 660px;
+        right: 35px;
+        gap: 10px;
+        padding: 25px;
+    }
+}
+@media (min-width: 590px) {
+    .root-navbar-mobile-anime-grid {
+        width: 700px !important;
+        max-width: 700px;
+        right: 35px;
+        gap: 10px;
+        padding: 25px;
+    }
+}
+
+@media (min-width: 610px) {
+    .root-navbar-mobile-anime-grid {
+        width: 730px !important;
+        max-width: 730px;
         right: 35px;
         gap: 10px;
         padding: 25px;

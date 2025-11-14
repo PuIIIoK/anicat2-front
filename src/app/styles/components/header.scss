@@ -257,34 +257,34 @@
   }
 
   // Кнопка смены темы
-  .theme-button {
+  .theme-button,
+  .friends-button {
     background: transparent;
     border: none;
     color: rgba(255, 255, 255, 0.8);
     cursor: pointer;
     padding: 8px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
     transition: all 0.3s ease;
     position: relative;
-
+    
     &:hover {
       background: rgba(255, 255, 255, 0.1);
       color: var(--primary-color, var(--primary-color));
-      transform: rotate(180deg);
     }
-
+    
     svg {
       width: 24px;
       height: 24px;
     }
-
+    
     &:active {
-      transform: scale(0.95) rotate(180deg);
+      transform: scale(0.95);
     }
-
+    
     @media (max-width: 480px) {
       padding: 6px;
       
@@ -293,6 +293,14 @@
         height: 20px;
       }
     }
+  }
+  
+  .theme-button:hover {
+    transform: rotate(180deg);
+  }
+  
+  .theme-button:active {
+    transform: scale(0.95) rotate(180deg);
   }
 
   .profile {
@@ -493,35 +501,39 @@
 
 @media (max-width: 768px) {
   .header {
-    padding: 8px 12px;
+    padding: 6px 10px;
+    height: 56px;
     
     .header-content {
-      max-width: 100%;
-      padding: 0;
+      gap: 0.5rem;
     }
     
     .header-left {
-      gap: 1rem;
-      
-      .logo {
-        width: 120px;
-        height: 30px;
-        
-        .logo-left {
-          width: 120px;
-          height: 30px;
-        }
-      }
+      gap: 0.75rem;
+      flex: 1;
       
       .our-apps {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        
         .our-apps-title {
-          font-size: 14px;
+          font-size: 0.8rem;
+          padding: 4px 0;
+          white-space: nowrap;
         }
       }
-    }
-
-    .header-right {
-      gap: 1rem;
+      
+      .logo {
+        width: 100px;
+        height: 28px;
+        flex-shrink: 0;
+        
+        .logo-left {
+          width: 100px;
+          height: 28px;
+        }
+      }
       
       .search-bar-anime {
         width: 120px;

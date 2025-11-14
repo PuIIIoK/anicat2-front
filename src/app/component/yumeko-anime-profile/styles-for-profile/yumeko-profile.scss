@@ -1,0 +1,3887 @@
+// ===== YUMEKO PROFILE - Steam + Discord Style =====
+
+// Steam + Discord Color Scheme
+$steam-dark: #1b2838;
+$steam-darker: #171a21;
+$steam-card: #1a1a1a;
+$steam-blue: #66c0f4;
+$discord-bg: #2b2d31;
+$discord-card: #1e1f22;
+$discord-blurple: #5865f2;
+$text-primary: #c7d5e0;
+$text-secondary: #8f98a0;
+$text-muted: #67707b;
+$border-color: #3d4f5c;
+
+// ===== Main Wrapper =====
+.yumeko-profile-wrapper {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  color: $text-primary;
+  padding-top: 80px;
+  
+  // CSS Variables для кастомных цветов
+  --profile-color-1: #{$steam-blue};
+  --profile-color-2: #{$discord-blurple};
+  --profile-color-1-rgb: 102, 192, 244;
+  --profile-color-2-rgb: 88, 101, 242;
+}
+
+// ===== Background =====
+.yumeko-profile-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  
+  img, video {
+    opacity: 0.45;
+    filter: blur(6px) brightness(0.7);
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(23, 26, 33, 0.6) 0%,
+      rgba(27, 40, 56, 0.7) 50%,
+      rgba(23, 26, 33, 0.75) 100%
+    );
+    z-index: 1;
+  }
+}
+
+// Если есть фон - делаем блоки прозрачнее (Steam style)
+.yumeko-profile-wrapper:has(.yumeko-profile-background) {
+  .yumeko-sidebar-section,
+  .yumeko-tabs,
+  .yumeko-tab-content {
+    background: linear-gradient(
+      135deg,
+      rgba($steam-card, 0.7) 0%,
+      rgba($discord-card, 0.7) 100%
+    ) !important;
+  }
+}
+
+// ===== Container =====
+.yumeko-profile-container {
+  position: relative;
+  z-index: 2;
+  top: -70px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+// ===== Header =====
+.yumeko-profile-header {
+  position: relative;
+  margin-bottom: 30px;
+  
+  .yumeko-banner-wrapper {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    background: $steam-card;
+    border-radius: 12px;
+    overflow: hidden;
+    
+    img, video {
+      opacity: 1;
+    }
+    
+    .yumeko-banner-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        transparent 0%,
+        transparent 70%,
+        rgba(var(--profile-color-1-rgb), 0.15) 100%
+      );
+    }
+  }
+  
+  .yumeko-profile-info {
+    position: relative;
+    display: flex;
+    gap: 24px;
+    padding: 20px 24px;
+    margin-top: -60px;
+    background: linear-gradient(
+      135deg,
+      rgba(var(--profile-color-1-rgb), 0.2) 0%,
+      rgba(var(--profile-color-2-rgb), 0.2) 100%
+    ),
+    rgba($steam-card, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    border: 1px solid rgba(var(--profile-color-2-rgb), 0.3);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4),
+                0 0 40px rgba(var(--profile-color-2-rgb), 0.15);
+    
+    .yumeko-avatar-container {
+      flex-shrink: 0;
+      position: relative;
+      
+      .yumeko-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 3px solid rgba($text-primary, 0.1);
+        box-shadow: 
+          0 0 30px rgba(var(--profile-color-1-rgb), 0.4),
+          0 0 60px rgba(var(--profile-color-2-rgb), 0.3),
+          0 4px 12px rgba(0, 0, 0, 0.5);
+        object-fit: cover;
+        display: block;
+      }
+    }
+    
+    .yumeko-user-details {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: transparent;
+      
+      .yumeko-username-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: transparent;
+        
+        .yumeko-username {
+          font-size: 28px;
+          font-weight: 700;
+          margin: 0;
+          color: $text-primary;
+          background: transparent;
+        }
+        
+        .yumeko-verified-badge {
+          color: $steam-blue;
+          background: transparent;
+        }
+      }
+      
+      .yumeko-roles {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        background: transparent;
+        margin-bottom: 8px;
+        
+        .yumeko-role {
+          padding: 6px 14px;
+          border-radius: 12px;
+          font-size: 11px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.8px;
+          border: 2px solid;
+          transition: all 0.3s ease;
+          
+          &.admin {
+            background: rgba(255, 71, 87, 0.15);
+            color: #ff4757;
+            border-color: #ff4757;
+            
+            &:hover {
+              background: rgba(255, 71, 87, 0.25);
+              border-color: #ff3742;
+            }
+          }
+          
+          &.moderator {
+            background: rgba(88, 101, 242, 0.15);
+            color: #5865f2;
+            border-color: #5865f2;
+            
+            &:hover {
+              background: rgba(88, 101, 242, 0.25);
+              border-color: #4752c4;
+            }
+          }
+          
+          &.uploader {
+            background: rgba(0, 210, 211, 0.15);
+            color: #00d2d3;
+            border-color: #00d2d3;
+            
+            &:hover {
+              background: rgba(0, 210, 211, 0.25);
+              border-color: #00a8cc;
+            }
+          }
+        }
+      }
+      
+      .yumeko-badges {
+        display: flex;
+        gap: 8px;
+        background: transparent;
+        
+        .yumeko-badge {
+          width: 32px;
+          height: 32px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba(var(--profile-color-2-rgb), 0.2);
+          border: 1px solid rgba(var(--profile-color-2-rgb), 0.4);
+          border-radius: 8px;
+          color: var(--profile-color-2);
+          transition: all 0.2s;
+          
+          &:hover {
+            background: rgba(var(--profile-color-2-rgb), 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(var(--profile-color-2-rgb), 0.4);
+          }
+        }
+      }
+      
+      .yumeko-bio {
+        margin: 0;
+        color: $text-secondary;
+        font-size: 14px;
+        line-height: 1.6;
+        background: transparent;
+      }
+    }
+    
+    // Level Block
+    .yumeko-level-block {
+      flex-shrink: 0;
+      width: 360px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 16px 20px;
+      background: rgba($steam-darker, 0.5);
+      border: 1px solid transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: border-color 0.2s ease;
+      position: relative;
+      
+      &:hover {
+        border-color: var(--primary-color);
+      }
+      
+      .yumeko-level-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: transparent;
+        
+        .yumeko-level-icon {
+          color: var(--primary-color);
+          flex-shrink: 0;
+        }
+        
+        .yumeko-level-info {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+          background: transparent;
+          
+          .yumeko-level-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: $text-secondary;
+            text-transform: uppercase;
+            background: transparent;
+          }
+          
+          .yumeko-level-number {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--primary-color);
+            line-height: 1;
+            background: transparent;
+          }
+        }
+      }
+      
+      .yumeko-level-progress-container {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        background: transparent;
+        
+        .yumeko-level-progress-bar {
+          width: 100%;
+          height: 6px;
+          background: rgba($text-muted, 0.2);
+          border-radius: 3px;
+          overflow: hidden;
+          position: relative;
+          
+          .yumeko-level-progress-fill {
+            height: 100%;
+            background: var(--primary-color);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+          }
+        }
+        
+        .yumeko-level-xp-text {
+          font-size: 11px;
+          font-weight: 500;
+          color: $text-secondary;
+          text-align: right;
+          background: transparent;
+        }
+      }
+      
+      .yumeko-level-subtitle {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        color: $text-muted;
+        background: transparent;
+        padding-top: 8px;
+        border-top: 1px solid rgba($border-color, 0.2);
+        
+        svg {
+          flex-shrink: 0;
+          opacity: 0.6;
+        }
+        
+        span {
+          background: transparent;
+        }
+      }
+    }
+  }
+  
+  // Level Modal
+  .yumeko-level-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeIn 0.2s ease;
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .yumeko-level-modal {
+      background: linear-gradient(
+        135deg,
+        rgba($steam-card, 0.98) 0%,
+        rgba($discord-card, 0.98) 100%
+      );
+      border: 2px solid var(--primary-color);
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      animation: scaleIn 0.3s ease;
+      
+      @keyframes scaleIn {
+        from { 
+          opacity: 0;
+          transform: scale(0.9);
+        }
+        to { 
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      
+      .yumeko-level-modal-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 16px;
+        
+        .yumeko-level-modal-icon {
+          color: var(--primary-color);
+        }
+        
+        .yumeko-level-modal-title {
+          margin: 0;
+          font-size: 24px;
+          font-weight: 700;
+          color: $text-primary;
+          background: transparent;
+        }
+        
+        .yumeko-level-modal-text {
+          margin: 0;
+          font-size: 16px;
+          color: $text-secondary;
+          line-height: 1.6;
+          background: transparent;
+        }
+        
+        .yumeko-level-modal-button {
+          margin-top: 8px;
+          padding: 12px 32px;
+          background: rgba($steam-card, 0.5);
+          border: 2px solid var(--primary-color);
+          border-radius: 8px;
+          color: $text-primary;
+          font-size: 14px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          
+          &:hover {
+            background: rgba($steam-card, 0.7);
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 16px var(--primary-bg-hover);
+            transform: translateY(-2px);
+          }
+        }
+      }
+    }
+  }
+}
+
+// ===== Body Layout =====
+.yumeko-profile-body {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 24px;
+  margin-bottom: 40px;
+  
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ===== Sidebar =====
+.yumeko-profile-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  
+  .yumeko-sidebar-section {
+    background: rgba($steam-card, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid $border-color;
+    border-radius: 12px;
+    padding: 20px;
+    
+    .yumeko-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      
+      h3 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 600;
+        color: $text-primary;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      
+      .yumeko-friend-requests-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        background: rgba(var(--profile-color-2-rgb), 0.2);
+        border: 1px solid rgba(var(--profile-color-2-rgb), 0.4);
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--profile-color-2);
+        cursor: pointer;
+        transition: all 0.2s;
+        
+        &:hover {
+          background: rgba(var(--profile-color-2-rgb), 0.3);
+          box-shadow: 0 0 12px rgba(var(--profile-color-2-rgb), 0.4);
+        }
+        
+        svg {
+          flex-shrink: 0;
+        }
+      }
+    }
+    
+    .yumeko-friends-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      
+      .yumeko-friend-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+        
+        &:hover {
+          text-decoration: none;
+        }
+      }
+      
+      .yumeko-friend-card-banner {
+        position: relative;
+        background: rgba($discord-bg, 0.8);
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid rgba($border-color, 0.5);
+        transition: all 0.2s ease;
+        cursor: pointer;
+        
+        &:hover {
+          border-color: var(--friend-border-hover, var(--friend-primary-color, var(--primary-color)));
+          box-shadow: 0 4px 12px var(--friend-primary-bg-hover, var(--primary-bg-hover, rgba(255, 149, 0, 0.3)));
+          transform: translateY(-2px);
+          background: var(--friend-primary-bg-hover, var(--primary-bg, rgba(255, 149, 0, 0.05)));
+          
+          .yumeko-friend-banner-bg,
+          .yumeko-friend-banner-video {
+            transform: scale(1.05);
+          }
+          
+          .yumeko-friend-avatar {
+            transform: scale(1.05);
+            border-color: var(--friend-border-hover, var(--friend-primary-color, var(--primary-color)));
+          }
+          
+          .yumeko-friend-info-row {
+            background: var(--friend-primary-bg-hover, var(--primary-bg, rgba(255, 149, 0, 0.08)));
+            border-radius: 0 0 14px 14px;
+          }
+        }
+        
+        .yumeko-friend-banner {
+          position: relative;
+          width: 100%;
+          height: 80px;
+          overflow: hidden;
+          
+          .yumeko-friend-banner-bg {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+              135deg,
+              rgba(var(--profile-color-1-rgb), 0.4) 0%,
+              rgba(var(--profile-color-2-rgb), 0.4) 100%
+            );
+            transition: transform 0.3s ease;
+          }
+          
+          .yumeko-friend-banner-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+          }
+          
+          .yumeko-friend-banner-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+              180deg,
+              transparent 0%,
+              transparent 50%,
+              rgba($discord-bg, 0.4) 100%
+            );
+          }
+        }
+      }
+    }
+    
+    .yumeko-friends-list-btn {
+      width: 100%;
+      margin-top: 12px;
+      padding: 10px 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.9);
+        transform: translateY(-1px);
+      }
+      
+      svg {
+        flex-shrink: 0;
+      }
+    }
+    
+    .yumeko-show-all-btn {
+      width: 100%;
+      margin-top: 12px;
+      padding: 10px;
+      background: rgba(var(--profile-color-2-rgb), 0.1);
+      border: 1px solid rgba(var(--profile-color-2-rgb), 0.3);
+      border-radius: 8px;
+      color: var(--profile-color-2);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      
+      &:hover {
+        background: rgba(var(--profile-color-2-rgb), 0.2);
+        box-shadow: 0 0 12px rgba(var(--profile-color-2-rgb), 0.4);
+      }
+    }
+    
+    .yumeko-empty-friends {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 40px 20px;
+      
+      svg {
+        color: $text-muted;
+        opacity: 0.5;
+      }
+      
+      p {
+        margin: 0;
+        color: $text-muted;
+        font-size: 14px;
+      }
+    }
+    
+    .yumeko-stats-chart {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 0;
+      
+      .yumeko-chart-svg {
+        width: 150px;
+        height: 150px;
+        
+        circle {
+          transition: all 0.3s ease;
+        }
+        
+        .yumeko-chart-total {
+          font-size: 24px;
+          font-weight: 700;
+          fill: $text-primary;
+        }
+      }
+      
+      .yumeko-chart-legend {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+        
+        .yumeko-legend-item {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 13px;
+          color: $text-secondary;
+          
+          .yumeko-legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            
+            &.watching {
+              background: var(--profile-color-1);
+            }
+            
+            &.favorite {
+              background: var(--profile-color-2);
+            }
+          }
+        }
+      }
+    }
+    
+    .yumeko-empty-stats {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 40px 20px;
+      
+      svg {
+        color: $text-muted;
+        opacity: 0.5;
+      }
+      
+      p {
+        margin: 0;
+        color: $text-muted;
+        font-size: 14px;
+      }
+    }
+    
+    // Stats with Chart
+    .yumeko-stats-chart-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      
+      .yumeko-pie-chart {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px 0;
+        
+        svg {
+          filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+          
+          .yumeko-chart-segment {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            
+            &:hover {
+              filter: brightness(1.1);
+            }
+          }
+        }
+      }
+      
+      .yumeko-stats-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        
+        .yumeko-stat-item {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 10px 14px;
+          background: rgba($discord-card, 0.6);
+          border-radius: 8px;
+          border: 1px solid rgba($border-color, 0.5);
+          transition: all 0.2s;
+          
+          &:hover {
+            background: rgba($discord-card, 0.8);
+            border-color: var(--profile-color-2);
+            transform: translateX(4px);
+          }
+          
+          .yumeko-stat-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+          }
+          
+          .yumeko-stat-label {
+            color: $text-secondary;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            flex: 1;
+          }
+          
+          .yumeko-stat-value {
+            color: $text-primary;
+            font-size: 16px;
+            font-weight: 700;
+            min-width: 24px;
+            text-align: right;
+          }
+        }
+      }
+      
+      .yumeko-empty-stats {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 20px;
+        color: $text-muted;
+        font-size: 14px;
+      }
+    }
+    
+    // Stats expand button
+    .yumeko-stats-expand-btn {
+      background: rgba($steam-card, 0.5);
+      border: 1px solid rgba($border-color, 0.3);
+      border-radius: 6px;
+      padding: 6px;
+      color: $text-secondary;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      &:hover {
+        background: rgba($steam-card, 0.7);
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+      }
+    }
+    
+    // View collection button in stats section
+    .yumeko-view-stats-collection-btn {
+      width: 100%;
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: rgba($steam-card, 0.5);
+      border: 1px solid rgba($border-color, 0.3);
+      border-radius: 10px;
+      color: $text-secondary;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      
+      svg {
+        color: var(--primary-color);
+        flex-shrink: 0;
+      }
+      
+      &:hover {
+        background: rgba($steam-card, 0.7);
+        border-color: var(--primary-color);
+        color: $text-primary;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px var(--primary-bg-hover);
+      }
+    }
+  }
+  
+  // Stats Modal
+  .yumeko-stats-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeIn 0.2s ease;
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .yumeko-stats-modal {
+      background: linear-gradient(
+        135deg,
+        rgba($steam-card, 0.98) 0%,
+        rgba($discord-card, 0.98) 100%
+      );
+      border: 2px solid var(--primary-color);
+      border-radius: 16px;
+      padding: 32px;
+      margin-top: 40px;
+      max-width: 1400px;
+      width: 95%;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      animation: scaleIn 0.3s ease;
+      position: relative;
+      
+      @keyframes scaleIn {
+        from { 
+          opacity: 0;
+          transform: scale(0.9);
+        }
+        to { 
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      
+      .yumeko-modal-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: rgba($steam-card, 0.5);
+        border: 1px solid rgba($border-color, 0.3);
+        border-radius: 8px;
+        padding: 8px;
+        color: $text-secondary;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+        
+        &:hover {
+          background: rgba($steam-card, 0.7);
+          border-color: var(--primary-color);
+          color: var(--primary-color);
+        }
+      }
+      
+      .yumeko-stats-modal-content {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        
+        .yumeko-stats-modal-title {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          margin: 0;
+          font-size: 28px;
+          font-weight: 700;
+          color: $text-primary;
+          letter-spacing: 1px;
+          
+          svg {
+            color: var(--primary-color);
+          }
+        }
+        
+        // Collection Tabs
+        .yumeko-collection-tabs {
+          display: flex;
+          gap: 8px;
+          flex-wrap: wrap;
+          padding: 12px;
+          background: rgba($steam-darker, 0.5);
+          border-radius: 12px;
+          
+          .yumeko-collection-tab {
+            padding: 10px 16px;
+            background: rgba($steam-card, 0.5);
+            border: 1px solid rgba($border-color, 0.3);
+            border-radius: 8px;
+            color: $text-secondary;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            
+            &:hover {
+              background: rgba($steam-card, 0.7);
+              border-color: var(--primary-color);
+              color: $text-primary;
+            }
+            
+            &.active {
+              background: var(--primary-color);
+              border-color: var(--primary-color);
+              color: #fff !important;
+              
+              &:hover {
+                background: var(--primary-color);
+                opacity: 0.9;
+              }
+            }
+          }
+        }
+        
+        // Collection Anime List
+        .yumeko-collection-anime-list {
+          height: 600px;
+          max-height: 65vh;
+          overflow-y: auto;
+          position: relative;
+          
+          .yumeko-collection-loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 20px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+          }
+          
+          .yumeko-collection-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 35px;
+            padding: 2px;
+            
+            > div {
+              cursor: pointer;
+              flex: 0 0 calc(20% - 16px);
+              max-width: 200px;
+              min-width: 160px;
+              
+              @media (max-width: 1400px) {
+                flex: 0 0 calc(25% - 16px);
+              }
+              
+              @media (max-width: 1100px) {
+                flex: 0 0 calc(33.333% - 16px);
+              }
+              
+              @media (max-width: 900px) {
+                flex: 0 0 calc(50% - 16px);
+              }
+              
+              @media (max-width: 600px) {
+                flex: 0 0 calc(100% - 16px);
+              }
+            }
+          }
+          
+          .yumeko-empty-collection {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            color: $text-muted;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            
+            svg {
+              opacity: 0.5;
+            }
+            
+            p {
+              margin: 0;
+              font-size: 16px;
+            }
+          }
+        }
+        
+        .yumeko-empty-stats {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 60px 20px;
+          color: $text-muted;
+          font-size: 16px;
+        }
+      }
+      
+      @media (max-width: 768px) {
+        padding: 20px;
+        max-width: 95%;
+        
+        .yumeko-stats-modal-content {
+          .yumeko-stats-modal-title {
+            font-size: 20px;
+            
+            svg {
+              width: 24px;
+              height: 24px;
+            }
+          }
+          
+          .yumeko-collection-tabs {
+            gap: 6px;
+            padding: 8px;
+            
+            .yumeko-collection-tab {
+              padding: 8px 12px;
+              font-size: 12px;
+            }
+          }
+          
+          .yumeko-collection-anime-list {
+            height: 400px;
+            
+            .yumeko-collection-grid {
+              grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+              gap: 16px;
+              padding: 6px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// ===== Content =====
+.yumeko-profile-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  
+  .yumeko-tabs {
+    display: flex;
+    gap: 8px;
+    padding: 8px;
+    background: rgba($steam-card, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid $border-color;
+    border-radius: 12px;
+    
+    .yumeko-tab {
+      flex: 1;
+      padding: 12px 20px;
+      background: transparent;
+      border: none;
+      border-radius: 8px;
+      color: $text-secondary;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      
+      &:hover {
+        background: rgba(var(--profile-color-2-rgb), 0.1);
+        color: $text-primary;
+      }
+      
+      &.active {
+        background: linear-gradient(
+          135deg,
+          rgba(var(--profile-color-1-rgb), 0.2) 0%,
+          rgba(var(--profile-color-2-rgb), 0.2) 100%
+        );
+        color: var(--profile-color-2);
+        box-shadow: 0 2px 8px rgba(var(--profile-color-2-rgb), 0.3);
+      }
+    }
+  }
+  
+  .yumeko-tab-content {
+    background: rgba($steam-card, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid $border-color;
+    border-radius: 12px;
+    padding: 24px;
+    min-height: 400px;
+    
+    h2 {
+      margin: 0 0 20px 0;
+      font-size: 20px;
+      font-weight: 600;
+      color: $text-primary;
+    }
+    
+    .yumeko-empty-state {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 300px;
+      
+      p {
+        color: $text-muted;
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+// ===== Ban Page =====
+.yumeko-profile-ban-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  
+  .yumeko-ban-container {
+    text-align: center;
+    padding: 40px;
+    background: rgba($steam-card, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid $border-color;
+    border-radius: 12px;
+    max-width: 500px;
+    
+    .yumeko-ban-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+    }
+    
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin: 0 0 12px 0;
+      color: #ef4444;
+    }
+    
+    p {
+      color: $text-secondary;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+  }
+}
+
+// ===== Responsive =====
+@media (max-width: 768px) {
+  .yumeko-profile-header {
+    .yumeko-banner-wrapper {
+      height: 200px;
+    }
+    
+    .yumeko-profile-info {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-top: -40px;
+      
+      .yumeko-avatar-container .yumeko-avatar {
+        width: 80px;
+        height: 80px;
+      }
+      
+      .yumeko-user-details {
+        align-items: center;
+        
+        .yumeko-username-row {
+          flex-direction: column;
+          gap: 8px;
+          
+          .yumeko-username {
+            font-size: 22px;
+          }
+        }
+      }
+      
+      .yumeko-level-block {
+        width: 100%;
+        margin-top: 12px;
+        min-width: auto;
+        
+        .yumeko-level-header {
+          .yumeko-level-info {
+            .yumeko-level-number {
+              font-size: 22px;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  .yumeko-tabs {
+    flex-direction: column;
+    
+    .yumeko-tab {
+      width: 100%;
+    }
+  }
+}
+
+// ===== Content Styles =====
+.yumeko-tab-content {
+  background: rgba($steam-card, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid $border-color;
+  border-radius: 12px;
+  padding: 24px;
+  min-height: 400px;
+  
+  h2 {
+    margin: 0 0 20px 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: $text-primary;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .yumeko-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    min-height: 300px;
+    
+    svg {
+      color: $text-muted;
+      opacity: 0.5;
+    }
+    
+    p {
+      color: $text-muted;
+      font-size: 16px;
+      margin: 0;
+    }
+  }
+  
+  // Activity List
+  .yumeko-activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    
+    .yumeko-activity-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      background: rgba($discord-bg, 0.4);
+      border: 1px solid rgba($border-color, 0.3);
+      border-radius: 12px;
+      transition: all 0.2s;
+      
+      &:hover {
+        border-color: var(--primary-color);
+        box-shadow: 0 4px 12px var(--primary-bg-hover, rgba(255, 149, 0, 0.2));
+        background: var(--primary-bg, rgba(255, 149, 0, 0.05));
+        transform: translateY(-2px);
+        
+        .yumeko-activity-icon {
+          background: var(--primary-color);
+          
+          svg {
+            color: white;
+          }
+        }
+      }
+      
+      .yumeko-activity-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        background: rgba(var(--profile-color-2-rgb), 0.15);
+        border-radius: 8px;
+        flex-shrink: 0;
+        
+        svg {
+          color: var(--profile-color-2);
+        }
+      }
+      
+      .yumeko-activity-text {
+        flex: 1;
+        color: $text-primary;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.4;
+      }
+      
+      .yumeko-activity-time {
+        color: $text-muted;
+        font-size: 12px;
+        font-weight: 500;
+        white-space: nowrap;
+      }
+    }
+  }
+  
+  // Anime Grid
+  .yumeko-anime-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    justify-items: center;
+    
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 12px;
+    }
+    
+    @media (max-width: 480px) {
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+    }
+    
+    .yumeko-anime-card {
+      position: relative;
+      width: 100%;
+      max-width: 230px;
+      background: rgba($discord-card, 0.8);
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba($border-color, 0.5);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      
+      &:hover {
+        transform: translateY(-6px);
+        border-color: var(--primary-color);
+        box-shadow: 0 12px 32px var(--primary-bg-hover, rgba(255, 149, 0, 0.5));
+        background: var(--primary-bg, rgba(255, 149, 0, 0.08));
+        
+        .yumeko-anime-cover img {
+          transform: scale(1.08);
+        }
+      }
+      
+      .yumeko-anime-cover {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 5/5;
+        overflow: hidden;
+        background: $steam-darker;
+        border-radius: 20px 20px 0 0;
+        
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.4s ease;
+        }
+      }
+      
+      .yumeko-anime-details {
+        padding: 10px;
+        
+        .yumeko-anime-title {
+          margin: 0 0 5px 0;
+          font-size: 15px;
+          font-weight: 700;
+          color: $text-primary;
+          line-height: 1.4;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          line-clamp: 2;
+          -webkit-box-orient: vertical;
+          min-height: 42px;
+        }
+        
+        .yumeko-anime-meta-row {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 2px;
+          font-size: 13px;
+          font-weight: 600;
+          
+          .year {
+            color: var(--profile-color-1);
+          }
+          
+          .season {
+            color: $text-secondary;
+          }
+        }
+        
+        .yumeko-anime-voice {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 14px;
+          font-size: 13px;
+          
+          .voice-label {
+            color: $text-secondary;
+          }
+          
+          .voice-count {
+            color: var(--profile-color-2);
+            font-weight: 700;
+          }
+        }
+        
+        .yumeko-anime-actions {
+          display: flex;
+          gap: 8px;
+          
+          button {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            
+            &.yumeko-btn-list {
+              background: transparent;
+              border: 2px solid rgba(var(--profile-color-2-rgb), 0.4);
+              color: var(--profile-color-2);
+              
+              svg {
+                color: var(--profile-color-2);
+              }
+              
+              &:hover {
+                background: rgba(var(--profile-color-2-rgb), 0.1);
+                border-color: var(--profile-color-2);
+              }
+            }
+            
+            &.yumeko-btn-progress {
+              background: linear-gradient(
+                135deg,
+                var(--profile-color-1) 0%,
+                var(--profile-color-2) 100%
+              );
+              border: none;
+              color: white;
+              
+              &:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(var(--profile-color-2-rgb), 0.5);
+              }
+            }
+            
+            &.yumeko-btn-favorite {
+              background: linear-gradient(
+                135deg,
+                #ef4444 0%,
+                #dc2626 100%
+              );
+              border: none;
+              color: white;
+              
+              svg {
+                color: white;
+              }
+              
+              &:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(239, 68, 68, 0.5);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Favorites Grid (using GlobalAnimeCard)
+  .yumeko-favorites-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+    justify-items: center;
+    
+    @media (max-width: 1200px) {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+    }
+    
+    @media (max-width: 480px) {
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 10px;
+    }
+  }
+  
+  // Reviews List (with covers)
+  .yumeko-reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    
+    .yumeko-review-card {
+      display: flex;
+      gap: 20px;
+      padding: 20px;
+      background: rgba($discord-card, 0.8);
+      border-radius: 16px;
+      border: 1px solid rgba($border-color, 0.6);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
+      
+      &:hover {
+        border-color: var(--profile-color-2);
+        box-shadow: 0 8px 24px rgba(var(--profile-color-2-rgb), 0.25);
+        transform: translateY(-2px);
+        
+        .yumeko-review-cover-image {
+          transform: scale(1.05);
+        }
+      }
+      
+      .yumeko-review-cover {
+        flex-shrink: 0;
+        width: 80px;
+        height: 120px;
+        border-radius: 12px;
+        overflow: hidden;
+        background: rgba($steam-darker, 0.8);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        
+        .yumeko-review-cover-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.3s ease;
+        }
+      }
+      
+      .yumeko-review-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        
+        .yumeko-review-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          gap: 16px;
+          
+          h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+            color: $text-primary;
+            flex: 1;
+            line-height: 1.3;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+          }
+          
+          .yumeko-review-score {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background: rgba(var(--profile-color-2-rgb), 0.2);
+            border-radius: 12px;
+            border: 1px solid rgba(var(--profile-color-2-rgb), 0.4);
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--profile-color-2);
+            
+            svg {
+              color: var(--profile-color-2);
+            }
+          }
+        }
+        
+        .yumeko-review-text {
+          margin: 0;
+          color: $text-secondary;
+          font-size: 15px;
+          line-height: 1.6;
+          padding: 12px 16px;
+          background: rgba(255, 255, 255, 0.03);
+          border-radius: 10px;
+        }
+      }
+      
+      @media (max-width: 768px) {
+        flex-direction: column;
+        gap: 16px;
+        
+        .yumeko-review-cover {
+          align-self: center;
+        }
+        
+        .yumeko-review-header {
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          gap: 12px;
+          
+          h3 {
+            text-align: center;
+          }
+        }
+      }
+    }
+  }
+}
+
+// ===== Friends Modal =====
+.yumeko-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+.yumeko-modal-content {
+  background: linear-gradient(
+    135deg,
+    rgba($steam-card, 0.95) 0%,
+    var(--primary-bg, rgba(255, 149, 0, 0.02)) 100%
+  );
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--primary-color);
+  border-radius: 16px;
+  max-width: 900px;
+  width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  
+  // Модалка списка друзей из профиля
+  &.yumeko-friends-list-modal {
+    max-width: 1200px;
+    max-height: 90vh;
+    
+    @media (max-width: 1280px) {
+      max-width: 1000px;
+    }
+    
+    @media (max-width: 1024px) {
+      max-width: 900px;
+    }
+    
+    @media (max-width: 768px) {
+      max-width: 90%;
+    }
+  }
+  
+  &.yumeko-friends-modal {
+    flex-direction: row;
+    overflow: hidden;
+    max-width: 1400px;
+    height: 80vh;
+    max-height: 800px;
+    background: rgba($steam-card, 0.98);
+    
+    @media (max-width: 1440px) {
+      max-width: 1200px;
+    }
+    
+    @media (max-width: 1024px) {
+      max-width: 900px;
+      height: 75vh;
+    }
+    
+    @media (max-width: 768px) {
+      flex-direction: column;
+      max-width: 95%;
+      width: 95%;
+      height: auto;
+      max-height: 85vh;
+    }
+  }
+  
+  @media (max-width: 1440px) {
+    max-width: 1200px;
+  }
+  
+  @media (max-width: 1024px) {
+    max-width: 900px;
+  }
+  
+  @media (max-width: 768px) {
+    width: 95%;
+    max-height: 90vh;
+  }
+  
+  @media (max-width: 480px) {
+    width: 98%;
+    max-height: 95vh;
+    border-radius: 12px;
+    padding: 0;
+  }
+}
+
+.yumeko-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  
+  h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: $text-primary;
+  }
+  
+  .yumeko-modal-close {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba($text-primary, 0.05);
+    border: none;
+    border-radius: 8px;
+    color: $text-primary;
+    cursor: pointer;
+    transition: all 0.2s;
+    
+    &:hover {
+      background: rgba($text-primary, 0.1);
+    }
+  }
+}
+
+// Header для модалки друзей
+.yumeko-friends-content-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.yumeko-friends-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  background: var(--primary-bg, rgba(255, 149, 0, 0.12));
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--primary-color);
+  
+  h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: $text-primary;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  
+  .yumeko-modal-close {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba($text-primary, 0.08);
+    border: 1px solid rgba($border-color, 0.3);
+    border-radius: 8px;
+    color: $text-primary;
+    cursor: pointer;
+    transition: all 0.2s;
+    
+    &:hover {
+      background: var(--primary-bg-hover, rgba(255, 149, 0, 0.15));
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+    }
+  }
+}
+
+.yumeko-modal-body {
+  padding: 24px;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  
+  .yumeko-friends-modal & {
+    min-height: 500px;
+  }
+  
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba($border-color, 0.2);
+    border-radius: 10px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba($text-secondary, 0.3);
+    border-radius: 10px;
+    
+    &:hover {
+      background: rgba($text-secondary, 0.5);
+    }
+  }
+}
+
+.yumeko-friends-modal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+  
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.yumeko-friend-wrapper {
+  position: relative;
+}
+
+.yumeko-friend-delete-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(239, 68, 68, 0.9);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  opacity: 1;
+  
+  &:hover {
+    background: #ef4444;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.5);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.yumeko-friend-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.yumeko-friend-card-banner {
+    position: relative;
+    background: rgba($discord-bg, 0.8);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba($border-color, 0.5);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    
+    &:hover {
+      border-color: var(--friend-border-hover, var(--friend-primary-color, var(--primary-color)));
+      box-shadow: 0 4px 12px var(--friend-primary-bg-hover, var(--primary-bg-hover, rgba(255, 149, 0, 0.3)));
+      transform: translateY(-2px);
+      background: var(--friend-primary-bg-hover, var(--primary-bg, rgba(255, 149, 0, 0.05)));
+      
+      .yumeko-friend-banner-bg,
+      .yumeko-friend-banner-video {
+        transform: scale(1.05);
+      }
+      
+      .yumeko-friend-avatar {
+        transform: scale(1.05);
+        border-color: var(--friend-border-hover, var(--friend-primary-color, var(--primary-color)));
+      }
+      
+      .yumeko-friend-info-row {
+        background: var(--friend-primary-bg-hover, var(--primary-bg, rgba(255, 149, 0, 0.08)));
+        border-radius: 0 0 14px 14px;
+      }
+    }
+    
+    .yumeko-friend-banner {
+      position: relative;
+      width: 100%;
+      height: 100px;
+      overflow: hidden;
+      background: $discord-bg;
+      
+      .yumeko-friend-banner-bg {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          rgba(var(--profile-color-1-rgb), 0.4) 0%,
+          rgba(var(--profile-color-2-rgb), 0.4) 100%
+        );
+        background-size: cover;
+        background-position: center;
+        transition: transform 0.3s ease;
+      }
+      
+      .yumeko-friend-banner-video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+      }
+      
+      .yumeko-friend-banner-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          180deg,
+          transparent 0%,
+          transparent 50%,
+          rgba($discord-bg, 0.4) 100%
+        );
+        z-index: 1;
+      }
+    }
+    
+    .yumeko-friend-info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 12px;
+      margin-top: -20px;
+      position: relative;
+      z-index: 2;
+      gap: 8px;
+      transition: all 0.2s ease;
+      border-radius: 0 0 14px 14px;
+      
+      .yumeko-friend-name-section {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex: 1;
+        min-width: 0;
+        
+        .yumeko-friend-name {
+          font-size: 13px;
+          font-weight: 700;
+          color: $text-primary;
+          line-height: 1.3;
+          word-wrap: break-word;
+          word-break: break-word;
+          hyphens: auto;
+          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+          flex: 1;
+          min-width: 0;
+        }
+        
+        .verified-icon {
+          color: $steam-blue;
+          flex-shrink: 0;
+          margin-bottom: 1px;
+          filter: drop-shadow(0 2px 4px rgba(102, 192, 244, 0.5));
+        }
+      }
+      
+      .yumeko-friend-avatar-circle {
+        flex-shrink: 0;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        position: relative;
+        
+        .yumeko-friend-avatar {
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          object-fit: cover;
+          display: block;
+          transition: all 0.3s ease;
+          border: 3px solid var(--friend-primary-color, rgba(255, 255, 255, 0.2));
+          box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+          
+          // Если это video элемент
+          &[src] {
+            position: absolute;
+            top: 0;
+            left: 0;
+          }
+        }
+      }
+    }
+  }
+
+// Скелетон для карточек друзей
+.yumeko-friend-skeleton {
+  position: relative;
+  background: rgba($discord-bg, 0.8);
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba($border-color, 0.5);
+}
+
+.yumeko-friend-skeleton-banner {
+  width: 100%;
+  height: 100px;
+  background: rgba(255, 255, 255, 0.07);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.yumeko-friend-skeleton-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  margin-top: -41px;
+  position: relative;
+  z-index: 2;
+  gap: 8px;
+}
+
+.yumeko-friend-skeleton-text {
+  height: 14px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.07);
+  animation: pulse 2s ease-in-out infinite;
+  
+  &.short {
+    width: 80px;
+  }
+  
+  &.long {
+    width: 140px;
+  }
+}
+
+.yumeko-friend-skeleton-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.07);
+  animation: pulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+// Скелетон для запросов в друзья
+.yumeko-request-skeleton {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: rgba($discord-bg, 0.4);
+  border: 1px solid rgba($border-color, 0.3);
+  border-radius: 16px;
+}
+
+.yumeko-request-skeleton-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.07);
+  animation: pulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.yumeko-request-skeleton-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.yumeko-request-skeleton-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.yumeko-request-skeleton-btn {
+  width: 80px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.07);
+  animation: pulse 2s ease-in-out infinite;
+  
+  &.wide {
+    width: 100px;
+  }
+}
+
+.yumeko-modal-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 60px 20px;
+  
+  svg {
+    color: $text-muted;
+    opacity: 0.5;
+  }
+  
+  p {
+    margin: 0;
+    color: $text-muted;
+    font-size: 16px;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+// ===== Anime Detail Modal =====
+.yumeko-anime-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(12px);
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+.yumeko-anime-modal-content {
+  position: relative;
+  background: $steam-card;
+  border: 1px solid $border-color;
+  border-radius: 20px;
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+  animation: slideUp 0.3s ease;
+  
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: var(--profile-color-2);
+    border-radius: 4px;
+  }
+}
+
+.yumeko-anime-modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  border: none;
+  border-radius: 50%;
+  color: $text-primary;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.2s;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(90deg);
+  }
+}
+
+.yumeko-anime-modal-header {
+  display: flex;
+  gap: 24px;
+  padding: 32px;
+  background: linear-gradient(
+    135deg,
+    rgba(var(--profile-color-1-rgb), 0.15) 0%,
+    rgba(var(--profile-color-2-rgb), 0.15) 100%
+  );
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .yumeko-anime-modal-cover {
+    flex-shrink: 0;
+    width: 200px;
+    border-radius: 16px;
+    overflow: hidden;
+    
+    img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+  }
+  
+  .yumeko-anime-modal-info {
+    flex: 1;
+    
+    h2 {
+      margin: 0 0 16px 0;
+      font-size: 28px;
+      font-weight: 700;
+      color: $text-primary;
+      line-height: 1.3;
+    }
+    
+    .yumeko-anime-modal-meta {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+      
+      span {
+        padding: 6px 14px;
+        background: rgba($discord-bg, 0.6);
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        
+        &.year {
+          color: var(--profile-color-1);
+        }
+        
+        &.season {
+          color: $text-secondary;
+        }
+      }
+    }
+    
+    .yumeko-anime-voices {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 24px;
+      
+      .yumeko-voice-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 12px;
+        background: rgba($discord-bg, 0.4);
+        border-radius: 8px;
+        font-size: 14px;
+        
+        .voice-name {
+          color: $text-secondary;
+        }
+        
+        .voice-count {
+          color: var(--profile-color-2);
+          font-weight: 600;
+        }
+      }
+    }
+    
+    .yumeko-anime-actions {
+      display: flex;
+      gap: 12px;
+      
+      button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        
+        &.yumeko-btn-primary {
+          background: linear-gradient(
+            135deg,
+            var(--profile-color-1) 0%,
+            var(--profile-color-2) 100%
+          );
+          border: none;
+          color: white;
+          
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(var(--profile-color-2-rgb), 0.5);
+          }
+        }
+        
+        &.yumeko-btn-secondary {
+          background: rgba($discord-bg, 0.6);
+          border: 1px solid $border-color;
+          color: var(--profile-color-2);
+          
+          &:hover {
+            background: rgba(var(--profile-color-2-rgb), 0.1);
+          }
+        }
+      }
+    }
+  }
+}
+
+.yumeko-anime-modal-body {
+  padding: 32px;
+  
+  h3 {
+    margin: 0 0 20px 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: $text-primary;
+  }
+  
+  .yumeko-progress-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    
+    .yumeko-progress-item {
+      padding: 16px;
+      background: rgba($discord-bg, 0.5);
+      border-radius: 12px;
+      border: 1px solid $border-color;
+      
+      .progress-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        font-size: 14px;
+        font-weight: 600;
+        color: $text-primary;
+        
+        .progress-voice {
+          color: $text-secondary;
+          font-size: 13px;
+        }
+      }
+      
+      .progress-bar-wrapper {
+        height: 6px;
+        background: rgba(0, 0, 0, 0.4);
+        border-radius: 3px;
+        overflow: hidden;
+        margin-bottom: 8px;
+        
+        .progress-bar-fill {
+          height: 100%;
+          background: linear-gradient(
+            90deg,
+            var(--profile-color-1) 0%,
+            var(--profile-color-2) 100%
+          );
+          transition: width 0.3s ease;
+        }
+      }
+      
+      .progress-info {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        
+        .progress-status {
+          color: var(--profile-color-2);
+          font-weight: 600;
+        }
+        
+        .progress-time {
+          color: $text-muted;
+        }
+      }
+    }
+  }
+}
+
+// Yumeko Anime Detail Modal Styles
+.yumeko-anime-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 20px;
+    animation: fadeIn 0.2s ease;
+}
+
+.yumeko-anime-modal-content {
+    background: linear-gradient(135deg, #1a2332 0%, #0f1419 100%);
+    border-radius: 12px;
+    max-width: 1200px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    &::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 4px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+        
+        &:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    }
+}
+
+.yumeko-anime-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #fff;
+    transition: all 0.2s;
+    z-index: 10;
+    
+    &:hover {
+        background: rgba(255, 0, 0, 0.2);
+        border-color: rgba(255, 0, 0, 0.3);
+        transform: scale(1.05);
+    }
+}
+
+.yumeko-anime-modal-header {
+    display: flex;
+    gap: 24px;
+    padding: 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.yumeko-anime-modal-cover {
+    flex-shrink: 0;
+    
+    img {
+        width: 180px;
+        height: 270px;
+        object-fit: cover;
+        border-radius: 8px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+}
+
+.yumeko-anime-modal-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    
+    h2 {
+        font-size: 24px;
+        font-weight: 700;
+        color: #fff;
+        margin: 0;
+        line-height: 1.3;
+    }
+}
+
+.yumeko-anime-modal-meta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    
+    .year, .season, .episodes-badge {
+        padding: 6px 12px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.8);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .episodes-badge {
+        background: rgba(168, 85, 247, 0.2);
+        border: 1px solid rgba(168, 85, 247, 0.3);
+        color: #a855f7;
+        font-weight: 600;
+    }
+}
+
+.yumeko-anime-description {
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 3px solid #a855f7;
+    border-radius: 6px;
+    
+    p {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.6;
+        color: rgba(255, 255, 255, 0.7);
+    }
+}
+
+.yumeko-anime-stats {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    
+    .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.8);
+        
+        svg {
+            color: #a855f7;
+        }
+    }
+}
+
+.yumeko-anime-voices {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    
+    h4 {
+        font-size: 14px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+        margin: 0;
+    }
+    
+    .voices-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 8px;
+    }
+}
+
+.yumeko-voice-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    font-size: 13px;
+    transition: all 0.2s;
+    
+    &:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(168, 85, 247, 0.3);
+    }
+    
+    .voice-name {
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 500;
+    }
+    
+    .voice-count {
+        color: #a855f7;
+        font-weight: 600;
+        font-size: 12px;
+    }
+}
+
+.yumeko-anime-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: auto;
+}
+
+.yumeko-btn-watch {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 100%);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    flex: 1;
+    
+    &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(168, 85, 247, 0.35);
+        background: linear-gradient(135deg, #b366ff 0%, #9c6dff 100%);
+        color: #fff !important;
+    }
+    
+    &:active {
+        transform: translateY(0);
+        transition: all 0.1s ease;
+    }
+}
+
+.yumeko-progress-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    
+    svg {
+        color: #22c55e;
+    }
+}
+
+.yumeko-anime-modal-body {
+    padding: 24px;
+    
+    h3 {
+        font-size: 20px;
+        font-weight: 700;
+        color: #fff;
+        margin: 0 0 20px 0;
+    }
+}
+
+.yumeko-progress-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 60px 20px;
+    color: rgba(255, 255, 255, 0.6);
+    
+    .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(255, 255, 255, 0.1);
+        border-top-color: #a855f7;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+}
+
+.yumeko-progress-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 60px 20px;
+    color: rgba(255, 255, 255, 0.4);
+    
+    span {
+        font-size: 16px;
+    }
+}
+
+.yumeko-progress-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.yumeko-progress-episode {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 16px;
+    transition: all 0.2s;
+    
+    &:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.12);
+    }
+}
+
+.yumeko-progress-episode-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    
+    .episode-number {
+        font-size: 16px;
+        font-weight: 700;
+        color: #fff;
+    }
+    
+    .episode-count {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.5);
+    }
+}
+
+.yumeko-progress-voices {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.yumeko-progress-voice {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 12px;
+    transition: all 0.2s;
+    
+    &.completed {
+        border-color: rgba(34, 197, 94, 0.3);
+        background: rgba(34, 197, 94, 0.05);
+    }
+    
+    &:hover {
+        background: rgba(255, 255, 255, 0.08);
+    }
+}
+
+.voice-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.voice-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    
+    .voice-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #fff;
+    }
+    
+    .voice-source {
+        font-size: 11px;
+        padding: 2px 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        color: rgba(255, 255, 255, 0.6);
+        text-transform: uppercase;
+    }
+}
+
+.completed-badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    background: rgba(34, 197, 94, 0.2);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #22c55e;
+}
+
+.voice-progress {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+    
+    .progress-bar {
+        flex: 1;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 3px;
+        overflow: hidden;
+    }
+    
+    .progress-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #a855f7 0%, #8b5cf6 100%);
+        border-radius: 3px;
+        transition: width 0.3s ease;
+    }
+    
+    .progress-time {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.6);
+        white-space: nowrap;
+    }
+}
+
+.voice-date {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+// Responsive
+@media (max-width: 768px) {
+    .yumeko-anime-modal-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .yumeko-anime-modal-cover img {
+        width: 150px;
+        height: 225px;
+    }
+    
+    .yumeko-anime-actions {
+        flex-direction: column;
+        width: 100%;
+        
+        button {
+            width: 100%;
+        }
+    }
+}
+
+// Anime Card Voice Styles
+.yumeko-anime-voices-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.yumeko-anime-voice {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 13px;
+    
+    .voice-label {
+        color: rgba(255, 255, 255, 0.7);
+        font-weight: 500;
+    }
+    
+    .voice-count {
+        color: #a855f7;
+        font-weight: 600;
+    }
+}
+
+.yumeko-anime-more-voices {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 500;
+    margin-top: 2px;
+    font-style: italic;
+}
+
+// Anime Card Layout
+.yumeko-anime-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    
+    &:hover {
+        transform: translateY(-4px);
+    }
+}
+
+.yumeko-anime-cover {
+    flex-shrink: 0;
+}
+
+.yumeko-anime-details {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin-top: auto;
+    padding-top: 12px;
+}
+
+.yumeko-anime-title {
+    margin-bottom: 8px;
+}
+
+.yumeko-anime-meta-row {
+    margin-bottom: 8px;
+}
+
+.yumeko-anime-actions {
+    margin-top: auto;
+    padding-top: 12px;
+}
+
+// ===== Skeleton Loader =====
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.yumeko-skeleton-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  
+  // Grid mode для модального окна
+  &.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+  }
+}
+
+.yumeko-skeleton-friend-card {
+  background: rgba($discord-bg, 0.8);
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba($border-color, 0.5);
+}
+
+.yumeko-skeleton-banner {
+  width: 100%;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.05);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.yumeko-skeleton-friend-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  gap: 8px;
+  margin-top: -41px;
+  position: relative;
+  z-index: 2;
+}
+
+.yumeko-skeleton-text {
+  height: 14px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.07);
+  animation: pulse 2s ease-in-out infinite;
+  
+  &.short {
+    width: 80px;
+  }
+  
+  &.medium {
+    width: 120px;
+  }
+  
+  &.long {
+    width: 200px;
+  }
+}
+
+.yumeko-skeleton-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.07);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+// Skeleton для активности
+.yumeko-skeleton-activity {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.yumeko-skeleton-activity-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: rgba($discord-bg, 0.4);
+  border: 1px solid rgba($border-color, 0.3);
+  border-radius: 12px;
+  transition: all 0.2s;
+  cursor: pointer;
+  
+  &:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 12px var(--primary-bg-hover, rgba(255, 149, 0, 0.2));
+    background: var(--primary-bg, rgba(255, 149, 0, 0.05));
+    transform: translateY(-2px);
+  }
+}
+
+.yumeko-skeleton-avatar-small {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.07);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.yumeko-skeleton-activity-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  
+  .yumeko-skeleton-text {
+    &.medium {
+      width: 60%;
+    }
+  }
+}
+
+.yumeko-skeleton-activity-time {
+  width: 60px;
+  height: 14px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  animation: pulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+// Skeleton для истории
+.yumeko-skeleton-history {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+}
+
+.yumeko-skeleton-episode {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.yumeko-skeleton-progress-bar {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.07);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+// Skeleton для хедера профиля
+.yumeko-skeleton-profile-header {
+  position: relative;
+  width: 100%;
+  margin-bottom: 40px;
+  
+  @media (max-width: 768px) {
+    margin-bottom: 30px;
+  }
+}
+
+.yumeko-skeleton-header-banner {
+  width: 100%;
+  height: 200px;
+  background: rgba(255, 255, 255, 0.05);
+  animation: pulse 2s ease-in-out infinite;
+  
+  @media (max-width: 768px) {
+    height: 150px;
+  }
+}
+
+.yumeko-skeleton-header-content {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+  padding: 0 40px;
+  margin-top: -60px;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    padding: 0 20px;
+    margin-top: -50px;
+  }
+}
+
+.yumeko-skeleton-header-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.07);
+  border: 6px solid $steam-card;
+  flex-shrink: 0;
+  animation: pulse 2s ease-in-out infinite;
+  
+  @media (max-width: 768px) {
+    width: 100px;
+    height: 100px;
+    border-width: 4px;
+  }
+}
+
+.yumeko-skeleton-header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 20px;
+  flex: 1;
+  
+  @media (max-width: 768px) {
+    align-items: center;
+    padding-bottom: 0;
+    margin-top: 12px;
+  }
+  
+  .yumeko-skeleton-text {
+    &.medium {
+      width: 180px;
+      height: 24px;
+    }
+    
+    &.long {
+      width: 320px;
+      height: 16px;
+    }
+    
+    @media (max-width: 768px) {
+      &.medium {
+        width: 140px;
+      }
+      
+      &.long {
+        width: 250px;
+      }
+    }
+  }
+}
+
+// Skeleton для табов
+.yumeko-skeleton-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  padding: 4px;
+  background: rgba($discord-bg, 0.6);
+  border: 1px solid $border-color;
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  
+  @media (max-width: 768px) {
+    gap: 6px;
+  }
+}
+
+.yumeko-skeleton-tab {
+  flex: 1;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.07);
+  animation: pulse 2s ease-in-out infinite;
+  min-width: 0;
+  
+  @media (max-width: 768px) {
+    height: 40px;
+  }
+  
+  // Первый таб - активный
+  &:first-child {
+    background: linear-gradient(135deg, rgba(var(--profile-color-1-rgb, 102, 192, 244), 0.2), rgba(var(--profile-color-2-rgb, 255, 149, 0), 0.2));
+    border: 1px solid rgba(var(--profile-color-2-rgb, 255, 149, 0), 0.3);
+  }
+}
+
+// Skeleton для статистики
+.yumeko-skeleton-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+  padding: 20px;
+}
+
+.yumeko-skeleton-stats-chart {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.07);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.yumeko-skeleton-stats-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.yumeko-skeleton-stat-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba($discord-bg, 0.3);
+  border-radius: 12px;
+  transition: all 0.2s;
+}
+
+.yumeko-skeleton-stat-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.yumeko-skeleton-stat-value {
+  width: 30px;
+  height: 14px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.07);
+  animation: pulse 2s ease-in-out infinite;
+  margin-left: auto;
+}
+
+// Табы для модалки друзей
+.yumeko-friends-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+  min-width: 200px;
+  border-right: 1px solid rgba($border-color, 0.3);
+  
+  @media (max-width: 768px) {
+    flex-direction: row;
+    min-width: auto;
+    border-right: none;
+    border-bottom: 1px solid rgba($border-color, 0.3);
+    padding: 12px;
+    overflow-x: auto;
+    gap: 4px;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 8px;
+    gap: 4px;
+  }
+}
+
+.yumeko-friends-tab {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  color: $text-secondary;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  justify-content: flex-start;
+  width: 100%;
+  
+  svg {
+    opacity: 0.7;
+    flex-shrink: 0;
+  }
+  
+  span:not(.count) {
+    flex: 1;
+  }
+  
+  .count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 8px;
+    background: rgba($text-secondary, 0.15);
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-left: auto;
+  }
+  
+  &:hover {
+    background: var(--primary-bg, rgba(255, 149, 0, 0.05));
+    color: $text-primary;
+    
+    svg {
+      opacity: 1;
+      color: var(--primary-color);
+    }
+  }
+  
+  &.active {
+    background: var(--primary-bg-hover, rgba(255, 149, 0, 0.18));
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    box-shadow: 0 2px 8px var(--primary-bg-hover, rgba(255, 149, 0, 0.15));
+    font-weight: 600;
+    
+    svg {
+      opacity: 1;
+      color: var(--primary-color);
+    }
+    
+    .count {
+      background: var(--primary-bg-hover, rgba(255, 149, 0, 0.25));
+      color: var(--primary-color);
+      font-weight: 700;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    padding: 10px 12px;
+    font-size: 13px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 8px 10px;
+    font-size: 12px;
+    
+    span:not(.count) {
+      display: none;
+    }
+  }
+}
+
+// Список запросов
+.yumeko-requests-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+}
+
+.yumeko-request-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: rgba($discord-bg, 0.4);
+  border: 1px solid rgba($border-color, 0.3);
+  border-radius: 16px;
+  transition: all 0.2s;
+  
+  &:hover {
+    border-color: rgba(var(--profile-color-2-rgb, 255, 149, 0), 0.3);
+    background: rgba($discord-bg, 0.6);
+  }
+}
+
+.yumeko-request-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+  flex: 1;
+  min-width: 0;
+}
+
+.yumeko-request-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid $border-color;
+}
+
+.yumeko-request-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.yumeko-request-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: $text-primary;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.yumeko-request-username {
+  font-size: 13px;
+  color: $text-secondary;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.yumeko-request-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+  
+  @media (max-width: 480px) {
+    flex-direction: column;
+  }
+}
+
+.yumeko-btn-accept,
+.yumeko-btn-reject,
+.yumeko-btn-cancel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+.yumeko-btn-accept {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  
+  &:hover {
+    background: rgba(34, 197, 94, 0.25);
+    border-color: #22c55e;
+    transform: translateY(-1px);
+  }
+}
+
+.yumeko-btn-reject {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  
+  &:hover {
+    background: rgba(239, 68, 68, 0.25);
+    border-color: #ef4444;
+    transform: translateY(-1px);
+  }
+}
+
+.yumeko-btn-cancel {
+  background: rgba($text-secondary, 0.1);
+  color: $text-secondary;
+  border: 1px solid rgba($border-color, 0.5);
+  
+  &:hover {
+    background: rgba($text-secondary, 0.2);
+    color: $text-primary;
+    border-color: $border-color;
+    transform: translateY(-1px);
+  }
+}
+
+// Модальное окно подтверждения удаления
+.yumeko-confirm-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+.yumeko-confirm-modal {
+  background: $steam-card;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 16px;
+  max-width: 450px;
+  width: 100%;
+  padding: 32px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  animation: slideUp 0.3s ease;
+  text-align: center;
+}
+
+.yumeko-confirm-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  
+  .yumeko-confirm-icon {
+    color: #ef4444;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  
+  h3 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: $text-primary;
+  }
+}
+
+.yumeko-confirm-text {
+  margin: 0 0 24px 0;
+  font-size: 15px;
+  color: $text-secondary;
+  line-height: 1.6;
+  
+  strong {
+    color: $text-primary;
+    font-weight: 600;
+  }
+}
+
+.yumeko-confirm-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  padding: 12px 16px;
+  background: rgba($discord-bg, 0.5);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  &:hover {
+    background: rgba($discord-bg, 0.7);
+  }
+  
+  input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #ef4444;
+  }
+  
+  span {
+    font-size: 14px;
+    color: $text-primary;
+    user-select: none;
+  }
+}
+
+.yumeko-confirm-actions {
+  display: flex;
+  gap: 12px;
+  
+  button {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.yumeko-confirm-btn-cancel {
+  background: rgba($text-secondary, 0.1);
+  color: $text-secondary;
+  border: 1px solid rgba($border-color, 0.5);
+  
+  &:hover:not(:disabled) {
+    background: rgba($text-secondary, 0.2);
+    color: $text-primary;
+  }
+}
+
+.yumeko-confirm-btn-delete {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+}
+
+// Блок требования авторизации
+.yumeko-auth-required {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 40px;
+  gap: 24px;
+  text-align: center;
+  min-height: 400px;
+  
+  .yumeko-auth-icon {
+    color: var(--primary-color);
+    opacity: 0.8;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  
+  h3 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: $text-primary;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  p {
+    margin: 0;
+    font-size: 16px;
+    color: $text-secondary;
+    max-width: 500px;
+    line-height: 1.6;
+  }
+}
+
+.yumeko-auth-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 32px;
+  margin-top: 12px;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 16px rgba(var(--primary-color-rgb, 255, 149, 0), 0.3);
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(var(--primary-color-rgb, 255, 149, 0), 0.4);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+// Profile Not Found
+.yumeko-profile-not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 24px;
+  padding: 60px 20px;
+  text-align: center;
+  
+  .not-found-icon {
+    font-size: 80px;
+    opacity: 0.6;
+  }
+  
+  h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: $text-primary;
+    margin: 0;
+  }
+  
+  p {
+    font-size: 18px;
+    color: $text-secondary;
+    margin: 0;
+  }
+}

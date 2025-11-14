@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { API_SERVER } from '@/hosts/constants';
+import ProfileLoadingTransition from '../../component/profile-page-old/ProfileLoadingTransition';
 
 export default function Page() {
     const router = useRouter();
@@ -40,5 +41,5 @@ export default function Page() {
             });
     }, [router]);
 
-    return <div>Загрузка...</div>;
+    return <ProfileLoadingTransition />;
 }

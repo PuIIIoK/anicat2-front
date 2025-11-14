@@ -87,6 +87,10 @@ body {
   overflow-x: visible; // ✅ Разрешаем показ hover карточек по горизонтали
   overflow-y: auto; // Разрешаем вертикальную прокрутку для hover карточек
   margin-top: 93px;
+  
+  @media (max-width: 768px) {
+    margin-top: 56px; // Уменьшенный отступ для мобильных
+  }
   font-family: 'Rubik', sans-serif; // основной читаемый шрифт
   background-color: var(--bg-primary); // Используем переменную для фона
   color: var(--text-primary); // Используем переменную для текста

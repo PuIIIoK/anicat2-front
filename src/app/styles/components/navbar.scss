@@ -3,7 +3,7 @@
 	display: flex;
     margin-top: 80px;
 	flex-direction: column;
-	height: 100vh;
+	height: 105vh;
 	color: #ffffff;
 	overflow: hidden;
 	
@@ -394,7 +394,7 @@
   .mobile-category-navbar {
     position: relative;
     padding: 0 16px 0;
-    top: -2rem;
+    top: -1rem;
   }
 
   .logo,
@@ -464,6 +464,34 @@
   }
 }
 
+// Адаптация для маленьких экранов (до 365px)
+@media (max-width: 365px) {
+  .search-bar-anime {
+    width: 240px !important;
+  }
+}
+
+// Адаптация для средних мобильных (365px - 434px)
+@media (min-width: 365px) and (max-width: 434px) {
+  .search-bar-anime {
+    width: 280px !important;
+  }
+}
+
+// Адаптация для больших мобильных (435px - 480px)
+@media (min-width: 435px) and (max-width: 480px) {
+  .search-bar-anime {
+    width: 320px !important;
+  }
+}
+
+// Адаптация для планшетов (481px - 768px)
+@media (min-width: 481px) and (max-width: 768px) {
+  .search-bar-anime {
+    width: 380px !important;
+  }
+}
+
 /* ===========================
    🔄 Мобильная / Десктоп версия
    =========================== */
@@ -472,7 +500,7 @@
 }
 .desktop-only {
   display: block;
-  margin-bottom: 5rem;
+  margin-bottom: 1rem;
 }
 
 @media (max-width: 768px) {
