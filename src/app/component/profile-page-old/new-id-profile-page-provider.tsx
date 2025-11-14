@@ -36,11 +36,7 @@ type CachedProfileData = {
     backgroundAnimatedUrl?: string | null;
 };
 
-declare global {
-    interface Window {
-        __profileCache?: Map<string, { data: CachedProfileData }>;
-    }
-}
+// Window.__profileCache уже определен в src/types/window.d.ts
 
 interface ProfileMainInfoProps {
     username?: string;

@@ -40,7 +40,7 @@
 @import "./components/navbar";
 @import "./components/bottom-navbar";
 @import "./components/admin-users";
-@import "./components/custom-titile-bar";
+@import "./components/titlebar";
 @import "./components/branches";
 @import "./components/test-access";
 @import "./components/category-loading";
@@ -72,11 +72,11 @@ $enable-animations: true; // 👈 можно переключать из JS че
 
 body.electron {
   header {
-    margin-top: 32px; // сдвигаем вниз
+    margin-top: 40px; // сдвигаем вниз на высоту titlebar
   }
 
   .main {
-    padding-top: 32px; // тоже можно
+    padding-top: 40px; // соответствует высоте titlebar
   }
 }
 
