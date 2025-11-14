@@ -175,6 +175,7 @@ const YumekoProfileContent: React.FC<YumekoProfileContentProps> = ({ profileData
                                                 </div>
                                                 {topVoices.length > 0 && (
                                                     <div className="yumeko-anime-voices-list">
+                                                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                                                         {topVoices.map(([voice, count]: [string, any]) => (
                                                             <div key={voice} className="yumeko-anime-voice">
                                                                 <span className="voice-label">{voice}:</span>
