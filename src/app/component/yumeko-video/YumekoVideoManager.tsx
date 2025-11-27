@@ -1145,7 +1145,7 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                     ) : viewMode === 'queue' ? (
                         /* Секция очереди загрузки */
                         <div className="queue-section">
-                            <UploadQueueViewer animeId={animeId} />
+                            <UploadQueueViewer animeId={animeId} serverUrl={SERVER_URL2} />
                         </div>
                     ) : (
                         /* Секция эпизодов - просмотр озвучки */

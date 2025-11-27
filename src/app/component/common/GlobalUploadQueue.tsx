@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { Users, X } from 'lucide-react';
-import { useServerUrl } from '@/app/context/RegionalServerContext';
 import { SERVER_URL2 } from '@/hosts/constants';
 import UploadQueueViewer from '../yumeko-video/UploadQueueViewer';
 import './global-upload-queue.scss';
@@ -19,13 +18,8 @@ interface Props {
 const GlobalUploadQueue: React.FC<Props> = ({ isOpen, onClose }) => {
     const [queueStats, setQueueStats] = useState<{ totalActive: number } | null>(null);
     
-    // Используем fallback если контекст недоступен
-    let serverUrl: string;
-    try {
-        serverUrl = useServerUrl();
-    } catch {
-        serverUrl = SERVER_URL2;
-    }
+    // Используем SERVER_URL2 для избежания проблем с контекстом
+    const serverUrl = SERVER_URL2;
 
     useEffect(() => {
         if (!isOpen) return;
@@ -68,7 +62,7 @@ const GlobalUploadQueue: React.FC<Props> = ({ isOpen, onClose }) => {
                 </div>
 
                 <div className="global-queue-content">
-                    <UploadQueueViewer />
+                    <UploadQueueViewer serverUrl={serverUrl} />
                 </div>
             </div>
         </div>

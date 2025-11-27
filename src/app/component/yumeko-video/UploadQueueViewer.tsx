@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { Clock, Upload, Cog, CheckCircle, AlertCircle, FileVideo, Users } from 'lucide-react';
-import { useServerUrl } from '@/app/context/RegionalServerContext';
 import { SERVER_URL2 } from '@/hosts/constants';
 import './upload-queue.scss';
 
@@ -30,20 +29,16 @@ interface QueueStats {
 interface Props {
     animeId?: number; // Если передано, показывать только для этого аниме
     compact?: boolean; // Компактный режим
+    serverUrl?: string; // Опциональный серверный URL
 }
 
-const UploadQueueViewer: React.FC<Props> = ({ animeId, compact = false }) => {
+const UploadQueueViewer: React.FC<Props> = ({ animeId, compact = false, serverUrl: propServerUrl }) => {
     const [queue, setQueue] = useState<UploadQueueItem[]>([]);
     const [stats, setStats] = useState<QueueStats | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     
-    // Используем fallback если контекст недоступен
-    let serverUrl: string;
-    try {
-        serverUrl = useServerUrl();
-    } catch {
-        serverUrl = SERVER_URL2;
-    }
+    // Используем пропс или SERVER_URL2 (убираем зависимость от контекста для безопасности)
+    const serverUrl = propServerUrl || SERVER_URL2;
 
     const fetchQueue = async () => {
         try {
