@@ -6,13 +6,13 @@ import BottomNavBar from '@/component/mobile-navigation/BottomNavBar';
 import '@/styles/index.scss';
 import dynamic from 'next/dynamic';
 import BanChecker from '@/component/BanChecker';
-import SyncProgressNotification from '@/component/sync/SyncProgressNotification';
-import { API_SERVER } from '@/hosts/constants';
+import RegionalSyncProgressNotification from '@/component/sync/RegionalSyncProgressNotification';
 import { ThemeProvider } from '../context/ThemeContext';
 import NotificationManager, { NotificationProvider } from '@/component/notifications/NotificationManager';
 import { cleanupOldPlayerStates } from '@/utils/player/playerState';
 import { YumekoUploadProvider } from '../context/YumekoUploadContext';
 import YumekoUploadNotification from '@/component/yumeko-video/YumekoUploadNotification';
+import { RegionalServerProvider } from '../context/RegionalServerContext';
 
 const CustomTitleBar = dynamic(() => import('@/component/layout').then(m => m.CustomTitleBar), { ssr: false });
 const DiscordStatusTracker = dynamic(() => import('@/component/layout').then(m => m.DiscordStatusTracker), { ssr: false });
@@ -50,9 +50,10 @@ const RootLayout: React.FC<LayoutProps> = ({ children }) => {
         </head>
         <body>
             <ThemeProvider>
-                <NotificationProvider>
-                    <YumekoUploadProvider>
-                        <BanChecker>
+                <RegionalServerProvider>
+                    <NotificationProvider>
+                        <YumekoUploadProvider>
+                            <BanChecker>
                             <CustomTitleBar />
                             <DiscordStatusTracker />
 
@@ -64,12 +65,13 @@ const RootLayout: React.FC<LayoutProps> = ({ children }) => {
                             <Footer />
                             
                             {/* Глобальные компоненты */}
-                            <SyncProgressNotification apiServer={API_SERVER} />
+                            <RegionalSyncProgressNotification />
                             <YumekoUploadNotification />
                             <NotificationManager />
-                        </BanChecker>
-                    </YumekoUploadProvider>
-                </NotificationProvider>
+                            </BanChecker>
+                        </YumekoUploadProvider>
+                    </NotificationProvider>
+                </RegionalServerProvider>
             </ThemeProvider>
         </body>
         </html>

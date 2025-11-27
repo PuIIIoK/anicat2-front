@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { X, Plus, Upload, Trash2, CheckCircle, Clock, AlertCircle, Film, Mic, XCircle, RefreshCw, Edit2, Check } from 'lucide-react';
-import { API_SERVER, SERVER_URL2 } from '@/hosts/constants';
+import { SERVER_URL2 } from '@/hosts/constants';
 import { useYumekoUpload } from '../../context/YumekoUploadContext';
 import './yumeko-video.scss';
 
@@ -173,7 +173,7 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
     const loadVoices = async () => {
         try {
             const token = getTokenFromCookie();
-            const res = await fetch(`${API_SERVER}/api/admin/yumeko/anime/${animeId}/voices`, {
+            const res = await fetch(`${SERVER_URL2}/api/admin/yumeko/anime/${animeId}/voices`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -189,7 +189,7 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
     const loadEpisodes = async (voiceId: number) => {
         try {
             const token = getTokenFromCookie();
-            const res = await fetch(`${API_SERVER}/api/admin/yumeko/voices/${voiceId}/episodes`, {
+            const res = await fetch(`${SERVER_URL2}/api/admin/yumeko/voices/${voiceId}/episodes`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -213,7 +213,7 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                             status: 'converting',
                             step: 'Конвертация в очереди...',
                             screenshotUrl: episode.screenshotPath 
-                                ? `${API_SERVER}/api/video/screenshot/${episode.screenshotPath}` 
+                                ? `${SERVER_URL2}/api/video/screenshot/${episode.screenshotPath}` 
                                 : undefined,
                             duration: episode.durationSeconds
                         });
@@ -278,7 +278,7 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
         
         try {
             const token = getTokenFromCookie();
-            const res = await fetch(`${API_SERVER}/api/admin/yumeko/anime/${animeId}/voices`, {
+            const res = await fetch(`${SERVER_URL2}/api/admin/yumeko/anime/${animeId}/voices`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -311,7 +311,7 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
         
         try {
             const token = getTokenFromCookie();
-            await fetch(`${API_SERVER}/api/admin/yumeko/voices/${voiceId}`, {
+            await fetch(`${SERVER_URL2}/api/admin/yumeko/voices/${voiceId}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -353,7 +353,7 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
 
         try {
             const token = getTokenFromCookie();
-            const res = await fetch(`${API_SERVER}/api/admin/yumeko/voices/${editingVoiceId}`, {
+            const res = await fetch(`${SERVER_URL2}/api/admin/yumeko/voices/${editingVoiceId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -410,7 +410,7 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
         // Отправляем запрос на начало конвертации
         try {
             const token = getTokenFromCookie();
-            await fetch(`${API_SERVER}/api/admin/yumeko/episodes/${task.episodeId}/start-conversion`, {
+            await fetch(`${SERVER_URL2}/api/admin/yumeko/episodes/${task.episodeId}/start-conversion`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -429,7 +429,7 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
         
         const checkStatus = async () => {
             try {
-                const res = await fetch(`${API_SERVER}/api/admin/yumeko/episodes/${episodeId}/status`, {
+                const res = await fetch(`${SERVER_URL2}/api/admin/yumeko/episodes/${episodeId}/status`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 
@@ -468,7 +468,7 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                             progress: 18,
                             status: 'uploading',
                             screenshotUrl: episode.screenshotPath 
-                                ? `${API_SERVER}/api/video/screenshot/${episode.screenshotPath}` 
+                                ? `${SERVER_URL2}/api/video/screenshot/${episode.screenshotPath}` 
                                 : undefined
                         });
                         return false;
@@ -493,7 +493,7 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                             progress: progress,
                             status: 'converting',
                             screenshotUrl: episode.screenshotPath 
-                                ? `${API_SERVER}/api/video/screenshot/${episode.screenshotPath}` 
+                                ? `${SERVER_URL2}/api/video/screenshot/${episode.screenshotPath}` 
                                 : undefined,
                             duration: episode.durationSeconds
                         });
@@ -655,12 +655,12 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                 if (episodeId && episodeId > 0) {
                     try {
                         const token = getTokenFromCookie();
-                        const checkRes = await fetch(`${API_SERVER}/api/admin/yumeko/episodes/${episodeId}/status`, {
+                        const checkRes = await fetch(`${SERVER_URL2}/api/admin/yumeko/episodes/${episodeId}/status`, {
                             headers: { 'Authorization': `Bearer ${token}` }
                         });
                         
                         if (checkRes.ok) {
-                            await fetch(`${API_SERVER}/api/admin/yumeko/episodes/${episodeId}`, {
+                            await fetch(`${SERVER_URL2}/api/admin/yumeko/episodes/${episodeId}`, {
                                 method: 'DELETE',
                                 headers: { 'Authorization': `Bearer ${token}` }
                             });
@@ -929,7 +929,7 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
             });
             
             const token = getTokenFromCookie();
-            const res = await fetch(`${API_SERVER}/api/admin/yumeko/episodes/${episodeId}`, {
+            const res = await fetch(`${SERVER_URL2}/api/admin/yumeko/episodes/${episodeId}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -1254,7 +1254,7 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                                         <div className="episode-thumbnail">
                                             {episode.screenshotPath ? (
                                                 <img 
-                                                    src={`${API_SERVER}/api/video/screenshot/${episode.screenshotPath}`} 
+                                                    src={`${SERVER_URL2}/api/video/screenshot/${episode.screenshotPath}`} 
                                                     alt={`Episode ${episode.episodeNumber}`}
                                                     onError={(e) => {
                                                         e.currentTarget.style.display = 'none';

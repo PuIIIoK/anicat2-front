@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import * as LucideIcons from 'lucide-react';
 import GlobalAnimeCard from '../../anime-structure/GlobalAnimeCard';
-import { API_SERVER } from '@/hosts/constants';
+import { useServerUrl } from '../../../context/RegionalServerContext';
 import SkeletonLoader from './SkeletonLoader';
 import { YumekoProfileData } from '../hooks/useYumekoProfile';
 
@@ -44,8 +44,12 @@ interface CollectionAnime {
     coverUrl?: string;
 }
 
-const YumekoProfileSidebar: React.FC<YumekoProfileSidebarProps> = ({ profileData, onOpenFriendsModal }) => {
+const YumekoProfileSidebar: React.FC<YumekoProfileSidebarProps> = ({ 
+    profileData, 
+    onOpenFriendsModal 
+}) => {
     const { friends, watchingAnime, favoriteAnime, isLoadingFriends, isLoadingStats, userName } = profileData;
+    const serverUrl = useServerUrl(); // Используем региональный сервер
     const [isStatsModalOpen, setIsStatsModalOpen] = useState(false);
     const [activeTab, setActiveTab] = useState<CollectionType>('FAVORITE');
     const [collectionData, setCollectionData] = useState<CollectionAnime[]>([]);
@@ -79,7 +83,7 @@ const YumekoProfileSidebar: React.FC<YumekoProfileSidebarProps> = ({ profileData
         
         setIsLoadingCollection(true);
         try {
-            const res = await fetch(`${API_SERVER}/api/collection/user/${encodeURIComponent(userName)}?type=${type}`);
+            const res = await fetch(`${serverUrl}/api/collection/user/${encodeURIComponent(userName)}?type=${type}`);
             if (res.ok) {
                 const data = await res.json();
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -93,8 +97,8 @@ const YumekoProfileSidebar: React.FC<YumekoProfileSidebarProps> = ({ profileData
                         alttitle: anime.alttitle,
                         season: anime.season,
                         // Используем API stream для обложек
-                        imageUrl: `${API_SERVER}/api/stream/${animeId}/cover`,
-                        coverUrl: `${API_SERVER}/api/stream/${animeId}/cover`,
+                        imageUrl: `${serverUrl}/api/stream/${animeId}/cover`,
+                        coverUrl: `${serverUrl}/api/stream/${animeId}/cover`,
                         type: anime.type,
                         year: anime.year,
                         rating: anime.rating,
