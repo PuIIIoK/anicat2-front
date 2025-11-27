@@ -11,7 +11,6 @@ import { ThemeProvider } from '../context/ThemeContext';
 import NotificationManager, { NotificationProvider } from '@/component/notifications/NotificationManager';
 import { cleanupOldPlayerStates } from '@/utils/player/playerState';
 import { YumekoUploadProvider } from '../context/YumekoUploadContext';
-import YumekoUploadNotification from '@/component/yumeko-video/YumekoUploadNotification';
 import { RegionalServerProvider } from '../context/RegionalServerContext';
 
 const CustomTitleBar = dynamic(() => import('@/component/layout').then(m => m.CustomTitleBar), { ssr: false });
@@ -66,7 +65,6 @@ const RootLayout: React.FC<LayoutProps> = ({ children }) => {
                             
                             {/* Глобальные компоненты */}
                             <RegionalSyncProgressNotification />
-                            <YumekoUploadNotification />
                             <NotificationManager />
                             </BanChecker>
                         </YumekoUploadProvider>
