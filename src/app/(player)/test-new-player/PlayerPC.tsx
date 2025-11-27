@@ -53,8 +53,8 @@ function decodeVoiceName(voiceName: string | null): string | null {
             return decoded;
         }
         return voiceName;
-    } catch (e) {
-        console.warn('🎬 Ошибка декодирования имени озвучки:', voiceName, e);
+    } catch (error) {
+        console.warn('🎬 Ошибка декодирования имени озвучки:', voiceName, error);
         return voiceName; // Возвращаем как есть при ошибке
     }
 }
