@@ -41,6 +41,24 @@ interface PlayerPCProps {
 
 type OverlayKind = 'volume' | 'seek-forward' | 'seek-backward' | 'notice' | 'play-pause';
 
+// Функция для декодирования имени озвучки из URL-кодированного формата
+function decodeVoiceName(voiceName: string | null): string | null {
+    if (!voiceName) return null;
+    
+    try {
+        // Если строка содержит URL-кодированные символы - декодируем
+        if (voiceName.includes('%')) {
+            const decoded = decodeURIComponent(voiceName);
+            console.log('🎬 Декодировано имя озвучки:', voiceName, '->', decoded);
+            return decoded;
+        }
+        return voiceName;
+    } catch (e) {
+        console.warn('🎬 Ошибка декодирования имени озвучки:', voiceName, e);
+        return voiceName; // Возвращаем как есть при ошибке
+    }
+}
+
 export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPrevEpisode }: PlayerPCProps) {
     console.log('[player] component mounted');
     // const router = useRouter(); // Не используется
@@ -369,13 +387,24 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
         const episodeTitle = currentEp?.title || `Эпизод ${currentEpisode}`;
         const animeTitle = animeMeta?.title || animeMeta?.name || animeMeta?.ru || 'AniCat';
         
-        document.title = `${episodeTitle} | ${animeTitle}`;
+        // Добавляем декодированное название озвучки в заголовок
+        let voiceTitle = '';
+        if (selectedSource === 'yumeko' && selectedYumekoVoice?.name) {
+            const decodedVoice = decodeVoiceName(selectedYumekoVoice.name);
+            if (decodedVoice) {
+                voiceTitle = ` (${decodedVoice})`;
+            }
+        } else if (selectedSource === 'kodik' && selectedKodikVoice) {
+            voiceTitle = ` (${selectedKodikVoice})`;
+        }
+        
+        document.title = `${episodeTitle}${voiceTitle} | ${animeTitle}`;
         
         // Восстановление оригинального заголовка при размонтировании
         return () => {
             document.title = 'AniCat';
         };
-    }, [currentEpisode, playlistEpisodes, animeMeta]);
+    }, [currentEpisode, playlistEpisodes, animeMeta, selectedSource, selectedYumekoVoice, selectedKodikVoice]);
     const [libriaQualities, setLibriaQualities] = useState<Array<{ key: string; label: string; url: string }>>([]);
     const [libriaSelectedQualityKey, setLibriaSelectedQualityKey] = useState<string | null>(null);
     const [libriaCurrentActiveKey, setLibriaCurrentActiveKey] = useState<string | null>(null);
@@ -384,7 +413,9 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
     const [kodikSelectedQualityKey, setKodikSelectedQualityKey] = useState<string | null>(null);
     const [kodikCurrentActiveKey, setKodikCurrentActiveKey] = useState<string | null>(null);
     const sourceUrl = useMemo(() => {
-        return src ?? fetchedSrc ?? undefined;
+        const url = src ?? fetchedSrc ?? undefined;
+        console.log('🎬 DEBUG sourceUrl:', url);
+        return url;
     }, [src, fetchedSrc]);
 
     // Вспомогательная функция для получения voice в зависимости от источника
@@ -1692,7 +1723,21 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
             hlsRef.current = hls;
             hls.attachMedia(video);
             hls.on(Hls.Events.MEDIA_ATTACHED, () => {
-                hls.loadSource(sourceUrl);
+                // Исправляем кодировку URL для русских символов
+                let fixedUrl = sourceUrl;
+                if (sourceUrl && sourceUrl.includes('%D0%A0') || sourceUrl.includes('%D1%80')) {
+                    console.log('🎬 Original URL with Russian chars:', sourceUrl);
+                    // Декодируем и перекодируем URL правильно
+                    try {
+                        const decoded = decodeURIComponent(sourceUrl);
+                        fixedUrl = encodeURI(decoded);
+                        console.log('🎬 Fixed URL:', fixedUrl);
+                    } catch (e) {
+                        console.warn('🎬 URL encoding fix failed, using original:', e);
+                        fixedUrl = sourceUrl;
+                    }
+                }
+                hls.loadSource(fixedUrl);
             });
             hls.on(Hls.Events.ERROR, (event, data) => {
                 console.error('HLS error event', event, data);
@@ -1708,7 +1753,20 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                         } else {
                             console.warn('HLS fatal error — destroying Hls and setting video.src fallback');
                             hls.destroy();
-                            try { video.src = sourceUrl as string; } catch (e) { console.error('Fallback video.src set failed', e); }
+                            try { 
+                                // Исправляем кодировку и для fallback
+                                let fallbackUrl = sourceUrl as string;
+                                if (fallbackUrl && (fallbackUrl.includes('%D0%A0') || fallbackUrl.includes('%D1%80'))) {
+                                    try {
+                                        const decoded = decodeURIComponent(fallbackUrl);
+                                        fallbackUrl = encodeURI(decoded);
+                                        console.log('🔄 Fallback: Fixed URL:', fallbackUrl);
+                                    } catch (e) {
+                                        console.warn('🔄 Fallback: URL encoding fix failed');
+                                    }
+                                }
+                                video.src = fallbackUrl;
+                            } catch (e) { console.error('Fallback video.src set failed', e); }
                         }
                     }
                 } catch (e) {
@@ -1723,8 +1781,20 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                 setCurrentLevel(data.level);
             });
         } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-            // Safari (native HLS)
-            video.src = sourceUrl;
+            // Safari (native HLS) - тоже исправляем кодировку
+            let fixedUrl = sourceUrl;
+            if (sourceUrl && (sourceUrl.includes('%D0%A0') || sourceUrl.includes('%D1%80'))) {
+                console.log('🍎 Safari: Original URL with Russian chars:', sourceUrl);
+                try {
+                    const decoded = decodeURIComponent(sourceUrl);
+                    fixedUrl = encodeURI(decoded);
+                    console.log('🍎 Safari: Fixed URL:', fixedUrl);
+                } catch (e) {
+                    console.warn('🍎 Safari: URL encoding fix failed, using original:', e);
+                    fixedUrl = sourceUrl;
+                }
+            }
+            video.src = fixedUrl;
         }
 
         return () => {
