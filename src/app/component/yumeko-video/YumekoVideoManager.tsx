@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
-import { X, Plus, Upload, Trash2, CheckCircle, Clock, AlertCircle, Film, Mic, XCircle, RefreshCw, Edit2, Check } from 'lucide-react';
+import { X, Plus, Upload, Trash2, CheckCircle, Clock, AlertCircle, Film, Mic, XCircle, RefreshCw, Edit2, Check, Users } from 'lucide-react';
 import { SERVER_URL2 } from '@/hosts/constants';
 import { useYumekoUpload } from '../../context/YumekoUploadContext';
+import UploadQueueViewer from './UploadQueueViewer';
 import './yumeko-video.scss';
 
 interface Voice {
@@ -57,7 +58,7 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
     
     const [voices, setVoices] = useState<Voice[]>([]);
     const [selectedVoiceId, setSelectedVoiceId] = useState<number | null>(null);
-    const [viewMode, setViewMode] = useState<'list' | 'voice'>('list'); // новый режим просмотра
+    const [viewMode, setViewMode] = useState<'list' | 'voice' | 'queue'>('list'); // режим просмотра + очередь
     const [episodes, setEpisodes] = useState<Episode[]>([]);
     const [showAddVoice, setShowAddVoice] = useState(false);
     const [showAddEpisode, setShowAddEpisode] = useState(false);
@@ -986,6 +987,13 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                 <div className="yumeko-modal-header">
                     {viewMode === 'list' ? (
                         <h2><Film /> Yumeko - Управление видео</h2>
+                    ) : viewMode === 'queue' ? (
+                        <>
+                            <h2><Users /> Очередь загрузки</h2>
+                            <button className="btn-back" onClick={handleBackToList}>
+                                ← Назад к списку
+                            </button>
+                        </>
                     ) : (
                         <>
                             <h2><Mic /> Озвучка: {selectedVoice?.name}</h2>
@@ -1005,12 +1013,20 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                         <div className="voices-section">
                             <div className="section-header">
                                 <h3><Mic /> Озвучки</h3>
-                                <button 
-                                    className="btn-add-voice"
-                                    onClick={() => setShowAddVoice(!showAddVoice)}
-                                >
-                                    <Plus size={16} /> Добавить озвучку
-                                </button>
+                                <div className="header-buttons">
+                                    <button 
+                                        className="btn-view-queue"
+                                        onClick={() => setViewMode('queue')}
+                                    >
+                                        <Users size={16} /> Очередь загрузки
+                                    </button>
+                                    <button 
+                                        className="btn-add-voice"
+                                        onClick={() => setShowAddVoice(!showAddVoice)}
+                                    >
+                                        <Plus size={16} /> Добавить озвучку
+                                    </button>
+                                </div>
                             </div>
 
                             {showAddVoice && (
@@ -1125,6 +1141,11 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                                     </div>
                                 )}
                             </div>
+                        </div>
+                    ) : viewMode === 'queue' ? (
+                        /* Секция очереди загрузки */
+                        <div className="queue-section">
+                            <UploadQueueViewer animeId={animeId} />
                         </div>
                     ) : (
                         /* Секция эпизодов - просмотр озвучки */

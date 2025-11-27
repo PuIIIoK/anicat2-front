@@ -1,3 +1,6 @@
+// Импорт стилей очереди загрузки
+@import './upload-queue.scss';
+
 // Overlay
 .yumeko-modal-overlay {
     position: fixed;
@@ -260,6 +263,11 @@
         justify-content: space-between;
         margin: 20px 0 16px 0;
         padding: 0 20px;
+        
+        .header-buttons {
+            display: flex;
+            gap: 8px;
+        }
 
         h3 {
             font-size: 14px;
@@ -277,7 +285,7 @@
             }
         }
 
-        .btn-add-voice {
+        .btn-add-voice, .btn-view-queue {
             display: flex;
             align-items: center;
             gap: 6px;
@@ -298,6 +306,14 @@
 
             &:hover {
                 background: #a855f7;
+            }
+        }
+        
+        .btn-view-queue {
+            background: #0f766e;
+            
+            &:hover {
+                background: #14b8a6;
             }
         }
     }
@@ -1780,6 +1796,15 @@
             }
         }
     }
+}
+
+// Queue section styles
+.queue-section {
+    padding: 20px;
+    background: rgba(16, 24, 40, 0.3);
+    border-radius: 12px;
+    margin: 0;
+    min-height: 400px;
 }
 
 @media (min-width: 1440px) {

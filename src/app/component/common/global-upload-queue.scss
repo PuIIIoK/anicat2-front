@@ -1,0 +1,150 @@
+.global-queue-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 15000;
+    padding: 20px;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.global-queue-modal {
+    background: linear-gradient(145deg, #1a1a2e, #16213e);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 800px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 
+        0 20px 50px rgba(0, 0, 0, 0.6),
+        0 8px 32px rgba(175, 82, 222, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    animation: modalSlide 0.3s ease-out;
+}
+
+.global-queue-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    background: linear-gradient(90deg, rgba(175, 82, 222, 0.1), rgba(139, 63, 196, 0.1));
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    
+    .queue-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #ffffff;
+        font-size: 18px;
+        font-weight: 600;
+        
+        .queue-count {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+        }
+    }
+    
+    .close-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border: none;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.8);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        
+        &:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+    }
+}
+
+.global-queue-content {
+    flex: 1;
+    overflow: hidden;
+    padding: 16px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes modalSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+// Адаптивность
+@media (max-width: 768px) {
+    .global-queue-overlay {
+        padding: 12px;
+    }
+    
+    .global-queue-modal {
+        border-radius: 16px;
+        max-height: 90vh;
+    }
+    
+    .global-queue-header {
+        padding: 16px 20px;
+        
+        .queue-title {
+            font-size: 16px;
+            gap: 8px;
+            
+            .queue-count {
+                font-size: 12px;
+            }
+        }
+        
+        .close-btn {
+            width: 32px;
+            height: 32px;
+        }
+    }
+    
+    .global-queue-content {
+        padding: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .global-queue-overlay {
+        padding: 8px;
+    }
+    
+    .global-queue-modal {
+        max-height: 95vh;
+        border-radius: 12px;
+    }
+    
+    .global-queue-header {
+        padding: 12px 16px;
+        
+        .queue-title {
+            font-size: 15px;
+        }
+    }
+}
