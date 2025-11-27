@@ -2,13 +2,6 @@
 
 import { API_SERVER, SERVER_URL3 } from '@/hosts/constants';
 
-interface GeoResponse {
-    country: string;
-    country_code: string;
-    ip: string;
-    [key: string]: string;
-}
-
 // Российские IP диапазоны (основные блоки)
 const RUSSIAN_IP_RANGES = [
     // Основные российские блоки
