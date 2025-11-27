@@ -2127,3 +2127,152 @@
     }
   }
 }
+
+// === ИНДИКАТОР ИНДЕКСАЦИИ/ПОИСКА ===
+.search-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  animation: indicatorFadeIn 0.3s ease;
+
+  .indicator-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 18px;
+    border-radius: 12px;
+    backdrop-filter: blur(12px);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .indicator-spinner {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    animation: indicatorSpin 0.8s linear infinite;
+  }
+
+  .indicator-progress {
+    width: 120px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+
+    .progress-bar {
+      height: 100%;
+      border-radius: 4px;
+      animation: progressSlide 2s ease-in-out infinite;
+    }
+  }
+
+  // Состояние индексации (оранжево-янтарный)
+  &.indexing {
+    .indicator-content {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(251, 191, 36, 0.1));
+      border: 1px solid rgba(245, 158, 11, 0.5);
+      color: #fbbf24;
+      box-shadow: 
+        0 4px 20px rgba(245, 158, 11, 0.25),
+        0 0 40px rgba(245, 158, 11, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .indicator-spinner {
+      border-color: rgba(251, 191, 36, 0.3);
+      border-top-color: #fbbf24;
+    }
+
+    .indicator-progress {
+      background: rgba(245, 158, 11, 0.15);
+    }
+
+    .progress-bar {
+      background: linear-gradient(90deg, 
+        transparent 0%, 
+        #f59e0b 20%, 
+        #fbbf24 50%, 
+        #f59e0b 80%, 
+        transparent 100%
+      );
+    }
+  }
+
+  // Состояние поиска (синий)
+  &.searching {
+    .indicator-content {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(96, 165, 250, 0.1));
+      border: 1px solid rgba(59, 130, 246, 0.5);
+      color: #60a5fa;
+      box-shadow: 
+        0 4px 20px rgba(59, 130, 246, 0.25),
+        0 0 40px rgba(59, 130, 246, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .indicator-spinner {
+      border-color: rgba(96, 165, 250, 0.3);
+      border-top-color: #60a5fa;
+    }
+  }
+
+  // Мобильная версия
+  &.mobile {
+    margin-top: 8px;
+
+    .indicator-content {
+      padding: 8px 14px;
+      font-size: 12px;
+      gap: 8px;
+      border-radius: 10px;
+    }
+
+    .indicator-spinner {
+      width: 14px;
+      height: 14px;
+    }
+
+    .indicator-progress {
+      width: 100px;
+      height: 3px;
+    }
+  }
+}
+
+@keyframes indicatorFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes indicatorSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes progressSlide {
+  0% {
+    transform: translateX(-100%);
+    width: 40%;
+  }
+  50% {
+    width: 60%;
+  }
+  100% {
+    transform: translateX(250%);
+    width: 40%;
+  }
+}

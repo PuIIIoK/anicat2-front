@@ -1,13 +1,20 @@
-export const API_SERVER = 'https://server.yumeko.ru';
-//export const API_SERVER = 'http://localhost:8080';
-export const FRONTEND_URL = 'https://anicat.fun';
+//export const API_SERVER = 'https://server.yumeko.ru';
+export const API_SERVER = 'http://localhost:8080';
+export const FRONTEND_URL = 'http://localhost:3000';
 export const CDN_URL = 'https://storage.yandexcloud.net/anicat2';
 export const S3_ENDPOINT = 'https://storage.yandexcloud.net/anicat2';
 export const DEBUG = true;
 
-// Домен авторизации
-export const AUTH_SITE_URL = 'https://auth.yumeko.ru';
+// Видео серверы
+// PROD:
+export const SERVER_URL2 = 'https://server2.yumeko.ru'; // Сервер для загрузки видео
+export const SERVER_URL3 = 'https://server3.yumeko.ru'; // Сервер для зарубежных пользователей
+// DEV:
+//export const SERVER_URL2 = 'http://localhost:8080'; // Сервер для загрузки видео
+//export const SERVER_URL3 = 'http://localhost:8080'; // Сервер для зарубежных пользователей
 
+// Домен авторизации
+export const AUTH_SITE_URL = 'http://localhost:3000';
 
 export const KODIK_API_TOKEN = 'e2013488792846196906e93e7e5eb623';
 export const KODIK_API_BASE = 'https://kodikapi.com';

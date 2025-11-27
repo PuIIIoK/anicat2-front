@@ -492,9 +492,9 @@ const MobileAnimePageTest: React.FC = () => {
                         onClick={() => {
                             if (isAccessible && isOpened) {
                                 const baseParams = new URLSearchParams({
-                                    kodik: anime.kodik || anime.title || '',
-                                    alias: anime.alias || '',
-                                    title: anime.title || '',
+                                    kodik: encodeURIComponent(anime.kodik || anime.title || ''),
+                                    alias: encodeURIComponent(anime.alias || ''),
+                                    title: encodeURIComponent(anime.title || ''),
                                     cover: coverUrl || ''
                                 });
                                 

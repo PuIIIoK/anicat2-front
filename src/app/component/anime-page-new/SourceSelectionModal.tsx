@@ -141,10 +141,10 @@ export default function SourceSelectionModal({
         const params = new URLSearchParams({
             source: 'yumeko',
             voiceId: selectedVoice.id.toString(),
-            voiceName: selectedVoice.name,
+            voiceName: encodeURIComponent(selectedVoice.name),
             episodeId: episode.id.toString(),
             episodeNumber: episode.episodeNumber.toString(),
-            title: animeTitle || '',
+            title: encodeURIComponent(animeTitle || ''),
             cover: animeCover || ''
         });
         onSourceSelect(`/watch/anime/${animeId}?${params.toString()}`);

@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
-import { X, Plus, Upload, Trash2, CheckCircle, Clock, AlertCircle, Film, Mic, XCircle, RefreshCw } from 'lucide-react';
-import { API_SERVER } from '@/hosts/constants';
+import { X, Plus, Upload, Trash2, CheckCircle, Clock, AlertCircle, Film, Mic, XCircle, RefreshCw, Edit2, Check } from 'lucide-react';
+import { API_SERVER, SERVER_URL2 } from '@/hosts/constants';
 import { useYumekoUpload } from '../../context/YumekoUploadContext';
 import './yumeko-video.scss';
 
@@ -64,6 +64,10 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
     
     // Форма добавления озвучки
     const [newVoiceName, setNewVoiceName] = useState('');
+    
+    // Форма редактирования озвучки
+    const [editingVoiceId, setEditingVoiceId] = useState<number | null>(null);
+    const [editVoiceName, setEditVoiceName] = useState('');
     
     // Форма добавления эпизода
     const [newEpisodeNumber, setNewEpisodeNumber] = useState('');
@@ -332,6 +336,44 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
 
     const getSelectedVoice = () => {
         return voices.find(v => v.id === selectedVoiceId);
+    };
+
+    const handleStartEditVoice = (voiceId: number, currentName: string) => {
+        setEditingVoiceId(voiceId);
+        setEditVoiceName(currentName);
+    };
+
+    const handleCancelEditVoice = () => {
+        setEditingVoiceId(null);
+        setEditVoiceName('');
+    };
+
+    const handleSaveEditVoice = async () => {
+        if (!editingVoiceId || !editVoiceName.trim()) return;
+
+        try {
+            const token = getTokenFromCookie();
+            const res = await fetch(`${API_SERVER}/api/admin/yumeko/voices/${editingVoiceId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    name: editVoiceName.trim()
+                })
+            });
+            
+            if (res.ok) {
+                setEditingVoiceId(null);
+                setEditVoiceName('');
+                await loadVoices();
+            } else {
+                console.error('Ошибка обновления озвучки');
+            }
+        } catch (error) {
+            console.error('Ошибка обновления озвучки:', error);
+        }
     };
 
     // Функция для подсчета загружающихся эпизодов для конкретной озвучки
@@ -738,7 +780,8 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                 uploadXhrRef.current.delete(uploadId);
             };
             
-            xhr.open('POST', `${API_SERVER}/api/admin/yumeko/voices/${voiceId}/episodes`);
+            // Используем SERVER_URL2 для загрузки видео
+            xhr.open('POST', `${SERVER_URL2}/api/admin/yumeko/voices/${voiceId}/episodes`);
             xhr.setRequestHeader('Authorization', `Bearer ${token}`);
             xhr.send(formData);
             
@@ -1002,7 +1045,18 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                                             onClick={() => handleSelectVoice(voice.id)}
                                         >
                                             <div className="voice-info">
-                                                <div className="voice-name">{voice.name}</div>
+                                                {editingVoiceId === voice.id ? (
+                                                    <input
+                                                        type="text"
+                                                        value={editVoiceName}
+                                                        onChange={(e) => setEditVoiceName(e.target.value)}
+                                                        onKeyPress={(e) => e.key === 'Enter' && handleSaveEditVoice()}
+                                                        className="voice-edit-input"
+                                                        autoFocus
+                                                    />
+                                                ) : (
+                                                    <div className="voice-name">{voice.name}</div>
+                                                )}
                                                 <div className="voice-meta">
                                                     {voice.episodesCount} {voice.episodesCount === 1 ? 'эпизод' : voice.episodesCount > 1 && voice.episodesCount < 5 ? 'эпизода' : 'эпизодов'}
                                                     {uploadingCount > 0 && (
@@ -1017,15 +1071,51 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                                                     )}
                                                 </div>
                                             </div>
-                                            <button
-                                                className="btn-delete-voice"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleDeleteVoice(voice.id);
-                                                }}
-                                            >
-                                                <Trash2 size={16} />
-                                            </button>
+                                            <div className="voice-actions">
+                                                {editingVoiceId === voice.id ? (
+                                                    <>
+                                                        <button
+                                                            className="btn-save-voice"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleSaveEditVoice();
+                                                            }}
+                                                        >
+                                                            <Check size={16} />
+                                                        </button>
+                                                        <button
+                                                            className="btn-cancel-voice"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleCancelEditVoice();
+                                                            }}
+                                                        >
+                                                            <X size={16} />
+                                                        </button>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <button
+                                                            className="btn-edit-voice"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleStartEditVoice(voice.id, voice.name);
+                                                            }}
+                                                        >
+                                                            <Edit2 size={16} />
+                                                        </button>
+                                                        <button
+                                                            className="btn-delete-voice"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleDeleteVoice(voice.id);
+                                                            }}
+                                                        >
+                                                            <Trash2 size={16} />
+                                                        </button>
+                                                    </>
+                                                )}
+                                            </div>
                                         </div>
                                     );
                                 })}

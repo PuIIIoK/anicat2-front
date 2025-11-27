@@ -66,7 +66,7 @@ const AdminAnime: React.FC<Props> = ({ setNotification, userRoles }) => {
     useEffect(() => {
         const timer = setTimeout(() => {
             setDebouncedSearch(searchTerm);
-        }, 500); // 500ms задержка
+        }, 2000); // 2000ms задержка (2 секунды)
 
         return () => clearTimeout(timer);
     }, [searchTerm]);
@@ -474,27 +474,34 @@ const AdminAnime: React.FC<Props> = ({ setNotification, userRoles }) => {
                                     <option value="alpha_desc">По алфавиту (Я-А)</option>
                                 </select>
 
-                                <div style={{position: 'relative'}}>
-                                    <input
-                                        type="text"
-                                        placeholder="Поиск по ID/Названию..."
-                                        value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
-                                        className="search-input"
-                                    />
-                                    {loading && debouncedSearch !== searchTerm && (
-                                        <div style={{
-                                            position: 'absolute',
-                                            right: '10px',
-                                            top: '50%',
-                                            transform: 'translateY(-50%)',
-                                            color: '#3b82f6',
-                                            fontSize: '12px'
-                                        }}>
-                                            🔍 Поиск...
+                                <input
+                                    type="text"
+                                    placeholder="Поиск по ID/Названию..."
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    className="search-input"
+                                />
+                                {/* Индикатор индексации (debounce) */}
+                                {searchTerm !== debouncedSearch && (
+                                    <div className="search-indicator indexing">
+                                        <div className="indicator-content">
+                                            <div className="indicator-spinner"></div>
+                                            <span>Индексация</span>
                                         </div>
-                                    )}
-                                </div>
+                                        <div className="indicator-progress">
+                                            <div className="progress-bar"></div>
+                                        </div>
+                                    </div>
+                                )}
+                                {/* Индикатор поиска (реальный запрос) */}
+                                {searchTerm === debouncedSearch && tableLoading && (
+                                    <div className="search-indicator searching">
+                                        <div className="indicator-content">
+                                            <div className="indicator-spinner"></div>
+                                            <span>Поиск</span>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
 
                             {/* Центр */}
@@ -676,6 +683,27 @@ const AdminAnime: React.FC<Props> = ({ setNotification, userRoles }) => {
                                     className="mobile-search-input"
                                 />
                             </div>
+                            {/* Индикатор индексации (debounce) */}
+                            {searchTerm !== debouncedSearch && (
+                                <div className="search-indicator indexing mobile">
+                                    <div className="indicator-content">
+                                        <div className="indicator-spinner"></div>
+                                        <span>Индексация</span>
+                                    </div>
+                                    <div className="indicator-progress">
+                                        <div className="progress-bar"></div>
+                                    </div>
+                                </div>
+                            )}
+                            {/* Индикатор поиска (реальный запрос) */}
+                            {searchTerm === debouncedSearch && tableLoading && (
+                                <div className="search-indicator searching mobile">
+                                    <div className="indicator-content">
+                                        <div className="indicator-spinner"></div>
+                                        <span>Поиск</span>
+                                    </div>
+                                </div>
+                            )}
                             <div className="mobile-filter-wrapper">
                                 <select
                                     value={filterType || sortType}

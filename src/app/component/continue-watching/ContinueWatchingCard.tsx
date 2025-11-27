@@ -150,9 +150,9 @@ const ContinueWatchingCard: React.FC<ContinueWatchingCardProps> = ({ item, prior
                             // Передаем только базовые параметры (как кнопка "Смотреть")
                             // Прогресс будет загружен плеером с сервера
                             const baseParams = new URLSearchParams({
-                                kodik: animeData?.kodik || item.title,
-                                alias: animeData?.alias || '',
-                                title: item.title,
+                                kodik: encodeURIComponent(animeData?.kodik || item.title),
+                                alias: encodeURIComponent(animeData?.alias || ''),
+                                title: encodeURIComponent(item.title),
                                 cover: item.coverUrl || ''
                             });
                             
