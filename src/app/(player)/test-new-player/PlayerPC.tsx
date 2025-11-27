@@ -1761,7 +1761,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                                         const decoded = decodeURIComponent(fallbackUrl);
                                         fallbackUrl = encodeURI(decoded);
                                         console.log('🔄 Fallback: Fixed URL:', fallbackUrl);
-                                    } catch (e) {
+                                    } catch {
                                         console.warn('🔄 Fallback: URL encoding fix failed');
                                     }
                                 }
