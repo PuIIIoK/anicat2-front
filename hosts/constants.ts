@@ -7,8 +7,8 @@ export const DEBUG = true;
 
 // Видео серверы
 // PROD:
-export const SERVER_URL3 = 'https://server2.yumeko.ru'; // Сервер для загрузки видео
-export const SERVER_URL2 = 'https://server3.yumeko.ru'; // Сервер для зарубежных пользователей
+export const SERVER_URL2 = 'https://server2.yumeko.ru'; // Сервер для загрузки видео
+export const SERVER_URL3 = 'https://server3.yumeko.ru'; // Сервер для зарубежных пользователей
 // DEV:
 //export const SERVER_URL2 = 'http://localhost:8080'; // Сервер для загрузки видео
 //export const SERVER_URL3 = 'http://localhost:8080'; // Сервер для зарубежных пользователей
