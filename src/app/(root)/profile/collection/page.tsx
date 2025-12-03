@@ -6,7 +6,7 @@ import CollectionsMobile from '@/app/component/profile-collections/CollectionsMo
 import { MiniCardProvider } from '@/app/component/anime-structure/mini-card-context';
 
 const CollectionPage = () => {
-    const [isMobile, setIsMobile] = useState<boolean>(false);
+    const [isMobile, setIsMobile] = useState<boolean | null>(null);
 
     useEffect(() => {
         const detect = () => {
@@ -17,6 +17,11 @@ const CollectionPage = () => {
         window.addEventListener('resize', detect);
         return () => window.removeEventListener('resize', detect);
     }, []);
+
+    // Показываем пустой экран пока определяем устройство
+    if (isMobile === null) {
+        return <div style={{ minHeight: '100vh', background: 'var(--bg-primary)' }} />;
+    }
 
     return (
         <MiniCardProvider>

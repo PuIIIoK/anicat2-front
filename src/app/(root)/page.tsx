@@ -3,9 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 
-import OptimizedCategorySection from '@/component/anime-structure/optimized-category-section';
+import YumekoCategorySection from '@/component/anime-structure/YumekoCategorySection';
 import { Category as CategoryType } from '@/component/anime-structure/category-data';
-import CategoryNavBar from '@/component/mobile-navigation/CategoryNavBar';
+import YumekoMobileIndex from '@/component/mobile-navigation/YumekoMobileIndex';
 import ServerErrorPage from '@/component/common/ServerErrorPage';
 import ContinueWatchingSection from '@/component/continue-watching/ContinueWatchingSection';
 import { API_SERVER } from '@/hosts/constants';
@@ -95,16 +95,16 @@ const CategoryList: React.FC = () => {
                 <title>Yumeko | Главная | Аниме-платформа</title>
                 <meta
                     name="description"
-                    content="На данной странице главной вы найдете: Категории, Новые аниме, оцени пользователей, а так-же новости и возможность зайти в свой профиль!"
+                    content="Yumeko - смотрите аниме онлайн. Категории, новинки, рейтинги и многое другое!"
                 />
                 <meta property="og:title" content="Yumeko | Главная | Аниме-платформа" />
                 <meta
                     property="og:description"
-                    content="На данной странице главной вы найдете: Категории, Новые аниме, оцени пользователей, а так-же новости и возможность зайти в свой профиль!"
+                    content="Yumeko - смотрите аниме онлайн. Категории, новинки, рейтинги и многое другое!"
                 />
                 <meta property="og:type" content="website" />
-                <meta property="og:url" content="https://anicat.ru/" />
-                <meta property="og:image" content="https://anicat.ru/logo-cover.jpg" />
+                <meta property="og:url" content="https://yumeko.ru/" />
+                <meta property="og:image" content="https://yumeko.ru/logo-cover.jpg" />
                 <meta property="og:image:alt" content="Yumeko Главная страница" />
             </Head>
 
@@ -123,29 +123,32 @@ const CategoryList: React.FC = () => {
                 </div>
             )}
 
-            <div className="category-list-container crunchyroll-container">
-                {/* Секция "Продолжить просмотр" */}
+            <div className="yumeko-home">
+                {/* Mobile Index */}
+                <div className="mobile-only">
+                    <YumekoMobileIndex />
+                </div>
+
+                {/* Секция "Продолжить просмотр" - Desktop */}
                 <div className="desktop-only">
                     <ContinueWatchingSection />
                 </div>
-                
-                <div className="mobile-only">
-                    <CategoryNavBar />
-                </div>
 
-                <div className="desktop-only">
+                {/* Categories grid */}
+                <div className="yumeko-categories-grid desktop-only">
                     {categories.length > 0 ? (
                         categories.map(category => (
-                            <OptimizedCategorySection
+                            <YumekoCategorySection
                                 key={category.id}
                                 categoryId={category.id}
                                 title={category.name}
-                                link={category.link}
-                                position={category.position}
                             />
                         ))
                     ) : (
-                        <div className="no-categories-message">Категории не найдены.</div>
+                        <div className="yumeko-empty-state">
+                            <span className="empty-icon">📺</span>
+                            <span className="empty-text">Категории не найдены</span>
+                        </div>
                     )}
                 </div>
             </div>

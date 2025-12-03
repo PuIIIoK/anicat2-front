@@ -4598,13 +4598,13 @@ body:has(.anime-page-container) {
 }
 .anime-page-container .anime-main .anime-info-grid .info-item .info-label {
   font-size: 0.85rem;
-  color: var(--text-muted);
+  color: var(--text-muted, rgba(255, 255, 255, 0.5));
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 .anime-page-container .anime-main .anime-info-grid .info-item .info-value {
   font-size: 1rem;
-  color: var(--text-primary);
+  color: var(--text-primary, #ffffff);
   font-weight: 500;
 }
 .anime-page-container .anime-main .anime-genres {

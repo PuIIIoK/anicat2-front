@@ -3,8 +3,9 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { tabMap, AnimeCollectionItem } from './useCollections';
 import { API_SERVER } from '@/hosts/constants';
-import GlobalAnimeCard from '../anime-structure/GlobalAnimeCard';
+import YumekoAnimeCard from '../anime-structure/YumekoAnimeCard';
 import type { AnimeBasicInfo } from '../anime-structure/anime-basic-info';
+import '../mobile-navigation/yumeko-mobile-index.scss';
 
 type CollectionsCacheEntry = { items: AnimeCollectionItem[]; lastUpdated: number; fullyLoaded: boolean };
 type MobileCollectionsCache = Map<string, CollectionsCacheEntry>;
@@ -20,12 +21,12 @@ declare global {
 const MOBILE_CACHE_TTL_MS = 30 * 60 * 1000;
 
 const CollectionsMobile: React.FC = () => {
-    // Конвертируем данные в формат AnimeBasicInfo для GlobalAnimeCard
+    // Конвертируем данные в формат AnimeBasicInfo для YumekoAnimeCard
     const convertToAnimeBasicInfo = (item: AnimeCollectionItem): AnimeBasicInfo => ({
         id: item.anime.id,
         title: item.anime.title,
         alttitle: item.anime.alttitle || '',
-        status: item.anime.status || 'unknown', // Используем реальный статус аниме, а не тип коллекции
+        status: item.anime.status || 'unknown',
         type: item.anime.type || 'TV',
         episode_all: item.anime.episode_all || '',
         current_episode: item.anime.current_episode || '',
@@ -42,8 +43,8 @@ const CollectionsMobile: React.FC = () => {
         coverId: null,
         bannerId: null,
         hasScreenshots: false,
-        // Используем оптимизированный API endpoint для загрузки обложек
-        coverUrl: ''  // GlobalAnimeCard сам загрузит обложку через оптимизированный endpoint
+        // Передаем URL обложки напрямую чтобы избежать лишних запросов
+        coverUrl: `${API_SERVER}/api/stream/${item.anime.id}/cover`
     });
     
     // Кэш коллекций
@@ -66,16 +67,13 @@ const CollectionsMobile: React.FC = () => {
     const [selectedTab, setSelectedTab] = useState<string>(lastSelectedRef.value);
     const [collections, setCollections] = useState<AnimeCollectionItem[]>([]);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [visibleAnime, setVisibleAnime] = useState<Set<string>>(new Set());
     const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
     // UI refs for underline & scrolling
-    const tabRefs = useRef<(HTMLDivElement | null)[]>([]);
+    const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
     const navItemsRef = useRef<HTMLDivElement | null>(null);
     const [underlineX, setUnderlineX] = useState(0);
     const [underlineWidth, setUnderlineWidth] = useState(0);
-    const [isSwiping, setIsSwiping] = useState(false);
 
     // touch tracking
     const [touchStartX, setTouchStartX] = useState<number | null>(null);
@@ -137,7 +135,6 @@ const CollectionsMobile: React.FC = () => {
             const center = el.offsetLeft - parent.clientWidth / 2 + el.offsetWidth / 2;
             parent.scrollTo({ left: Math.max(0, center), behavior: 'smooth' });
         }
-        setIsSwiping(false);
     }, [selectedTab, tabs]);
 
     useEffect(() => {
@@ -150,7 +147,6 @@ const CollectionsMobile: React.FC = () => {
     const handleGlobalTouchStart = useCallback((e: React.TouchEvent) => {
         setTouchStartX(e.touches[0].clientX);
         setTouchStartY(e.touches[0].clientY);
-        setIsSwiping(false);
     }, []);
 
     const handleGlobalTouchMove = useCallback((e: React.TouchEvent) => {
@@ -159,8 +155,9 @@ const CollectionsMobile: React.FC = () => {
         const deltaX = Math.abs(e.touches[0].clientX - touchStartX);
         const deltaY = Math.abs(e.touches[0].clientY - touchStartY);
         
+        // Horizontal swipe detected
         if (deltaX > deltaY && deltaX > 10) {
-            setIsSwiping(true);
+            // Swiping
         }
     }, [touchStartX, touchStartY]);
 
@@ -168,7 +165,6 @@ const CollectionsMobile: React.FC = () => {
         if (touchStartX === null || touchStartY === null) {
             setTouchStartX(null);
             setTouchStartY(null);
-            setIsSwiping(false);
             return;
         }
 
@@ -192,14 +188,12 @@ const CollectionsMobile: React.FC = () => {
 
         setTouchStartX(null);
         setTouchStartY(null);
-        setTimeout(() => setIsSwiping(false), 150);
     }, [touchStartX, touchStartY, selectedTab, tabs]);
 
     // Fetch collections for tab (последовательная загрузка с кэшем + TTL)
     useEffect(() => {
         if (!selectedTab) {
             setCollections([]);
-            setVisibleAnime(new Set());
             return;
         }
 
@@ -213,7 +207,6 @@ const CollectionsMobile: React.FC = () => {
         const collectionType = tabMap[selectedTab];
         if (!collectionType) {
             setCollections([]);
-            setVisibleAnime(new Set());
             return;
         }
 
@@ -226,7 +219,6 @@ const CollectionsMobile: React.FC = () => {
             if (cached && cached.items.length > 0) {
                 if (!mountedRef.current) return;
                 setCollections(cached.items);
-                setVisibleAnime(new Set(cached.items.map(item => item.collectionId.toString())));
                 setLoading(false);
                 if (isFresh && cached.fullyLoaded) {
                     return; // свежий кэш — не обновляем
@@ -235,18 +227,33 @@ const CollectionsMobile: React.FC = () => {
             } else {
                 setLoading(true);
                 setCollections([]);
-                setVisibleAnime(new Set());
             }
             
             try {
+                // Получаем токен из localStorage или cookies
+                const getToken = () => {
+                    // Сначала пробуем localStorage
+                    const localToken = localStorage.getItem('token');
+                    if (localToken) return localToken;
+                    
+                    // Затем из cookies
+                    const cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*=\s*([^;]*).*$)|^.*$/, "$1");
+                    return cookieToken || '';
+                };
+                
                 const res = await fetch(`${API_SERVER}/api/collection/my?type=${type}`, {
                     headers: {
-                        Authorization: `Bearer ${document.cookie.replace(/(?:(?:^|.*;\s*)token\s*=\s*([^;]*).*$)|^.*$/, "$1")}`,
+                        Authorization: `Bearer ${getToken()}`,
                     },
                     signal,
                 });
                 
-                if (!res.ok) throw new Error(`Ошибка ${res.status}`);
+                if (!res.ok) {
+                    if (res.status === 401 || res.status === 403) {
+                        throw new Error('Необходима авторизация');
+                    }
+                    throw new Error('Ошибка загрузки');
+                }
                 const data: AnimeCollectionItem[] = await res.json();
                 
                 if (!mountedRef.current) return;
@@ -269,19 +276,14 @@ const CollectionsMobile: React.FC = () => {
                     setCollections(next);
                     collectionsCache.set(type, { items: next, lastUpdated: Date.now(), fullyLoaded: false });
                     
-                    // Показываем карточку с задержкой для анимации
-                    setTimeout(() => {
-                        if (mountedRef.current && !signal.aborted) {
-                            setVisibleAnime(prev => new Set([...prev, data[i].collectionId.toString()]));
-                        }
-                    }, i * 150); // 150ms задержка между появлением карточек
+                    // Карточки загружены
                 }
             } catch (e) {
                 if (e instanceof Error && e.name === 'AbortError') {
                     // aborted - ignore
                 } else {
                     console.error(e);
-                    setError('Ошибка загрузки коллекций');
+                    // Не показываем ошибку, просто пустой список
                 }
                 if (mountedRef.current) setCollections([]);
             } finally {
@@ -305,7 +307,13 @@ const CollectionsMobile: React.FC = () => {
     }, [selectedTab, MOBILE_CACHE_TTL_MS, collectionsCache, lastSelectedRef]);
 
     const handleTabClick = (tab: string, index: number) => {
+        if (tab === selectedTab) return;
+        
+        // Сразу показываем спиннер при переключении
+        setLoading(true);
+        setCollections([]);
         setSelectedTab(tab);
+        
         // bring into view + measure called by effect
         const el = tabRefs.current[index];
         if (el && navItemsRef.current) {
@@ -317,78 +325,68 @@ const CollectionsMobile: React.FC = () => {
 
     return (
         <div
-            className="category-collection-mobile-root"
+            className="yumeko-mobile-index"
             onTouchStart={handleGlobalTouchStart}
             onTouchMove={handleGlobalTouchMove}
             onTouchEnd={handleGlobalTouchEnd}
         >
-            {error && <div className="category-collection-mobile-error-message">{error}</div>}
-
             {!isSearchModalOpen && (
-                <div
-                    className="category-collection-mobile-navbar-items"
-                    ref={navItemsRef}
-                    role="tablist"
-                    aria-label="Коллекции"
-                    onTouchStart={handleGlobalTouchStart}
-                    onTouchMove={handleGlobalTouchMove}
-                    onTouchEnd={handleGlobalTouchEnd}
-                >
-                    {tabs.map((tab, index) => (
-                        <div
-                            key={tab}
-                            ref={(el) => { tabRefs.current[index] = el }}
-                            className={`category-collection-mobile-navbar-item ${
-                                selectedTab === tab ? 'active' : ''
-                            }`}
-                            role="tab"
-                            aria-selected={selectedTab === tab}
-                            tabIndex={0}
-                            onClick={() => handleTabClick(tab, index)}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                    handleTabClick(tab, index);
-                                }
-                            }}
-                        >
-                            {tab}
-                        </div>
-                    ))}
-
+                <div className="yumeko-mobile-index-tabs-wrapper" style={{ marginTop: 0 }}>
                     <div
-                        className={`category-collection-mobile-underline ${isSwiping ? 'swiping' : ''}`}
-                        style={{
-                            '--underline-x': `${underlineX}px`,
-                            '--underline-width': `${underlineWidth}px`
-                        } as React.CSSProperties}
-                    />
+                        className="yumeko-mobile-index-tabs"
+                        ref={navItemsRef}
+                        role="tablist"
+                        aria-label="Коллекции"
+                    >
+                        {tabs.map((tab, index) => (
+                            <button
+                                key={tab}
+                                ref={(el) => { tabRefs.current[index] = el }}
+                                className={`yumeko-mobile-index-tab ${selectedTab === tab ? 'active' : ''}`}
+                                role="tab"
+                                aria-selected={selectedTab === tab}
+                                onClick={() => handleTabClick(tab, index)}
+                            >
+                                {tab}
+                            </button>
+                        ))}
+
+                        <div
+                            className="yumeko-mobile-index-underline"
+                            style={{
+                                transform: `translateX(${underlineX}px)`,
+                                width: `${underlineWidth}px`
+                            }}
+                        />
+                    </div>
                 </div>
             )}
 
-            <div className="collection-mobile-anime-grid">
+            <div className="yumeko-mobile-index-content">
                 {loading ? (
-                    <div className="category-collection-mobile-center-screen-loader" style={{ gridColumn: '1 / -1' }}>
-                        <div className="category-collection-mobile-spinner"/>
+                    <div className="yumeko-mobile-index-loading">
+                        <div className="yumeko-mobile-index-spinner" />
                     </div>
-                ) : collections.length > 0 ? (
-                    collections.map((item) => (
-                        <div
-                            key={item.collectionId}
-                            className={`collection-mobile-anime-card ${visibleAnime.has(item.collectionId.toString()) ? 'visible' : ''}`}
-                        >
-                            <GlobalAnimeCard
-                                anime={convertToAnimeBasicInfo(item)}
-                                collectionType={item.collectionType}
-                                showCollectionStatus={true}
-                                showRating={true}
-                                showType={false}
-                                priority={false}
-                            />
-                        </div>
-                    ))
                 ) : (
-                    <div className="category-collection-mobile-empty">
-                        Вы еще не добавили аниме в эту коллекцию
+                    <div className="yumeko-mobile-index-grid">
+                        {collections.length > 0 ? (
+                            collections.map((item) => (
+                                <div key={item.collectionId} className="yumeko-mobile-index-card">
+                                    <YumekoAnimeCard
+                                        anime={convertToAnimeBasicInfo(item)}
+                                        collectionType={item.collectionType}
+                                        showCollectionStatus={true}
+                                        showRating={false}
+                                        showType={false}
+                                    />
+                                </div>
+                            ))
+                        ) : (
+                            <div className="yumeko-mobile-index-empty">
+                                <span>📺</span>
+                                <span>Вы еще не добавили аниме в данный тип коллекции(</span>
+                            </div>
+                        )}
                     </div>
                 )}
             </div>

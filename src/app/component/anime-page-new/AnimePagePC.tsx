@@ -1,9 +1,10 @@
 'use client';
 
-    import React, { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Heart, Play, Star, Calendar, Camera, FileText, MessageCircle, AlertTriangle, X, CheckCircle, PlayCircle, Pause, ChevronDown, Clock, Edit, Trash2, Award, BookOpen, ChevronUp, Shield, Crown, Verified, Send, Loader2 } from 'lucide-react';
+import '@/styles/components/anime-page-provider.scss';
 // getCurrentUser больше не нужен - используем API профиль
 import ScreenshotItem from './ScreenshotItem';
 import { useAnimePageLogic } from '../../hooks/useAnimePageLogic';
@@ -217,6 +218,15 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
             <DiscordStatusTracker status={`На странице аниме ${anime.title}`} />
 
             <div className="anime-page-container modern">
+                {/* Хлебные крошки */}
+                <div className="anime-breadcrumbs">
+                    <Link href="/" className="breadcrumb-link">Главная</Link>
+                    <span className="breadcrumb-separator">/</span>
+                    <span className="breadcrumb-current">
+                        {anime.title}{anime.season ? ` ${anime.season}` : ''}
+                    </span>
+                </div>
+
                 {/* Баннер */}
                 <div className="anime-banner">
                     {anime.bannerUrl ? (

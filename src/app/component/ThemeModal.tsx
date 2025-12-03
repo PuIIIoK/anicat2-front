@@ -118,11 +118,12 @@ const ThemeModal: React.FC<ThemeModalProps> = ({ isOpen, onClose }) => {
               <h3 className="section-title">Цветовая схема</h3>
               <div className="color-options">
                 {colorSchemes.map((color) => (
-                  <div key={color.value} className="color-option-wrapper">
-                    <div
-                      className={`color-option ${colorScheme === color.value ? 'active' : ''}`}
-                      onClick={() => setColorScheme(color.value)}
-                    >
+                  <div 
+                    key={color.value} 
+                    className={`color-option-wrapper ${colorScheme === color.value ? 'active' : ''}`}
+                    onClick={() => setColorScheme(color.value)}
+                  >
+                    <div className="color-option">
                       <div 
                         className="color-preview" 
                         style={{ 

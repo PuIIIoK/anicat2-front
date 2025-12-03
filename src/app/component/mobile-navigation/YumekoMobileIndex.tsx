@@ -1,0 +1,353 @@
+'use client';
+
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { API_SERVER } from '@/hosts/constants';
+import { AnimeBasicInfo } from '../anime-structure/anime-basic-info';
+import YumekoAnimeCard from '../anime-structure/YumekoAnimeCard';
+import './yumeko-mobile-index.scss';
+
+interface Category {
+    id: string;
+    name: string;
+    position: number;
+}
+
+type AnimeCacheEntry = { animeList: AnimeBasicInfo[]; lastUpdated: number; fullyLoaded: boolean };
+type AnimeCategoryCache = Map<string, AnimeCacheEntry>;
+type CategoriesCache = { categories: Category[]; lastUpdated: number };
+
+declare global {
+    // eslint-disable-next-line no-var
+    var __yumekoMobileCategoriesCache: CategoriesCache | undefined;
+    // eslint-disable-next-line no-var
+    var __yumekoMobileAnimeCache: AnimeCategoryCache | undefined;
+    // eslint-disable-next-line no-var
+    var __yumekoLastSelectedCategoryId: string | null | undefined;
+}
+
+const CACHE_TTL_MS = 30 * 60 * 1000; // 30 минут
+
+const YumekoMobileIndex: React.FC = () => {
+    // Инициализация кэшей
+    if (!globalThis.__yumekoMobileCategoriesCache) {
+        globalThis.__yumekoMobileCategoriesCache = { categories: [], lastUpdated: 0 };
+    }
+    if (!globalThis.__yumekoMobileAnimeCache) {
+        globalThis.__yumekoMobileAnimeCache = new Map<string, AnimeCacheEntry>();
+    }
+    if (typeof globalThis.__yumekoLastSelectedCategoryId === 'undefined') {
+        globalThis.__yumekoLastSelectedCategoryId = null;
+    }
+
+    const categoriesCache = globalThis.__yumekoMobileCategoriesCache!;
+    const animeCache = globalThis.__yumekoMobileAnimeCache!;
+    const lastSelectedRef = useMemo(() => ({
+        get value() { return globalThis.__yumekoLastSelectedCategoryId as string | null; },
+        set value(v: string | null) { globalThis.__yumekoLastSelectedCategoryId = v; }
+    }), []);
+
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+    const [animeList, setAnimeList] = useState<AnimeBasicInfo[]>([]);
+    const [loadingCategories, setLoadingCategories] = useState(true);
+    const [loadingAnime, setLoadingAnime] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    // Refs
+    const categoryRefs = useRef<(HTMLButtonElement | null)[]>([]);
+    const tabsContainerRef = useRef<HTMLDivElement | null>(null);
+    const mountedRef = useRef(true);
+    const fetchControllerRef = useRef<AbortController | null>(null);
+
+    // Underline state
+    const [underlineStyle, setUnderlineStyle] = useState({ left: 0, width: 0 });
+
+    useEffect(() => {
+        mountedRef.current = true;
+        return () => { mountedRef.current = false; };
+    }, []);
+
+    // Загрузка категорий
+    useEffect(() => {
+        const fetchCategories = async () => {
+            setLoadingCategories(true);
+            try {
+                const isFresh = Date.now() - categoriesCache.lastUpdated < CACHE_TTL_MS && categoriesCache.categories.length > 0;
+                
+                if (isFresh) {
+                    if (!mountedRef.current) return;
+                    setCategories(categoriesCache.categories);
+                    const fallbackId = categoriesCache.categories[0]?.id || null;
+                    setSelectedCategoryId(
+                        lastSelectedRef.value && categoriesCache.categories.some(c => c.id === lastSelectedRef.value)
+                            ? lastSelectedRef.value
+                            : fallbackId
+                    );
+                    setLoadingCategories(false);
+                    return;
+                }
+
+                const res = await fetch(`${API_SERVER}/api/anime/category/get-category`);
+                if (!res.ok) throw new Error('Ошибка загрузки');
+                
+                const data = await res.json();
+                const fetched: Category[] = (data.categories || []).sort(
+                    (a: Category, b: Category) => a.position - b.position
+                );
+                
+                if (!mountedRef.current) return;
+                setCategories(fetched);
+                
+                const initialId = lastSelectedRef.value && fetched.some(c => c.id === lastSelectedRef.value)
+                    ? lastSelectedRef.value
+                    : (fetched[0]?.id || null);
+                setSelectedCategoryId(initialId);
+                
+                categoriesCache.categories = fetched;
+                categoriesCache.lastUpdated = Date.now();
+            } catch {
+                setError('Ошибка загрузки категорий');
+            } finally {
+                setLoadingCategories(false);
+            }
+        };
+
+        fetchCategories();
+    }, [categoriesCache, lastSelectedRef]);
+
+    // Обновление underline
+    const updateUnderline = useCallback(() => {
+        const idx = categories.findIndex(c => c.id === selectedCategoryId);
+        const el = categoryRefs.current[idx];
+        const container = tabsContainerRef.current;
+        
+        if (el && container) {
+            requestAnimationFrame(() => {
+                setUnderlineStyle({
+                    left: el.offsetLeft,
+                    width: el.offsetWidth
+                });
+                
+                // Скролл к активному табу
+                const center = el.offsetLeft - container.clientWidth / 2 + el.offsetWidth / 2;
+                container.scrollTo({ left: Math.max(0, center), behavior: 'smooth' });
+            });
+        }
+    }, [categories, selectedCategoryId]);
+
+    useEffect(() => {
+        updateUnderline();
+        window.addEventListener('resize', updateUnderline);
+        return () => window.removeEventListener('resize', updateUnderline);
+    }, [updateUnderline]);
+
+    // Загрузка аниме для категории
+    useEffect(() => {
+        if (!selectedCategoryId) {
+            setAnimeList([]);
+            return;
+        }
+
+        if (fetchControllerRef.current) {
+            fetchControllerRef.current.abort();
+        }
+        const controller = new AbortController();
+        fetchControllerRef.current = controller;
+
+        const fetchAnimeList = async () => {
+            lastSelectedRef.value = selectedCategoryId;
+
+            // Проверяем кэш
+            const cached = animeCache.get(selectedCategoryId);
+            const isFresh = cached && (Date.now() - cached.lastUpdated < CACHE_TTL_MS) && cached.animeList.length > 0;
+            
+            if (cached && cached.animeList.length > 0) {
+                if (!mountedRef.current) return;
+                setAnimeList(cached.animeList);
+                setLoadingAnime(false);
+                
+                if (isFresh && cached.fullyLoaded) return;
+            } else {
+                setLoadingAnime(true);
+                setAnimeList([]);
+            }
+
+            try {
+                // Сначала получаем animeIds для конкретной категории
+                const categoryRes = await fetch(
+                    `${API_SERVER}/api/anime/category/get-category/${selectedCategoryId}`,
+                    { signal: controller.signal }
+                );
+                
+                if (!categoryRes.ok) throw new Error('Failed to fetch category');
+                
+                const categoryData = await categoryRes.json();
+                const animeIds: number[] = (categoryData.animeIds || []).map(Number);
+                
+                if (animeIds.length === 0) {
+                    setAnimeList([]);
+                    setLoadingAnime(false);
+                    return;
+                }
+                
+                // Затем получаем детали аниме
+                const res = await fetch(`${API_SERVER}/api/anime/optimized/get-anime-list/basic`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(animeIds),
+                    signal: controller.signal
+                });
+
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+                const loadedAnime = await res.json();
+                
+                if (!mountedRef.current || controller.signal.aborted) return;
+
+                // Сортируем в порядке категории
+                const sortedAnime = animeIds.map(id => 
+                    loadedAnime.find((anime: AnimeBasicInfo) => anime.id === id)
+                ).filter(Boolean) as AnimeBasicInfo[];
+
+                setLoadingAnime(false);
+                setAnimeList(sortedAnime);
+                
+                animeCache.set(selectedCategoryId, {
+                    animeList: sortedAnime,
+                    lastUpdated: Date.now(),
+                    fullyLoaded: true
+                });
+            } catch (e) {
+                if (e instanceof Error && e.name === 'AbortError') return;
+                console.error('Error loading anime:', e);
+                if (mountedRef.current) setAnimeList([]);
+            } finally {
+                if (mountedRef.current) setLoadingAnime(false);
+            }
+        };
+
+        fetchAnimeList();
+
+        return () => { controller.abort(); };
+    }, [selectedCategoryId, animeCache, lastSelectedRef]);
+
+    const handleCategoryClick = useCallback((id: string) => {
+        setSelectedCategoryId(id);
+    }, []);
+
+    // Обработка свайпа
+    const touchStartX = useRef<number | null>(null);
+    
+    const handleTouchStart = (e: React.TouchEvent) => {
+        touchStartX.current = e.touches[0].clientX;
+    };
+    
+    const handleTouchEnd = (e: React.TouchEvent) => {
+        if (touchStartX.current === null) return;
+        
+        const touchEndX = e.changedTouches[0].clientX;
+        const deltaX = touchEndX - touchStartX.current;
+        
+        if (Math.abs(deltaX) >= 50) {
+            const currentIdx = categories.findIndex(c => c.id === selectedCategoryId);
+            if (deltaX < 0 && currentIdx < categories.length - 1) {
+                setSelectedCategoryId(categories[currentIdx + 1].id);
+            } else if (deltaX > 0 && currentIdx > 0) {
+                setSelectedCategoryId(categories[currentIdx - 1].id);
+            }
+        }
+        
+        touchStartX.current = null;
+    };
+
+    if (error) {
+        return (
+            <div className="yumeko-mobile-index-error">
+                <span className="yumeko-mobile-index-error-icon">⚠️</span>
+                <span className="yumeko-mobile-index-error-text">{error}</span>
+                <button 
+                    className="yumeko-mobile-index-error-btn"
+                    onClick={() => window.location.reload()}
+                >
+                    Повторить
+                </button>
+            </div>
+        );
+    }
+
+    if (loadingCategories) {
+        return (
+            <div className="yumeko-mobile-index-loader">
+                <div className="yumeko-mobile-index-spinner" />
+            </div>
+        );
+    }
+
+    return (
+        <div 
+            className="yumeko-mobile-index"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+        >
+            {/* Tabs Navigation */}
+            <div className="yumeko-mobile-index-tabs-wrapper">
+                <div 
+                    className="yumeko-mobile-index-tabs"
+                    ref={tabsContainerRef}
+                >
+                    {categories.map((cat, index) => (
+                        <button
+                            key={cat.id}
+                            ref={(el) => { categoryRefs.current[index] = el; }}
+                            className={`yumeko-mobile-index-tab ${selectedCategoryId === cat.id ? 'active' : ''}`}
+                            onClick={() => handleCategoryClick(cat.id)}
+                        >
+                            {cat.name}
+                        </button>
+                    ))}
+                    
+                    {/* Underline */}
+                    <div 
+                        className="yumeko-mobile-index-underline"
+                        style={{
+                            transform: `translateX(${underlineStyle.left}px)`,
+                            width: `${underlineStyle.width}px`
+                        }}
+                    />
+                </div>
+            </div>
+
+            {/* Anime Grid */}
+            <div className="yumeko-mobile-index-content">
+                {loadingAnime ? (
+                    <div className="yumeko-mobile-index-loading">
+                        <div className="yumeko-mobile-index-spinner" />
+                        <span>Загрузка...</span>
+                    </div>
+                ) : (
+                    <div className="yumeko-mobile-index-grid">
+                        {animeList.length > 0 ? (
+                            animeList.map((anime) => (
+                                <div key={anime.id} className="yumeko-mobile-index-card">
+                                    <YumekoAnimeCard
+                                        anime={anime}
+                                        showRating={true}
+                                        showType={false}
+                                        showCollectionStatus={true}
+                                    />
+                                </div>
+                            ))
+                        ) : (
+                            <div className="yumeko-mobile-index-empty">
+                                <span>📺</span>
+                                <span>Аниме не найдено</span>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
+export default YumekoMobileIndex;

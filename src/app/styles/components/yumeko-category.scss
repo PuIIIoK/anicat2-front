@@ -1,17 +1,11 @@
-/* ===== YUMEKO CATEGORY SECTION - CLEAN DESIGN ===== */
-
-// Variables
-$category-gap: 2rem;
-$card-gap: 16px;
-$transition: 0.2s ease;
+/* ===== YUMEKO CATEGORY SECTION ===== */
 
 // ===================================
 // MAIN SECTION
 // ===================================
 
-.optimized-category-section {
-  position: relative;
-  margin-bottom: $category-gap;
+.yumeko-category {
+  margin-bottom: 2rem;
   
   @media (max-width: 768px) {
     margin-bottom: 1.5rem;
@@ -22,7 +16,7 @@ $transition: 0.2s ease;
 // HEADER
 // ===================================
 
-.category-header {
+.yumeko-category-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -30,20 +24,20 @@ $transition: 0.2s ease;
   gap: 16px;
 }
 
-.category-title-link {
+.yumeko-category-title-link {
   text-decoration: none;
   
-  &:hover .category-title {
+  &:hover .yumeko-category-title {
     color: var(--primary-color);
   }
 }
 
-.category-title {
+.yumeko-category-title {
   font-size: 1.25rem;
   font-weight: 600;
   color: var(--text-primary);
   margin: 0;
-  transition: color $transition;
+  transition: color 0.2s ease;
   
   @media (max-width: 768px) {
     font-size: 1.1rem;
@@ -51,16 +45,16 @@ $transition: 0.2s ease;
 }
 
 // ===================================
-// ACTION BUTTONS
+// CONTROLS
 // ===================================
 
-.category-actions {
+.yumeko-category-controls {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.scroll-btn {
+.yumeko-scroll-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -71,7 +65,7 @@ $transition: 0.2s ease;
   border-radius: 50%;
   color: white;
   cursor: pointer;
-  transition: all $transition;
+  transition: all 0.2s ease;
   outline: none !important;
   box-shadow: none !important;
   
@@ -81,7 +75,7 @@ $transition: 0.2s ease;
   }
   
   &:hover {
-    background: var(--primary-hover);
+    opacity: 0.85;
     transform: scale(1.05);
   }
   
@@ -106,7 +100,7 @@ $transition: 0.2s ease;
   }
 }
 
-.view-all-btn {
+.yumeko-view-all {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -118,13 +112,13 @@ $transition: 0.2s ease;
   font-size: 13px;
   font-weight: 500;
   text-decoration: none;
-  transition: all $transition;
+  transition: all 0.2s ease;
   white-space: nowrap;
   
   svg {
     width: 14px;
     height: 14px;
-    transition: transform $transition;
+    transition: transform 0.2s ease;
   }
   
   &:hover {
@@ -144,16 +138,12 @@ $transition: 0.2s ease;
 }
 
 // ===================================
-// CONTENT AREA
+// CONTENT
 // ===================================
 
-.category-content {
-  position: relative;
-}
-
-.anime-grid-container {
+.yumeko-category-content {
   display: flex;
-  gap: $card-gap;
+  gap: 16px;
   overflow-x: auto;
   overflow-y: visible;
   padding: 4px 0 16px;
@@ -167,28 +157,30 @@ $transition: 0.2s ease;
   
   @media (max-width: 768px) {
     gap: 12px;
-    padding: 4px 0 12px;
   }
 }
 
 // ===================================
-// CARD WRAPPER WITH ANIMATION
+// CARD ITEM
 // ===================================
 
-.anime-card-wrapper {
+.yumeko-card-item {
   flex-shrink: 0;
   opacity: 0;
-  transform: translateY(8px);
-  animation: cardFadeIn 0.4s ease forwards;
+  animation: yumekoFadeIn 0.4s ease forwards;
   
   @for $i from 1 through 20 {
     &:nth-child(#{$i}) {
-      animation-delay: #{$i * 0.05}s;
+      animation-delay: #{$i * 0.04}s;
     }
   }
 }
 
-@keyframes cardFadeIn {
+@keyframes yumekoFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
   to {
     opacity: 1;
     transform: translateY(0);
@@ -196,96 +188,44 @@ $transition: 0.2s ease;
 }
 
 // ===================================
-// LOADING STATE
+// LOADING
 // ===================================
 
-.loading-state {
+.yumeko-category-loading {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 280px;
-  gap: 16px;
 }
 
-.category-loading-spinner {
+.yumeko-dots {
   display: flex;
-  align-items: center;
   gap: 8px;
   
-  .spinner-ring {
-    width: 12px;
-    height: 12px;
+  span {
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     background: var(--primary-color);
-    animation: pulse 1.2s ease-in-out infinite;
+    animation: yumekoPulse 1.2s ease-in-out infinite;
     
     &:nth-child(2) {
-      animation-delay: 0.2s;
+      animation-delay: 0.15s;
     }
     
     &:nth-child(3) {
-      animation-delay: 0.4s;
+      animation-delay: 0.3s;
     }
   }
 }
 
-@keyframes pulse {
+@keyframes yumekoPulse {
   0%, 100% {
-    transform: scale(0.8);
-    opacity: 0.5;
+    transform: scale(0.7);
+    opacity: 0.4;
   }
   50% {
     transform: scale(1);
     opacity: 1;
   }
-}
-
-.loading-text {
-  color: var(--text-muted);
-  font-size: 14px;
-}
-
-// ===================================
-// ERROR & EMPTY STATES
-// ===================================
-
-.error-state,
-.empty-state {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 200px;
-  
-  p {
-    color: var(--text-muted);
-    font-size: 14px;
-  }
-}
-
-// ===================================
-// VISIBILITY CLASSES
-// ===================================
-
-.desktop-only {
-  display: block;
-  
-  @media (max-width: 768px) {
-    display: none !important;
-  }
-}
-
-.mobile-only {
-  display: none;
-  
-  @media (max-width: 768px) {
-    display: block !important;
-  }
-}
-
-.no-categories-message {
-  text-align: center;
-  padding: 4rem 2rem;
-  color: var(--text-muted);
-  font-size: 1rem;
 }

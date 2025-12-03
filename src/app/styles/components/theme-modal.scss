@@ -190,16 +190,27 @@
   align-items: center;
   gap: 12px;
   padding: 12px;
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
+  border: 2px solid transparent;
 
   &:hover {
     background: var(--bg-hover);
+    
+    .color-option {
+      transform: scale(1.05);
+    }
   }
 
-  &:has(.color-option.active) {
+  &.active {
     background: var(--primary-bg);
+    border-color: var(--primary-color);
+    
+    .color-name {
+      color: var(--primary-color);
+      font-weight: 600;
+    }
   }
 }
 
@@ -208,14 +219,9 @@
   height: 44px;
   border-radius: 50%;
   position: relative;
-  border: 3px solid transparent;
   transition: all 0.2s ease;
   overflow: hidden;
-
-  &.active {
-    border-color: var(--primary-color);
-    transform: scale(1.1);
-  }
+  flex-shrink: 0;
 }
 
 .color-preview {

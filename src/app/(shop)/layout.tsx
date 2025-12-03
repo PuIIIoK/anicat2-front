@@ -14,13 +14,13 @@ type LayoutProps = {
 
 const RootLayout: React.FC<LayoutProps> = ({ children }) => {
     return (
-        <html lang="ru">
+        <html lang="ru" suppressHydrationWarning>
         <head>
             <title>Yumeko - Магазин</title>
             <meta charSet="UTF-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         </head>
-        <body>
+        <body suppressHydrationWarning>
             <NotificationProvider>
                 <BanChecker>
                     <main className="main">{children}</main>

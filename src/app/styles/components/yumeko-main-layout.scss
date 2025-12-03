@@ -1,0 +1,369 @@
+// ===================================
+// YUMEKO MAIN LAYOUT STYLES
+// ===================================
+
+$sidebar-width: 260px;
+$header-height: 70px;
+$transition-speed: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+// Main wrapper - shifts left when sidebar is open
+.main-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    transition: margin-right $transition-speed;
+    padding-top: $header-height;
+    background: var(--body-bg, var(--bg-primary));
+    color: var(--text-primary);
+    
+    // Sidebar closed - full width
+    &.sidebar-closed {
+        margin-right: 0;
+        
+        .header {
+            right: 0;
+            width: 100%;
+        }
+    }
+    
+    // Sidebar open - shift content left
+    &.sidebar-open {
+        margin-right: var(--sidebar-width, $sidebar-width);
+        
+        .header {
+            right: var(--sidebar-width, $sidebar-width);
+            width: calc(100% - var(--sidebar-width, #{$sidebar-width}));
+        }
+    }
+}
+
+// On mobile - no shift, sidebar is overlay
+@media (max-width: 1024px) {
+    .main-wrapper {
+        &.sidebar-open,
+        &.sidebar-closed {
+            margin-right: 0;
+            
+            .header {
+                right: 0;
+                width: 100%;
+            }
+        }
+    }
+}
+
+// Updated header styles for new layout
+.header {
+    transition: right $transition-speed, width $transition-speed;
+    
+    .sidebar-toggle-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+        
+        &:hover {
+            background: rgba(var(--primary-color-rgb, 175, 82, 222), 0.15);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        &:active {
+            transform: scale(0.95);
+        }
+        
+        svg {
+            width: 20px;
+            height: 20px;
+        }
+    }
+}
+
+// Main content area
+.yumeko-main {
+    flex: 1;
+    width: 100%;
+    padding: 24px 32px;
+    background: var(--body-bg, var(--bg-primary));
+    color: var(--text-primary);
+    
+    @media (max-width: 1024px) {
+        padding: 20px 20px;
+    }
+    
+    @media (max-width: 768px) {
+        padding: 16px 12px;
+    }
+}
+
+// ===================================
+// YUMEKO HOME PAGE STYLES
+// ===================================
+
+.yumeko-home {
+    width: 100%;
+    max-width: 100%;
+}
+
+// Section header with title and controls
+.yumeko-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    gap: 16px;
+    
+    .yumeko-section-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0;
+        
+        .section-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: rgba(var(--primary-color-rgb, 175, 82, 222), 0.15);
+            border-radius: 8px;
+            color: var(--primary-color);
+            
+            svg {
+                width: 18px;
+                height: 18px;
+            }
+        }
+    }
+    
+    .yumeko-section-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .scroll-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 50%;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        outline: none !important;
+        box-shadow: none !important;
+        
+        &:focus,
+        &:focus-visible {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+        
+        &:hover {
+            background: rgba(var(--primary-color-rgb, 175, 82, 222), 0.15);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        svg {
+            width: 18px;
+            height: 18px;
+        }
+    }
+    
+    .view-all-link {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        background: rgba(var(--primary-color-rgb, 175, 82, 222), 0.1);
+        border: 1px solid rgba(var(--primary-color-rgb, 175, 82, 222), 0.2);
+        border-radius: 20px;
+        color: var(--primary-color);
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        
+        &:hover {
+            background: rgba(var(--primary-color-rgb, 175, 82, 222), 0.2);
+            border-color: var(--primary-color);
+        }
+        
+        svg {
+            width: 14px;
+            height: 14px;
+        }
+    }
+}
+
+// Horizontal scroll container for anime cards
+.yumeko-anime-scroll {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    overflow-y: visible;
+    padding: 8px 0 20px;
+    margin: 0 -8px;
+    padding-left: 8px;
+    padding-right: 8px;
+    scroll-behavior: smooth;
+    
+    // Hide scrollbar but keep functionality
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    
+    // Anime card wrapper
+    .anime-card-wrapper {
+        flex-shrink: 0;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        
+        &.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}
+
+// Grid layout for categories on home page
+.yumeko-categories-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+// Category section
+.yumeko-category-section {
+    width: 100%;
+}
+
+// ===================================
+// RESPONSIVE ADJUSTMENTS
+// ===================================
+
+@media (max-width: 1024px) {
+    .main-wrapper {
+        &.sidebar-open,
+        &.sidebar-closed {
+            margin-left: 0;
+            
+            .header {
+                left: 0;
+                width: 100%;
+            }
+        }
+    }
+    
+    .yumeko-section-header {
+        .yumeko-section-title {
+            font-size: 1.25rem;
+            
+            .section-icon {
+                width: 28px;
+                height: 28px;
+                
+                svg {
+                    width: 16px;
+                    height: 16px;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .yumeko-section-header {
+        flex-wrap: wrap;
+        
+        .yumeko-section-title {
+            font-size: 1.1rem;
+        }
+        
+        .scroll-btn {
+            width: 32px;
+            height: 32px;
+        }
+        
+        .view-all-link {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+    }
+    
+    .yumeko-anime-scroll {
+        gap: 12px;
+    }
+}
+
+// ===================================
+// LOADING STATES
+// ===================================
+
+.yumeko-loading-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    width: 100%;
+}
+
+.yumeko-loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: yumeko-spin 0.8s linear infinite;
+}
+
+@keyframes yumeko-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+// Empty state
+.yumeko-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    gap: 16px;
+    color: var(--text-muted);
+    
+    .empty-icon {
+        font-size: 48px;
+        opacity: 0.5;
+    }
+    
+    .empty-text {
+        font-size: 14px;
+    }
+}

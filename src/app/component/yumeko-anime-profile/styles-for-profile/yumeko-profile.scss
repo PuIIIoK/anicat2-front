@@ -13,6 +13,38 @@ $text-secondary: #8f98a0;
 $text-muted: #67707b;
 $border-color: #3d4f5c;
 
+// ===== Profile Breadcrumbs =====
+.yumeko-profile-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 24px 24px 24px;
+  margin-bottom: 0;
+  font-size: 14px;
+  position: relative;
+  z-index: 10;
+  
+  .breadcrumb-link {
+    color: $text-secondary;
+    text-decoration: none;
+    transition: color 0.2s ease;
+    
+    &:hover {
+      color: var(--primary-color, $discord-blurple);
+    }
+  }
+  
+  .breadcrumb-separator {
+    color: $text-secondary;
+    opacity: 0.5;
+  }
+  
+  .breadcrumb-current {
+    color: $text-primary;
+    font-weight: 500;
+  }
+}
+
 // ===== Main Wrapper =====
 .yumeko-profile-wrapper {
   position: relative;

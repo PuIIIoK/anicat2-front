@@ -1,0 +1,182 @@
+/* ===== YUMEKO CONTINUE WATCHING CARD ===== */
+
+.yumeko-continue-card {
+    display: flex;
+    flex-direction: column;
+    width: 180px;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+    
+    &:hover {
+        transform: translateY(-4px);
+        
+        .yumeko-continue-card-image {
+            transform: scale(1.03);
+        }
+        
+        .yumeko-continue-card-cover {
+            box-shadow: 0 8px 24px rgba(var(--primary-color-rgb, 175, 82, 222), 0.25);
+        }
+        
+        .yumeko-continue-card-title {
+            color: var(--primary-color);
+        }
+    }
+}
+
+// Cover
+.yumeko-continue-card-cover {
+    position: relative;
+    width: 180px;
+    height: 250px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.05);
+    transition: box-shadow 0.2s ease;
+    display: block;
+}
+
+.yumeko-continue-card-image {
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.yumeko-continue-card-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.03);
+    color: rgba(255, 255, 255, 0.2);
+}
+
+// Progress bar
+.yumeko-continue-card-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.yumeko-continue-card-progress-bar {
+    height: 100%;
+    background: var(--primary-color);
+    transition: width 0.3s ease;
+}
+
+// Info section
+.yumeko-continue-card-info {
+    padding: 10px 2px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.yumeko-continue-card-title {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--text-primary);
+    text-decoration: none;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 34px;
+    transition: color 0.2s ease;
+}
+
+.yumeko-continue-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.yumeko-continue-card-episode {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.yumeko-continue-card-series {
+    color: var(--text-muted);
+}
+
+.yumeko-continue-card-time {
+    color: var(--text-muted);
+    margin-left: auto;
+}
+
+// Voice info
+.yumeko-continue-card-voice {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    
+    svg {
+        flex-shrink: 0;
+        opacity: 0.7;
+    }
+}
+
+// Continue button
+.yumeko-continue-card-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: var(--primary-color);
+    color: white !important;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    margin-top: 4px;
+    
+    svg {
+        flex-shrink: 0;
+    }
+    
+    &:hover {
+        opacity: 0.9;
+        color: white !important;
+    }
+}
+
+// Responsive
+@media (max-width: 768px) {
+    .yumeko-continue-card {
+        width: 160px;
+    }
+    
+    .yumeko-continue-card-cover {
+        width: 160px;
+        height: 220px;
+    }
+    
+    .yumeko-continue-card-title {
+        font-size: 12px;
+        height: 32px;
+    }
+    
+    .yumeko-continue-card-meta {
+        font-size: 10px;
+    }
+    
+    .yumeko-continue-card-btn {
+        padding: 6px 10px;
+        font-size: 11px;
+    }
+}

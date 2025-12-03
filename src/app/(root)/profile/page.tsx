@@ -9,10 +9,10 @@ export default function Page() {
     const router = useRouter();
 
     useEffect(() => {
-        // Получаем токен из куки
-        const token = document.cookie.match(/token=([^;]+)/)?.[1];
+        // Получаем токен из куки или localStorage
+        const token = document.cookie.match(/token=([^;]+)/)?.[1] || localStorage.getItem('token');
         if (!token) {
-            router.replace('/login');
+            router.replace('/');
             return;
         }
 
@@ -22,9 +22,9 @@ export default function Page() {
         })
             .then(res => res.json())
             .then(data => {
-                // Если нет username — редирект на /auth
+                // Если нет username — редирект на главную
                 if (!data?.username) {
-                    router.replace('/login');
+                    router.replace('/');
                     return;
                 }
                 // Если есть бета-страница профиля
@@ -36,8 +36,8 @@ export default function Page() {
                 router.replace(`/profile/${data.username}`);
             })
             .catch(() => {
-                // Ошибка запроса — тоже на /auth
-                router.replace('/login');
+                // Ошибка запроса — на главную
+                router.replace('/');
             });
     }, [router]);
 

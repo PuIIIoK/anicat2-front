@@ -7,6 +7,7 @@ import AdminRoleChecker from '@/component/AdminRoleChecker';
 import SyncProgressNotification from '@/component/sync/SyncProgressNotification';
 import { API_SERVER } from '@/hosts/constants';
 import { ThemeProvider } from '../context/ThemeContext';
+import { SidebarProvider } from '../context/SidebarContext';
 import { YumekoUploadProvider } from '../context/YumekoUploadContext';
 
 type LayoutProps = {
@@ -15,30 +16,32 @@ type LayoutProps = {
 
 const RootLayout: React.FC<LayoutProps> = ({ children }) => {
   return (
-      <html lang="ru">
+      <html lang="ru" suppressHydrationWarning>
       <head>
         <title>Yumeko | Admin_Panel</title>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <ThemeProvider>
-          <NotificationProvider>
-            <YumekoUploadProvider>
-              <BanChecker>
-                <AdminRoleChecker>
-                  <ElectronBodyClass />
-                  <CustomTitleBar />
-                  <DiscordStatusTracker />
-                  <Header />
-                  <main className="main">{children}</main>
-                  
-                  {/* Глобальные компоненты */}
-                  <SyncProgressNotification apiServer={API_SERVER} />
-                </AdminRoleChecker>
-              </BanChecker>
-            </YumekoUploadProvider>
-          </NotificationProvider>
+          <SidebarProvider>
+            <NotificationProvider>
+              <YumekoUploadProvider>
+                <BanChecker>
+                  <AdminRoleChecker>
+                    <ElectronBodyClass />
+                    <CustomTitleBar />
+                    <DiscordStatusTracker />
+                    <Header />
+                    <main className="main">{children}</main>
+                    
+                    {/* Глобальные компоненты */}
+                    <SyncProgressNotification apiServer={API_SERVER} />
+                  </AdminRoleChecker>
+                </BanChecker>
+              </YumekoUploadProvider>
+            </NotificationProvider>
+          </SidebarProvider>
         </ThemeProvider>
       </body>
       </html>

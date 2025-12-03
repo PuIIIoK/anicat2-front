@@ -1,0 +1,306 @@
+// ===================================
+// YUMEKO COLLECTION SERVICE STYLES
+// ===================================
+
+.yumeko-collection-service {
+    width: 100%;
+    padding: 24px;
+    
+    @media (max-width: 768px) {
+        padding: 16px 12px;
+    }
+}
+
+// Breadcrumbs
+.yumeko-collection-service-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    
+    .breadcrumb-link {
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: color 0.2s ease;
+        
+        &:hover {
+            color: var(--primary-color);
+        }
+    }
+    
+    .breadcrumb-separator {
+        color: var(--text-secondary);
+        opacity: 0.5;
+    }
+    
+    .breadcrumb-current {
+        color: var(--text-primary);
+        font-weight: 500;
+    }
+}
+
+// Header
+.yumeko-collection-service-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    gap: 16px;
+    flex-wrap: wrap;
+    
+    @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+.yumeko-collection-service-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    
+    svg {
+        color: var(--primary-color);
+    }
+}
+
+.yumeko-collection-service-tools {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    
+    @media (max-width: 768px) {
+        width: 100%;
+    }
+}
+
+.yumeko-collection-service-count {
+    font-size: 14px;
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 8px 16px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.yumeko-collection-service-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 8px 16px;
+    transition: all 0.2s ease;
+    
+    &:focus-within {
+        border-color: var(--primary-color);
+        background: rgba(255, 255, 255, 0.08);
+    }
+    
+    svg {
+        color: var(--text-secondary);
+        flex-shrink: 0;
+    }
+    
+    input {
+        background: transparent;
+        border: none;
+        outline: none;
+        color: var(--text-primary);
+        font-size: 14px;
+        width: 200px;
+        
+        &::placeholder {
+            color: var(--text-secondary);
+        }
+        
+        @media (max-width: 768px) {
+            width: 100%;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        flex: 1;
+    }
+}
+
+// Tabs
+.yumeko-collection-service-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scrollbar-width: none;
+    
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.yumeko-collection-service-tab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    
+    svg {
+        flex-shrink: 0;
+    }
+    
+    &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--text-primary);
+        
+        svg {
+            color: var(--text-primary);
+        }
+    }
+    
+    &.active {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white !important;
+        
+        span {
+            color: white !important;
+        }
+        
+        svg {
+            color: white !important;
+            stroke: white !important;
+        }
+    }
+}
+
+// Grid
+.yumeko-collection-service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+    
+    @media (max-width: 1200px) {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 16px;
+    }
+    
+    @media (max-width: 768px) {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 12px;
+    }
+    
+    @media (max-width: 480px) {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+}
+
+// Loading
+.yumeko-collection-service-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    gap: 24px;
+    grid-column: 1 / -1;
+}
+
+.yumeko-collection-service-spinner {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    
+    &::before,
+    &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+    }
+    
+    &::before {
+        border: 3px solid transparent;
+        border-top-color: var(--primary-color);
+        border-right-color: var(--primary-color);
+        animation: spinnerRotate 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    }
+    
+    &::after {
+        border: 3px solid transparent;
+        border-bottom-color: rgba(175, 82, 222, 0.3);
+        border-left-color: rgba(175, 82, 222, 0.3);
+        animation: spinnerRotate 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite reverse;
+        animation-delay: -0.4s;
+    }
+}
+
+.yumeko-collection-service-loading span {
+    font-size: 15px;
+    color: var(--text-secondary);
+    animation: loadingPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes spinnerRotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes loadingPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+// Empty state
+.yumeko-collection-service-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+    grid-column: 1 / -1;
+    
+    .empty-icon {
+        width: 120px;
+        height: 120px;
+        margin-bottom: 20px;
+        opacity: 0.8;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+    
+    .empty-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 8px;
+    }
+    
+    .empty-text {
+        font-size: 14px;
+        color: var(--text-secondary);
+        max-width: 300px;
+    }
+}
+
+// Section divider
+.yumeko-collection-service-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    margin: 24px 0;
+}

@@ -40,7 +40,7 @@ const RootLayout: React.FC<LayoutProps> = ({ children }) => {
     // const showTestAccess = !token && !excluded;
 
     return (
-        <html lang="ru">
+        <html lang="ru" suppressHydrationWarning>
         <head>
             <title>Yumeko - Твой аниме сайт!</title>
             <meta charSet="UTF-8" />
@@ -53,7 +53,7 @@ const RootLayout: React.FC<LayoutProps> = ({ children }) => {
                 rel="stylesheet"
             />
         </head>
-        <body>
+        <body suppressHydrationWarning>
             <NotificationProvider>
                 <CustomTitleBar />
                 <DiscordStatusTracker />

@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import PcSettings from '@/app/(auth)/profile/settings/PcSettings';
-import MobileSettings from '@/app/(auth)/profile/settings/MobileSettings';
+import PcSettings from '@/app/(root)/profile/settings/PcSettings';
+import MobileSettings from '@/app/(root)/profile/settings/MobileSettings';
 
 const Page: React.FC = () => {
     const [isMobile, setIsMobile] = useState<boolean | null>(null);

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
 import { useYumekoProfile } from './hooks/useYumekoProfile';
 import YumekoProfileHeader from './yumeko-profile-components/YumekoProfileHeader';
 import YumekoProfileSidebar from './yumeko-profile-components/YumekoProfileSidebar';
@@ -125,6 +126,13 @@ const YumekoProfileProvider: React.FC<YumekoProfileProviderProps> = ({ username 
                 <title>{userName} | Yumeko</title>
                 <meta name="description" content={`Профиль ${userName} на Yumeko`} />
             </Head>
+
+            {/* Breadcrumbs */}
+            <nav className="yumeko-profile-breadcrumbs">
+                <Link href="/" className="breadcrumb-link">Главная</Link>
+                <span className="breadcrumb-separator">/</span>
+                <span className="breadcrumb-current">Профиль</span>
+            </nav>
 
             <div className="yumeko-profile-wrapper" data-theme={profileColorScheme || 'default'} style={profileStyle}>
                 <YumekoProfileBackground 

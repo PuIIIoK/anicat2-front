@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Play, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getCurrentUser } from '../../utils/auth';
 import { API_SERVER } from '@/hosts/constants';
-import ContinueWatchingCard from './ContinueWatchingCard';
+import YumekoContinueCard from './YumekoContinueCard';
 import type { WatchingItem } from '../profile-page-old/types';
 
 const ContinueWatchingSection: React.FC = () => {
@@ -167,7 +167,7 @@ const ContinueWatchingSection: React.FC = () => {
                             key={item.id}
                             className={`continue-watching-card-wrapper ${visibleCards.has(item.id) ? 'visible' : ''}`}
                         >
-                            <ContinueWatchingCard
+                            <YumekoContinueCard
                                 item={item}
                                 priority={index < 6}
                             />

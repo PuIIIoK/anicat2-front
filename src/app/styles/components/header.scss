@@ -1,36 +1,438 @@
-.header {
+// ===================================
+// YUMEKO HEADER - CINEMA STYLE
+// ===================================
+
+.header.yumeko-header {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
+  height: 80px;
   z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 20px;
-  background-color: var(--bg-secondary);
-  box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
-  transition: backdrop-filter 0.3s ease;
+  padding: 0 32px;
+  background: var(--header-bg, rgba(0, 0, 0, 0.4));
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  transition: all 0.3s ease;
 
   .header-content {
-    max-width: 1410px;
+    max-width: 100%;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 32px;
   }
 
+  // Left section: Logo + Nav
   .header-left {
     display: flex;
+    flex-direction: row;
     align-items: center;
-    gap: 2rem;
+    gap: 40px;
+    flex-shrink: 0;
+    height: 100%;
   }
 
+  // Center section: Search
+  .header-center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    max-width: 600px;
+  }
+
+  // Right section: Actions + Menu
   .header-right {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: 12px;
+    flex-shrink: 0;
   }
+}
+
+// Logo Text
+.header-logo-text {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+  
+  &:hover {
+    opacity: 0.85;
+  }
+  
+  .logo-yumeko {
+    font-family: 'Zen Tokyo Zoo', cursive;
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--primary-color);
+    letter-spacing: 1px;
+  }
+  
+  .logo-animelib {
+    font-family: 'Rubik', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+}
+
+// Navigation
+.header-nav.desktop-only {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center;
+  gap: 6px;
+  height: 100%;
+  margin-bottom: 0 !important;
+  
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    height: 44px;
+    padding: 0 20px;
+    white-space: nowrap;
+    color: var(--text-secondary);
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.08);
+    }
+    
+    &.active {
+      color: var(--primary-color);
+      background: rgba(var(--primary-color-rgb, 175, 82, 222), 0.15);
+    }
+  }
+}
+
+// Search bar - Cinema style
+.header.yumeko-header .search-bar-anime {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 28px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  svg {
+    color: var(--text-muted);
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+  }
+  
+  .search-placeholder {
+    color: var(--text-muted);
+    font-size: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.15);
+    
+    svg, .search-placeholder {
+      color: var(--text-secondary);
+    }
+  }
+}
+
+// Icon buttons
+.header-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  svg {
+    width: 22px;
+    height: 22px;
+  }
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+// Profile section
+.header-profile {
+  position: relative;
+  
+  .profile-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      border-color: var(--primary-color);
+    }
+  }
+  
+  .profile-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 180px;
+    background: var(--bg-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 8px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: all 0.2s ease;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      
+      li {
+        margin: 2px 0;
+        
+        a, button {
+          display: block;
+          width: 100%;
+          padding: 10px 12px;
+          background: none;
+          border: none;
+          border-radius: 8px;
+          color: var(--text-secondary);
+          font-size: 14px;
+          font-weight: 500;
+          text-align: left;
+          text-decoration: none;
+          cursor: pointer;
+          transition: all 0.15s ease;
+          font-family: inherit;
+          
+          &:hover {
+            background: rgba(var(--primary-color-rgb, 175, 82, 222), 0.1);
+            color: var(--primary-color);
+          }
+        }
+      }
+    }
+  }
+  
+  &:hover .profile-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+}
+
+// Menu button - Opens sidebar
+.header-menu-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  background: rgba(var(--primary-color-rgb, 175, 82, 222), 0.15);
+  border: 2px solid rgba(var(--primary-color-rgb, 175, 82, 222), 0.4);
+  border-radius: 14px;
+  color: var(--primary-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: 8px;
+  
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+  
+  &:hover {
+    background: rgba(var(--primary-color-rgb, 175, 82, 222), 0.25);
+    border-color: var(--primary-color);
+    transform: scale(1.05);
+  }
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+// ===================================
+// RESPONSIVE
+// ===================================
+
+@media (max-width: 1024px) {
+  .header.yumeko-header {
+    padding: 0 20px;
+    
+    .header-left {
+      gap: 24px;
+    }
+    
+    .header-center {
+      max-width: 350px;
+    }
+  }
+  
+  .header-nav {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .header.yumeko-header {
+    height: 56px;
+    padding: 0 12px;
+    
+    .header-content {
+      gap: 10px;
+    }
+    
+    .header-left {
+      gap: 0;
+      flex-shrink: 0;
+    }
+    
+    // Скрываем навигацию на мобильных
+    .header-nav {
+      display: none !important;
+    }
+    
+    .header-center {
+      flex: 1;
+      max-width: 180px;
+    }
+    
+    .search-bar-anime {
+      padding: 6px 12px;
+      border-radius: 16px;
+      min-width: 0;
+      
+      svg {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+      }
+      
+      .search-placeholder {
+        font-size: 12px;
+      }
+    }
+  }
+  
+  .header-logo-text {
+    gap: 4px;
+    
+    .logo-yumeko {
+      font-size: 20px;
+    }
+    
+    .logo-animelib {
+      font-size: 9px;
+    }
+  }
+  
+  .header-icon-btn {
+    width: 36px;
+    height: 36px;
+    
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+  
+  .header-profile .profile-icon {
+    width: 34px;
+    height: 34px;
+  }
+  
+  .header-menu-btn {
+    width: 40px;
+    height: 40px;
+    margin-left: 4px;
+    
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+// Extra small devices
+@media (max-width: 400px) {
+  .header.yumeko-header {
+    padding: 0 8px;
+    
+    .header-content {
+      gap: 8px;
+    }
+    
+    .header-center {
+      max-width: 140px;
+    }
+    
+    .search-bar-anime {
+      padding: 6px 10px;
+      
+      .search-placeholder {
+        font-size: 11px;
+      }
+    }
+  }
+  
+  .header-logo-text {
+    .logo-yumeko {
+      font-size: 18px;
+    }
+    
+    .logo-animelib {
+      display: none;
+    }
+  }
+  
+  .header-menu-btn {
+    width: 34px;
+    height: 34px;
+  }
+}
+
+// Keep old header styles as fallback
+.header:not(.yumeko-header) {
 
 
   .logo {

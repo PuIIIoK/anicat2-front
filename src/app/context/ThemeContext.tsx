@@ -356,7 +356,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           primaryBgHover = 'rgba(255, 149, 0, 0.15)';
           
           // Фоны для темной оранжевой темы
-          headerBg = '#1f1a14'; // Header с легким оранжевым оттенком
+          headerBg = 'rgba(31, 26, 20, 0.65)'; // Header полупрозрачный с оранжевым оттенком
           bodyBg = '#130e06';   // Body с более насыщенным оранжевым оттенком
           
           // Цвета для global-anime-card-info
@@ -567,12 +567,12 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           primaryColor = '#af52de';
           primaryHover = '#c77ff0';
           primaryDark = '#8b29b5';
-          primaryLight = '#d4a5f5';
+          primaryLight = '#d4a4f0';
           primaryBg = 'rgba(175, 82, 222, 0.1)';
           primaryBgHover = 'rgba(175, 82, 222, 0.15)';
           
           // Фоны для темной фиолетовой темы
-          headerBg = '#1c1a22'; // Header с легким фиолетовым оттенком
+          headerBg = 'rgba(28, 26, 34, 0.65)'; // Header полупрозрачный с фиолетовым оттенком
           bodyBg = '#0d0b0f';   // Body с более заметным фиолетовым оттенком
           
           // Цвета для global-anime-card-info
@@ -788,7 +788,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           primaryBgHover = 'rgba(255, 59, 48, 0.15)';
           
           // Фоны для темной красной темы
-          headerBg = '#221818'; // Header с легким красным оттенком
+          headerBg = 'rgba(34, 24, 24, 0.65)'; // Header полупрозрачный с красным оттенком
           bodyBg = '#140606';   // Body с более насыщенным красным оттенком
           
           // Цвета для global-anime-card-info
@@ -1004,7 +1004,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           primaryBgHover = 'rgba(0, 122, 255, 0.15)';
           
           // Фоны для темной синей темы
-          headerBg = '#181a24'; // Header с легким синим оттенком
+          headerBg = 'rgba(24, 26, 36, 0.65)'; // Header полупрозрачный с синим оттенком
           bodyBg = '#08090f';   // Body с более заметным синим оттенком
           
           // Цвета для global-anime-card-info
@@ -1294,6 +1294,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         --primary-light: ${primaryLight} !important;
         --primary-bg: ${primaryBg} !important;
         --primary-bg-hover: ${primaryBgHover} !important;
+        --header-bg: ${headerBg} !important;
+        --body-bg: ${bodyBg} !important;
         --bg-secondary: ${headerBg} !important;
         
         /* Переменные для global-anime-card-info */
@@ -1392,21 +1394,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         
       }
       
-      /* Применяем фоны только к header и body с высокой специфичностью */
-      body.theme-${theme}.color-${colorScheme} .header,
-      .theme-${theme}.color-${colorScheme} .header,
-      .theme-${theme} .header,
-      .header {
-        background: ${headerBg} !important;
-        background-color: ${headerBg} !important;
-        background-image: none !important;
-      }
-      
-      body.theme-${theme}.color-${colorScheme},
+      /* Body background через CSS переменную */
       body {
-        background-color: ${bodyBg} !important;
+        background-color: var(--body-bg) !important;
       }
-      
       
       /* Переопределяем только элементы модального окна темы */
       .theme-option-card.active {

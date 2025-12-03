@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { API_SERVER } from '@/hosts/constants';
 import { performLogout } from '../../../utils/logoutUtils';
+import { getAuthToken } from '../../../utils/auth';
 import { updateProfileCache } from '../../../component/profile-page-old/hooks/useProfile';
 import VideoTrimModal from '../../../../components/VideoTrimModal';
 import AnimatedMedia from '../../../../components/AnimatedMedia';
@@ -44,7 +45,7 @@ interface MediaUrlResponse {
     staticUrl?: string;
 }
 
-const getToken = () => document.cookie.match(/token=([^;]+)/)?.[1] || '';
+const getToken = () => getAuthToken() || '';
 
 const fetchProfile = async (): Promise<ProfileResponse | null> => {
     try {

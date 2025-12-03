@@ -1,0 +1,278 @@
+/* ===== YUMEKO ANIME CARD ===== */
+
+.yumeko-anime-card {
+    display: block;
+    width: 180px;
+    text-decoration: none;
+    color: inherit;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+    
+    &:hover {
+        transform: translateY(-4px);
+        
+        .yumeko-anime-card-image {
+            transform: scale(1.03);
+        }
+        
+        .yumeko-anime-card-cover {
+            box-shadow: 0 8px 24px rgba(var(--primary-color-rgb, 175, 82, 222), 0.25);
+        }
+        
+        .yumeko-anime-card-title {
+            color: var(--primary-color);
+        }
+    }
+}
+
+// Cover container
+.yumeko-anime-card-cover {
+    position: relative;
+    width: 180px;
+    height: 250px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.05);
+    transition: box-shadow 0.2s ease;
+    
+    // Slight darkening overlay for better badge visibility
+    &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0.25) 0%,
+            rgba(0, 0, 0, 0.08) 30%,
+            rgba(0, 0, 0, 0.08) 70%,
+            rgba(0, 0, 0, 0.25) 100%
+        );
+        pointer-events: none;
+        z-index: 1;
+    }
+}
+
+// Image
+.yumeko-anime-card-image {
+    object-fit: cover;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+// Loader
+.yumeko-anime-card-loader {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.yumeko-anime-card-spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: yumekoSpin 0.8s linear infinite;
+}
+
+@keyframes yumekoSpin {
+    to { transform: rotate(360deg); }
+}
+
+// Placeholder
+.yumeko-anime-card-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.03);
+    color: rgba(255, 255, 255, 0.2);
+}
+
+// Rating badge
+.yumeko-anime-card-rating {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    padding: 4px 8px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid #fbbf24;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fbbf24;
+    
+    span {
+        font-size: 10px;
+    }
+}
+
+// Anons badge (for upcoming) - positioned on right below status
+.yumeko-anime-card-anons {
+    position: absolute;
+    top: 32px;
+    right: 8px;
+    z-index: 2;
+    padding: 3px 6px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid var(--primary-color);
+    border-radius: 6px;
+    font-size: 8px;
+    font-weight: 700;
+    color: var(--primary-color);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+// Status badge
+.yumeko-anime-card-status {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 2;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    background: rgba(0, 0, 0, 0.5);
+    
+    &.watching {
+        color: #22c55e;
+        border: 1px solid #22c55e;
+    }
+    
+    &.completed {
+        color: #3b82f6;
+        border: 1px solid #3b82f6;
+    }
+    
+    &.planned {
+        color: #f59e0b;
+        border: 1px solid #f59e0b;
+    }
+    
+    &.dropped {
+        color: #ef4444;
+        border: 1px solid #ef4444;
+    }
+    
+    &.paused, &.rewatching {
+        color: #a855f7;
+        border: 1px solid #a855f7;
+    }
+    
+    &.favorite {
+        color: #ec4899;
+        border: 1px solid #ec4899;
+    }
+}
+
+// Type badge - uses theme color
+.yumeko-anime-card-type {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    z-index: 2;
+    padding: 4px 8px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--primary-color);
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+// Info section
+.yumeko-anime-card-info {
+    padding: 10px 2px 0;
+}
+
+.yumeko-anime-card-title {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.3;
+    margin: 0 0 8px 0;
+    color: var(--text-primary);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 36px;
+    transition: color 0.2s ease;
+}
+
+.yumeko-anime-card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.yumeko-anime-card-episodes {
+    font-size: 12px;
+    color: var(--text-secondary);
+    
+    &.upcoming {
+        color: #f97316;
+        font-weight: 600;
+    }
+}
+
+.yumeko-anime-card-year {
+    font-size: 11px;
+    color: var(--text-muted);
+    padding: 2px 6px;
+    background: rgba(var(--primary-color-rgb, 175, 82, 222), 0.15);
+    border-radius: 4px;
+}
+
+// Responsive
+@media (max-width: 768px) {
+    .yumeko-anime-card {
+        width: 150px;
+    }
+    
+    .yumeko-anime-card-cover {
+        width: 150px;
+        height: 210px;
+    }
+    
+    .yumeko-anime-card-title {
+        font-size: 12px;
+        height: 32px;
+    }
+    
+    .yumeko-anime-card-rating {
+        font-size: 11px;
+        padding: 3px 6px;
+    }
+    
+    .yumeko-anime-card-status {
+        font-size: 9px;
+        padding: 3px 6px;
+    }
+    
+    .yumeko-anime-card-type {
+        font-size: 9px;
+        padding: 3px 6px;
+    }
+    
+    .yumeko-anime-card-anons {
+        font-size: 8px;
+        padding: 3px 6px;
+    }
+}

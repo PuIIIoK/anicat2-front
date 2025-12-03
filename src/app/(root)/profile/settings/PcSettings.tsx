@@ -1,8 +1,10 @@
 'use client';
 
 import React, { useEffect, useState, useRef } from 'react';
+import Link from 'next/link';
 import { API_SERVER } from '@/hosts/constants';
 import { performLogout } from '../../../utils/logoutUtils';
+import { getAuthToken } from '../../../utils/auth';
 import { updateProfileCache } from '../../../component/profile-page-old/hooks/useProfile';
 import VideoTrimModal from '../../../../components/VideoTrimModal';
 import AnimatedMedia from '../../../../components/AnimatedMedia';
@@ -10,6 +12,7 @@ import { OptimizedImage } from '../../../component/profile-page-old/components/O
 import * as LucideIcons from 'lucide-react';
 import { BADGE_META } from '../../../component/profile-page-old/badgeMeta';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
+import '@/styles/components/yumeko-collection-service.scss';
 
 type Tab = 'profile' | 'account';
 type LucideIconComponent = React.ComponentType<{ size?: number; color?: string; strokeWidth?: number }>;
@@ -43,7 +46,7 @@ interface MediaUrlResponse {
     staticUrl?: string;
 }
 
-const getToken = () => document.cookie.match(/token=([^;]+)/)?.[1] || '';
+const getToken = () => getAuthToken() || '';
 
 const fetchProfile = async (): Promise<ProfileResponse | null> => {
     try {
@@ -617,7 +620,16 @@ export default function PcSettings() {
                 </div>
             )}
 
-        <div className="pc-acc-sett-providerr-container">
+        {/* Breadcrumbs */}
+        <nav className="yumeko-collection-service-breadcrumbs" style={{ padding: '24px 24px 24px', marginBottom: '25px', position: 'relative', zIndex: 10 }}>
+            <Link href="/" className="breadcrumb-link">Главная</Link>
+            <span className="breadcrumb-separator">/</span>
+            <Link href={serverProfile?.username ? `/profile/${serverProfile.username}` : '/profile'} className="breadcrumb-link">Профиль</Link>
+            <span className="breadcrumb-separator">/</span>
+            <span className="breadcrumb-current">Настройки</span>
+        </nav>
+
+        <div className="pc-acc-sett-providerr-container" style={{ position: 'relative' }}>
                 {/* Sidebar */}
             <div className="pc-acc-sett-providerr-left">
                     <div className="pc-acc-sett-providerr-category">

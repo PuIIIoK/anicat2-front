@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { API_SERVER } from '@/hosts/constants';
 import { AnimeInfo } from '../anime-structure/anime-data-info';
+import { getAuthToken } from '../../utils/auth';
 
 export interface AnimeCollectionItem {
     collectionId: number;
@@ -112,7 +113,7 @@ export function useCollections() {
         try {
             const res = await fetch(`${API_SERVER}/api/collection/my?type=${type}`, {
                 headers: {
-                    Authorization: `Bearer ${document.cookie.replace(/(?:(?:^|.*;\s*)token\s*=\s*([^;]*).*$)|^.*$/, "$1")}`,
+                    Authorization: `Bearer ${getAuthToken() || ''}`,
                 },
                 signal: controller.signal,
             });

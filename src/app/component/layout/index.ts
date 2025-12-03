@@ -5,4 +5,5 @@ export { default as DiscordStatusTracker } from '../DiscordStatusTracker';
 export { default as ElectronBodyClass } from '../ElectronBodyClass';
 export { default as ServerReconnect } from '../ServerReconnect';
 export { default as LoadingPage } from '../LoadingPage';
+export { default as Sidebar } from './Sidebar';
 

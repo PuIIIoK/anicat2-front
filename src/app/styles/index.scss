@@ -53,10 +53,15 @@
 @import "./components/anime-profile-page-correct";
 @import "./components/crunchyroll-theme";
 @import "./components/new-category-section";
+@import "./components/yumeko-category";
+@import "./components/yumeko-anime-card";
+@import "./components/yumeko-continue-card";
 @import "./components/global-anime-card";
 @import "./components/anime-category";
 @import "./components/sync-progress-notification";
 @import "./components/notification-modals";
+@import "./components/sidebar";
+@import "./components/yumeko-main-layout";
 /* удалили debug и тест */
 
 
@@ -86,10 +91,10 @@ body {
   padding: 0;
   overflow-x: visible; // ✅ Разрешаем показ hover карточек по горизонтали
   overflow-y: auto; // Разрешаем вертикальную прокрутку для hover карточек
-  margin-top: 93px;
+  margin-top: 80px; // Высота header
   
   @media (max-width: 768px) {
-    margin-top: 56px; // Уменьшенный отступ для мобильных
+    margin-top: 64px; // Мобильный header
   }
   font-family: 'Rubik', sans-serif; // основной читаемый шрифт
   background-color: var(--bg-primary); // Используем переменную для фона
@@ -97,6 +102,20 @@ body {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+// Global reset for scroll buttons focus
+.scroll-btn,
+.scroll-left,
+.scroll-right {
+  outline: none !important;
+  box-shadow: none !important;
+  
+  &:focus,
+  &:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+  }
 }
 
 #__next {
