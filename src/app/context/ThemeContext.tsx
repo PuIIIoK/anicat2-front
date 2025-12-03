@@ -24,8 +24,18 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 // Провайдер темы
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [theme, setTheme] = useState<Theme>('dark');
-  const [colorScheme, setColorScheme] = useState<ColorScheme>('orange');
+  // Инициализируем тему из localStorage сразу при создании компонента (SSR safe)
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (typeof window === 'undefined') return 'dark';
+    const saved = localStorage.getItem('theme') as Theme;
+    return saved && ['dark', 'light'].includes(saved) ? saved : 'dark';
+  });
+  
+  const [colorScheme, setColorScheme] = useState<ColorScheme>(() => {
+    if (typeof window === 'undefined') return 'orange';
+    const saved = localStorage.getItem('colorScheme') as ColorScheme;
+    return saved && ['orange', 'purple', 'red', 'blue'].includes(saved) ? saved : 'orange';
+  });
 
   // Функция для загрузки настроек темы пользователя с сервера
   const loadUserThemeSettings = async () => {
@@ -216,7 +226,18 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     };
   }, []);
   
-  // Применение темы и цветовой схемы к документу
+  // Применяем тему сразу при монтировании (синхронно)
+  if (typeof window !== 'undefined' && !document.body.classList.contains(`theme-${theme}`)) {
+    document.body.classList.remove(
+      'theme-dark', 'theme-light',
+      'color-orange', 'color-purple', 'color-red', 'color-blue'
+    );
+    document.body.classList.add(`theme-${theme}`, `color-${colorScheme}`);
+    document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.setAttribute('data-color', colorScheme);
+  }
+
+  // Применение темы и цветовой схемы к документу при изменениях
   useEffect(() => {
     if (typeof window === 'undefined') return;
     

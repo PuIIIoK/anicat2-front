@@ -24,18 +24,34 @@ interface SidebarProviderProps {
 }
 
 export const SidebarProvider: React.FC<SidebarProviderProps> = ({ children }) => {
-    // Sidebar open by default on desktop, closed on mobile
-    const [isOpen, setIsOpen] = useState(() => {
-        if (typeof window !== 'undefined') {
-            return window.innerWidth > 1024;
-        }
-        return true;
-    });
+    // Sidebar closed by default - will be opened on desktop after mount
+    const [isOpen, setIsOpen] = useState(false);
+    const [isInitialized, setIsInitialized] = useState(false);
 
-    // Set initial state based on screen width
+    // Set initial state based on screen width (only on desktop open by default)
     useEffect(() => {
-        setIsOpen(window.innerWidth > 1024);
+        const isDesktop = window.innerWidth > 1024;
+        // На мобильных устройствах сайдбар всегда закрыт при загрузке
+        // На десктопе - открыт по умолчанию
+        setIsOpen(isDesktop);
+        setIsInitialized(true);
     }, []);
+    
+    // Не показываем сайдбар пока не определили тип устройства
+    // Это предотвращает "мигание" сайдбара на мобильных
+    useEffect(() => {
+        if (!isInitialized) return;
+        
+        // При изменении размера окна закрываем сайдбар на мобильных
+        const handleResize = () => {
+            if (window.innerWidth <= 1024 && isOpen) {
+                setIsOpen(false);
+            }
+        };
+        
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, [isInitialized, isOpen]);
 
     // Close sidebar when clicking outside or pressing escape
     useEffect(() => {

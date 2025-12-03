@@ -573,18 +573,49 @@ $border-color: #3d4f5c;
       
       .yumeko-friend-card-banner {
         position: relative;
-        background: rgba($discord-bg, 0.8);
+        background: rgba($discord-bg, 0.9);
         border-radius: 16px;
         overflow: hidden;
-        border: 1px solid rgba($border-color, 0.5);
-        transition: all 0.2s ease;
+        border: 2px solid var(--friend-primary-color, var(--primary-color));
+        transition: all 0.3s ease;
         cursor: pointer;
+        
+        // Градиентный оверлей по умолчанию
+        &::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+            135deg,
+            color-mix(in srgb, var(--friend-primary-color, var(--primary-color)) 20%, transparent) 0%,
+            color-mix(in srgb, var(--friend-primary-color, var(--primary-color)) 8%, transparent) 50%,
+            transparent 100%
+          );
+          z-index: 1;
+          pointer-events: none;
+          transition: all 0.3s ease;
+        }
+        
+        // Усиление градиента при hover
+        &:hover::before {
+          background: linear-gradient(
+            135deg,
+            color-mix(in srgb, var(--friend-primary-color, var(--primary-color)) 30%, transparent) 0%,
+            color-mix(in srgb, var(--friend-primary-color, var(--primary-color)) 15%, transparent) 50%,
+            transparent 100%
+          );
+        }
         
         &:hover {
           border-color: var(--friend-border-hover, var(--friend-primary-color, var(--primary-color)));
-          box-shadow: 0 4px 12px var(--friend-primary-bg-hover, var(--primary-bg-hover, rgba(255, 149, 0, 0.3)));
-          transform: translateY(-2px);
-          background: var(--friend-primary-bg-hover, var(--primary-bg, rgba(255, 149, 0, 0.05)));
+          box-shadow: 0 8px 24px var(--friend-primary-bg-hover, var(--primary-bg-hover, rgba(255, 149, 0, 0.4))),
+                      0 0 20px var(--friend-primary-bg, var(--primary-bg, rgba(255, 149, 0, 0.2)));
+          transform: translateY(-3px);
+          background: linear-gradient(
+            135deg,
+            var(--friend-primary-bg-hover, var(--primary-bg-hover, rgba(255, 149, 0, 0.1))) 0%,
+            rgba($discord-bg, 0.9) 100%
+          );
           
           .yumeko-friend-banner-bg,
           .yumeko-friend-banner-video {

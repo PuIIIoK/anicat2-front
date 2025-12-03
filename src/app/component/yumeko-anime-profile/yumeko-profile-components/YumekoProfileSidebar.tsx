@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import * as LucideIcons from 'lucide-react';
-import GlobalAnimeCard from '../../anime-structure/GlobalAnimeCard';
+import YumekoAnimeCard from '../../anime-structure/YumekoAnimeCard';
 import { useServerUrl } from '../../../context/RegionalServerContext';
 import SkeletonLoader from './SkeletonLoader';
 import { YumekoProfileData } from '../hooks/useYumekoProfile';
@@ -402,10 +402,10 @@ const YumekoProfileSidebar: React.FC<YumekoProfileSidebarProps> = ({
                                     <div className="yumeko-collection-grid">
                                         {collectionData.map((anime) => (
                                             <div key={anime.id} onClick={() => setIsStatsModalOpen(false)}>
-                                                <GlobalAnimeCard
+                                                <YumekoAnimeCard
                                                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                                     anime={anime as any}
-                                                    collectionType={activeTab}
+                                                    // Не передаём collectionType - карточка сама загрузит статус текущего пользователя
                                                     showCollectionStatus={true}
                                                     showRating={true}
                                                     showType={true}

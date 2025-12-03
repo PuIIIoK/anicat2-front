@@ -14,7 +14,12 @@ import {
     KodikTranslation,
     LibriaEpisode,
     KodikStreamResponse,
-    fetchLastWatchedProgress
+    fetchLastWatchedProgress,
+    fetchYumekoVoices,
+    fetchYumekoEpisodes,
+    fetchYumekoEpisodeStream,
+    YumekoVoice,
+    YumekoEpisode
 } from './playerApi';
 import {
     Play,
@@ -26,7 +31,9 @@ import {
     Sliders,
     Headphones,
     X,
-    ChevronLeft
+    ChevronLeft,
+    Smartphone,
+    Monitor
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { getEpisodeProgress, upsertEpisodeProgress, getEpisodeProgressLibriaAnyVoice, setEpisodeProgress, upsertEpisodeProgressWithSync, fetchAndMergeFromServer, pushAllCacheForAnimeToServer } from '@/utils/player/progressCache';
@@ -51,9 +58,15 @@ export default function PlayerMobile({ animeId, animeMeta, initError }: PlayerMo
     const didAutoStartRef = useRef<boolean>(false);
     const userInteractedRef = useRef<boolean>(false);
 
-    const [selectedSource, setSelectedSource] = useState<'kodik' | 'libria'>('kodik');
+    const [selectedSource, setSelectedSource] = useState<'kodik' | 'libria' | 'yumeko'>('kodik');
     const [availableVoices, setAvailableVoices] = useState<string[]>([]);
     const [selectedVoice, setSelectedVoice] = useState<string | null>(null);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [yumekoVoices, setYumekoVoices] = useState<YumekoVoice[]>([]);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [selectedYumekoVoice, setSelectedYumekoVoice] = useState<YumekoVoice | null>(null);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [yumekoEpisodes, setYumekoEpisodes] = useState<YumekoEpisode[]>([]);
     const [playlistEpisodes, setPlaylistEpisodes] = useState<Array<{ id: number; title: string; duration?: string; raw?: unknown }>>([]);
     const [currentEpisode, setCurrentEpisode] = useState<number>(1);
 
@@ -77,6 +90,7 @@ export default function PlayerMobile({ animeId, animeMeta, initError }: PlayerMo
     const [, setInitialLoading] = useState(true);
     const [playbackSpeed, setPlaybackSpeed] = useState(1);
     const [isFullscreen, setIsFullscreen] = useState(false);
+    const [isLandscape, setIsLandscape] = useState(true); // Горизонтальная ориентация по умолчанию
     const [settingsSection, setSettingsSection] = useState<'main' | 'quality' | 'speed' | 'hotkeys'>('main');
     const [skipOpening, setSkipOpening] = useState(false);
     const [skipEnding, setSkipEnding] = useState(false);
@@ -84,6 +98,48 @@ export default function PlayerMobile({ animeId, animeMeta, initError }: PlayerMo
     const [autoFullscreen, setAutoFullscreen] = useState(false);
     const [settingsLoaded, setSettingsLoaded] = useState(false);
     const [isLibriaAvailable, setIsLibriaAvailable] = useState(false);
+
+    // Принудительная горизонтальная ориентация при загрузке плеера
+    useEffect(() => {
+        const lockOrientation = async () => {
+            try {
+                // Пробуем заблокировать ориентацию в landscape
+                if (screen.orientation && 'lock' in screen.orientation) {
+                    await (screen.orientation as ScreenOrientation & { lock: (orientation: string) => Promise<void> }).lock('landscape');
+                    setIsLandscape(true);
+                }
+            } catch (error) {
+                console.log('Screen orientation lock not supported:', error);
+                // Если не поддерживается, просто отслеживаем ориентацию
+            }
+        };
+
+        lockOrientation();
+
+        // При выходе из плеера - разблокируем ориентацию
+        return () => {
+            try {
+                if (screen.orientation && 'unlock' in screen.orientation) {
+                    (screen.orientation as ScreenOrientation & { unlock: () => void }).unlock();
+                }
+            } catch (error) {
+                console.log('Screen orientation unlock error:', error);
+            }
+        };
+    }, []);
+
+    // Функция переключения ориентации
+    const toggleOrientation = async () => {
+        try {
+            if (screen.orientation && 'lock' in screen.orientation) {
+                const newOrientation = isLandscape ? 'portrait' : 'landscape';
+                await (screen.orientation as ScreenOrientation & { lock: (orientation: string) => Promise<void> }).lock(newOrientation);
+                setIsLandscape(!isLandscape);
+            }
+        } catch (error) {
+            console.log('Failed to toggle orientation:', error);
+        }
+    };
 
     // Shared settings key across PC and Mobile
     useEffect(() => {
@@ -207,7 +263,8 @@ export default function PlayerMobile({ animeId, animeMeta, initError }: PlayerMo
     // Флаг для определения, есть ли базовые параметры (для загрузки прогресса с сервера)
     const hasPlayerParamsInURL = useMemo(() => {
         // Если есть базовые параметры аниме - плеер готов загрузить прогресс с сервера
-        return !!(animeMeta?.kodik || animeMeta?.title);
+        // Для Yumeko проверяем наличие voiceId и episodeId
+        return !!(animeMeta?.kodik || animeMeta?.title || (animeMeta?.source === 'yumeko' && animeMeta?.voiceId && animeMeta?.episodeId));
     }, [animeMeta]);
 
     // Последовательная инициализация плеера на основе прогресса с сервера
@@ -476,6 +533,74 @@ export default function PlayerMobile({ animeId, animeMeta, initError }: PlayerMo
         initializeFromServerProgress();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [animeMeta, hasPlayerParamsInURL, animeId]);
+
+    // Отдельный useEffect для инициализации Yumeko источника
+    useEffect(() => {
+        if (!animeMeta || !animeId) return;
+        
+        // Только для Yumeko источника
+        if (animeMeta.source !== 'yumeko') return;
+        
+        console.log('[Yumeko-Mobile-init] Starting Yumeko player initialization');
+        
+        const initializeYumeko = async () => {
+            try {
+                // Загружаем озвучки для аниме
+                console.log('[Yumeko-Mobile-init] Loading Yumeko voices for anime:', animeId);
+                const voices = await fetchYumekoVoices(animeId);
+                
+                if (voices && voices.length > 0) {
+                    console.log('[Yumeko-Mobile-init] Yumeko voices loaded:', voices);
+                    setYumekoVoices(voices);
+                    setSelectedSource('yumeko');
+                    
+                    // Если есть voiceId в meta - используем его, иначе первую озвучку
+                    const targetVoice = animeMeta.voiceId 
+                        ? voices.find(v => v.id === animeMeta.voiceId) || voices[0]
+                        : voices[0];
+                    
+                    setSelectedYumekoVoice(targetVoice);
+                    
+                    // Загружаем эпизоды для выбранной озвучки
+                    console.log('[Yumeko-Mobile-init] Loading Yumeko episodes for voice:', targetVoice.id);
+                    const episodes = await fetchYumekoEpisodes(targetVoice.id);
+                    
+                    if (episodes && episodes.length > 0) {
+                        console.log('[Yumeko-Mobile-init] Yumeko episodes loaded:', episodes);
+                        setYumekoEpisodes(episodes);
+                        
+                        // Маппим эпизоды в формат плейлиста
+                        const mapped = episodes.map(e => ({
+                            id: e.episodeNumber,
+                            title: e.title || `Эпизод ${e.episodeNumber}`,
+                            duration: undefined,
+                            raw: e
+                        }));
+                        setPlaylistEpisodes(mapped);
+                        
+                        // Если есть episodeNumber в meta - используем его, иначе первый эпизод
+                        const targetEpisodeNumber = animeMeta.episodeNumber || episodes[0].episodeNumber;
+                        const targetEpisode = episodes.find(e => e.episodeNumber === targetEpisodeNumber) || episodes[0];
+                        
+                        setCurrentEpisode(targetEpisodeNumber);
+                        
+                        // Загружаем HLS поток для выбранного эпизода
+                        console.log('[Yumeko-Mobile-init] Loading Yumeko stream for episode:', targetEpisode.id);
+                        const hlsUrl = await fetchYumekoEpisodeStream(targetEpisode.id);
+                        
+                        if (hlsUrl) {
+                            console.log('[Yumeko-Mobile-init] Yumeko stream loaded:', hlsUrl);
+                            setFetchedSrc(hlsUrl);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('[Yumeko-Mobile-init] Error during Yumeko initialization:', error);
+            }
+        };
+        
+        initializeYumeko();
+    }, [animeMeta, animeId]);
 
     const sourceUrl = useMemo(() => fetchedSrc ?? undefined, [fetchedSrc]);
 
@@ -1277,9 +1402,23 @@ export default function PlayerMobile({ animeId, animeMeta, initError }: PlayerMo
         }
     };
 
+    // Функция для декодирования URL-encoded строк
+    const decodeTitle = (title: string): string => {
+        try {
+            // Проверяем содержит ли строка URL-encoded символы
+            if (title.includes('%')) {
+                return decodeURIComponent(title);
+            }
+            return title;
+        } catch (error) {
+            console.error('Failed to decode title:', error);
+            return title;
+        }
+    };
+
     const displayedTitle = useMemo(() => {
         const ep = playlistEpisodes.find(e => e.id === currentEpisode);
-        if (ep) return `${ep.title}`;
+        if (ep) return decodeTitle(`${ep.title}`);
         return '';
     }, [playlistEpisodes, currentEpisode]);
 
@@ -1503,7 +1642,7 @@ export default function PlayerMobile({ animeId, animeMeta, initError }: PlayerMo
     const playerTitle = useMemo(() => {
         const meta: Record<string, unknown> = (animeMeta || {}) as Record<string, unknown>;
         const title = meta?.title || meta?.name || meta?.ru || meta?.en || null;
-        return title ? String(title) : '';
+        return title ? decodeTitle(String(title)) : '';
     }, [animeMeta]);
 
     const playerTitleFontSize = useMemo(() => {
@@ -1535,14 +1674,16 @@ export default function PlayerMobile({ animeId, animeMeta, initError }: PlayerMo
                     <button className="mobile-player-top-button" aria-label="Плейлист" onClick={() => openOverlay('playlist')}>
                         <List />
                     </button>
-                    {selectedSource !== 'libria' && (
+                    {selectedSource !== 'libria' && selectedSource !== 'yumeko' && (
                         <button className="mobile-player-top-button" aria-label="Озвучка" onClick={() => openOverlay('voice')}>
                             <Headphones />
                         </button>
                     )}
-                    <button className="mobile-player-top-button" aria-label="Источник" onClick={() => openOverlay('source')}>
-                        <Sliders />
-                    </button>
+                    {selectedSource !== 'yumeko' && (
+                        <button className="mobile-player-top-button" aria-label="Источник" onClick={() => openOverlay('source')}>
+                            <Sliders />
+                        </button>
+                    )}
                 </div>
             </div>
 
@@ -1650,8 +1791,12 @@ export default function PlayerMobile({ animeId, animeMeta, initError }: PlayerMo
                             <Settings />
                         </button>
                         <button className="mobile-player-bottom-button" aria-label="Полноэкран" onClick={toggleFullscreen}>
-                            {/* reuse existing icon from PC if available */}
+                            {/* Fullscreen icon */}
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M16 3h3a2 2 0 0 1 2 2v3"/><path d="M8 21H5a2 2 0 0 1-2-2v-3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+                        </button>
+                        <button className="mobile-player-bottom-button" aria-label="Переключить ориентацию" onClick={toggleOrientation}>
+                            {/* Иконка: показывает что будет если нажать */}
+                            {isLandscape ? <Smartphone size={18} /> : <Monitor size={18} />}
                         </button>
                     </div>
                 </div>

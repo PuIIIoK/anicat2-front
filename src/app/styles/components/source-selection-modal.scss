@@ -586,49 +586,212 @@
 
 // Responsive
 @media (max-width: 768px) {
+    .source-selection-overlay {
+        padding: 0;
+        align-items: flex-end;
+    }
+
     .source-selection-modal {
         max-width: 100%;
-        max-height: 100vh;
-        border-radius: 0;
+        max-height: 90vh;
+        border-radius: 20px 20px 0 0;
+        margin: 0;
     }
 
     .source-selection-header {
-        padding: 20px;
+        padding: 16px 20px;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: rgba(20, 20, 25, 0.98);
     }
 
     .source-selection-title {
-        font-size: 18px;
+        font-size: 16px;
+    }
+
+    .source-selection-breadcrumb {
+        flex-wrap: wrap;
+        gap: 6px;
+        
+        .breadcrumb-text {
+            font-size: 13px;
+        }
+        
+        .breadcrumb-current {
+            font-size: 13px;
+            padding: 3px 8px;
+        }
     }
 
     .source-selection-content {
-        padding: 24px 20px;
-    }
-
-    .source-option {
-        flex-direction: column;
-        padding: 20px;
-        gap: 16px;
-    }
-
-    .source-option-icon {
-        padding: 12px;
-    }
-
-    .source-option-title {
-        font-size: 18px;
-    }
-
-    .source-option-description {
-        font-size: 13px;
-    }
-
-    .yumeko-episode-grid {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        padding: 16px;
         gap: 12px;
     }
 
+    .source-option {
+        flex-direction: row;
+        align-items: flex-start;
+        padding: 16px;
+        gap: 12px;
+
+        &.disabled {
+            .source-option-tooltip {
+                // На мобильных показываем тултип под карточкой
+                position: relative;
+                bottom: auto;
+                left: auto;
+                transform: none;
+                margin-top: 12px;
+                margin-bottom: 0;
+                width: 100%;
+                max-width: none;
+                visibility: visible;
+                opacity: 1;
+                font-size: 12px;
+                padding: 10px 12px;
+                grid-column: 1 / -1;
+                
+                &::before {
+                    display: none;
+                }
+            }
+            
+            // Меняем layout на grid для правильного размещения тултипа
+            display: grid;
+            grid-template-columns: auto 1fr;
+            grid-template-rows: auto auto;
+            
+            .source-option-icon {
+                grid-row: 1;
+                grid-column: 1;
+            }
+            
+            .source-option-content {
+                grid-row: 1;
+                grid-column: 2;
+            }
+        }
+    }
+
+    .source-option-icon {
+        padding: 10px;
+        
+        svg {
+            width: 24px;
+            height: 24px;
+        }
+    }
+
+    .source-option-title {
+        font-size: 15px;
+        margin-bottom: 4px;
+    }
+
+    .source-option-description {
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
     .yumeko-selection-content {
-        padding: 20px;
+        padding: 16px;
+        max-height: calc(90vh - 70px);
+    }
+
+    .yumeko-section-title {
+        font-size: 15px;
+        margin-bottom: 12px;
+    }
+
+    .yumeko-voice-item {
+        padding: 12px 16px;
+        
+        .yumeko-voice-name {
+            font-size: 14px;
+        }
+        
+        .yumeko-voice-meta {
+            font-size: 12px;
+        }
+    }
+
+    .yumeko-episode-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .yumeko-episode-card {
+        border-radius: 10px;
+    }
+
+    .yumeko-episode-quality-badge {
+        top: 6px;
+        right: 6px;
+        padding: 3px 6px;
+        font-size: 9px;
+    }
+
+    .yumeko-episode-info {
+        padding: 8px;
+    }
+
+    .yumeko-episode-title {
+        font-size: 12px;
+    }
+
+    .yumeko-episode-duration {
+        font-size: 10px;
+    }
+
+    .yumeko-episode-watched-time {
+        font-size: 10px;
+        padding: 2px 6px;
+    }
+
+    .yumeko-empty {
+        padding: 40px 16px;
+        
+        p {
+            font-size: 14px;
+        }
+    }
+}
+
+// Ещё меньшие экраны
+@media (max-width: 400px) {
+    .source-selection-header {
+        padding: 12px 16px;
+    }
+
+    .source-selection-content {
+        padding: 12px;
+    }
+
+    .source-option {
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .source-option-icon {
+        padding: 8px;
+        
+        svg {
+            width: 20px;
+            height: 20px;
+        }
+    }
+
+    .source-option-title {
+        font-size: 14px;
+    }
+
+    .source-option-description {
+        font-size: 11px;
+    }
+
+    .yumeko-episode-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
     }
 }
 
