@@ -4,12 +4,16 @@ const isTurbopack = process.env.TURBOPACK === '1';
 const nextConfig = {
     images: {
         unoptimized: true,
-        domains: [
-            'path.to',
-            'anilibria.top',
-            'via.placeholder.com',
-            'localhost',
-            'anicat2.storage.yandexcloud.net',
+        remotePatterns: [
+            { protocol: 'https', hostname: 'path.to' },
+            { protocol: 'https', hostname: 'anilibria.top' },
+            { protocol: 'https', hostname: 'via.placeholder.com' },
+            { protocol: 'http', hostname: 'localhost' },
+            { protocol: 'https', hostname: 'anicat2.storage.yandexcloud.net' },
+            { protocol: 'https', hostname: 'storage.yandexcloud.net' },
+            { protocol: 'https', hostname: 'server.yumeko.ru' },
+            { protocol: 'https', hostname: 'server2.yumeko.ru' },
+            { protocol: 'https', hostname: 'server3.yumeko.ru' },
         ],
     },
     env: {

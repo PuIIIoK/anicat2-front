@@ -14,7 +14,8 @@ export const SERVER_URL3 = 'https://server3.yumeko.ru'; // Сервер для �
 //export const SERVER_URL3 = 'http://localhost:8080'; // Сервер для зарубежных пользователей
 
 // Домен авторизации
-export const AUTH_SITE_URL = 'http://localhost:3000';
+// export const AUTH_SITE_URL = 'http://localhost:3000';
+export const AUTH_SITE_URL = 'https://auth.yumeko.ru';
 
 export const KODIK_API_TOKEN = 'e2013488792846196906e93e7e5eb623';
 export const KODIK_API_BASE = 'https://kodikapi.com';
