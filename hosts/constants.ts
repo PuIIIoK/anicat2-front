@@ -33,4 +33,4 @@ export const REPOS = {
         owner: 'PuIIIoK',
         name: 'anicat2-front-dev',
     }
-};
+}
