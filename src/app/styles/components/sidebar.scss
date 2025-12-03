@@ -6,10 +6,29 @@ $sidebar-width: 260px;
 $sidebar-collapsed-width: 0px;
 $sidebar-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-// Overlay - disabled to allow interaction with content
+// Overlay - active only on mobile
 .sidebar-overlay {
-    display: none !important;
-    pointer-events: none !important;
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 1050;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    
+    @media (max-width: 1024px) {
+        display: block;
+        
+        &.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    }
 }
 
 // Main Sidebar - Opens from RIGHT
@@ -41,6 +60,44 @@ $sidebar-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     &.resizing {
         transition: none;
         user-select: none;
+    }
+}
+
+// Mobile Close Button
+.sidebar-mobile-close-btn {
+    display: none;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+    cursor: pointer;
+    z-index: 10;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    
+    &:hover {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+    }
+    
+    &:active {
+        transform: scale(0.95);
+    }
+    
+    svg {
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+    
+    @media (max-width: 1024px) {
+        display: flex;
     }
 }
 
@@ -630,7 +687,12 @@ $sidebar-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 @media (max-width: 1024px) {
     .yumeko-sidebar {
         width: 280px;
+        padding-top: 64px;
         box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
+    }
+    
+    .sidebar-resize-handle {
+        display: none;
     }
 }
 
