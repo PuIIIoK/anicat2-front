@@ -46,10 +46,23 @@ const YumekoMobileIndex: React.FC = () => {
         set value(v: string | null) { globalThis.__yumekoLastSelectedCategoryId = v; }
     }), []);
 
-    const [categories, setCategories] = useState<Category[]>([]);
-    const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
-    const [animeList, setAnimeList] = useState<AnimeBasicInfo[]>([]);
-    const [loadingCategories, setLoadingCategories] = useState(true);
+    // Инициализация состояния из кэша для мгновенного отображения при возврате
+    const [categories, setCategories] = useState<Category[]>(() => 
+        globalThis.__yumekoMobileCategoriesCache?.categories || []
+    );
+    const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(() => 
+        globalThis.__yumekoLastSelectedCategoryId || globalThis.__yumekoMobileCategoriesCache?.categories?.[0]?.id || null
+    );
+    const [animeList, setAnimeList] = useState<AnimeBasicInfo[]>(() => {
+        const cachedCatId = globalThis.__yumekoLastSelectedCategoryId;
+        if (cachedCatId) {
+            return globalThis.__yumekoMobileAnimeCache?.get(cachedCatId)?.animeList || [];
+        }
+        return [];
+    });
+    const [loadingCategories, setLoadingCategories] = useState(() => 
+        !globalThis.__yumekoMobileCategoriesCache?.categories?.length
+    );
     const [loadingAnime, setLoadingAnime] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -70,23 +83,32 @@ const YumekoMobileIndex: React.FC = () => {
     // Загрузка категорий
     useEffect(() => {
         const fetchCategories = async () => {
-            setLoadingCategories(true);
-            try {
-                const isFresh = Date.now() - categoriesCache.lastUpdated < CACHE_TTL_MS && categoriesCache.categories.length > 0;
-                
-                if (isFresh) {
-                    if (!mountedRef.current) return;
+            const isFresh = Date.now() - categoriesCache.lastUpdated < CACHE_TTL_MS && categoriesCache.categories.length > 0;
+            
+            // Если кэш свежий - просто используем его без загрузки
+            if (isFresh) {
+                if (!mountedRef.current) return;
+                if (categories.length === 0) {
                     setCategories(categoriesCache.categories);
+                }
+                if (!selectedCategoryId) {
                     const fallbackId = categoriesCache.categories[0]?.id || null;
                     setSelectedCategoryId(
                         lastSelectedRef.value && categoriesCache.categories.some(c => c.id === lastSelectedRef.value)
                             ? lastSelectedRef.value
                             : fallbackId
                     );
-                    setLoadingCategories(false);
-                    return;
                 }
+                setLoadingCategories(false);
+                return;
+            }
 
+            // Показываем загрузку только если нет кэшированных данных
+            if (categories.length === 0) {
+                setLoadingCategories(true);
+            }
+
+            try {
                 const res = await fetch(`${API_SERVER}/api/anime/category/get-category`);
                 if (!res.ok) throw new Error('Ошибка загрузки');
                 
@@ -98,22 +120,26 @@ const YumekoMobileIndex: React.FC = () => {
                 if (!mountedRef.current) return;
                 setCategories(fetched);
                 
-                const initialId = lastSelectedRef.value && fetched.some(c => c.id === lastSelectedRef.value)
-                    ? lastSelectedRef.value
-                    : (fetched[0]?.id || null);
-                setSelectedCategoryId(initialId);
+                if (!selectedCategoryId) {
+                    const initialId = lastSelectedRef.value && fetched.some(c => c.id === lastSelectedRef.value)
+                        ? lastSelectedRef.value
+                        : (fetched[0]?.id || null);
+                    setSelectedCategoryId(initialId);
+                }
                 
                 categoriesCache.categories = fetched;
                 categoriesCache.lastUpdated = Date.now();
             } catch {
-                setError('Ошибка загрузки категорий');
+                if (categories.length === 0) {
+                    setError('Ошибка загрузки категорий');
+                }
             } finally {
                 setLoadingCategories(false);
             }
         };
 
         fetchCategories();
-    }, [categoriesCache, lastSelectedRef]);
+    }, [categoriesCache, lastSelectedRef, categories.length, selectedCategoryId]);
 
     // Обновление underline
     const updateUnderline = useCallback(() => {
@@ -161,13 +187,18 @@ const YumekoMobileIndex: React.FC = () => {
             const cached = animeCache.get(selectedCategoryId);
             const isFresh = cached && (Date.now() - cached.lastUpdated < CACHE_TTL_MS) && cached.animeList.length > 0;
             
+            // Если есть кэш - используем его сразу
             if (cached && cached.animeList.length > 0) {
                 if (!mountedRef.current) return;
                 setAnimeList(cached.animeList);
                 setLoadingAnime(false);
                 
+                // Если кэш свежий - не загружаем заново
                 if (isFresh && cached.fullyLoaded) return;
+                
+                // Иначе обновляем в фоне без показа загрузки
             } else {
+                // Показываем загрузку только если нет кэша
                 setLoadingAnime(true);
                 setAnimeList([]);
             }

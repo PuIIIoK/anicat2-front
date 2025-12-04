@@ -91,10 +91,10 @@ body {
   padding: 0;
   overflow-x: visible; // ✅ Разрешаем показ hover карточек по горизонтали
   overflow-y: auto; // Разрешаем вертикальную прокрутку для hover карточек
-  margin-top: 80px; // Высота header
+  margin-top: 0; // Убран margin-top - используется padding в main-wrapper
   
   @media (max-width: 768px) {
-    margin-top: 64px; // Мобильный header
+    margin-top: 0; // Мобильный - padding в main-wrapper
   }
   font-family: 'Rubik', sans-serif; // основной читаемый шрифт
   background-color: var(--bg-primary); // Используем переменную для фона

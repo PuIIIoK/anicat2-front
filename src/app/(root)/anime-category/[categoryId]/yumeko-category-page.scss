@@ -1,0 +1,299 @@
+// ===== YUMEKO CATEGORY PAGE =====
+
+.yumeko-category-page {
+    width: 100%;
+    min-height: calc(100vh - 80px);
+    padding: 24px;
+    
+    @media (max-width: 768px) {
+        padding: 16px;
+        min-height: calc(100vh - 56px);
+    }
+}
+
+// ===== BREADCRUMB =====
+.yumeko-category-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: 500;
+    
+    @media (max-width: 768px) {
+        font-size: 18px;
+        margin-bottom: 16px;
+        gap: 8px;
+    }
+}
+
+.yumeko-breadcrumb-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    
+    &:hover {
+        color: var(--primary-color);
+    }
+}
+
+.yumeko-breadcrumb-separator {
+    color: var(--text-muted);
+    opacity: 0.5;
+}
+
+.yumeko-breadcrumb-current {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.yumeko-category-count {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 4px 10px;
+    border-radius: 12px;
+    margin-left: auto;
+    
+    @media (max-width: 768px) {
+        font-size: 12px;
+        padding: 3px 8px;
+    }
+}
+
+// ===== HEADER (удалено, используем breadcrumb) =====
+// Используем уникальные имена классов чтобы не конфликтовать с главной страницей
+.yumeko-category-page-header {
+    display: none;
+}
+
+.yumeko-category-page-title {
+    display: none;
+}
+
+// ===== GRID =====
+.yumeko-category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+    
+    @media (max-width: 1200px) {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 16px;
+    }
+    
+    @media (max-width: 768px) {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+    
+    @media (max-width: 480px) {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+    
+    @media (max-width: 360px) {
+        gap: 8px;
+    }
+}
+
+// ===== CARD WRAPPER =====
+.yumeko-category-card {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: yumekoCategoryCardFadeIn 0.4s ease forwards;
+    
+    &.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    // Mobile card overrides
+    @media (max-width: 768px) {
+        .yumeko-anime-card-cover {
+            border-radius: 8px !important;
+        }
+        
+        .yumeko-anime-card-title {
+            font-size: 11px !important;
+            -webkit-line-clamp: 2;
+        }
+        
+        .yumeko-anime-card-episodes {
+            font-size: 9px !important;
+        }
+        
+        .yumeko-anime-card-rating {
+            padding: 2px 4px !important;
+            font-size: 9px !important;
+        }
+        
+        .yumeko-anime-card-status {
+            padding: 2px 4px !important;
+            font-size: 7px !important;
+        }
+    }
+}
+
+@keyframes yumekoCategoryCardFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+// ===== LOADING STATE =====
+.yumeko-category-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    gap: 16px;
+    color: var(--text-muted);
+    font-size: 14px;
+    
+    @media (max-width: 768px) {
+        min-height: 300px;
+    }
+}
+
+.yumeko-category-spinner {
+    width: 48px;
+    height: 48px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: yumekoCategorySpin 0.8s linear infinite;
+    
+    @media (max-width: 768px) {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+@keyframes yumekoCategorySpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+// ===== ERROR STATE =====
+.yumeko-category-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    gap: 12px;
+    text-align: center;
+    padding: 20px;
+    
+    @media (max-width: 768px) {
+        min-height: 300px;
+    }
+    
+    .yumeko-category-error-icon {
+        font-size: 48px;
+        
+        @media (max-width: 768px) {
+            font-size: 40px;
+        }
+    }
+    
+    h3 {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0;
+        
+        @media (max-width: 768px) {
+            font-size: 16px;
+        }
+    }
+    
+    p {
+        font-size: 14px;
+        color: var(--text-muted);
+        margin: 0;
+        max-width: 400px;
+        
+        @media (max-width: 768px) {
+            font-size: 13px;
+        }
+    }
+}
+
+.yumeko-category-retry-btn {
+    margin-top: 8px;
+    padding: 10px 24px;
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    &:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+    }
+    
+    &:active {
+        transform: scale(0.98);
+    }
+}
+
+// ===== EMPTY STATE =====
+.yumeko-category-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    gap: 12px;
+    text-align: center;
+    padding: 20px;
+    
+    @media (max-width: 768px) {
+        min-height: 300px;
+    }
+    
+    .yumeko-category-empty-icon {
+        font-size: 56px;
+        opacity: 0.5;
+        
+        @media (max-width: 768px) {
+            font-size: 48px;
+        }
+    }
+    
+    h3 {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0;
+        
+        @media (max-width: 768px) {
+            font-size: 16px;
+        }
+    }
+    
+    p {
+        font-size: 14px;
+        color: var(--text-muted);
+        margin: 0;
+        max-width: 400px;
+        
+        @media (max-width: 768px) {
+            font-size: 13px;
+        }
+    }
+}

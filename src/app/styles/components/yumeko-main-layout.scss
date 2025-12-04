@@ -52,6 +52,13 @@ $transition-speed: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 }
 
+// Mobile - reduce padding-top to match mobile header height
+@media (max-width: 768px) {
+    .main-wrapper {
+        padding-top: 56px; // Match mobile header height
+    }
+}
+
 // Updated header styles for new layout
 .header {
     transition: right $transition-speed, width $transition-speed;

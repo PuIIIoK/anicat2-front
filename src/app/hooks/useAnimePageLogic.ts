@@ -160,45 +160,18 @@ export const useAnimePageLogic = (animeId: string) => {
     // Пользователь
     const [usernameFromToken, setUsernameFromToken] = useState<string | null>(null);
 
-    // Проверка доступности аниме
+    // Reset state when animeId changes
     useEffect(() => {
-        if (!animeId) return;
-
-        const checkAvailability = async () => {
-            try {
-                console.log('🔍 Проверяем доступность аниме:', animeId);
-                const response = await fetch(`${API_SERVER}/api/admin/avaibility/check-avaibility/${animeId}`);
-                const data = await response.json();
-                
-                console.log('📋 Данные доступности:', data);
-                
-                // Устанавливаем доступность
-                setIsAccessible(data.accessible !== false);
-                
-                // Устанавливаем заметку блокировки
-                if (data.zametka_blocked && data.zametka_blocked.trim() !== '') {
-                    setZametka_blocked(data.zametka_blocked);
-                } else {
-                    setZametka_blocked('');
-                }
-                
-                console.log('✅ Установлена доступность:', data.accessible !== false, 'заметка:', data.zametka_blocked);
-                
-            } catch (error) {
-                console.error('❌ Ошибка проверки доступности:', error);
-                setIsAccessible(true); // По умолчанию доступно при ошибке
-                setZametka_blocked('');
-            }
-        };
-
-        checkAvailability();
+        setAnime(null);
+        setIsLoading(true);
+        setError(null);
+        setScreenshotUrls([]);
+        setScreenshotsLoaded(false);
+        setComments([]);
+        setReviews([]);
     }, [animeId]);
 
-    // Проверка токена - импортирована из auth utils
-
-    // Загрузка выбранного дизайна из localStorage
-
-    // Загрузка данных аниме
+    // Загрузка данных аниме и проверка доступности (параллельно)
     useEffect(() => {
         const loadAnimeData = async () => {
             if (!animeId) return;
@@ -207,19 +180,36 @@ export const useAnimePageLogic = (animeId: string) => {
             setError(null);
 
             try {
-                const response = await fetch(`${API_SERVER}/api/anime/optimized/get-anime-page/${animeId}`);
-                
-                if (!response.ok) {
-                    if (response.status === 404) {
-                        throw new Error('Аниме не найдено');
-                    } else if (response.status === 500) {
-                        throw new Error('Ошибка сервера. Попробуйте позже');
-                    } else {
-                        throw new Error(`Ошибка ${response.status}: ${response.statusText}`);
+                // Запускаем загрузку аниме и проверку доступности параллельно
+                const [animeResponse, availabilityResponse] = await Promise.all([
+                    fetch(`${API_SERVER}/api/anime/optimized/get-anime-page/${animeId}`),
+                    fetch(`${API_SERVER}/api/admin/avaibility/check-avaibility/${animeId}`).catch(() => null)
+                ]);
+
+                // Обработка доступности
+                if (availabilityResponse) {
+                    try {
+                        const availData = await availabilityResponse.json();
+                        setIsAccessible(availData.accessible !== false);
+                        setZametka_blocked(availData.zametka_blocked?.trim() || '');
+                    } catch {
+                        setIsAccessible(true);
+                        setZametka_blocked('');
                     }
                 }
 
-                const data = await response.json();
+                // Обработка данных аниме
+                if (!animeResponse.ok) {
+                    if (animeResponse.status === 404) {
+                        throw new Error('Аниме не найдено');
+                    } else if (animeResponse.status === 500) {
+                        throw new Error('Ошибка сервера. Попробуйте позже');
+                    } else {
+                        throw new Error(`Ошибка ${animeResponse.status}: ${animeResponse.statusText}`);
+                    }
+                }
+
+                const data = await animeResponse.json();
                 setAnime(data);
 
                 // Установка официального рейтинга из основных данных
@@ -756,7 +746,8 @@ export const useAnimePageLogic = (animeId: string) => {
                                 const avatarResponse = await fetch(`${API_SERVER}/api/profiles/avatar?username=${rating.username}`);
                                 if (avatarResponse.ok) {
                                     const avatarData = await avatarResponse.json();
-                                    avatarUrl = avatarData.url || '';
+                                    // Prefer staticUrl for images, fallback to url if not webm
+                                    avatarUrl = avatarData.staticUrl || (avatarData.url && !avatarData.url.endsWith('.webm') ? avatarData.url : '');
                                     console.log('✅ Получен URL аватарки для отзыва:', avatarUrl);
                                 } else {
                                     console.log('❌ Не удалось получить URL аватарки для отзыва, статус:', avatarResponse.status);

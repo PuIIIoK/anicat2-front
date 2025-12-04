@@ -154,7 +154,9 @@ const AnimeCommentsSimple: React.FC<Props> = ({ animeId, isModernDesign = false 
                             const res = await fetch(`${API_SERVER}/api/profiles/avatar?username=${encodeURIComponent(username)}`);
                             if (!res.ok) return { username, url: '' };
                             const json = await res.json();
-                            return { username, url: json.url || '' };
+                            // Prefer staticUrl for images, fallback to url if not webm
+                            const url = json.staticUrl || (json.url && !json.url.endsWith('.webm') ? json.url : '');
+                            return { username, url };
                         } catch {
                             return { username, url: '' };
                         }

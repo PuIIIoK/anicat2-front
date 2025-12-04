@@ -182,8 +182,9 @@ export const useCommentsModal = (params: { show: boolean; animeId: string; myUse
     try {
       const res = await fetch(`${API_SERVER}/api/profiles/avatar?username=${encodeURIComponent(username)}`);
       if (res.ok) {
-        const data: { url?: string } = await res.json();
-        const url = data.url || "";
+        const data: { url?: string; staticUrl?: string } = await res.json();
+        // Prefer staticUrl for images, fallback to url if not webm
+        const url = data.staticUrl || (data.url && !data.url.endsWith('.webm') ? data.url : "");
         setAvatars((prev) => ({ ...prev, [username]: url }));
       } else {
         setAvatars((prev) => ({ ...prev, [username]: "" }));
@@ -544,8 +545,9 @@ export const useCommentsModal = (params: { show: boolean; animeId: string; myUse
           `${API_SERVER}/api/profiles/avatar?username=${encodeURIComponent(newCommentObj.username)}`
         );
         if (res.ok) {
-          const data: { url?: string } = await res.json();
-          setAvatars((prev) => ({ ...prev, [newCommentObj.username]: data.url || "" }));
+          const data: { url?: string; staticUrl?: string } = await res.json();
+          const url = data.staticUrl || (data.url && !data.url.endsWith('.webm') ? data.url : "");
+          setAvatars((prev) => ({ ...prev, [newCommentObj.username]: url }));
         }
       }
       
@@ -609,10 +611,10 @@ export const useCommentsModal = (params: { show: boolean; animeId: string; myUse
             `${API_SERVER}/api/profiles/avatar?username=${encodeURIComponent(newReply.username)}`
           );
           if (res.ok) {
-            const data: { url?: string } = await res.json();
-            setAvatars((prev) => ({ ...prev, [newReply.username]: data.url || "" }));
+            const data: { url?: string; staticUrl?: string } = await res.json();
+            const url = data.staticUrl || (data.url && !data.url.endsWith('.webm') ? data.url : "");
+            setAvatars((prev) => ({ ...prev, [newReply.username]: url }));
           }
-
         }
         
         setComments((prev) =>

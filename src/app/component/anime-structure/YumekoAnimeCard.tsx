@@ -255,7 +255,7 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
     };
 
     return (
-        <Link href={`/anime-page/${anime.id}`} className="yumeko-anime-card">
+        <Link href={`/anime-page/${anime.id}`} prefetch={true} className="yumeko-anime-card">
             <div className="yumeko-anime-card-cover">
                 {isLoading && (
                     <div className="yumeko-anime-card-loader">

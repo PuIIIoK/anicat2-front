@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useState, useEffect, use } from 'react';
+import Link from 'next/link';
 import { fetchCategoryById } from '../../../component/anime-structure/category-data';
 import { AnimeInfo } from '../../../component/anime-structure/anime-data-info';
-import GlobalAnimeCard from '../../../component/anime-structure/GlobalAnimeCard';
-import { MiniCardProvider } from '../../../component/anime-structure/mini-card-context';
+import YumekoAnimeCard from '../../../component/anime-structure/YumekoAnimeCard';
 import Head from 'next/head';
 import { API_SERVER } from '@/hosts/constants';
+import './yumeko-category-page.scss';
 
 // Кэш для страниц категории (живёт, пока открыта вкладка)
 const CATEGORY_CACHE_TTL_MS = 30 * 60 * 1000; // 30 минут
@@ -142,52 +143,62 @@ const AnimeCategoryPage = ({ params }: { params: Promise<{ categoryId: string }>
     }, [categoryId]);
 
     return (
-        <MiniCardProvider>
+        <>
             <Head>
-                <title>{categoryName ? `${categoryName} | AniCat` : 'Категория | AniCat'}</title>
+                <title>{categoryName ? `${categoryName} | Yumeko` : 'Категория | Yumeko'}</title>
                 <meta 
                     name="description" 
                     content={`Просмотр аниме в категории ${categoryName || 'выбранной категории'}. Удобная навигация и детальная информация о каждом аниме.`} 
                 />
-                <meta property="og:title" content={`${categoryName || 'Категория'} | AniCat`} />
+                <meta property="og:title" content={`${categoryName || 'Категория'} | Yumeko`} />
                 <meta 
                     property="og:description" 
                     content={`Просмотр аниме в категории ${categoryName || 'выбранной категории'}`} 
                 />
                 <meta property="og:type" content="website" />
-                <meta property="og:image" content="https://anicat.ru/logo-cover.jpg" />
+                <meta property="og:image" content="https://yumeko.ru/logo-cover.jpg" />
             </Head>
-            <div className="anime-category-container">
-                <div className="anime-category-title">
-                    <h1>{categoryName || 'Загрузка...'}</h1>
+            
+            <div className="yumeko-category-page">
+                {/* Breadcrumb */}
+                <div className="yumeko-category-breadcrumb">
+                    <Link href="/" className="yumeko-breadcrumb-link">Главная</Link>
+                    <span className="yumeko-breadcrumb-separator">/</span>
+                    <span className="yumeko-breadcrumb-current">{categoryName || 'Загрузка...'}</span>
+                    {animeInCategory.length > 0 && (
+                        <span className="yumeko-category-count">{animeInCategory.length} аниме</span>
+                    )}
                 </div>
                 
+                {/* Content */}
                 {error ? (
-                    <div className="anime-category-error">
-                        <div className="anime-category-error-icon">⚠️</div>
-                        <h3 className="anime-category-error-title">Ошибка загрузки</h3>
-                        <p className="anime-category-error-message">{error}</p>
+                    <div className="yumeko-category-error">
+                        <div className="yumeko-category-error-icon">⚠️</div>
+                        <h3>Ошибка загрузки</h3>
+                        <p>{error}</p>
+                        <button 
+                            className="yumeko-category-retry-btn"
+                            onClick={() => window.location.reload()}
+                        >
+                            Повторить
+                        </button>
                     </div>
                 ) : loading && animeInCategory.length === 0 ? (
-                    <div className="anime-category-loading">
-                        <div className="anime-category-spinner-wrapper">
-                            <div className="anime-category-spinner-core"></div>
-                        </div>
-                        <div className="anime-category-loading-text">Загружаем аниме...</div>
+                    <div className="yumeko-category-loading">
+                        <div className="yumeko-category-spinner"></div>
+                        <span>Загружаем аниме...</span>
                     </div>
                 ) : animeInCategory.length > 0 ? (
-                    <div className="anime-category-grid">
-                        {animeInCategory.map((anime) => (
+                    <div className="yumeko-category-grid">
+                        {animeInCategory.map((anime, index) => (
                             <div 
                                 key={anime.id}
-                                className={`anime-category-card-wrapper ${visibleCards.has(anime.id) ? 'visible' : ''}`}
+                                className={`yumeko-category-card ${visibleCards.has(anime.id) ? 'visible' : ''}`}
+                                style={{ animationDelay: `${index * 0.05}s` }}
                             >
-                                <GlobalAnimeCard
-                                    anime={{
-                                        ...anime,
-                                        episodes: anime.episodes,
-                                    }}
-                                    priority={animeInCategory.indexOf(anime) < 8}
+                                <YumekoAnimeCard
+                                    anime={anime}
+                                    priority={index < 12}
                                     showCollectionStatus={true}
                                     showRating={true}
                                     showType={true}
@@ -196,16 +207,14 @@ const AnimeCategoryPage = ({ params }: { params: Promise<{ categoryId: string }>
                         ))}
                     </div>
                 ) : !loading ? (
-                    <div className="anime-category-empty">
-                        <div className="anime-category-empty-icon">🎬</div>
-                        <h3 className="anime-category-empty-title">Нет аниме в этой категории</h3>
-                        <p className="anime-category-empty-description">
-                            Возможно, аниме еще не добавлены или категория временно пуста
-                        </p>
+                    <div className="yumeko-category-empty">
+                        <div className="yumeko-category-empty-icon">📺</div>
+                        <h3>Нет аниме в этой категории</h3>
+                        <p>Возможно, аниме еще не добавлены или категория временно пуста</p>
                     </div>
                 ) : null}
             </div>
-        </MiniCardProvider>
+        </>
     );
 };
 

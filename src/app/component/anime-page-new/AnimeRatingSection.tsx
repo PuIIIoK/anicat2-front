@@ -72,7 +72,8 @@ const AnimeRatingSection: React.FC<{ animeId: string; onRequireAuth?: () => void
                     const avatarRes = await fetch(`${API_SERVER}/api/profiles/avatar?username=${encodeURIComponent(r.username)}`);
                     if (!avatarRes.ok) return null;
                     const avatarJson = await avatarRes.json();
-                    return avatarJson.url || null;
+                    // Prefer staticUrl for images, fallback to url if not webm
+                    return avatarJson.staticUrl || (avatarJson.url && !avatarJson.url.endsWith('.webm') ? avatarJson.url : null);
                 } catch {
                     return null;
                 }
