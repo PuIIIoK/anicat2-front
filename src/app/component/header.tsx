@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
@@ -8,6 +8,7 @@ import { API_SERVER } from '@/hosts/constants';
 import { getAuthToken } from '../utils/auth';
 import { useTheme } from '../context/ThemeContext';
 import { useSidebar } from '../context/SidebarContext';
+import { getProfile } from '@/utils/profileCache';
 
 interface AnimeInfo {
     id: number;
@@ -56,23 +57,25 @@ const Header: React.FC = () => {
     const [currentSearchQuery, setCurrentSearchQuery] = useState('');
     const [isWaitingForSearch, setIsWaitingForSearch] = useState(false);
 
+    const authCheckedRef = useRef(false);
+
     useEffect(() => {
+        if (authCheckedRef.current) return;
+        authCheckedRef.current = true;
+
         const checkAuth = async () => {
             const token = getAuthToken();
             if (!token) return setIsAuthenticated(false);
 
             try {
-                const res = await fetch(`${API_SERVER}/api/auth/get-profile`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
+                const data = await getProfile();
 
-                if (res.ok) {
-                    const data = await res.json();
+                if (data) {
                     setIsAuthenticated(true);
                     setUsername(data.username || '');
                     setUserRoles(data.roles || []);
                     
-                        // Загружаем настройки темы пользователя
+                    // Загружаем настройки темы пользователя
                     await loadUserThemeSettings();
                     
                     // Загружаем аватарку пользователя
@@ -92,7 +95,7 @@ const Header: React.FC = () => {
         };
 
         checkAuth();
-    }, []);
+    }, [loadUserThemeSettings]);
 
     // Cleanup поисковых таймеров при размонтировании
     useEffect(() => {

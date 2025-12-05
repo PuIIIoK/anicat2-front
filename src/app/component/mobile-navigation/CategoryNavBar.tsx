@@ -16,6 +16,17 @@ type AnimeCacheEntry = { animeList: (AnimeInfo | AnimeBasicInfo)[]; lastUpdated:
 type PcAnimeCategoryCache = Map<string, AnimeCacheEntry>;
 type MobileCategoriesCache = { categories: Category[]; lastUpdated: number };
 
+const getAuthToken = () => {
+    if (typeof document === 'undefined') return null;
+    const match = document.cookie.match(/(?:^|;)\s*(?:token|authToken|access_token|jwt|auth)=([^;]+)/i);
+    if (match && match[1]) return decodeURIComponent(match[1]);
+    try {
+        return localStorage.getItem('token');
+    } catch {
+        return null;
+    }
+};
+
 declare global {
 	// eslint-disable-next-line no-var
 	var __mobileCategoriesCache: MobileCategoriesCache | undefined;
@@ -300,11 +311,15 @@ const CategoryNavBar: React.FC = () => {
                 // Используем оптимизированный endpoint для быстрой загрузки всех аниме сразу
                 const animeIdsNumbers = animeIds.map(id => parseInt(id, 10));
                 
-                const res = await fetch(`${API_SERVER}/api/anime/optimized/get-anime-list/basic`, {
+                const token = getAuthToken();
+                const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                }
+
+                const res = await fetch(`${API_SERVER}/api/anime/get-anime`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers,
                     body: JSON.stringify(animeIdsNumbers),
                     signal
                 });
@@ -467,6 +482,7 @@ const CategoryNavBar: React.FC = () => {
                                             showRating={true}
                                             showType={false} 
                                             priority={false}
+                                            dataPreloaded={true}
                                         />
                                     </div>
                                 ))

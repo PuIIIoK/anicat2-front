@@ -6,9 +6,8 @@ import { API_SERVER } from '@/hosts/constants';
 import Image from 'next/image';
 import * as LucideIcons from 'lucide-react';
 import YumekoAnimeDetailModal from './YumekoAnimeDetailModal';
-import GlobalAnimeCard from '../../anime-structure/GlobalAnimeCard';
+import YumekoAnimeCard from '../../anime-structure/YumekoAnimeCard';
 import SkeletonLoader from './SkeletonLoader';
-import '../../../styles/components/global-anime-card.scss';
 
 interface YumekoProfileContentProps {
     profileData: YumekoProfileData;
@@ -221,14 +220,13 @@ const YumekoProfileContent: React.FC<YumekoProfileContentProps> = ({ profileData
                                 {favoriteAnime.map((item: any) => {
                                     const anime = item.anime || item;
                                     return (
-                                        <GlobalAnimeCard
+                                        <YumekoAnimeCard
                                             key={anime.id}
                                             anime={anime}
                                             collectionType="FAVORITE"
                                             showCollectionStatus={true}
                                             showRating={true}
                                             showType={true}
-                                            className="yumeko-favorite-card"
                                             priority={false}
                                         />
                                     );

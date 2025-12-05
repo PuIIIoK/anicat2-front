@@ -7,16 +7,27 @@ import { API_SERVER } from '@/hosts/constants';
 import YumekoContinueCard from './YumekoContinueCard';
 import type { WatchingItem } from '../profile-page-old/types';
 
+// Кэш для данных аниме
+const animeDataCache = new Map<number, { kodik?: string; alias?: string }>();
+
 const ContinueWatchingSection: React.FC = () => {
     const [watchingAnime, setWatchingAnime] = useState<WatchingItem[]>([]);
+    const [animeExtraData, setAnimeExtraData] = useState<Map<number, { kodik?: string; alias?: string }>>(new Map());
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [visibleCards, setVisibleCards] = useState<Set<number>>(new Set());
     const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const fetchedRef = useRef(false);
 
     // Загрузка данных при монтировании
     useEffect(() => {
+        // Защита от React StrictMode double-invoke
+        if (fetchedRef.current) return;
+
         const loadWatchingData = async () => {
+            if (fetchedRef.current) return;
+            fetchedRef.current = true;
+
             try {
                 setLoading(true);
                 setError(null);
@@ -75,6 +86,45 @@ const ContinueWatchingSection: React.FC = () => {
                     .slice(0, 12); // Ограничиваем до 12 элементов
 
                 setWatchingAnime(formattedData);
+
+                // Загружаем дополнительные данные аниме ОДНИМ запросом
+                if (formattedData.length > 0) {
+                    const animeIds = formattedData.map(item => item.id);
+                    
+                    // Проверяем кэш - загружаем только те, которых нет
+                    const idsToFetch = animeIds.filter(id => !animeDataCache.has(id));
+                    
+                    if (idsToFetch.length > 0) {
+                        try {
+                            const animeRes = await fetch(`${API_SERVER}/api/anime/get-anime`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(idsToFetch)
+                            });
+                            
+                            if (animeRes.ok) {
+                                const animeDataList = await animeRes.json();
+                                const newExtraData = new Map(animeDataCache);
+                                
+                                for (const anime of animeDataList) {
+                                    const extraData = {
+                                        kodik: anime.kodik || anime.title,
+                                        alias: anime.alias || ''
+                                    };
+                                    newExtraData.set(anime.id, extraData);
+                                    animeDataCache.set(anime.id, extraData);
+                                }
+                                
+                                setAnimeExtraData(newExtraData);
+                            }
+                        } catch (e) {
+                            console.warn('Не удалось загрузить дополнительные данные аниме:', e);
+                        }
+                    } else {
+                        // Все данные уже в кэше
+                        setAnimeExtraData(new Map(animeDataCache));
+                    }
+                }
 
                 // Анимация появления карточек
                 setTimeout(() => {
@@ -170,6 +220,7 @@ const ContinueWatchingSection: React.FC = () => {
                             <YumekoContinueCard
                                 item={item}
                                 priority={index < 6}
+                                animeData={animeExtraData.get(item.id)}
                             />
                         </div>
                     ))}

@@ -4,18 +4,24 @@ import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 
 import YumekoCategorySection from '@/component/anime-structure/YumekoCategorySection';
-import { Category as CategoryType } from '@/component/anime-structure/category-data';
 import YumekoMobileIndex from '@/component/mobile-navigation/YumekoMobileIndex';
 import ServerErrorPage from '@/component/common/ServerErrorPage';
 import ContinueWatchingSection from '@/component/continue-watching/ContinueWatchingSection';
 import { API_SERVER } from '@/hosts/constants';
 
+interface CategoryWithAnimeIds {
+    id: string;
+    name: string;
+    position: number;
+    animeIds: string[];
+}
+
 interface CategoriesApiResponse {
-    categories: Omit<CategoryType, 'animeList'>[];
+    categories: CategoryWithAnimeIds[];
 }
 
 const CategoryList: React.FC = () => {
-    const [categories, setCategories] = useState<Omit<CategoryType, 'animeList'>[]>([]);
+    const [categories, setCategories] = useState<CategoryWithAnimeIds[]>([]);
     const [loadingCategories, setLoadingCategories] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [adminAccessMessage, setAdminAccessMessage] = useState<string | null>(null);
@@ -142,6 +148,7 @@ const CategoryList: React.FC = () => {
                                 key={category.id}
                                 categoryId={category.id}
                                 title={category.name}
+                                animeIds={category.animeIds}
                             />
                         ))
                     ) : (

@@ -1,33 +1,19 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { WatchingItem } from '../profile-page-old/types';
-import { API_SERVER } from '@/hosts/constants';
 
 interface YumekoContinueCardProps {
     item: WatchingItem;
     priority?: boolean;
+    /** Предзагруженные данные аниме (kodik, alias) */
+    animeData?: { kodik?: string; alias?: string };
 }
 
-const YumekoContinueCard: React.FC<YumekoContinueCardProps> = ({ item, priority = false }) => {
+const YumekoContinueCard: React.FC<YumekoContinueCardProps> = ({ item, priority = false, animeData }) => {
     const [imageError, setImageError] = useState(false);
-    const [animeData, setAnimeData] = useState<{ kodik?: string; alias?: string } | null>(null);
-
-    useEffect(() => {
-        fetch(`${API_SERVER}/api/anime/get-anime/${item.id}`)
-            .then(res => res.ok ? res.json() : null)
-            .then(data => {
-                if (data) {
-                    setAnimeData({
-                        kodik: data.kodik || data.title || item.title,
-                        alias: data.alias || ''
-                    });
-                }
-            })
-            .catch(() => {});
-    }, [item.id, item.title]);
 
     const lastWatched = item.progressDetails?.[item.progressDetails.length - 1];
     const progress = item.totalEpisodes && item.currentEpisodes

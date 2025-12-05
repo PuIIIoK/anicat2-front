@@ -65,6 +65,7 @@ interface Friend {
   profileColor1: string | null;
   profileColor2: string | null;
   verified: boolean;
+  roles?: string[];
 }
 
 export function useYumekoProfile(username?: string): YumekoProfileData {
@@ -275,6 +276,7 @@ export function useYumekoProfile(username?: string): YumekoProfileData {
           profileColor1: d.profileColor1,
           profileColor2: d.profileColor2,
           verified: d.verified,
+          roles: d.roles || [],
         }));
         setFriends(mapped);
       }

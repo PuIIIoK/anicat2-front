@@ -15,6 +15,8 @@ interface GlobalAnimeCardProps {
     showType?: boolean;
     className?: string;
     priority?: boolean;
+    /** Если true, не делать отдельные запросы на rating/collection - данные уже в anime объекте */
+    dataPreloaded?: boolean;
 }
 
 
@@ -25,7 +27,8 @@ const GlobalAnimeCard: React.FC<GlobalAnimeCardProps> = ({
     showRating = true,
     showType = true,
     className = '',
-    priority = false
+    priority = false,
+    dataPreloaded = false
 }) => {
     const [coverUrl, setCoverUrl] = useState<string>('');
     const [animeRating, setAnimeRating] = useState<number | null>(null);
@@ -242,6 +245,31 @@ const GlobalAnimeCard: React.FC<GlobalAnimeCardProps> = ({
     useEffect(() => {
         if (!showRating || !anime?.id) return;
         
+        // Проверяем, есть ли рейтинг в данных
+        /* eslint-disable @typescript-eslint/no-explicit-any */
+        const providedRating = (() => {
+            if (typeof (anime as any).averageRating === 'number') {
+                return (anime as any).averageRating as number;
+            }
+            if (typeof (anime as any).rating === 'number') {
+                return (anime as any).rating as number;
+            }
+            if (typeof (anime as any).rating === 'string') {
+                const parsed = parseFloat((anime as any).rating);
+                if (!Number.isNaN(parsed)) return parsed;
+            }
+            return null;
+        })();
+        /* eslint-enable @typescript-eslint/no-explicit-any */
+
+        if (providedRating !== null && !Number.isNaN(providedRating)) {
+            setAnimeRating(providedRating);
+            return;
+        }
+        
+        // Если данные предзагружены, не делаем дополнительный запрос
+        if (dataPreloaded) return;
+        
         const fetchRating = async () => {
             try {
                 const response = await fetch(`${API_SERVER}/api/anime/ratings/${anime.id}/rating`);
@@ -256,13 +284,25 @@ const GlobalAnimeCard: React.FC<GlobalAnimeCardProps> = ({
         };
 
         fetchRating();
-    }, [anime.id, showRating]);
+    }, [anime, showRating, dataPreloaded]);
 
     // Загрузка статуса коллекции пользователя
     useEffect(() => {
         if (!showCollectionStatus || !anime?.id) return;
+        
+        // Проверяем, есть ли статус коллекции в данных
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const providedStatus = propsCollectionType || (anime as any)?.collectionType;
+        if (providedStatus) {
+            setUserCollectionType(providedStatus);
+            return;
+        }
+        
+        // Если данные предзагружены (collectionType уже проверен на сервере), не делаем запрос
+        if (dataPreloaded) return;
+        
         fetchUserCollectionStatus();
-    }, [anime.id, showCollectionStatus]);
+    }, [anime, showCollectionStatus, propsCollectionType, dataPreloaded]);
 
     // Обработка ошибки загрузки изображения
     const handleImageError = () => {

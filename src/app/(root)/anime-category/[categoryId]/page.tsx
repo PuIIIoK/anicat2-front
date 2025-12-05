@@ -14,6 +14,19 @@ const CATEGORY_CACHE_TTL_MS = 30 * 60 * 1000; // 30 минут
 const animeCategoryCache: Map<string, { animeList: AnimeInfo[]; lastUpdated: number; fullyLoaded: boolean }>
     = new Map();
 
+const getAuthToken = () => {
+    if (typeof document === 'undefined') return null;
+    const match = document.cookie.match(/(?:^|;)\s*(?:token|authToken|access_token|jwt|auth)=([^;]+)/i);
+    if (match && match[1]) {
+        return decodeURIComponent(match[1]);
+    }
+    try {
+        return localStorage.getItem('token');
+    } catch {
+        return null;
+    }
+};
+
 const AnimeCategoryPage = ({ params }: { params: Promise<{ categoryId: string }> }) => {
     const { categoryId } = use(params);
     const [categoryName, setCategoryName] = useState<string | null>(null);
@@ -82,13 +95,19 @@ const AnimeCategoryPage = ({ params }: { params: Promise<{ categoryId: string }>
                 }
                 
                 // Загружаем все аниме одним оптимизированным запросом (без AbortSignal)
+                const token = getAuthToken();
+                const headers: Record<string, string> = {
+                    'Content-Type': 'application/json',
+                };
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                }
+
                 const animeBasicRes = await fetch(
-                    `${API_SERVER}/api/anime/optimized/get-anime-list/basic`,
+                    `${API_SERVER}/api/anime/get-anime`,
                     {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
+                        headers,
                         body: JSON.stringify(animeIds)
                     }
                 );
@@ -202,6 +221,7 @@ const AnimeCategoryPage = ({ params }: { params: Promise<{ categoryId: string }>
                                     showCollectionStatus={true}
                                     showRating={true}
                                     showType={true}
+                                    dataPreloaded={true}
                                 />
                             </div>
                         ))}

@@ -1,8 +1,8 @@
 'use client';
 
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { API_SERVER } from '@/hosts/constants';
+import { getProfile, hasAdminAccess } from '@/utils/profileCache';
 
 type Props = {
     children: ReactNode;
@@ -10,63 +10,41 @@ type Props = {
 
 export default function AdminRoleChecker({ children }: Props) {
     const router = useRouter();
+    const checkedRef = useRef(false);
 
     useEffect(() => {
+        // Проверяем только один раз при загрузке
+        if (checkedRef.current) return;
+        checkedRef.current = true;
+
         const checkAdminRole = async () => {
             try {
-                const tokenMatch = document.cookie.match(/(^|;\s*)token=([^;]*)/);
-                const token = tokenMatch?.[2];
+                const profile = await getProfile();
                 
-                if (!token) {
-                    console.log('AdminRoleChecker: No token found, redirecting to login');
+                if (!profile) {
                     router.replace('/login');
                     return;
                 }
 
-                const response = await fetch(`${API_SERVER}/api/auth/get-profile`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-
-                if (response.ok) {
-                    const userData = await response.json();
-                    
-                    // Проверяем, есть ли роли ADMIN или MODERATOR
-                    const userRoles = userData.roles || [];
-                    const hasAdminAccess = userRoles.includes('ADMIN') || userRoles.includes('MODERATOR');
-                    
-                    if (!hasAdminAccess) {
-                        console.log('AdminRoleChecker: User does not have admin/moderator role, redirecting');
-                        
-                        // Сохраняем информацию о недостатке прав
-                        sessionStorage.setItem('adminAccessDenied', JSON.stringify({
-                            message: 'У вас нет прав доступа к админ панели',
-                            timestamp: Date.now()
-                        }));
-                        
-                        // Перенаправляем на главную страницу
-                        router.replace('/');
-                        return;
-                    }
-                    
-                    // Если роли есть, очищаем старую информацию о блокировке
-                    sessionStorage.removeItem('adminAccessDenied');
-                } else {
-                    console.log('AdminRoleChecker: Failed to fetch user profile, redirecting to login');
-                    router.replace('/login');
+                const hasAccess = await hasAdminAccess();
+                
+                if (!hasAccess) {
+                    sessionStorage.setItem('adminAccessDenied', JSON.stringify({
+                        message: 'У вас нет прав доступа к админ панели',
+                        timestamp: Date.now()
+                    }));
+                    router.replace('/');
+                    return;
                 }
+                
+                sessionStorage.removeItem('adminAccessDenied');
             } catch (error) {
                 console.error('AdminRoleChecker: Error checking admin role:', error);
                 router.replace('/login');
             }
         };
 
-        // Проверяем сразу при загрузке
         checkAdminRole();
-        
-        // Проверяем каждые 30 секунд (менее агрессивно)
-        const interval = setInterval(checkAdminRole, 10000);
-        
-        return () => clearInterval(interval);
     }, [router]);
 
     return <>{children}</>;

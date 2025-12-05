@@ -16,6 +16,10 @@ export interface AnimeBasicInfo {
     realesed_for: string;
     opened: boolean;
     anons: string;
+    collectionType?: string | null;
+    averageRating?: number | null;
+    myRating?: number | null;
+    myComment?: string | null;
     
     // ID изображений для последующей загрузки
     coverId?: number | null;

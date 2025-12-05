@@ -9,6 +9,7 @@ import YumekoProfileSidebar from './yumeko-profile-components/YumekoProfileSideb
 import YumekoProfileContent from './yumeko-profile-components/YumekoProfileContent';
 import YumekoProfileBackground from './yumeko-profile-components/YumekoProfileBackground';
 import YumekoFriendsModal from './yumeko-profile-components/YumekoFriendsModal';
+import YumekoMobileProfile from './yumeko-profile-components/YumekoMobileProfile';
 import './styles-for-profile/yumeko-profile.scss';
 
 interface YumekoProfileProviderProps {
@@ -127,44 +128,52 @@ const YumekoProfileProvider: React.FC<YumekoProfileProviderProps> = ({ username 
                 <meta name="description" content={`Профиль ${userName} на Yumeko`} />
             </Head>
 
-            {/* Breadcrumbs */}
-            <nav className="yumeko-profile-breadcrumbs">
-                <Link href="/" className="breadcrumb-link">Главная</Link>
-                <span className="breadcrumb-separator">/</span>
-                <span className="breadcrumb-current">Профиль</span>
-            </nav>
+            {/* Mobile версия профиля */}
+            <div className="mobile-only">
+                <YumekoMobileProfile profileData={profileData} />
+            </div>
 
-            <div className="yumeko-profile-wrapper" data-theme={profileColorScheme || 'default'} style={profileStyle}>
-                <YumekoProfileBackground 
-                    backgroundAnimatedUrl={backgroundAnimatedUrl}
-                    backgroundStaticUrl={backgroundStaticUrl}
-                    backgroundUrl={backgroundUrl}
-                />
+            {/* Desktop версия профиля */}
+            <div className="desktop-only">
+                {/* Breadcrumbs */}
+                <nav className="yumeko-profile-breadcrumbs">
+                    <Link href="/" className="breadcrumb-link">Главная</Link>
+                    <span className="breadcrumb-separator">/</span>
+                    <span className="breadcrumb-current">Профиль</span>
+                </nav>
 
-                <div className="yumeko-profile-container">
-                    <YumekoProfileHeader 
-                        profileData={profileData}
+                <div className="yumeko-profile-wrapper" data-theme={profileColorScheme || 'default'} style={profileStyle}>
+                    <YumekoProfileBackground 
+                        backgroundAnimatedUrl={backgroundAnimatedUrl}
+                        backgroundStaticUrl={backgroundStaticUrl}
+                        backgroundUrl={backgroundUrl}
                     />
 
-                    <div className="yumeko-profile-body">
-                        <YumekoProfileSidebar 
+                    <div className="yumeko-profile-container">
+                        <YumekoProfileHeader 
                             profileData={profileData}
-                            onOpenFriendsModal={() => setIsFriendsModalOpen(true)}
                         />
 
-                        <YumekoProfileContent 
-                            profileData={profileData}
-                            activeTab={activeTab}
-                            setActiveTab={setActiveTab}
-                        />
+                        <div className="yumeko-profile-body">
+                            <YumekoProfileSidebar 
+                                profileData={profileData}
+                                onOpenFriendsModal={() => setIsFriendsModalOpen(true)}
+                            />
+
+                            <YumekoProfileContent 
+                                profileData={profileData}
+                                activeTab={activeTab}
+                                setActiveTab={setActiveTab}
+                            />
+                        </div>
                     </div>
-                </div>
 
-                <YumekoFriendsModal 
-                    isOpen={isFriendsModalOpen}
-                    onClose={() => setIsFriendsModalOpen(false)}
-                    friends={profileData.friends}
-                />
+                    <YumekoFriendsModal 
+                        isOpen={isFriendsModalOpen}
+                        onClose={() => setIsFriendsModalOpen(false)}
+                        friends={profileData.friends}
+                    />
+                </div>
             </div>
         </>
     );

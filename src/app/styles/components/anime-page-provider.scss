@@ -5,6 +5,24 @@
 body:has(.anime-page-container) {
   background: transparent !important;
   overflow-x: hidden;
+  
+  // Темный скроллбар для страницы аниме
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #0a0a0a;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 4px;
+    
+    &:hover {
+      background: #444;
+    }
+  }
 }
 
 .anime-page-container {

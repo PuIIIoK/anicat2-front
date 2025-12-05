@@ -144,7 +144,7 @@ type ProfileCacheEntry = { data: ProfileCacheData; lastUpdated: number; fullyLoa
 
 declare global {
   // eslint-disable-next-line no-var
-  var __profileCache: Map<string, ProfileCacheEntry> | undefined;
+  var __profilePageCache: Map<string, ProfileCacheEntry> | undefined;
 }
 
 
@@ -222,10 +222,10 @@ export function useProfile(username?: string): UseProfileResult {
 
   // Глобальный кэш профиля на время жизни вкладки
   function getProfileCache(): Map<string, ProfileCacheEntry> {
-    if (!globalThis.__profileCache) {
-      globalThis.__profileCache = new Map<string, ProfileCacheEntry>();
+    if (!globalThis.__profilePageCache) {
+      globalThis.__profilePageCache = new Map<string, ProfileCacheEntry>();
     }
-    return globalThis.__profileCache;
+    return globalThis.__profilePageCache;
   }
 
   const mergeIntoProfileCache = useCallback((usernameKey: string, partial: Partial<ProfileCacheData>) => {
@@ -891,10 +891,10 @@ export function updateProfileCache(username: string, partial: Partial<{
   badges: string[];
   canonicalUsername: string;
 }>) {
-  if (!globalThis.__profileCache) {
-    globalThis.__profileCache = new Map<string, ProfileCacheEntry>();
+  if (!globalThis.__profilePageCache) {
+    globalThis.__profilePageCache = new Map<string, ProfileCacheEntry>();
   }
-  const profileCache = globalThis.__profileCache;
+  const profileCache = globalThis.__profilePageCache;
   const current: ProfileCacheData = (profileCache.get(username)?.data || {}) as ProfileCacheData;
   const merged: ProfileCacheData = { ...current, ...partial } as ProfileCacheData;
   profileCache.set(username, { data: merged, lastUpdated: Date.now(), fullyLoaded: true });

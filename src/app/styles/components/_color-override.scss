@@ -200,9 +200,9 @@ nav {
   }
 }
 
-// Табы (исключаем таблицы И admin-anime-subtabs И profile-tab И tab-button И yumeko-collection-tab из глобального правила)
-.tab:not(.modern-admin-table):not(.table-container):not([class*="table"]):not(.admin-anime-subtabs):not(.profile-tab):not(.tab-button):not(.yumeko-collection-tab),
-[class*="tab"]:not(.modern-admin-table):not(.table-container):not([class*="table"]):not([class*="table-row"]):not(.admin-anime-subtabs):not([class*="admin-anime-subtabs"]):not(.profile-tab):not(.tab-button):not(.yumeko-collection-tab) {
+// Табы (исключаем таблицы И admin-anime-subtabs И profile-tab И tab-button И yumeko-collection-tab И ypm-modal-tab из глобального правила)
+.tab:not(.modern-admin-table):not(.table-container):not([class*="table"]):not(.admin-anime-subtabs):not(.profile-tab):not(.tab-button):not(.yumeko-collection-tab):not(.ypm-modal-tab),
+[class*="tab"]:not(.modern-admin-table):not(.table-container):not([class*="table"]):not([class*="table-row"]):not(.admin-anime-subtabs):not([class*="admin-anime-subtabs"]):not(.profile-tab):not(.tab-button):not(.yumeko-collection-tab):not(.ypm-modal-tab) {
   &.active,
   &:hover {
     color: var(--primary-color) !important;

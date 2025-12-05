@@ -8,6 +8,17 @@ import {toast, Toaster} from 'react-hot-toast';
 // import { useNotifications } from '../notifications/NotificationManager';
 // import ClipLoader from 'react-spinners/ClipLoader'; // Заменили на иконки Lucide
 
+const getAuthToken = () => {
+    if (typeof document === 'undefined') return null;
+    const match = document.cookie.match(/(?:^|;)\s*(?:token|authToken|access_token|jwt|auth)=([^;]+)/i);
+    if (match && match[1]) return decodeURIComponent(match[1]);
+    try {
+        return localStorage.getItem('token');
+    } catch {
+        return null;
+    }
+};
+
 interface Anime {
     id: number;
     title: string;
@@ -115,9 +126,13 @@ export default function AdminCategory() {
                 console.log(`🔍 Пытаемся загрузить ${allAnimeIds.length} аниме через bulk API...`);
                 
                 try {
-                    const bulkRes = await fetch(`${API_SERVER}/api/anime/optimized/get-anime-list/basic`, {
+                    const token = getAuthToken();
+                    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+                    if (token) headers['Authorization'] = `Bearer ${token}`;
+
+                    const bulkRes = await fetch(`${API_SERVER}/api/anime/get-anime`, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers,
                         body: JSON.stringify(allAnimeIds)
                     });
                     

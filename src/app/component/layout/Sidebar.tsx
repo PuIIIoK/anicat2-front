@@ -10,6 +10,7 @@ import { performLogout } from '../../utils/logoutUtils';
 import GlobalFriendsModal from '../yumeko-anime-profile/yumeko-profile-components/GlobalFriendsModal';
 import { BADGE_META } from '../profile-page-old/badgeMeta';
 import * as LucideIcons from 'lucide-react';
+import { getProfile } from '@/utils/profileCache';
 
 const MIN_SIDEBAR_WIDTH = 60;
 const MAX_SIDEBAR_WIDTH = 400;
@@ -112,8 +113,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
         };
     }, [isResizing]);
 
+    const authCheckedRef = useRef(false);
+
     // Check authentication and load profile
     useEffect(() => {
+        if (authCheckedRef.current) return;
+        authCheckedRef.current = true;
+
         const checkAuth = async () => {
             const token = getAuthToken();
             if (!token) {
@@ -122,12 +128,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
             }
 
             try {
-                const res = await fetch(`${API_SERVER}/api/auth/get-profile`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const data: any = await getProfile();
 
-                if (res.ok) {
-                    const data = await res.json();
+                if (data) {
                     setIsAuthenticated(true);
                     
                     // Load avatar, banner and badges from separate endpoints

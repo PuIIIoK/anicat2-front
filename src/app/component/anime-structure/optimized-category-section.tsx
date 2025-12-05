@@ -6,11 +6,24 @@ import { AnimeBasicInfo } from './anime-basic-info';
 import { API_SERVER } from '@/hosts/constants';
 import GlobalAnimeCard from './GlobalAnimeCard';
 
+const getAuthToken = () => {
+    if (typeof document === 'undefined') return null;
+    const match = document.cookie.match(/(?:^|;)\s*(?:token|authToken|access_token|jwt|auth)=([^;]+)/i);
+    if (match && match[1]) return decodeURIComponent(match[1]);
+    try {
+        return localStorage.getItem('token');
+    } catch {
+        return null;
+    }
+};
+
 interface OptimizedCategorySectionProps {
     categoryId: string;
     title: string;
     link?: string;
     position?: number;
+    /** Список ID аниме для категории (передаётся из родителя, чтобы избежать лишних запросов) */
+    animeIds?: string[];
 }
 
 // Кэш для категорий
@@ -38,7 +51,8 @@ const shouldRefreshCache = (cached: { timestamp?: number; sessionId?: string; la
 
 const OptimizedCategorySection: React.FC<OptimizedCategorySectionProps> = ({ 
     categoryId, 
-    title 
+    title,
+    animeIds: propAnimeIds
 }) => {
     const [animeList, setAnimeList] = useState<AnimeBasicInfo[]>([]);
     const [loading, setLoading] = useState(true);
@@ -90,13 +104,15 @@ const OptimizedCategorySection: React.FC<OptimizedCategorySectionProps> = ({
         const idsToLoad = allAnimeIds.slice(startIndex, startIndex + count);
         
         try {
+            const token = getAuthToken();
+            const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+
             const animeBasicRes = await fetch(
-                `${API_SERVER}/api/anime/optimized/get-anime-list/basic`,
+                `${API_SERVER}/api/anime/get-anime`,
                 {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers,
                     body: JSON.stringify(idsToLoad),
                     signal: controller.signal
                 }
@@ -164,18 +180,25 @@ const OptimizedCategorySection: React.FC<OptimizedCategorySectionProps> = ({
                     return;
                 }
 
-                // Загружаем категорию для получения списка ID аниме
-                const categoryRes = await fetch(
-                    `${API_SERVER}/api/anime/category/get-category/${categoryId}`, 
-                    { signal: controller.signal }
-                );
+                // Используем animeIds из пропсов если есть, иначе делаем запрос
+                let animeIds: number[] = [];
                 
-                if (!categoryRes.ok) {
-                    throw new Error(`Ошибка загрузки категории: ${categoryRes.status}`);
-                }
+                if (propAnimeIds && propAnimeIds.length > 0) {
+                    animeIds = propAnimeIds.map(Number);
+                } else {
+                    // Fallback: запрашиваем категорию если animeIds не переданы
+                    const categoryRes = await fetch(
+                        `${API_SERVER}/api/anime/category/get-category/${categoryId}`, 
+                        { signal: controller.signal }
+                    );
+                    
+                    if (!categoryRes.ok) {
+                        throw new Error(`Ошибка загрузки категории: ${categoryRes.status}`);
+                    }
 
-                const categoryData = await categoryRes.json();
-                const animeIds: number[] = (categoryData.animeIds || []).map(Number);
+                    const categoryData = await categoryRes.json();
+                    animeIds = (categoryData.animeIds || []).map(Number);
+                }
 
                 if (animeIds.length === 0) {
                     if (!isMounted) return;
@@ -190,13 +213,15 @@ const OptimizedCategorySection: React.FC<OptimizedCategorySectionProps> = ({
                 const initialLoadCount = Math.min(visibleCount + 1, animeIds.length);
                 const initialIds = animeIds.slice(0, initialLoadCount);
 
+                const token = getAuthToken();
+                const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+                if (token) headers['Authorization'] = `Bearer ${token}`;
+
                 const animeBasicRes = await fetch(
-                    `${API_SERVER}/api/anime/optimized/get-anime-list/basic`,
+                    `${API_SERVER}/api/anime/get-anime`,
                     {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
+                        headers,
                         body: JSON.stringify(initialIds),
                         signal: controller.signal
                     }
@@ -258,7 +283,7 @@ const OptimizedCategorySection: React.FC<OptimizedCategorySectionProps> = ({
             isMounted = false;
             controller.abort();
         };
-    }, [categoryId, title]);
+    }, [categoryId, title, propAnimeIds]);
 
     // Наблюдатель для подгрузки при прокрутке
     useEffect(() => {
@@ -403,6 +428,7 @@ const OptimizedCategorySection: React.FC<OptimizedCategorySectionProps> = ({
                                 showCollectionStatus={true}
                                 showRating={true}
                                 showType={true}
+                                dataPreloaded={true}
                             />
                         </div>
                     ))}

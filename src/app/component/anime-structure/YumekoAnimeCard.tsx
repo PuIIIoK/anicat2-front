@@ -14,6 +14,8 @@ interface YumekoAnimeCardProps {
     showRating?: boolean;
     showType?: boolean;
     priority?: boolean;
+    /** Если true, не делать отдельные запросы на rating/collection - данные уже в anime объекте */
+    dataPreloaded?: boolean;
 }
 
 const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({ 
@@ -22,13 +24,17 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
     showCollectionStatus = true,
     showRating = true,
     showType = true,
-    priority = false
+    priority = false,
+    dataPreloaded = false
 }) => {
     const [coverUrl, setCoverUrl] = useState<string>('');
     const [rating, setRating] = useState<number | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [imageError, setImageError] = useState(false);
-    const [userCollection, setUserCollection] = useState<string>(propsCollectionType || '');
+    const [userCollection, setUserCollection] = useState<string>(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        propsCollectionType || (anime as any)?.collectionType || ''
+    );
     const [isLoadingCollection, setIsLoadingCollection] = useState(false);
 
     // Status text
@@ -157,8 +163,32 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
     // Fetch rating
     useEffect(() => {
         if (!showRating || !anime?.id) return;
+
+        /* eslint-disable @typescript-eslint/no-explicit-any */
+        const providedRating = (() => {
+            if (typeof (anime as any).averageRating === 'number') {
+                return (anime as any).averageRating as number;
+            }
+            if (typeof (anime as any).rating === 'number') {
+                return (anime as any).rating as number;
+            }
+            if (typeof (anime as any).rating === 'string') {
+                const parsed = parseFloat((anime as any).rating);
+                if (!Number.isNaN(parsed)) return parsed;
+            }
+            return null;
+        })();
+        /* eslint-enable @typescript-eslint/no-explicit-any */
+
+        if (providedRating !== null && !Number.isNaN(providedRating)) {
+            setRating(providedRating);
+            return;
+        }
         
-        // Try multiple endpoints
+        // Если данные предзагружены, не делаем дополнительный запрос
+        if (dataPreloaded) return;
+        
+        // Try multiple endpoints as fallback
         const fetchRating = async () => {
             try {
                 // First try ratings endpoint
@@ -188,11 +218,22 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
         };
         
         fetchRating();
-    }, [anime?.id, showRating]);
+    }, [anime, showRating, dataPreloaded]);
 
     // Fetch collection status
     useEffect(() => {
-        if (!showCollectionStatus || propsCollectionType || !anime?.id) return;
+        if (!showCollectionStatus || !anime?.id) return;
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const providedStatus = propsCollectionType || (anime as any)?.collectionType;
+        if (providedStatus) {
+            setUserCollection(providedStatus);
+            return;
+        }
+        
+        // Если данные предзагружены (collectionType уже проверен на сервере), не делаем запрос
+        // Пустой collectionType означает что аниме не в коллекции
+        if (dataPreloaded) return;
         
         const token = getToken();
         if (!token) return;
@@ -214,7 +255,7 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
         })
         .catch(() => {})
         .finally(() => setIsLoadingCollection(false));
-    }, [anime?.id, showCollectionStatus, propsCollectionType]);
+    }, [anime, showCollectionStatus, propsCollectionType, dataPreloaded]);
 
     // Image handlers
     const handleImageError = () => {

@@ -20,32 +20,40 @@ export const fetchAllCategories = async (signal?: AbortSignal): Promise<Category
     return data.categories || [];
 };
 
-export const fetchCategoryAnimeList = async (animeIds: string[], signal?: AbortSignal): Promise<AnimeInfo[]> => {
-    console.log('[fetchCategoryAnimeList] Загрузка аниме по ID:', animeIds);
+export const fetchCategoryAnimeList = async (animeIds: string[], signal?: AbortSignal, token?: string | null): Promise<AnimeInfo[]> => {
+    console.log('[fetchCategoryAnimeList] Загрузка аниме по ID (POST):', animeIds);
+    
+    if (animeIds.length === 0) return [];
 
-    const animeData = await Promise.all(
-        animeIds.map(async (id) => {
-            try {
-                const res = await fetch(`${API_SERVER}/api/anime/get-anime/${id}`, { signal });
-                if (!res.ok) {
-                    console.warn(`[fetchCategoryAnimeList] Аниме ID ${id} не найден (res.ok = false)`);
-                    return null;
-                }
+    try {
+        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
 
-                const data = await res.json();
-                console.log(`[fetchCategoryAnimeList] Загружено аниме ID ${id}:`, data);
-                return data;
-            } catch (error) {
-                console.error(`[fetchCategoryAnimeList] Ошибка при загрузке аниме ID ${id}:`, error);
-                return null;
-            }
-        })
-    );
+        const res = await fetch(`${API_SERVER}/api/anime/get-anime`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(animeIds.map(Number)),
+            signal
+        });
 
-    const filtered = animeData.filter((item): item is AnimeInfo => item !== null);
-    console.log('[fetchCategoryAnimeList] Отфильтрованный список аниме:', filtered);
+        if (!res.ok) {
+            console.warn('[fetchCategoryAnimeList] Ошибка запроса:', res.status);
+            return [];
+        }
 
-    return filtered;
+        const animeData: AnimeInfo[] = await res.json();
+        console.log(`[fetchCategoryAnimeList] Загружено ${animeData.length} аниме`);
+
+        // Сортируем в порядке исходного списка ID
+        const sortedAnime = animeIds.map(id => 
+            animeData.find(anime => anime.id === Number(id))
+        ).filter((item): item is AnimeInfo => item !== null && item !== undefined);
+
+        return sortedAnime;
+    } catch (error) {
+        console.error('[fetchCategoryAnimeList] Ошибка:', error);
+        return [];
+    }
 };
 
 export const fetchCategoryById = async (categoryId: string, signal?: AbortSignal): Promise<Category | null> => {

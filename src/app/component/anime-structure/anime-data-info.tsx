@@ -16,9 +16,12 @@ export interface AnimeInfo {
     episode_all: string;
     current_episode: string;
     rating: string;
+    averageRating?: number | null;
+    myRating?: number | null;
+    myComment?: string | null;
     image_url: { url: string };
     type: string;
-    collectionType: string;
+    collectionType?: string | null;
     season: string;
     genres: string;
     year: string;
@@ -65,7 +68,10 @@ interface RawAnime {
     mouth_season: string;
     studio: string;
     realesed_for: string;
-    collectionType: string;
+    collectionType?: string | null;
+    averageRating?: number | null;
+    myRating?: number | null;
+    myComment?: string | null;
     alias: string;
     kodik: string;
     coverUrl: string;
@@ -113,6 +119,9 @@ export const fetchAllAnime = async (): Promise<AnimeInfo[]> => {
                 episode_all: anime.episode_all || '',
                 current_episode: anime.current_episode || '',
                 rating: anime.rating || '',
+                averageRating: typeof anime.averageRating === 'number' ? anime.averageRating : undefined,
+                myRating: typeof anime.myRating === 'number' ? anime.myRating : undefined,
+                myComment: anime.myComment || null,
                 type: anime.type || '',
                 season: anime.season || '',
                 genres: anime.genres || '',

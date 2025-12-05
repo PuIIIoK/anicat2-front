@@ -13,6 +13,7 @@ import NotificationManager, { NotificationProvider } from '@/component/notificat
 import { cleanupOldPlayerStates } from '@/utils/player/playerState';
 import { YumekoUploadProvider } from '../context/YumekoUploadContext';
 import { RegionalServerProvider } from '../context/RegionalServerContext';
+import ServerStatusChecker from '@/component/ServerStatusChecker';
 
 const CustomTitleBar = dynamic(() => import('@/component/layout').then(m => m.CustomTitleBar), { ssr: false });
 const DiscordStatusTracker = dynamic(() => import('@/component/layout').then(m => m.DiscordStatusTracker), { ssr: false });
@@ -71,6 +72,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
                                 <MainContent>{children}</MainContent>
                                 
                                 {/* Глобальные компоненты */}
+                                <ServerStatusChecker />
                                 <RegionalSyncProgressNotification />
                                 <NotificationManager />
                             </BanChecker>

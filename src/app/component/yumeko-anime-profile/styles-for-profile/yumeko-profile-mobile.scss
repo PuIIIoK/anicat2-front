@@ -1,0 +1,1254 @@
+// ===== YUMEKO PROFILE MOBILE (Shikimori Style) =====
+
+$dark-bg: #0f0f0f;
+$card-bg: #1a1a1a;
+$card-bg-light: #242424;
+$accent-purple: #8b5cf6;
+$accent-blue: #3b82f6;
+$text-primary: #ffffff;
+$text-secondary: #a0a0a0;
+$text-muted: #666666;
+$border-color: rgba(255, 255, 255, 0.08);
+
+// ===== СКЕЛЕТОН АНИМАЦИЯ =====
+@keyframes ypm-shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.ypm-skeleton {
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.06) 25%,
+        rgba(255, 255, 255, 0.12) 50%,
+        rgba(255, 255, 255, 0.06) 75%
+    );
+    background-size: 200% 100%;
+    animation: ypm-shimmer 1.5s infinite;
+    border-radius: 8px;
+}
+
+.ypm-skeleton-banner {
+    width: 100%;
+    height: 180px;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.04) 25%,
+        rgba(255, 255, 255, 0.08) 50%,
+        rgba(255, 255, 255, 0.04) 75%
+    );
+    background-size: 200% 100%;
+    animation: ypm-shimmer 1.5s infinite;
+}
+
+.ypm-skeleton-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+
+.ypm-skeleton-name {
+    width: 180px;
+    height: 24px;
+    margin: 12px auto 8px;
+}
+
+.ypm-skeleton-roles {
+    width: 120px;
+    height: 18px;
+    margin: 0 auto 12px;
+}
+
+.ypm-skeleton-bio {
+    width: 90%;
+    height: 40px;
+    margin: 0 auto;
+}
+
+.ypm-skeleton-text-sm {
+    width: 100px;
+    height: 16px;
+}
+
+.ypm-skeleton-friend-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.ypm-skeleton-tab {
+    width: 110px;
+    height: 40px;
+    border-radius: 20px;
+}
+
+.ypm-skeleton-tab-small {
+    width: 44px;
+    height: 40px;
+    border-radius: 20px;
+}
+
+.ypm-skeleton-stats {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    margin: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+}
+
+.ypm-skeleton-stats-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.ypm-skeleton-stat-row {
+    width: 100%;
+    height: 20px;
+}
+
+.ypm-skeleton-donut {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+
+// ===== Основной контейнер =====
+.yumeko-profile-mobile {
+    min-height: 100vh;
+    background: transparent;
+    color: $text-primary;
+    padding-bottom: 100px;
+}
+
+// ===== БАННЕР =====
+.ypm-banner {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    position: relative;
+
+    .banner-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 80px;
+        background: linear-gradient(to top, $dark-bg, transparent);
+    }
+}
+
+// ===== HEADER =====
+.ypm-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px;
+    padding-top: 0;
+    text-align: center;
+    margin-top: -60px;
+    position: relative;
+    z-index: 10;
+}
+
+.ypm-header-gradient {
+    position: absolute;
+    top: 80px; // Начинается под аватаром
+    left: 0;
+    right: 0;
+    height: 300px;
+    z-index: -1;
+    pointer-events: none;
+    border-radius: 24px 24px 0 0;
+}
+
+.ypm-avatar-section {
+    margin-bottom: 16px;
+}
+
+.ypm-avatar {
+    position: relative;
+    width: 110px;
+    height: 110px;
+
+    .avatar-img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    video {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+}
+
+.ypm-online-dot {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    width: 16px;
+    height: 16px;
+    background: #22c55e;
+    border: 3px solid $dark-bg;
+    border-radius: 50%;
+}
+
+.ypm-name-section {
+    margin-bottom: 8px;
+}
+
+.ypm-name-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.ypm-username {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+    color: $text-primary;
+}
+
+.ypm-verified {
+    color: #3b82f6;
+}
+
+.ypm-level-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    border-radius: 6px;
+    color: #000;
+}
+
+.ypm-roles {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 8px;
+
+    .ypm-role {
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+
+        &.admin {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
+        &.moderator {
+            background: rgba(88, 101, 242, 0.15);
+            color: #5865f2;
+        }
+
+        &.uploader {
+            background: rgba(0, 210, 211, 0.15);
+            color: #00d2d3;
+        }
+    }
+}
+
+.ypm-badges {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+.ypm-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: var(--primary-bg, rgba(255, 149, 0, 0.15));
+    border: 1px solid var(--primary-color, #ff9500);
+    border-radius: 10px;
+    color: var(--primary-color, #ff9500);
+    transition: all 0.2s ease;
+
+    &:hover {
+        background: var(--primary-bg-hover, rgba(255, 149, 0, 0.25));
+        transform: scale(1.05);
+    }
+}
+
+.ypm-bio {
+    font-size: 14px;
+    color: $text-secondary;
+    line-height: 1.5;
+    margin: 12px 0;
+    max-width: 300px;
+}
+
+.ypm-join-date {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 13px;
+    color: $text-secondary;
+    margin-bottom: 16px;
+
+    .ypm-level-num {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        background: #22c55e;
+        border-radius: 8px;
+        font-weight: 700;
+        color: #000;
+        font-size: 14px;
+    }
+
+    .ypm-dot {
+        color: $text-muted;
+    }
+}
+
+.ypm-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    width: 100%;
+    max-width: 320px;
+}
+
+.ypm-edit-btn {
+    flex: 1;
+    padding: 12px 24px;
+    background: $card-bg;
+    border: 1px solid $border-color;
+    border-radius: 12px;
+    color: $text-primary;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.2s;
+
+    &:active {
+        background: $card-bg-light;
+    }
+}
+
+.ypm-menu-btn {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $card-bg;
+    border: 1px solid $border-color;
+    border-radius: 12px;
+    color: $text-secondary;
+    cursor: pointer;
+}
+
+.ypm-socials {
+    display: flex;
+    gap: 8px;
+}
+
+.ypm-social {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 2px solid;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &.vk {
+        border-color: #0077ff;
+        color: #0077ff;
+    }
+
+    &.telegram {
+        border-color: #2aabee;
+        color: #2aabee;
+    }
+
+    &.discord {
+        border-color: #5865f2;
+        color: #5865f2;
+    }
+
+    &.tiktok {
+        border-color: $text-secondary;
+        color: $text-secondary;
+    }
+
+    &.instagram {
+        border-color: #e1306c;
+        color: #e1306c;
+    }
+}
+
+// ===== ДРУЗЬЯ =====
+.ypm-friends-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background: $card-bg;
+    border-top: 1px solid $border-color;
+    border-bottom: 1px solid $border-color;
+}
+
+.ypm-friends-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.ypm-friends-count {
+    font-size: 16px;
+    font-weight: 700;
+    color: $text-primary;
+}
+
+.ypm-friends-names {
+    font-size: 13px;
+    color: $text-muted;
+}
+
+.ypm-friends-avatars {
+    display: flex;
+    gap: -8px;
+}
+
+.ypm-friend-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid $dark-bg;
+    margin-left: -8px;
+
+    &:first-child {
+        margin-left: 0;
+    }
+
+    img, video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+// ===== ТАБЫ =====
+.ypm-tabs {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    background: $card-bg;
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.ypm-tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    background: transparent;
+    border: 1px solid $border-color;
+    border-radius: 10px;
+    color: $text-secondary;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &.active {
+        background: $card-bg-light;
+        border-color: $text-secondary;
+        color: $text-primary;
+    }
+}
+
+// ===== КОНТЕНТ =====
+.ypm-content {
+    padding: 0;
+}
+
+// ===== СТАТИСТИКА =====
+.ypm-stats-tab {
+    padding: 20px 16px;
+    margin-top: 12px;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(236, 72, 153, 0.1) 50%, rgba(59, 130, 246, 0.15) 100%);
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.08) 0%, transparent 40%),
+                    radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 40%);
+        animation: float 20s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        pointer-events: none;
+        opacity: 0.5;
+    }
+}
+
+@keyframes float {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    33% { transform: translate(2%, 2%) rotate(1deg); }
+    66% { transform: translate(-1%, 1%) rotate(-1deg); }
+}
+
+.ypm-stats-main {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+}
+
+.ypm-stats-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ypm-stat-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    padding: 4px 0;
+
+    &:active {
+        opacity: 0.7;
+    }
+}
+
+.ypm-stat-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.ypm-stat-label {
+    font-size: 15px;
+    color: $text-primary;
+}
+
+.ypm-stat-value {
+    font-size: 15px;
+    font-weight: 700;
+    color: $text-primary;
+}
+
+.ypm-chart {
+    width: 130px;
+    height: 130px;
+    flex-shrink: 0;
+}
+
+.ypm-donut {
+    width: 100%;
+    height: 100%;
+}
+
+.ypm-collection-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px;
+    margin-top: 16px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    color: $text-primary;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    z-index: 1;
+
+    &:active {
+        transform: scale(0.98);
+        background: rgba(255, 255, 255, 0.12);
+    }
+}
+
+// ===== ОЦЕНКИ =====
+.ypm-reviews-tab {
+    padding: 0;
+}
+
+.ypm-reviews-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.ypm-review-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px 16px;
+    text-decoration: none;
+    border-bottom: 1px solid $border-color;
+
+    &:active {
+        background: $card-bg;
+    }
+}
+
+.ypm-review-cover {
+    flex-shrink: 0;
+    width: 70px;
+    height: 100px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: $card-bg-light;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.ypm-review-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.ypm-review-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: $text-primary;
+    line-height: 1.3;
+}
+
+.ypm-review-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ypm-review-score {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    color: $accent-purple;
+}
+
+.ypm-review-comment {
+    font-size: 13px;
+    color: $text-secondary;
+    line-height: 1.4;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+// ===== ИСТОРИЯ =====
+.ypm-history-tab {
+    padding: 0;
+}
+
+.ypm-section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: $text-primary;
+    padding: 16px;
+    margin: 0;
+}
+
+.ypm-history-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.ypm-history-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px 16px;
+    text-decoration: none;
+    border-bottom: 1px solid $border-color;
+
+    &:active {
+        background: $card-bg;
+    }
+}
+
+.ypm-history-cover {
+    flex-shrink: 0;
+    width: 70px;
+    height: 100px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: $card-bg-light;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.ypm-history-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    min-width: 0;
+}
+
+.ypm-history-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: $text-primary;
+    line-height: 1.3;
+}
+
+.ypm-history-episode {
+    font-size: 14px;
+    color: $accent-purple;
+}
+
+// ===== ПУСТОЕ СОСТОЯНИЕ =====
+.ypm-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 60px 20px;
+    color: $text-muted;
+
+    svg {
+        opacity: 0.4;
+    }
+
+    p {
+        margin: 0;
+        font-size: 15px;
+    }
+}
+
+// ===== ЗАГРУЗКА =====
+.ypm-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+}
+
+.ypm-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid rgba($accent-purple, 0.2);
+    border-top-color: $accent-purple;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+// ===== СКЕЛЕТОН =====
+.yumeko-profile-mobile-skeleton {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    gap: 16px;
+
+    .skeleton-avatar-large {
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        background: $card-bg;
+        animation: pulse 1.5s infinite;
+    }
+
+    .skeleton-name {
+        width: 150px;
+        height: 28px;
+        background: $card-bg;
+        border-radius: 8px;
+        animation: pulse 1.5s infinite;
+    }
+
+    .skeleton-bio {
+        width: 200px;
+        height: 16px;
+        background: $card-bg;
+        border-radius: 6px;
+        animation: pulse 1.5s infinite;
+    }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+// ===== МОДАЛКА =====
+.ypm-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+}
+
+.ypm-modal {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: $dark-bg;
+}
+
+.ypm-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid $border-color;
+
+    h2 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+    }
+}
+
+.ypm-modal-close {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: $text-secondary;
+    cursor: pointer;
+
+    &:active {
+        background: $card-bg;
+    }
+}
+
+.ypm-modal-tabs-wrapper {
+    touch-action: pan-x;
+    user-select: none;
+}
+
+.ypm-modal-tabs {
+    display: flex;
+    gap: 6px;
+    padding: 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    border-bottom: 1px solid $border-color;
+    scroll-behavior: smooth;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.ypm-modal-tab {
+    padding: 8px 14px;
+    background: transparent;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    color: $text-secondary;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+
+    &.active {
+        background: $accent-purple;
+        border-color: $accent-purple;
+        color: white !important;
+    }
+}
+
+.ypm-modal-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+}
+
+.ypm-collection-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+// Исправление бейджей в модалке коллекции
+.ypm-modal-content {
+    .yumeko-mobile-index-card {
+        // По умолчанию (узкие экраны): рейтинг справа, статус под ним
+        .yumeko-anime-card-rating {
+            top: 4px !important;
+            right: 4px !important;
+            left: auto !important;
+        }
+
+        .yumeko-anime-card-status {
+            top: 4px !important;
+            left: 4px !important;
+            right: auto !important;
+        }
+
+        .yumeko-anime-card-rating ~ .yumeko-anime-card-status {
+            top: 26px !important;
+            right: 4px !important;
+            left: auto !important;
+        }
+    }
+}
+
+// Широкие экраны: рейтинг слева, статус справа
+@media (min-width: 650px) {
+    .ypm-modal-content {
+        .yumeko-mobile-index-card {
+            .yumeko-anime-card-rating {
+                top: 4px !important;
+                left: 4px !important;
+                right: auto !important;
+            }
+
+            .yumeko-anime-card-status {
+                top: 4px !important;
+                right: 4px !important;
+                left: auto !important;
+            }
+
+            .yumeko-anime-card-rating ~ .yumeko-anime-card-status {
+                top: 4px !important;
+                right: 4px !important;
+                left: auto !important;
+            }
+        }
+    }
+}
+
+// ===== FULLSCREEN МОДАЛКА =====
+.ypm-fullscreen {
+    padding: 0;
+}
+
+.ypm-fullscreen-modal {
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    border-radius: 0;
+}
+
+// ===== МОДАЛКА ДРУЗЕЙ =====
+.ypm-friends-modal {
+    .ypm-modal-header {
+        border-bottom: 1px solid $border-color;
+    }
+}
+
+.ypm-friends-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px !important;
+}
+
+.ypm-friend-item {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: $card-bg;
+    border: 2px solid $border-color;
+    border-radius: 16px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s ease;
+
+    &:active {
+        transform: scale(0.98);
+    }
+}
+
+.ypm-friend-item-banner {
+    position: relative;
+    width: 100%;
+    height: 70px;
+    overflow: hidden;
+
+    img, video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.ypm-friend-item-banner-placeholder {
+    width: 100%;
+    height: 100%;
+}
+
+.ypm-friend-item-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    margin-top: -28px;
+}
+
+.ypm-friend-item-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 3px solid $dark-bg;
+    position: relative;
+    z-index: 1;
+
+    img, video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.ypm-friend-item-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    padding-top: 20px;
+}
+
+.ypm-friend-item-name-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ypm-friend-item-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: $text-primary;
+}
+
+.ypm-friend-verified {
+    color: #3b82f6;
+    flex-shrink: 0;
+}
+
+.ypm-friend-item-username {
+    font-size: 13px;
+    color: $text-secondary;
+}
+
+.ypm-friend-item-arrow {
+    color: $text-secondary;
+    flex-shrink: 0;
+    margin-top: 16px;
+}
+
+// Кликабельная секция друзей
+.ypm-friends-section {
+    cursor: pointer;
+
+    &:active {
+        opacity: 0.8;
+    }
+}
+
+// Бейдж для количества запросов
+.ypm-count-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    margin-left: 6px;
+    background: #ef4444;
+    border-radius: 9px;
+    font-size: 11px;
+    font-weight: 600;
+    color: white;
+}
+
+// ===== ЗАПРОСЫ В ДРУЗЬЯ =====
+.ypm-request-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: $card-bg;
+    border: 1px solid $border-color;
+    border-radius: 12px;
+}
+
+.ypm-request-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    text-decoration: none;
+    color: inherit;
+}
+
+.ypm-request-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.ypm-request-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.ypm-request-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: $text-primary;
+}
+
+.ypm-request-username {
+    font-size: 13px;
+    color: $text-secondary;
+}
+
+.ypm-request-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.ypm-request-accept {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: #22c55e;
+    border: none;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+
+    &:active {
+        transform: scale(0.95);
+    }
+}
+
+.ypm-request-reject {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: #ef4444;
+    border: none;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+
+    &:active {
+        transform: scale(0.95);
+    }
+}
+
+.ypm-request-cancel {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: transparent;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    color: $text-secondary;
+    font-size: 13px;
+    cursor: pointer;
+
+    &:active {
+        background: rgba(255, 255, 255, 0.05);
+    }
+}

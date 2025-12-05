@@ -10,11 +10,25 @@ interface Category {
     id: string;
     name: string;
     position: number;
+    animeIds: string[];
 }
 
 type AnimeCacheEntry = { animeList: AnimeBasicInfo[]; lastUpdated: number; fullyLoaded: boolean };
 type AnimeCategoryCache = Map<string, AnimeCacheEntry>;
 type CategoriesCache = { categories: Category[]; lastUpdated: number };
+
+const getAuthToken = () => {
+    if (typeof document === 'undefined') return null;
+    const match = document.cookie.match(/(?:^|;)\s*(?:token|authToken|access_token|jwt|auth)=([^;]+)/i);
+    if (match && match[1]) {
+        return decodeURIComponent(match[1]);
+    }
+    try {
+        return localStorage.getItem('token');
+    } catch {
+        return null;
+    }
+};
 
 declare global {
     // eslint-disable-next-line no-var
@@ -23,7 +37,14 @@ declare global {
     var __yumekoMobileAnimeCache: AnimeCategoryCache | undefined;
     // eslint-disable-next-line no-var
     var __yumekoLastSelectedCategoryId: string | null | undefined;
+    // eslint-disable-next-line no-var
+    var __pendingAnimeRequests: Map<string, Promise<AnimeBasicInfo[]>> | undefined;
 }
+
+if (!globalThis.__pendingAnimeRequests) {
+    globalThis.__pendingAnimeRequests = new Map();
+}
+const pendingRequests = globalThis.__pendingAnimeRequests;
 
 const CACHE_TTL_MS = 30 * 60 * 1000; // 30 минут
 
@@ -204,16 +225,9 @@ const YumekoMobileIndex: React.FC = () => {
             }
 
             try {
-                // Сначала получаем animeIds для конкретной категории
-                const categoryRes = await fetch(
-                    `${API_SERVER}/api/anime/category/get-category/${selectedCategoryId}`,
-                    { signal: controller.signal }
-                );
-                
-                if (!categoryRes.ok) throw new Error('Failed to fetch category');
-                
-                const categoryData = await categoryRes.json();
-                const animeIds: number[] = (categoryData.animeIds || []).map(Number);
+                // Используем animeIds из категории напрямую (без отдельного запроса)
+                const category = categories.find(c => c.id === selectedCategoryId);
+                const animeIds: number[] = (category?.animeIds || []).map(Number);
                 
                 if (animeIds.length === 0) {
                     setAnimeList([]);
@@ -221,17 +235,35 @@ const YumekoMobileIndex: React.FC = () => {
                     return;
                 }
                 
-                // Затем получаем детали аниме
-                const res = await fetch(`${API_SERVER}/api/anime/optimized/get-anime-list/basic`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(animeIds),
-                    signal: controller.signal
-                });
+                const cacheKey = `mobile_cat_${selectedCategoryId}_${animeIds.join(',')}`;
+                
+                // Проверяем, есть ли уже pending запрос для этого ключа
+                let fetchPromise = pendingRequests.get(cacheKey);
+                
+                if (!fetchPromise) {
+                    // Создаём новый запрос
+                    const token = getAuthToken();
+                    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+                    if (token) {
+                        headers['Authorization'] = `Bearer ${token}`;
+                    }
 
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    fetchPromise = fetch(`${API_SERVER}/api/anime/get-anime`, {
+                        method: 'POST',
+                        headers,
+                        body: JSON.stringify(animeIds),
+                        signal: controller.signal
+                    }).then(res => {
+                        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                        return res.json();
+                    }).finally(() => {
+                        pendingRequests.delete(cacheKey);
+                    });
 
-                const loadedAnime = await res.json();
+                    pendingRequests.set(cacheKey, fetchPromise);
+                }
+
+                const loadedAnime = await fetchPromise;
                 
                 if (!mountedRef.current || controller.signal.aborted) return;
 
@@ -260,7 +292,7 @@ const YumekoMobileIndex: React.FC = () => {
         fetchAnimeList();
 
         return () => { controller.abort(); };
-    }, [selectedCategoryId, animeCache, lastSelectedRef]);
+    }, [selectedCategoryId, animeCache, lastSelectedRef, categories]);
 
     const handleCategoryClick = useCallback((id: string) => {
         setSelectedCategoryId(id);
@@ -365,6 +397,7 @@ const YumekoMobileIndex: React.FC = () => {
                                         showRating={true}
                                         showType={false}
                                         showCollectionStatus={true}
+                                        dataPreloaded={true}
                                     />
                                 </div>
                             ))
