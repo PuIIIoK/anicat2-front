@@ -2,6 +2,8 @@
 const isTurbopack = process.env.TURBOPACK === '1';
 
 const nextConfig = {
+    // Turbopack конфигурация для Next.js 16+
+    turbopack: {},
     images: {
         unoptimized: true,
         remotePatterns: [
