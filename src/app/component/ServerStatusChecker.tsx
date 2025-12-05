@@ -18,7 +18,7 @@ const ServerStatusChecker: React.FC = () => {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 сек таймаут
 
-            const response = await fetch(`${API_SERVER}/api/health`, {
+            const response = await fetch(`${API_SERVER}/api/anime/category/ping`, {
                 method: 'GET',
                 signal: controller.signal,
                 cache: 'no-store'
