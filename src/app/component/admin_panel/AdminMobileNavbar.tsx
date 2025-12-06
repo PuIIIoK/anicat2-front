@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import {Film, Users, FolderKanban, FlaskConical, FileText, Home, Smartphone} from 'lucide-react';
+import {Film, Users, FolderKanban, FlaskConical, FileText, Home} from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 interface Props {
@@ -33,7 +33,7 @@ const AdminMobileNavbar: React.FC<Props> = ({ activeTab, changeTab, roles }) => 
     };
 
     return (
-        <div className="admin-mobile-navbar">
+        <div className="yumeko-admin-mobile-navbar">
             <button
                 onClick={() => router.push('/')}
                 title="Главная"
@@ -85,14 +85,6 @@ const AdminMobileNavbar: React.FC<Props> = ({ activeTab, changeTab, roles }) => 
                     <FileText size={22}/>
                 </button>
             )}
-
-
-            <button
-                onClick={() => setShowAppsModal(true)}
-                title="Приложения"
-            >
-                <Smartphone size={22}/>
-            </button>
 
             {showAppsModal && (
                 <div className="admin-apps-modal-overlay" onClick={() => setShowAppsModal(false)}>

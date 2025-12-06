@@ -6,11 +6,8 @@ import AnimeMainInfo from './anime-upload-info';
 import AnimeFileAndEpisode from "./add-upload-upload";
 import { API_SERVER } from '@/hosts/constants';
 import UploadProgressModal from "../admin_panel/UploadProgressModalAnime";
-import SectionNavigation from "./SectionNavigation";
-import FloatingActionButtons from "./FloatingActionButtons";
-import AddAnimeNotification from "./AddAnimeNotification";
 import FranchiseChainManager from "../franchise-chains/FranchiseChainManager";
-import {CheckCircle, FileEdit, FolderPlus, ImagePlus, ImageUp, UploadCloud, XCircle, Activity, Lightbulb, Keyboard} from "lucide-react";
+import { CheckCircle, FileEdit, FolderPlus, ImagePlus, ImageUp, UploadCloud, XCircle, Activity } from "lucide-react";
 
 const getTokenFromCookie = () => {
     const match = document.cookie.match(/(?:^|; )token=([^;]*)/);
@@ -38,19 +35,32 @@ const CompletionProgressPanel = ({ title, description, genres, type, status, cov
     const progress = calculateProgress();
     const completed = Math.round((progress / 100) * 7);
     const pending = 7 - completed;
+    const circumference = 2 * Math.PI * 40;
+    const strokeDashoffset = circumference - (progress / 100) * circumference;
     
     return (
-        <div className="completion-progress-panel">
-            <div className="panel-header">
-                <Activity />
-                <h3>Прогресс заполнения</h3>
+        <div className="yumeko-admin-add-anime-progress">
+            <div className="yumeko-admin-add-anime-progress-header">
+                <Activity size={16} />
+                <span>Прогресс заполнения</span>
             </div>
-            <div className="progress-circle">
-                <div className="circle-progress" style={{ '--progress': `${progress}%` } as React.CSSProperties}>
+            <div className="yumeko-admin-add-anime-progress-circle">
+                <div className="circle-wrapper">
+                    <svg viewBox="0 0 100 100">
+                        <circle className="circle-bg" cx="50" cy="50" r="40" />
+                        <circle 
+                            className="circle-progress" 
+                            cx="50" 
+                            cy="50" 
+                            r="40"
+                            strokeDasharray={circumference}
+                            strokeDashoffset={strokeDashoffset}
+                        />
+                    </svg>
                     <div className="progress-text">{progress}%</div>
                 </div>
             </div>
-            <div className="progress-stats">
+            <div className="yumeko-admin-add-anime-progress-stats">
                 <div className="stat-item">
                     <span className="stat-label">Заполнено</span>
                     <span className="stat-value completed">{completed}/7</span>
@@ -64,73 +74,6 @@ const CompletionProgressPanel = ({ title, description, genres, type, status, cov
     );
 };
 
-// Компонент подсказок
-const TipsPanel = () => {
-    return (
-        <div className="tips-panel">
-            <div className="panel-header">
-                <Lightbulb />
-                <h3>Советы</h3>
-            </div>
-            <div className="tips-list">
-                <div className="tip-item">
-                    <Lightbulb className="tip-icon" />
-                    <div className="tip-content">
-                        <div className="tip-title">Описание</div>
-                        <p className="tip-text">Добавьте подробное описание для лучшей индексации</p>
-                    </div>
-                </div>
-                <div className="tip-item">
-                    <Lightbulb className="tip-icon" />
-                    <div className="tip-content">
-                        <div className="tip-title">Жанры</div>
-                        <p className="tip-text">Указывайте жанры через запятую</p>
-                    </div>
-                </div>
-                <div className="tip-item">
-                    <Lightbulb className="tip-icon" />
-                    <div className="tip-content">
-                        <div className="tip-title">Медиа</div>
-                        <p className="tip-text">Рекомендуется загружать минимум 3 скриншота</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-// Компонент горячих клавиш
-const ShortcutsPanel = () => {
-    return (
-        <div className="shortcuts-panel">
-            <div className="panel-header">
-                <Keyboard />
-                <h3>Горячие клавиши</h3>
-            </div>
-            <div className="shortcuts-list">
-                <div className="shortcut-item">
-                    <span className="shortcut-action">Сохранить</span>
-                    <div className="shortcut-keys">
-                        <span className="key">Ctrl</span>
-                        <span className="key">S</span>
-                    </div>
-                </div>
-                <div className="shortcut-item">
-                    <span className="shortcut-action">Отменить</span>
-                    <div className="shortcut-keys">
-                        <span className="key">Esc</span>
-                    </div>
-                </div>
-                <div className="shortcut-item">
-                    <span className="shortcut-action">Наверх</span>
-                    <div className="shortcut-keys">
-                        <span className="key">Home</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
 const AddAnimePage = () => {
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -414,34 +357,32 @@ const AddAnimePage = () => {
     };
 
     return (
-        <div className="add-anime-page">
-            {/* Navigation */}
-            <SectionNavigation />
-            
-            {/* Уведомления */}
+        <section className="yumeko-admin-add-anime">
+            {/* Toast */}
             {notification && (
-                <AddAnimeNotification
-                    type={notification.type}
-                    message={notification.message}
-                    onClose={() => setNotification(null)}
-                    autoClose={true}
-                    duration={5000}
-                />
+                <div className={`yumeko-admin-add-anime-toast ${notification.type}`}>
+                    {notification.type === 'success' || notification.type === 'anime-saved' ? (
+                        <span className="toast-icon"><CheckCircle size={18} /></span>
+                    ) : notification.type === 'error' ? (
+                        <span className="toast-icon"><XCircle size={18} /></span>
+                    ) : null}
+                    <span>{notification.message}</span>
+                </div>
             )}
 
-            {/* Интегрированный заголовок */}
-            <div className="integrated-header">
-                <h1 className="page-title">Добавление аниме <span className="anime-id">#{animeId}</span></h1>
+            {/* Header */}
+            <div className="yumeko-admin-add-anime-header">
+                <h1>Добавление аниме <span>#{animeId}</span></h1>
             </div>
 
-            {/* Основной контент - трёхколоночная структура */}
-            <div className="main-content-layout">
+            {/* Layout */}
+            <div className="yumeko-admin-add-anime-layout">
                 
-                {/* Левая колонка - Медиа файлы */}
-                <div className="left-column">
-                    <div className="content-section file-upload-section">
-                        <div className="section-title">
-                            <ImagePlus className="icon" />
+                {/* Left - Media */}
+                <div className="yumeko-admin-add-anime-left">
+                    <div className="yumeko-admin-add-anime-section">
+                        <div className="yumeko-admin-add-anime-section-title">
+                            <ImagePlus size={18} />
                             Медиа файлы
                         </div>
                         <AnimeFileAndEpisode
@@ -455,8 +396,8 @@ const AddAnimePage = () => {
                     </div>
                 </div>
 
-                {/* Средняя колонка - Информация */}
-                <div className="middle-column">
+                {/* Middle - Info */}
+                <div className="yumeko-admin-add-anime-middle">
                     <AnimeMainInfo
                         title={title}
                         alttitle={alttitle}
@@ -507,9 +448,8 @@ const AddAnimePage = () => {
                     />
                 </div>
 
-                {/* Правая колонка - Дополнительные фичи */}
-                <div className="right-column">
-                    {/* Панель прогресса заполнения */}
+                {/* Right - Progress */}
+                <div className="yumeko-admin-add-anime-right">
                     <CompletionProgressPanel 
                         title={title}
                         description={description}
@@ -519,38 +459,45 @@ const AddAnimePage = () => {
                         cover={cover}
                         banner={banner}
                     />
-                    
-                    {/* Советы и подсказки */}
-                    <TipsPanel />
-                    
-                    {/* Горячие клавиши */}
-                    <ShortcutsPanel />
                 </div>
 
             </div>
 
-            {/* Секция цепочек франшизы */}
+            {/* Franchise */}
             {animeId && (
-                <div id="franchise-chains-section">
+                <div className="yumeko-admin-add-anime-franchise">
                     <FranchiseChainManager animeId={parseInt(animeId)} />
                 </div>
             )}
 
-            {/* Плавающие кнопки управления */}
-            <FloatingActionButtons
-                onSave={handleSave}
-                onCancel={handleCancel}
-                saving={saving}
-            />
+            {/* Floating Actions */}
+            <div className="yumeko-admin-add-anime-floating bottom-right">
+                <button
+                    className="yumeko-admin-add-anime-floating-btn cancel"
+                    onClick={handleCancel}
+                    disabled={saving}
+                >
+                    <XCircle size={18} />
+                    Отменить
+                </button>
+                <button
+                    className="yumeko-admin-add-anime-floating-btn save"
+                    onClick={handleSave}
+                    disabled={saving}
+                >
+                    <CheckCircle size={18} />
+                    {saving ? 'Сохранение...' : 'Сохранить'}
+                </button>
+            </div>
 
-            {/* Модальное окно прогресса */}
+            {/* Upload Progress Modal */}
             <UploadProgressModal
                 isVisible={saving}
                 progress={uploadProgress}
                 currentStep={uploadStep}
             />
 
-        </div>
+        </section>
     );
 };
 

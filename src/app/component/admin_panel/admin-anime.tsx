@@ -7,7 +7,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import DeleteAnimeModal from './DeleteAnimeModal';
 import AdminAnimeUpdates from './AdminAnimeUpdates';
-import { List, RefreshCw } from 'lucide-react';
+import AdminVideoQueue from './AdminVideoQueue';
+import { List, RefreshCw, Video } from 'lucide-react';
 
 interface Anime {
     id: number;
@@ -51,7 +52,7 @@ const AdminAnime: React.FC<Props> = ({ setNotification, userRoles }) => {
     const searchParams = useSearchParams();
     const [filterType, setFilterType] = useState(''); // выбранный фильтр (только для серверной фильтрации)
     const [sortType, setSortType] = useState(''); // выбранная сортировка (для клиентской сортировки)
-    const [activeSubTab, setActiveSubTab] = useState<'manage' | 'updates'>('manage');
+    const [activeSubTab, setActiveSubTab] = useState<'manage' | 'updates' | 'video-queue'>('manage');
 
     // Проверяем URL параметры для автоматического переключения на подтаб обновлений
     useEffect(() => {
@@ -388,21 +389,21 @@ const AdminAnime: React.FC<Props> = ({ setNotification, userRoles }) => {
 
 
     return (
-        <section className="admin-section">
+        <section className="yumeko-admin-section yumeko-admin-anime">
             {/* Анимационный оверлей при переходе */}
             {isTransitioning && (
-                <div className="page-transition-overlay">
-                    <div className="transition-content">
-                        <div className="transition-spinner"></div>
-                        <div className="transition-text">Создание нового аниме...</div>
+                <div className="yumeko-admin-anime-overlay">
+                    <div className="overlay-content">
+                        <div className="spinner"></div>
+                        <span>Создание нового аниме...</span>
                     </div>
                 </div>
             )}
 
             {/* Подтабы */}
-            <div className="admin-anime-subtabs">
+            <div className="yumeko-admin-anime-subtabs">
                 <button
-                    className={`admin-subtab ${activeSubTab === 'manage' ? 'active' : ''}`}
+                    className={`yumeko-admin-anime-subtab ${activeSubTab === 'manage' ? 'active' : ''}`}
                     onClick={() => setActiveSubTab('manage')}
                 >
                     <List size={18} />
@@ -411,23 +412,35 @@ const AdminAnime: React.FC<Props> = ({ setNotification, userRoles }) => {
                 
                 {(userRoles.includes('ADMIN') || userRoles.includes('MODERATOR')) && (
                     <button
-                        className={`admin-subtab ${activeSubTab === 'updates' ? 'active' : ''}`}
+                        className={`yumeko-admin-anime-subtab ${activeSubTab === 'updates' ? 'active' : ''}`}
                         onClick={() => setActiveSubTab('updates')}
                     >
                         <RefreshCw size={18} />
                         <span>Обновления аниме</span>
                     </button>
                 )}
+                
+                {(userRoles.includes('ADMIN') || userRoles.includes('MODERATOR')) && (
+                    <button
+                        className={`yumeko-admin-anime-subtab ${activeSubTab === 'video-queue' ? 'active' : ''}`}
+                        onClick={() => setActiveSubTab('video-queue')}
+                    >
+                        <Video size={18} />
+                        <span>Загрузка видео</span>
+                    </button>
+                )}
             </div>
 
             {/* Контент подтабов */}
-            {activeSubTab === 'updates' && (userRoles.includes('ADMIN') || userRoles.includes('MODERATOR')) ? (
+            {activeSubTab === 'video-queue' && (userRoles.includes('ADMIN') || userRoles.includes('MODERATOR')) ? (
+                <AdminVideoQueue />
+            ) : activeSubTab === 'updates' && (userRoles.includes('ADMIN') || userRoles.includes('MODERATOR')) ? (
                 <AdminAnimeUpdates />
             ) : (
                 <>
                             
                             {/* Десктопная версия */}
-                            <div className="desktop-only-admin-anime desktop-only admin-anime-container">
+                            <div className="yumeko-admin-anime-desktop">
                         <div className="admin-actions" style={{
                             display: 'flex',
                             justifyContent: 'space-between',
@@ -458,7 +471,7 @@ const AdminAnime: React.FC<Props> = ({ setNotification, userRoles }) => {
                                         // Сброс страницы при изменении фильтра/сортировки
                                         setCurrentPage(1);
                                     }}
-                                    className="filter-select"
+                                    className="yumeko-admin-anime-select"
                                 >
                                     <option value="">Без фильтра</option>
                                     <option value="date_new">По дате (новые сверху)</option>
@@ -479,25 +492,24 @@ const AdminAnime: React.FC<Props> = ({ setNotification, userRoles }) => {
                                     placeholder="Поиск по ID/Названию..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="search-input"
+                                    className="yumeko-admin-anime-input"
                                 />
                                 {/* Индикатор индексации (debounce) */}
                                 {searchTerm !== debouncedSearch && (
-                                    <div className="search-indicator indexing">
-                                        <div className="indicator-content">
-                                            <div className="indicator-spinner"></div>
+                                    <div className="yumeko-admin-anime-indicator">
+                                        <div className="content">
+                                            <div className="spinner"></div>
                                             <span>Индексация</span>
                                         </div>
-                                        <div className="indicator-progress">
-                                            <div className="progress-bar"></div>
-                                        </div>
+                                        <div className="progress-bar">
+                                                                                    </div>
                                     </div>
                                 )}
                                 {/* Индикатор поиска (реальный запрос) */}
                                 {searchTerm === debouncedSearch && tableLoading && (
-                                    <div className="search-indicator searching">
-                                        <div className="indicator-content">
-                                            <div className="indicator-spinner"></div>
+                                    <div className="yumeko-admin-anime-indicator">
+                                        <div className="content">
+                                            <div className="spinner"></div>
                                             <span>Поиск</span>
                                         </div>
                                     </div>
@@ -507,10 +519,10 @@ const AdminAnime: React.FC<Props> = ({ setNotification, userRoles }) => {
                             {/* Центр */}
                             <div style={{display: 'flex', justifyContent: 'center', flex: 1}}>
                                 {totalPages > 1 && (
-                                    <div className="pagination-anime">
+                                    <div className="yumeko-admin-anime-pagination">
                                         {totalPages > MAX_VISIBLE_PAGES && (
                                             <button
-                                                className="page-button-anime"
+                                                className="yumeko-admin-anime-page-btn"
                                                 onClick={handlePrevPageWindow}
                                                 disabled={pageWindowStart === 1}
                                             >
@@ -521,7 +533,7 @@ const AdminAnime: React.FC<Props> = ({ setNotification, userRoles }) => {
                                         {visiblePages.map((page) => (
                                             <button
                                                 key={page}
-                                                className={`page-button-anime ${currentPage === page ? 'active' : ''}`}
+                                                className={`yumeko-admin-anime-page-btn ${currentPage === page ? 'active' : ''}`}
                                                 onClick={() => setCurrentPage(page)}
                                             >
                                                 {page}
@@ -530,7 +542,7 @@ const AdminAnime: React.FC<Props> = ({ setNotification, userRoles }) => {
 
                                         {totalPages > MAX_VISIBLE_PAGES && (
                                             <button
-                                                className="page-button-anime"
+                                                className="yumeko-admin-anime-page-btn"
                                                 onClick={handleNextPageWindow}
                                                 disabled={pageWindowStart + MAX_VISIBLE_PAGES > totalPages}
                                             >
@@ -543,73 +555,61 @@ const AdminAnime: React.FC<Props> = ({ setNotification, userRoles }) => {
 
                             {/* Правая колонка */}
                             <div>
-                                <button className="add-button" onClick={handleCreateAnime}>
+                                <button className="yumeko-admin-anime-add-btn" onClick={handleCreateAnime}>
                                     + Добавить аниме
                                 </button>
                             </div>
                         </div>
 
-                        <div className="modern-admin-table">
-                            <div className="table-container">
-                                <div className="table-header">
-                                    <div className="header-cell header-id">ID</div>
-                                    <div className="header-cell header-title">Название</div>
-                                    <div className="header-cell header-type">Тип</div>
-                                    <div className="header-cell header-year">Год</div>
-                                    <div className="header-cell header-status">Статус</div>
-                                    <div className="header-cell header-actions">Действия</div>
-                                </div>
+                        <div className="yumeko-admin-anime-table-wrap">
+                            <div className="yumeko-admin-anime-table-header">
+                                <span>ID</span>
+                                <span>Название</span>
+                                <span>Тип</span>
+                                <span>Год</span>
+                                <span>Статус</span>
+                                <span>Действия</span>
+                            </div>
 
                                 {/* Спиннер для области таблицы */}
                                 {(loading || tableLoading) ? (
-                                    <div className="table-loading" style={{
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        minHeight: '400px',
-                                        color: '#ccc'
-                                    }}>
-                                        <div className="spinner-anime" />
+                                    <div className="yumeko-admin-anime-loading">
+                                        <div className="spinner"></div>
                                     </div>
                                 ) : (
-                                    <div className="table-body">
+                                    <div className="yumeko-admin-anime-table-body">
                                     {currentItems.map((anime) => {
                                         const statusInfo = getStatusDisplay(anime.status, anime.type, anime.current_episode, anime.episode_all);
                                         return (
-                                            <div className="table-row" key={anime.id}>
-                                                <div className="cell cell-id">
-                                                    <span className="id-badge">{anime.id}</span>
+                                            <div className="yumeko-admin-anime-table-row" key={anime.id}>
+                                                <div className="yumeko-admin-anime-table-cell id">
+                                                    <span className="id-badge">#{anime.id}</span>
                                                 </div>
                                                 
-                                                <div className="cell cell-title">
-                                                    <div className="title-wrapper">
-                                                        <h4 className="anime-title">{anime.title}</h4>
-                                                    </div>
+                                                <div className="yumeko-admin-anime-table-cell title">
+                                                    <h4>{anime.title}</h4>
                                                 </div>
                                                 
-                                                <div className="cell cell-type">
+                                                <div className="yumeko-admin-anime-table-cell type">
                                                     <span className="type-tag">{anime.type}</span>
                                                 </div>
                                                 
-                                                <div className="cell cell-year">
-                                                    <span className="year-text">{anime.year}</span>
+                                                <div className="yumeko-admin-anime-table-cell year">
+                                                    <span>{anime.year}</span>
                                                 </div>
                                                 
-                                                <div className="cell cell-status">
-                                                    <div className={`status-badge-modern ${statusInfo.className}`}>
-                                                        <div className="status-content">
-                                                            <span className="status-label">{statusInfo.text}</span>
-                                                            {statusInfo.episodeText && (
-                                                                <span className="episode-count">{statusInfo.episodeText}</span>
-                                                            )}
-                                                        </div>
+                                                <div className="yumeko-admin-anime-table-cell status">
+                                                    <div className={`status-badge ${statusInfo.className.replace('status-', '')}`}>
+                                                        <span>{statusInfo.text}</span>
+                                                        {statusInfo.episodeText && (
+                                                            <span className="episode-info">{statusInfo.episodeText}</span>
+                                                        )}
                                                     </div>
                                                 </div>
                                                 
-                                                <div className="cell cell-actions">
-                                                    <div className="actions-group">
-                                                        <button
-                                                            className="action-btn edit-btn"
+                                                <div className="yumeko-admin-anime-table-cell actions">
+                                                                                                            <button
+                                                            className="yumeko-admin-anime-action-btn edit"
                                                             onClick={() => router.push(`/admin_panel/edit-anime?id=${anime.id}`)}
                                                             title="Редактировать аниме"
                                                         >
@@ -622,7 +622,7 @@ const AdminAnime: React.FC<Props> = ({ setNotification, userRoles }) => {
                                                         
                                                         <Link 
                                                             href={`/anime-page/${anime.id}`}
-                                                            className="action-btn view-btn"
+                                                            className="yumeko-admin-anime-action-btn view"
                                                             title="Посмотреть аниме"
                                                         >
                                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -633,7 +633,7 @@ const AdminAnime: React.FC<Props> = ({ setNotification, userRoles }) => {
                                                         </Link>
                                                         
                                                         <button
-                                                            className="action-btn delete-btn"
+                                                            className="yumeko-admin-anime-action-btn delete"
                                                             onClick={() => handleDeleteAnime(anime.id)}
                                                             title="Удалить аниме"
                                                         >
@@ -645,22 +645,20 @@ const AdminAnime: React.FC<Props> = ({ setNotification, userRoles }) => {
                                                             </svg>
                                                             <span>Удалить</span>
                                                         </button>
-                                                    </div>
                                                 </div>
                                             </div>
                                         );
                                     })}
                                     </div>
                                 )}
-                            </div>
                         </div>
                     </div>
 
                     {/* Мобильная версия */}
-                    <div className="mobile-only-admin-anime mobile-only admin-anime-container">
+                    <div className="yumeko-admin-anime-mobile">
                         {/* Заголовок с количеством */}
-                        <div className="mobile-anime-header">
-                            <div className="anime-count">
+                        <div className="yumeko-admin-anime-mobile-header">
+                            <div className="count">
                                 {debouncedSearch || filterType || sortType ? (
                                     <>Показано: <strong>{sortedAnimeList.length} аниме</strong></>
                                 ) : (
@@ -670,9 +668,9 @@ const AdminAnime: React.FC<Props> = ({ setNotification, userRoles }) => {
                         </div>
 
                         {/* Поиск и фильтры */}
-                        <div className="mobile-search-section">
-                            <div className="mobile-search-wrapper">
-                                <svg className="search-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <div className="yumeko-admin-anime-mobile-search">
+                            <div className="search-wrapper">
+                                <svg className="icon" viewBox="0 0 24 24" fill="currentColor">
                                     <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
                                 </svg>
                                 <input
@@ -680,32 +678,23 @@ const AdminAnime: React.FC<Props> = ({ setNotification, userRoles }) => {
                                     placeholder="Поиск по ID или названию..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="mobile-search-input"
                                 />
                             </div>
                             {/* Индикатор индексации (debounce) */}
                             {searchTerm !== debouncedSearch && (
-                                <div className="search-indicator indexing mobile">
-                                    <div className="indicator-content">
-                                        <div className="indicator-spinner"></div>
-                                        <span>Индексация</span>
-                                    </div>
-                                    <div className="indicator-progress">
-                                        <div className="progress-bar"></div>
-                                    </div>
+                                <div className="yumeko-admin-anime-indicator">
+                                    <div className="spinner"></div>
+                                    <span>Индексация...</span>
                                 </div>
                             )}
                             {/* Индикатор поиска (реальный запрос) */}
                             {searchTerm === debouncedSearch && tableLoading && (
-                                <div className="search-indicator searching mobile">
-                                    <div className="indicator-content">
-                                        <div className="indicator-spinner"></div>
-                                        <span>Поиск</span>
-                                    </div>
+                                <div className="yumeko-admin-anime-indicator">
+                                    <div className="spinner"></div>
+                                    <span>Поиск...</span>
                                 </div>
                             )}
-                            <div className="mobile-filter-wrapper">
-                                <select
+                            <select
                                     value={filterType || sortType}
                                     onChange={(e) => {
                                         const value = e.target.value;
@@ -736,7 +725,6 @@ const AdminAnime: React.FC<Props> = ({ setNotification, userRoles }) => {
                                     <option value="alpha_asc">По алфавиту (А-Я)</option>
                                     <option value="alpha_desc">По алфавиту (Я-А)</option>
                                 </select>
-                            </div>
                         </div>
 
                         {/* Пагинация сверху */}
@@ -779,107 +767,51 @@ const AdminAnime: React.FC<Props> = ({ setNotification, userRoles }) => {
                         )}
 
                         {/* Список аниме */}
-                        <div style={{ padding: '0' }}>
+                        <div className="yumeko-admin-anime-mobile-list">
                             {(loading || tableLoading) ? (
-                                <div className="mobile-loading" style={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    minHeight: '400px',
-                                    color: '#ccc'
-                                }}>
-                                    <div className="spinner-anime" />
+                                <div className="yumeko-admin-anime-loading">
+                                    <div className="spinner" />
                                 </div>
                             ) : currentItems.length > 0 ? (
-                                currentItems.map((anime) => (
-                                    <div key={anime.id} style={{
-                                        padding: '16px',
-                                        marginBottom: '8px',
-                                        width: '100%'
-                                    }}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
-                                            <div style={{ flex: 1 }}>
-                                                <h3 style={{ color: '#e5e7eb', fontSize: '16px', fontWeight: 'bold', margin: '0 0 8px 0' }}>
-                                                    {anime.title || 'Без названия'}
-                                                </h3>
-                                                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                                                    <span style={{ color: '#9ca3af', fontSize: '12px' }}>
-                                                        Тип: <span style={{ color: '#d1d5db' }}>{anime.type || 'N/A'}</span>
-                                                    </span>
-                                                    <span style={{ color: '#9ca3af', fontSize: '12px' }}>
-                                                        Год: <span style={{ color: '#d1d5db' }}>{anime.year || 'N/A'}</span>
-                                                    </span>
-                                                    <span style={{ color: '#9ca3af', fontSize: '12px' }}>
-                                                        {(() => {
-                                                            const statusInfo = getStatusDisplay(anime.status, anime.type, anime.current_episode, anime.episode_all);
-                                                            return (
-                                                                <>
-                                                                    Статус: <span className={`status-badge-mobile ${statusInfo.className}`}>
-                                                                        {statusInfo.text}
-                                                                        {statusInfo.episodeText}
-                                                                    </span>
-                                                                </>
-                                                            );
-                                                        })()}
-                                                    </span>
+                                currentItems.map((anime) => {
+                                    const statusInfo = getStatusDisplay(anime.status, anime.type, anime.current_episode, anime.episode_all);
+                                    return (
+                                        <div key={anime.id} className="yumeko-admin-anime-mobile-card">
+                                            <div className="yumeko-admin-anime-mobile-card-header">
+                                                <div className="title-wrap">
+                                                    <h4 className="title">{anime.title || 'Без названия'}</h4>
                                                 </div>
+                                                <span className="id">#{anime.id}</span>
                                             </div>
-                                            <div style={{ 
-                                                color: '#3b82f6', 
-                                                fontSize: '14px', 
-                                                fontWeight: 'bold' 
-                                            }}>
-                                                #{anime.id}
+                                            
+                                            <div className="yumeko-admin-anime-mobile-card-meta">
+                                                <span>Тип: <strong>{anime.type || 'N/A'}</strong></span>
+                                                <span>Год: <strong>{anime.year || 'N/A'}</strong></span>
+                                                <span className={`status-badge ${statusInfo.className.replace('status-', '')}`}>
+                                                    {statusInfo.text} {statusInfo.episodeText}
+                                                </span>
+                                            </div>
+                                            
+                                            <div className="yumeko-admin-anime-mobile-card-actions">
+                                                <Link href={`/anime-page/${anime.id}`} className="view">
+                                                    Посмотреть
+                                                </Link>
+                                                <button 
+                                                    className="edit"
+                                                    onClick={() => router.push(`/admin_panel/edit-anime?id=${anime.id}`)}
+                                                >
+                                                    Редактировать
+                                                </button>
+                                                <button 
+                                                    className="delete"
+                                                    onClick={() => handleDeleteAnime(anime.id)}
+                                                >
+                                                    Удалить
+                                                </button>
                                             </div>
                                         </div>
-                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
-                                            <Link 
-                                                href={`/anime-page/${anime.id}`} 
-                                                style={{
-                                                    color: '#10b981',
-                                                    padding: '12px',
-                                                    textAlign: 'center',
-                                                    textDecoration: 'none',
-                                                    fontSize: '14px',
-                                                    fontWeight: '600',
-                                                    cursor: 'pointer'
-                                                }}
-                                            >
-                                                Посмотреть
-                                            </Link>
-                                            <button
-                                                style={{
-                                                    color: '#3b82f6',
-                                                    padding: '12px',
-                                                    fontSize: '14px',
-                                                    fontWeight: '600',
-                                                    cursor: 'pointer',
-                                                    background: 'transparent',
-                                                    border: 'none',
-                                                    textAlign: 'center'
-                                                }}
-                                                onClick={() => router.push(`/admin_panel/edit-anime?id=${anime.id}`)}
-                                            >
-                                                Редактировать
-                                            </button>
-                                            <button 
-                                                style={{
-                                                    color: '#ef4444',
-                                                    padding: '12px',
-                                                    fontSize: '14px',
-                                                    fontWeight: '600',
-                                                    cursor: 'pointer',
-                                                    background: 'transparent',
-                                                    border: 'none',
-                                                    textAlign: 'center'
-                                                }}
-                                                onClick={() => handleDeleteAnime(anime.id)}
-                                            >
-                                                Удалить
-                                            </button>
-                                        </div>
-                                    </div>
-                                ))
+                                    );
+                                })
                             ) : (
                                 <div style={{ textAlign: 'center', padding: '40px', color: '#9ca3af' }}>
                                     <p>Аниме не найдено</p>
@@ -887,23 +819,9 @@ const AdminAnime: React.FC<Props> = ({ setNotification, userRoles }) => {
                             )}
                         </div>
 
-                        {/* Floating кнопка добавления - справа снизу */}
+                        {/* Floating кнопка добавления */}
                         <button 
-                            style={{
-                                position: 'fixed',
-                                bottom: '90px',
-                                right: '20px',
-                                width: '60px',
-                                height: '60px',
-                                background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
-                                border: 'none',
-                                borderRadius: '20px',
-                                color: 'white',
-                                fontSize: '24px',
-                                cursor: 'pointer',
-                                boxShadow: '0 8px 32px rgba(59, 130, 246, 0.4)',
-                                zIndex: 999
-                            }}
+                            className="yumeko-admin-anime-mobile-fab"
                             onClick={handleCreateAnime}
                         >
                             +

@@ -2718,67 +2718,71 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         border-top: 1px solid ${theme === 'light' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.08)'} !important;
       }
       
-      /* АДМИН САЙДБАР - АДАПТАЦИЯ ПОД ТЕМУ + ЦВЕТОВУЮ СХЕМУ */
-      .admin-sidebar {
+      /* YUMEKO АДМИН САЙДБАР - АДАПТАЦИЯ ПОД ТЕМУ + ЦВЕТОВУЮ СХЕМУ */
+      .yumeko-admin-sidebar {
         background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 8%, #ffffff)` 
-          : `color-mix(in srgb, var(--primary-color) 15%, #000000)`
+          ? `linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%)` 
+          : `linear-gradient(180deg, #0d0d0d 0%, #121212 100%)`
         } !important;
         border-right: 1px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.25)`
+          ? `rgba(var(--primary-color-rgb, 175, 82, 222), 0.15)` 
+          : `rgba(var(--primary-color-rgb, 175, 82, 222), 0.15)`
         } !important;
-        color: ${theme === 'light' ? '#374151' : '#d1d5db'} !important;
       }
 
       /* ВЕСЬ ТЕКСТ В САЙДБАРЕ */
-      .admin-sidebar p,
-      .admin-sidebar div,
-      .admin-sidebar a {
-        color: ${theme === 'light' ? '#374151' : '#d1d5db'} !important;
+      .yumeko-admin-sidebar p,
+      .yumeko-admin-sidebar div,
+      .yumeko-admin-sidebar a {
+        color: ${theme === 'light' ? '#374151' : '#a1a1aa'} !important;
       }
 
-      /* ЗАГОЛОВОК АДМИН-САЙДБАРА */
-      .admin-sidebar-title {
-        color: ${theme === 'light' ? '#1f2937' : '#f9fafb'} !important;
-      }
-
-      /* КНОПКИ НАВИГАЦИИ АДМИН-САЙДБАРА */
-      .admin-nav-button span {
-        color: ${theme === 'light' ? '#374151' : '#d1d5db'} !important;
-      }
-
-      /* HOVER КНОПКИ НАВИГАЦИИ - ЗАТЕМНЕНИЕ */
-      .admin-nav-button:hover {
+      /* ЗАГОЛОВОК YUMEKO САЙДБАРА */
+      .yumeko-admin-title {
         background: ${theme === 'light' 
-          ? `rgba(0, 0, 0, 0.05)` 
-          : `rgba(255, 255, 255, 0.08)`
+          ? 'linear-gradient(135deg, #1f1f1f 0%, #3f3f3f 100%)' 
+          : 'linear-gradient(135deg, #ffffff 0%, #c9c9c9 100%)'
+        } !important;
+        -webkit-background-clip: text !important;
+        background-clip: text !important;
+      }
+
+      /* КНОПКИ НАВИГАЦИИ YUMEKO АДМИН САЙДБАРА */
+      .yumeko-admin-nav-item span {
+        color: ${theme === 'light' ? '#525252' : '#a1a1aa'} !important;
+      }
+
+      /* HOVER КНОПКИ НАВИГАЦИИ */
+      .yumeko-admin-nav-item:hover {
+        background: ${theme === 'light' 
+          ? `rgba(var(--primary-color-rgb, 175, 82, 222), 0.08)` 
+          : `rgba(var(--primary-color-rgb, 175, 82, 222), 0.08)`
         } !important;
       }
 
-      .admin-nav-button:hover span {
-        color: ${theme === 'light' ? '#1f2937' : '#e5e7eb'} !important;
+      .yumeko-admin-nav-item:hover span {
+        color: ${theme === 'light' ? '#1f2937' : '#e4e4e7'} !important;
       }
 
-      /* ИКОНКА НЕ ПЕРЕСВЕЧИВАЕТСЯ ПРИ HOVER */
-      .admin-nav-button:hover svg,
-      .admin-nav-button:hover .icon,
-      .admin-nav-button:hover i {
-        color: ${theme === 'light' ? '#6b7280' : '#9ca3af'} !important;
-        fill: ${theme === 'light' ? '#6b7280' : '#9ca3af'} !important;
+      /* HOVER ИКОНКИ */
+      .yumeko-admin-nav-item:hover svg {
+        color: var(--primary-color, #af52de) !important;
       }
 
       /* АКТИВНАЯ КНОПКА НАВИГАЦИИ */
-      .admin-nav-button.active {
+      .yumeko-admin-nav-item.active {
         background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 15%, #ffffff)` 
-          : `color-mix(in srgb, var(--primary-color) 20%, #000000)`
+          ? `linear-gradient(135deg, rgba(var(--primary-color-rgb, 175, 82, 222), 0.12) 0%, rgba(var(--primary-color-rgb, 175, 82, 222), 0.08) 100%)` 
+          : `linear-gradient(135deg, rgba(var(--primary-color-rgb, 175, 82, 222), 0.15) 0%, rgba(var(--primary-color-rgb, 175, 82, 222), 0.1) 100%)`
         } !important;
-        color: var(--primary-color) !important;
       }
       
-      .admin-nav-button.active span {
-        color: var(--primary-color) !important;
+      .yumeko-admin-nav-item.active span {
+        color: ${theme === 'light' ? '#1f1f1f' : '#ffffff'} !important;
+      }
+
+      .yumeko-admin-nav-item.active svg {
+        color: var(--primary-color, #af52de) !important;
       }
       
       /* АДМИН КОНТЕНТ - АДАПТАЦИЯ ПОД ТЕМУ + ЦВЕТОВУЮ СХЕМУ */

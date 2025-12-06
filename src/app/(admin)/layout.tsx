@@ -1,17 +1,38 @@
+'use client';
+
 import React, { ReactNode } from 'react';
 import '@/styles/index.scss';
-import { Header, CustomTitleBar, DiscordStatusTracker, ElectronBodyClass } from "@/component/layout";
+import { Header, CustomTitleBar, DiscordStatusTracker, ElectronBodyClass, Sidebar } from "@/component/layout";
 import { NotificationProvider } from '@/component/notifications/NotificationManager';
 import BanChecker from '@/component/BanChecker';
 import AdminRoleChecker from '@/component/AdminRoleChecker';
 import SyncProgressNotification from '@/component/sync/SyncProgressNotification';
 import { API_SERVER } from '@/hosts/constants';
 import { ThemeProvider } from '../context/ThemeContext';
-import { SidebarProvider } from '../context/SidebarContext';
+import { SidebarProvider, useSidebar } from '../context/SidebarContext';
 import { YumekoUploadProvider } from '../context/YumekoUploadContext';
 
 type LayoutProps = {
   children: ReactNode;
+};
+
+// Wrapper для доступа к useSidebar
+const AdminContent: React.FC<LayoutProps> = ({ children }) => {
+  const { isOpen, toggle } = useSidebar();
+  
+  return (
+    <>
+      <Sidebar isOpen={isOpen} onToggle={toggle} />
+      <ElectronBodyClass />
+      <CustomTitleBar />
+      <DiscordStatusTracker />
+      <Header />
+      <main className="main">{children}</main>
+      
+      {/* Глобальные компоненты */}
+      <SyncProgressNotification apiServer={API_SERVER} />
+    </>
+  );
 };
 
 const RootLayout: React.FC<LayoutProps> = ({ children }) => {
@@ -29,14 +50,7 @@ const RootLayout: React.FC<LayoutProps> = ({ children }) => {
               <YumekoUploadProvider>
                 <BanChecker>
                   <AdminRoleChecker>
-                    <ElectronBodyClass />
-                    <CustomTitleBar />
-                    <DiscordStatusTracker />
-                    <Header />
-                    <main className="main">{children}</main>
-                    
-                    {/* Глобальные компоненты */}
-                    <SyncProgressNotification apiServer={API_SERVER} />
+                    <AdminContent>{children}</AdminContent>
                   </AdminRoleChecker>
                 </BanChecker>
               </YumekoUploadProvider>

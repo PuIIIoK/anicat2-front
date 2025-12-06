@@ -142,64 +142,69 @@ const AdminPanelPage = () => {
     return (
         <>
         <DiscordStatusTracker status={getTabStatus(activeTab)} />
-        <div className="admin-panel">
+        <div className="yumeko-admin-panel">
             {/* Десктопная версия */}
             <div className="desktop-only-admin">
-                <aside className={`admin-sidebar ${sidebarOpen ? '' : 'collapsed'}`}>
+                <aside className={`yumeko-admin-sidebar ${sidebarOpen ? '' : 'collapsed'}`}>
                     <button
-                        className="sidebar-toggle"
+                        className="yumeko-admin-toggle"
                         onClick={() => setSidebarOpen(!sidebarOpen)}
                         title={sidebarOpen ? 'Свернуть' : 'Развернуть'}
                     >
-                        {sidebarOpen ? <ChevronLeft size={20}/> : <ChevronRight size={20}/>}
+                        {sidebarOpen ? <ChevronLeft size={18}/> : <ChevronRight size={18}/>}
                     </button>
 
-                    {sidebarOpen && <h1 className="admin-sidebar-title">Админ Панель</h1>}
-                    <nav className="admin-sidebar-nav">
-                        <button className={`admin-nav-button ${activeTab === 'anime' ? 'active' : ''}`}
+                    {sidebarOpen && (
+                        <div className="yumeko-admin-header">
+                            <div className="yumeko-admin-logo">Y</div>
+                            <h1 className="yumeko-admin-title">Yumeko Admin</h1>
+                        </div>
+                    )}
+                    <nav className="yumeko-admin-nav">
+                        <button className={`yumeko-admin-nav-item ${activeTab === 'anime' ? 'active' : ''}`}
                                 onClick={() => changeTab('anime')} title="Аниме">
-                            <Film size={18}/>
-                            {sidebarOpen && <span>&nbsp;|&nbsp;Аниме</span>}
+                            <Film size={20}/>
+                            {sidebarOpen && <span>Аниме</span>}
                         </button>
 
                         {roles.includes('ADMIN') && (
-                            <button className={`admin-nav-button ${activeTab === 'users' ? 'active' : ''}`}
+                            <button className={`yumeko-admin-nav-item ${activeTab === 'users' ? 'active' : ''}`}
                                     onClick={() => changeTab('users')} title="Пользователи">
-                                <Users size={18}/>
-                                {sidebarOpen && <span>&nbsp;|&nbsp;Пользователи</span>}
+                                <Users size={20}/>
+                                {sidebarOpen && <span>Пользователи</span>}
                             </button>
                         )}
 
                         {roles.includes('ADMIN') && (
-                            <button className={`admin-nav-button ${activeTab === 'categories' ? 'active' : ''}`}
+                            <button className={`yumeko-admin-nav-item ${activeTab === 'categories' ? 'active' : ''}`}
                                     onClick={() => changeTab('categories')} title="Категории">
-                                <FolderKanban size={18}/>
-                                {sidebarOpen && <span>&nbsp;|&nbsp;Категории</span>}
+                                <FolderKanban size={20}/>
+                                {sidebarOpen && <span>Категории</span>}
                             </button>
                         )}
 
-                        <button className={`admin-nav-button ${activeTab === 'testing' ? 'active' : ''}`}
+                        <button className={`yumeko-admin-nav-item ${activeTab === 'testing' ? 'active' : ''}`}
                                 onClick={() => changeTab('testing')} title="Тестирование">
-                            <FlaskConical size={18}/>
-                            {sidebarOpen && <span>&nbsp;|&nbsp;Тестирование</span>}
+                            <FlaskConical size={20}/>
+                            {sidebarOpen && <span>Тестирование</span>}
                         </button>
 
                         {roles.includes('ADMIN') && (
                             <>
-                              <button className={`admin-nav-button ${activeTab === 'apps' ? 'active' : ''}`}
+                              <button className={`yumeko-admin-nav-item ${activeTab === 'apps' ? 'active' : ''}`}
                                       onClick={() => { setAppsOpen(!appsOpen); changeTab('apps'); }} title="Приложения">
-                                  <Smartphone size={18}/>
-                                  {sidebarOpen && <span>&nbsp;|&nbsp;Приложения</span>}
+                                  <Smartphone size={20}/>
+                                  {sidebarOpen && <span>Приложения</span>}
                               </button>
                               {appsOpen && (
-                                <div className="admin-panel-platforms-subnav">
-                                  <button className="admin-panel-platforms-subbutton"
+                                <div className="yumeko-admin-subnav">
+                                  <button className="yumeko-admin-subnav-item"
                                           onClick={() => router.push(`?admin_panel=edit-apps&platform=android`)}>
-                                    <Smartphone size={16}/> {sidebarOpen && <span>&nbsp;Телефон</span>}
+                                    <Smartphone size={16}/> {sidebarOpen && <span>Телефон</span>}
                                   </button>
-                                  <button className="admin-panel-platforms-subbutton"
+                                  <button className="yumeko-admin-subnav-item"
                                           onClick={() => router.push(`?admin_panel=edit-apps&platform=pc`)}>
-                                    <Monitor size={16}/> {sidebarOpen && <span>&nbsp;ПК</span>}
+                                    <Monitor size={16}/> {sidebarOpen && <span>ПК</span>}
                                   </button>
                                 </div>
                               )}
@@ -207,32 +212,33 @@ const AdminPanelPage = () => {
                         )}
 
                         {roles.includes('ADMIN') && (
-                            <button className={`admin-nav-button ${activeTab === 'site-updates' ? 'active' : ''}`}
+                            <button className={`yumeko-admin-nav-item ${activeTab === 'site-updates' ? 'active' : ''}`}
                                     onClick={() => changeTab('site-updates')} title="Обновления сайта">
-                                <Bell size={18}/>
-                                {sidebarOpen && <span>&nbsp;|&nbsp;Обновления сайта</span>}
+                                <Bell size={20}/>
+                                {sidebarOpen && <span>Обновления</span>}
                             </button>
                         )}
 
                         {roles.includes('ADMIN') && (
-                            <button className={`admin-nav-button ${activeTab === 'logs' ? 'active' : ''}`}
+                            <button className={`yumeko-admin-nav-item ${activeTab === 'logs' ? 'active' : ''}`}
                                     onClick={() => changeTab('logs')} title="Логи сайта">
-                                <FileText size={18}/>
-                                {sidebarOpen && <span>&nbsp;|&nbsp;Логи сайта</span>}
+                                <FileText size={20}/>
+                                {sidebarOpen && <span>Логи</span>}
                             </button>
                         )}
 
+                        <div className="yumeko-admin-nav-divider"></div>
 
-                        <Link href="/" className="admin-nav-button" title="На главную">
-                            <Home size={18}/>
-                            {sidebarOpen && <span>&nbsp;|&nbsp;На главную</span>}
+                        <Link href="/" className="yumeko-admin-nav-item yumeko-admin-nav-home" title="На главную">
+                            <Home size={20}/>
+                            {sidebarOpen && <span>На главную</span>}
                         </Link>
                     </nav>
                 </aside>
             </div>
 
             {/* Контент (общий для обеих версий) */}
-            <main className={`admin-content ${!sidebarOpen ? 'expanded' : ''}`}>
+            <main className={`yumeko-admin-content ${!sidebarOpen ? 'expanded' : ''}`}>
                 {notification && (
                     <AdminNotification
                         type={notification.type}

@@ -43,21 +43,21 @@ const EditFloatingActionButtons: React.FC<EditFloatingActionButtonsProps> = ({
     }, []);
 
     return (
-        <div className={`edit-floating-action-buttons ${position}`}>
+        <div className={`yumeko-admin-edit-anime-floating ${position}`}>
             <button
-                className="btn btn-edit-primary floating-btn"
+                className="yumeko-admin-edit-anime-floating-btn save"
                 onClick={onSave}
                 disabled={saving}
             >
-                <Save className="w-4 h-4" />
-                {saving ? 'Обновление...' : 'Сохранить'}
+                <Save size={18} />
+                {saving ? 'Сохранение...' : 'Сохранить'}
             </button>
             <button
-                className="btn btn-edit-secondary floating-btn"
+                className="yumeko-admin-edit-anime-floating-btn cancel"
                 onClick={onCancel}
                 disabled={saving}
             >
-                <RotateCcw className="w-4 h-4" />
+                <RotateCcw size={18} />
                 Отменить
             </button>
         </div>

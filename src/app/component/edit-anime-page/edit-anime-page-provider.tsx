@@ -6,10 +6,9 @@ import AnimeMainInfo from './edit-anime-info';
 import AnimeFileAndEpisode from "./anime-edit-upload";
 import { API_SERVER } from '@/hosts/constants';
 import UploadProgressModal from "../admin_panel/UploadProgressModalAnime";
-import EditSectionNavigation from "./EditSectionNavigation";
 import EditFloatingActionButtons from "./EditFloatingActionButtons";
 import FranchiseChainManager from "../franchise-chains/FranchiseChainManager";
-import { CheckCircle, FileEdit, ImageUp, Edit3, XCircle, RefreshCw, ImagePlus, RotateCcw, AlertTriangle, CheckCircle2, BarChart3, GitCompare } from "lucide-react";
+import { CheckCircle, FileEdit, ImageUp, Edit3, XCircle, ImagePlus, RotateCcw, AlertTriangle, CheckCircle2, BarChart3, GitCompare } from "lucide-react";
 import { AnimeInfo } from "../anime-structure/anime-data-info";
 
 type ScreenshotData = {
@@ -61,21 +60,21 @@ const EditStatsPanel = ({ originalData, currentData }: { originalData: AnimeData
     const stats = countChanges();
     
     return (
-        <div className="edit-stats-panel">
-            <div className="panel-header">
-                <BarChart3 />
-                <h3>Статистика</h3>
+        <div className="yumeko-admin-edit-anime-stats">
+            <div className="yumeko-admin-edit-anime-stats-header">
+                <BarChart3 size={18} />
+                <span>Статистика</span>
             </div>
-            <div className="stats-grid">
-                <div className="stat-card">
-                    <Edit3 className="stat-icon" />
-                    <div className="stat-value">{stats.modified}</div>
-                    <div className="stat-label">Изменено</div>
+            <div className="yumeko-admin-edit-anime-stats-grid">
+                <div className="stat-item modified">
+                    <Edit3 size={20} />
+                    <span className="value">{stats.modified}</span>
+                    <span className="label">Изменено</span>
                 </div>
-                <div className="stat-card">
-                    <CheckCircle2 className="stat-icon" />
-                    <div className="stat-value">{stats.total - stats.modified}</div>
-                    <div className="stat-label">Без изменений</div>
+                <div className="stat-item unchanged">
+                    <CheckCircle2 size={20} />
+                    <span className="value">{stats.total - stats.modified}</span>
+                    <span className="label">Без изменений</span>
                 </div>
             </div>
         </div>
@@ -140,24 +139,24 @@ const ChangesComparisonPanel = ({ originalData, currentData }: { originalData: C
     const changes = getChanges();
     
     return (
-        <div className="changes-comparison-panel">
-            <div className="panel-header">
-                <GitCompare />
-                <h3>Изменения</h3>
+        <div className="yumeko-admin-edit-anime-changes">
+            <div className="yumeko-admin-edit-anime-changes-header">
+                <GitCompare size={18} />
+                <span>Изменения</span>
             </div>
-            <div className="changes-list">
+            <div className="yumeko-admin-edit-anime-changes-list">
                 {changes.length > 0 ? (
                     changes.map((change, index) => (
-                        <div key={index} className={`change-item ${change.type}`}>
-                            <div className="change-field">{change.field}</div>
-                            <div className="change-values">
-                                <div className="old-value">{String(change.oldValue).substring(0, 30)}{String(change.oldValue).length > 30 ? '...' : ''}</div>
-                                <div className="new-value">{String(change.newValue).substring(0, 30)}{String(change.newValue).length > 30 ? '...' : ''}</div>
+                        <div key={index} className={`change-row ${change.type}`}>
+                            <span className="field">{change.field}</span>
+                            <div className="values">
+                                <span className="old">{String(change.oldValue).substring(0, 25)}{String(change.oldValue).length > 25 ? '...' : ''}</span>
+                                <span className="new">{String(change.newValue).substring(0, 25)}{String(change.newValue).length > 25 ? '...' : ''}</span>
                             </div>
                         </div>
                     ))
                 ) : (
-                    <div className="no-changes">Изменений пока нет</div>
+                    <div className="empty">Изменений пока нет</div>
                 )}
             </div>
         </div>
@@ -589,14 +588,30 @@ const EditAnimePage = () => {
         });
         
         const formData = new FormData();
-        screenshots.forEach((file) => formData.append('files', file));
-        keepScreenshotIds.forEach(id => formData.append('keepIds', id.toString()));
         
-        await fetch(`${API_SERVER}/api/admin/edit-screenshots/${animeId}`, {
+        // Добавляем новые файлы (если есть)
+        if (screenshots.length > 0) {
+            screenshots.forEach((file) => formData.append('files', file));
+        }
+        
+        // Добавляем ID для сохранения (если есть)
+        if (keepScreenshotIds.length > 0) {
+            keepScreenshotIds.forEach(id => formData.append('keepIds', id.toString()));
+        }
+        
+        const response = await fetch(`${API_SERVER}/api/admin/edit-screenshots/${animeId}`, {
             method: 'PUT',
             body: formData,
             headers: { 'Authorization': `Bearer ${token}` },
         });
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('❌ Ошибка загрузки скриншотов:', errorText);
+            throw new Error('Ошибка загрузки скриншотов: ' + errorText);
+        }
+        
+        console.log('✅ Скриншоты успешно обновлены');
     };
 
     const handleInfoUpload = async () => {
@@ -762,45 +777,52 @@ const EditAnimePage = () => {
 
     if (loading) {
         return (
-            <div className="edit-anime-page loading">
-                <div className="loading-spinner">
-                    <div className="spinner-icon">
-                        <RefreshCw size={48} />
+            <section className="yumeko-admin-edit-anime">
+                <div className="yumeko-admin-edit-anime-skeleton">
+                    <div className="skeleton-header" />
+                    <div className="skeleton-layout">
+                        <div className="skeleton-left">
+                            <div className="skeleton-media" />
+                            <div className="skeleton-media small" />
+                        </div>
+                        <div className="skeleton-middle">
+                            {[...Array(8)].map((_, i) => (
+                                <div key={i} className="skeleton-field" />
+                            ))}
+                        </div>
+                        <div className="skeleton-right">
+                            <div className="skeleton-panel" />
+                            <div className="skeleton-panel" />
+                        </div>
                     </div>
-                    <p>Загрузка данных аниме...</p>
                 </div>
-            </div>
+            </section>
         );
     }
 
     return (
-        <div className="edit-anime-page">
-            {/* Navigation */}
-            <EditSectionNavigation />
-            
-            {/* Toast сообщения */}
+        <section className="yumeko-admin-edit-anime">
+            {/* Toast */}
             {toastMessage && (
-                <div className={`toast-message ${toastType}`}>
-                    <div className="toast-content">
-                        {toastIcon && <div className="toast-icon">{toastIcon}</div>}
-                        <div className="toast-text">{toastMessage}</div>
-                    </div>
+                <div className={`yumeko-admin-edit-anime-toast ${toastType}`}>
+                    {toastIcon && <span className="toast-icon">{toastIcon}</span>}
+                    <span>{toastMessage}</span>
                 </div>
             )}
 
-            {/* Интегрированный заголовок */}
-            <div className="integrated-header">
-                <h1 className="page-title">Редактирование аниме <span className="anime-id">#{animeId}</span></h1>
+            {/* Header */}
+            <div className="yumeko-admin-edit-anime-header">
+                <h1>Редактирование аниме <span>#{animeId}</span></h1>
             </div>
 
-            {/* Основной контент - трёхколоночная структура */}
-            <div className="main-content-layout">
+            {/* Layout */}
+            <div className="yumeko-admin-edit-anime-layout">
                 
-                {/* Левая колонка - Медиа файлы */}
-                <div className="left-column">
-                    <div className="content-section file-upload-section">
-                        <div className="section-title">
-                            <ImagePlus className="icon" />
+                {/* Left - Media */}
+                <div className="yumeko-admin-edit-anime-left">
+                    <div className="yumeko-admin-edit-anime-section">
+                        <div className="yumeko-admin-edit-anime-section-title">
+                            <ImagePlus size={18} />
                             Медиа файлы
                         </div>
                         <AnimeFileAndEpisode
@@ -824,8 +846,8 @@ const EditAnimePage = () => {
                     </div>
                 </div>
 
-                {/* Средняя колонка - Информация */}
-                <div className="middle-column">
+                {/* Middle - Info */}
+                <div className="yumeko-admin-edit-anime-middle">
                     <AnimeMainInfo
                         title={title}
                         alttitle={alttitle}
@@ -875,9 +897,8 @@ const EditAnimePage = () => {
                     />
                 </div>
 
-                {/* Правая колонка - Дополнительные фичи */}
-                <div className="right-column">
-                    {/* Панель статистики изменений */}
+                {/* Right - Stats */}
+                <div className="yumeko-admin-edit-anime-right">
                     <EditStatsPanel 
                         originalData={originalData as AnimeData | null}
                         currentData={{title, description, genres, type, status} as AnimeData}
@@ -895,28 +916,27 @@ const EditAnimePage = () => {
 
             </div>
 
-            {/* Секция цепочек франшизы */}
+            {/* Franchise */}
             {animeId && (
-                <div id="franchise-chains-section">
+                <div className="yumeko-admin-edit-anime-franchise">
                     <FranchiseChainManager animeId={parseInt(animeId)} />
                 </div>
             )}
 
-            {/* Плавающие кнопки управления */}
+            {/* Actions */}
             <EditFloatingActionButtons
                 onSave={handleSave}
                 onCancel={handleCancel}
                 saving={saving}
             />
 
-            {/* Модальное окно прогресса */}
+            {/* Progress Modal */}
             <UploadProgressModal
                 isVisible={saving}
                 progress={uploadProgress}
                 currentStep={uploadStep}
             />
-
-        </div>
+        </section>
     );
 };
 

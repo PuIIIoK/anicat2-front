@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { API_SERVER } from '@/hosts/constants';
 import { getAuthToken } from '../../utils/auth';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Search, Filter, Calendar, User, Hash, X, RefreshCw } from 'lucide-react';
 
 interface LogEntry {
     id: number;
@@ -26,7 +26,6 @@ const AdminLogs: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     
-    // Параметры фильтрации и пагинации
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
     const [totalElements, setTotalElements] = useState(0);
@@ -35,7 +34,6 @@ const AdminLogs: React.FC = () => {
     const [sortOrder, setSortOrder] = useState<string>('new');
     const [timePeriod, setTimePeriod] = useState<string>('');
     
-    // Параметры поиска
     const [logId, setLogId] = useState<string>('');
     const [username, setUsername] = useState<string>('');
     const [animeId, setAnimeId] = useState<string>('');
@@ -60,16 +58,13 @@ const AdminLogs: React.FC = () => {
             if (animeId) params.append('animeId', animeId);
             if (timePeriod && !selectedDate) params.append('timePeriod', timePeriod);
             if (selectedDate) {
-                // Преобразуем дату в ISO формат для бэкенда
                 const dateObj = new Date(selectedDate);
                 params.append('specificDate', dateObj.toISOString());
             }
 
             const res = await fetch(`${API_SERVER}/api/admin/logs/paginated?${params}`, {
                 method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
+                headers: { 'Authorization': `Bearer ${token}` },
             });
 
             if (!res.ok) throw new Error('Ошибка при загрузке логов');
@@ -93,9 +88,7 @@ const AdminLogs: React.FC = () => {
 
             const res = await fetch(`${API_SERVER}/api/admin/logs/available-dates`, {
                 method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
+                headers: { 'Authorization': `Bearer ${token}` },
             });
 
             if (res.ok) {
@@ -103,44 +96,22 @@ const AdminLogs: React.FC = () => {
                 setAvailableDates(dates);
             }
         } catch (err) {
-            console.error('Ошибка загрузки доступных дат:', err);
+            console.error('Ошибка загрузки дат:', err);
         }
     }, []);
     
-    useEffect(() => {
-        fetchLogs();
-    }, [fetchLogs]);
+    useEffect(() => { fetchLogs(); }, [fetchLogs]);
+    useEffect(() => { fetchAvailableDates(); }, [fetchAvailableDates]);
     
-    useEffect(() => {
-        fetchAvailableDates();
-    }, [fetchAvailableDates]);
-    
-    const handleActionTypeChange = (value: string) => {
-        setActionType(value);
-        setCurrentPage(0);
-    };
-    
-    const handleSortOrderChange = (value: string) => {
-        setSortOrder(value);
-        setCurrentPage(0);
-    };
-    
-    const handleTimePeriodChange = (value: string) => {
-        setTimePeriod(value);
-        setSelectedDate(''); // Сбрасываем конкретную дату при выборе периода
+    const handleFilterChange = (setter: (v: string) => void, value: string, resetDate = false) => {
+        setter(value);
+        if (resetDate) setSelectedDate('');
         setCurrentPage(0);
     };
     
     const handleDateChange = (value: string) => {
         setSelectedDate(value);
-        setTimePeriod(''); // Сбрасываем период при выборе конкретной даты
-        setCurrentPage(0);
-    };
-    
-    const handleSearchChange = (field: 'logId' | 'username' | 'animeId', value: string) => {
-        if (field === 'logId') setLogId(value);
-        else if (field === 'username') setUsername(value);
-        else if (field === 'animeId') setAnimeId(value);
+        setTimePeriod('');
         setCurrentPage(0);
     };
     
@@ -156,20 +127,15 @@ const AdminLogs: React.FC = () => {
     };
     
     const goToPage = (page: number) => {
-        if (page >= 0 && page < totalPages) {
-            setCurrentPage(page);
-        }
+        if (page >= 0 && page < totalPages) setCurrentPage(page);
     };
     
-    // Генерируем массив номеров страниц для отображения
     const getPageNumbers = () => {
         const pages: (number | string)[] = [];
         const maxVisible = 5;
         
         if (totalPages <= maxVisible) {
-            for (let i = 0; i < totalPages; i++) {
-                pages.push(i);
-            }
+            for (let i = 0; i < totalPages; i++) pages.push(i);
         } else {
             if (currentPage <= 2) {
                 for (let i = 0; i < 4; i++) pages.push(i);
@@ -189,223 +155,265 @@ const AdminLogs: React.FC = () => {
                 pages.push(totalPages - 1);
             }
         }
-        
         return pages;
     };
 
+    const getActionColor = (action: string) => {
+        if (action.includes('Создание')) return 'create';
+        if (action.includes('Редактирование') || action.includes('Изменение')) return 'edit';
+        if (action.includes('Удаление')) return 'delete';
+        if (action.includes('Добавление')) return 'add';
+        return 'default';
+    };
 
-    if (error) return <div className="mobile-error">{error}</div>;
+    // Скелетон
+    if (loading && logs.length === 0) {
+        return (
+            <section className="yumeko-admin-section yumeko-admin-logs">
+                <div className="yumeko-admin-logs-skeleton">
+                    <div className="skeleton-filters">
+                        {[1, 2, 3, 4].map(i => (
+                            <div key={i} className="skeleton-filter" />
+                        ))}
+                    </div>
+                    <div className="skeleton-table">
+                        {[...Array(10)].map((_, i) => (
+                            <div key={i} className="skeleton-row" />
+                        ))}
+                    </div>
+                </div>
+            </section>
+        );
+    }
+
+    if (error) {
+        return (
+            <section className="yumeko-admin-section yumeko-admin-logs">
+                <div className="yumeko-admin-logs-error">
+                    <span>{error}</span>
+                    <button onClick={() => fetchLogs()}>
+                        <RefreshCw size={16} />
+                        Повторить
+                    </button>
+                </div>
+            </section>
+        );
+    }
 
     return (
-        <div className="admin-section admin-logs-container">
+        <section className="yumeko-admin-section yumeko-admin-logs">
             {/* Фильтры */}
-            <div className="admin-logs-filters">
-                <div className="filter-row">
-                    <div className="filter-group">
-                        <label>Действие:</label>
+            <div className="yumeko-admin-logs-filters">
+                <div className="yumeko-admin-logs-filters-row">
+                    <div className="yumeko-admin-logs-filter">
+                        <Filter size={16} />
                         <select 
                             value={actionType} 
-                            onChange={(e) => handleActionTypeChange(e.target.value)}
-                            className="filter-select"
+                            onChange={(e) => handleFilterChange(setActionType, e.target.value)}
                         >
                             <option value="">Все действия</option>
-                            <option value="Создание аниме">Создание аниме</option>
-                            <option value="Редактирование аниме">Редактирование аниме</option>
-                            <option value="Добавление в категорию">Добавление в категорию</option>
-                            <option value="Изменение порядка аниме в цепочке франшизы">Управление франшизой</option>
-                            <option value="Обновление информации">Обновление информации</option>
+                            <option value="Создание аниме">Создание</option>
+                            <option value="Редактирование аниме">Редактирование</option>
+                            <option value="Добавление в категорию">В категорию</option>
+                            <option value="Изменение порядка аниме в цепочке франшизы">Франшиза</option>
+                            <option value="Обновление информации">Обновление</option>
                         </select>
                     </div>
                     
-                    <div className="filter-group">
-                        <label>Сортировка:</label>
+                    <div className="yumeko-admin-logs-filter">
                         <select 
                             value={sortOrder} 
-                            onChange={(e) => handleSortOrderChange(e.target.value)}
-                            className="filter-select"
+                            onChange={(e) => handleFilterChange(setSortOrder, e.target.value)}
                         >
                             <option value="new">Новые</option>
                             <option value="old">Старые</option>
                         </select>
                     </div>
                     
-                    <div className="filter-group">
-                        <label>Период:</label>
+                    <div className="yumeko-admin-logs-filter">
+                        <Calendar size={16} />
                         <select 
                             value={timePeriod} 
-                            onChange={(e) => handleTimePeriodChange(e.target.value)}
-                            className="filter-select"
+                            onChange={(e) => handleFilterChange(setTimePeriod, e.target.value, true)}
                             disabled={!!selectedDate}
                         >
                             <option value="">Все время</option>
-                            <option value="week">За неделю</option>
-                            <option value="month">За месяц</option>
-                            <option value="year">За год</option>
+                            <option value="week">Неделя</option>
+                            <option value="month">Месяц</option>
+                            <option value="year">Год</option>
                         </select>
                     </div>
-                </div>
-                
-                <div className="filter-row">
-                    <div className="filter-group">
-                        <label>ID Лога:</label>
-                        <input
-                            type="number"
-                            value={logId}
-                            onChange={(e) => handleSearchChange('logId', e.target.value)}
-                            className="filter-input"
-                            placeholder="Поиск по ID"
-                        />
-                    </div>
-                    
-                    <div className="filter-group">
-                        <label>Пользователь:</label>
-                        <input
-                            type="text"
-                            value={username}
-                            onChange={(e) => handleSearchChange('username', e.target.value)}
-                            className="filter-input"
-                            placeholder="Поиск по имени"
-                        />
-                    </div>
-                    
-                    <div className="filter-group">
-                        <label>ID Аниме:</label>
-                        <input
-                            type="text"
-                            value={animeId}
-                            onChange={(e) => handleSearchChange('animeId', e.target.value)}
-                            className="filter-input"
-                            placeholder="Поиск по ID аниме"
-                        />
-                    </div>
-                    
-                    <div className="filter-group">
-                        <label>Дата:</label>
+
+                    <div className="yumeko-admin-logs-filter">
                         <input
                             type="date"
                             value={selectedDate}
                             onChange={(e) => handleDateChange(e.target.value)}
-                            className="filter-input filter-date"
                             disabled={!!timePeriod}
                             list="available-dates"
                         />
                         <datalist id="available-dates">
-                            {availableDates.map((date, index) => (
-                                <option key={index} value={date} />
-                            ))}
+                            {availableDates.map((date, i) => <option key={i} value={date} />)}
                         </datalist>
                     </div>
                 </div>
                 
-                <div className="filter-actions">
-                    <div className="filter-info">
-                        Всего записей: {totalElements}
+                <div className="yumeko-admin-logs-filters-row">
+                    <div className="yumeko-admin-logs-search">
+                        <Hash size={16} />
+                        <input
+                            type="number"
+                            value={logId}
+                            onChange={(e) => handleFilterChange(setLogId, e.target.value)}
+                            placeholder="ID лога"
+                        />
                     </div>
-                    <button onClick={clearAllFilters} className="clear-filters-button">
-                        Сбросить все фильтры
+                    
+                    <div className="yumeko-admin-logs-search">
+                        <User size={16} />
+                        <input
+                            type="text"
+                            value={username}
+                            onChange={(e) => handleFilterChange(setUsername, e.target.value)}
+                            placeholder="Пользователь"
+                        />
+                    </div>
+                    
+                    <div className="yumeko-admin-logs-search">
+                        <Search size={16} />
+                        <input
+                            type="text"
+                            value={animeId}
+                            onChange={(e) => handleFilterChange(setAnimeId, e.target.value)}
+                            placeholder="ID аниме"
+                        />
+                    </div>
+                    
+                    <button className="yumeko-admin-logs-clear" onClick={clearAllFilters}>
+                        <X size={16} />
+                        Сбросить
                     </button>
+                </div>
+                
+                <div className="yumeko-admin-logs-info">
+                    <span>Найдено: <strong>{totalElements}</strong> записей</span>
+                    {loading && <RefreshCw size={14} className="animate-spin" />}
                 </div>
             </div>
 
-            {loading ? (
-                <div className="mobile-loading">Загрузка логов...</div>
-            ) : (
-                <>
-                    {/* Десктопная версия */}
-                    <div className="admin-logs-desktop desktop-only">
-                        <div className="admin-table">
-                            <div className="admin-table-header">
-                                <span>ID</span>
-                                <span>Действие</span>
-                                <span>Событие</span>
-                                <span>Кто</span>
-                                <span>Когда</span>
+            {/* Таблица */}
+            <div className="yumeko-admin-logs-table">
+                <div className="yumeko-admin-logs-table-header">
+                    <span className="col-id">ID</span>
+                    <span className="col-action">Действие</span>
+                    <span className="col-target">Событие</span>
+                    <span className="col-user">Пользователь</span>
+                    <span className="col-time">Время</span>
+                </div>
+                
+                <div className="yumeko-admin-logs-table-body">
+                    {logs.length === 0 ? (
+                        <div className="yumeko-admin-logs-empty">
+                            Логи не найдены
+                        </div>
+                    ) : (
+                        logs.map((log) => (
+                            <div className="yumeko-admin-logs-row" key={log.id}>
+                                <span className="col-id">#{log.id}</span>
+                                <span className={`col-action action-${getActionColor(log.action)}`}>
+                                    {log.action}
+                                </span>
+                                <span className="col-target">{log.target}</span>
+                                <span className="col-user">{log.performedBy}</span>
+                                <span className="col-time">
+                                    {new Date(log.timestamp).toLocaleString('ru-RU', {
+                                        day: '2-digit',
+                                        month: '2-digit',
+                                        year: '2-digit',
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    })}
+                                </span>
                             </div>
-                            {logs.map((log) => (
-                                <div className="admin-table-row" key={log.id}>
-                                    <span>{log.id}</span>
-                                    <span>{log.action}</span>
-                                    <span>{log.target}</span>
-                                    <span>{log.performedBy}</span>
-                                    <span>{new Date(log.timestamp).toLocaleString()}</span>
-                                </div>
-                            ))}
+                        ))
+                    )}
+                </div>
+            </div>
+
+            {/* Мобильные карточки */}
+            <div className="yumeko-admin-logs-cards">
+                {logs.map((log) => (
+                    <div className="yumeko-admin-logs-card" key={log.id}>
+                        <div className="yumeko-admin-logs-card-header">
+                            <span className="log-id">#{log.id}</span>
+                            <span className={`log-action action-${getActionColor(log.action)}`}>
+                                {log.action}
+                            </span>
+                        </div>
+                        <div className="yumeko-admin-logs-card-body">
+                            <p className="log-target">{log.target}</p>
+                        </div>
+                        <div className="yumeko-admin-logs-card-footer">
+                            <span className="log-user">
+                                <User size={14} />
+                                {log.performedBy}
+                            </span>
+                            <span className="log-time">
+                                {new Date(log.timestamp).toLocaleString('ru-RU', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                })}
+                            </span>
                         </div>
                     </div>
+                ))}
+            </div>
 
-                    {/* Мобильная версия */}
-                    <div className="mobile-only logs-table-container">
-                        <div className="mobile-logs-list">
-                            {logs.map((log) => (
-                                <div className="mobile-log-card" key={log.id}>
-                                    <div className="log-header">
-                                        <div className="log-id">#{log.id}</div>
-                                        <div className="log-time">
-                                            {new Date(log.timestamp).toLocaleString('ru-RU', {
-                                                day: '2-digit',
-                                                month: '2-digit',
-                                                hour: '2-digit',
-                                                minute: '2-digit'
-                                            })}
-                                        </div>
-                                    </div>
-                                    <div className="log-action">{log.action}</div>
-                                    <div className="log-details">
-                                        <div className="log-target">{log.target}</div>
-                                        <div className="log-user">{log.performedBy}</div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+            {/* Пагинация */}
+            {totalPages > 1 && (
+                <div className="yumeko-admin-logs-pagination">
+                    <button
+                        onClick={() => goToPage(currentPage - 1)}
+                        disabled={currentPage === 0}
+                        className="yumeko-admin-logs-pagination-btn"
+                    >
+                        <ChevronLeft size={18} />
+                    </button>
+                    
+                    <div className="yumeko-admin-logs-pagination-pages">
+                        {getPageNumbers().map((page, index) => (
+                            typeof page === 'number' ? (
+                                <button
+                                    key={index}
+                                    onClick={() => goToPage(page)}
+                                    className={`yumeko-admin-logs-pagination-page ${currentPage === page ? 'active' : ''}`}
+                                >
+                                    {page + 1}
+                                </button>
+                            ) : (
+                                <span key={index} className="yumeko-admin-logs-pagination-dots">
+                                    {page}
+                                </span>
+                            )
+                        ))}
                     </div>
                     
-                    {/* Пагинация */}
-                    {totalPages > 1 && (
-                        <div className="admin-logs-pagination">
-                            <button
-                                onClick={() => goToPage(currentPage - 1)}
-                                disabled={currentPage === 0}
-                                className="pagination-button"
-                                title="Предыдущая страница"
-                            >
-                                <ChevronLeft size={20} />
-                            </button>
-                            
-                            <div className="pagination-pages">
-                                {getPageNumbers().map((page, index) => (
-                                    typeof page === 'number' ? (
-                                        <button
-                                            key={index}
-                                            onClick={() => goToPage(page)}
-                                            className={`pagination-page ${currentPage === page ? 'active' : ''}`}
-                                        >
-                                            {page + 1}
-                                        </button>
-                                    ) : (
-                                        <span key={index} className="pagination-ellipsis">
-                                            {page}
-                                        </span>
-                                    )
-                                ))}
-                            </div>
-                            
-                            <button
-                                onClick={() => goToPage(currentPage + 1)}
-                                disabled={currentPage === totalPages - 1}
-                                className="pagination-button"
-                                title="Следующая страница"
-                            >
-                                <ChevronRight size={20} />
-                            </button>
-                            
-                            <div className="pagination-info">
-                                Страница {currentPage + 1} из {totalPages}
-                            </div>
-                        </div>
-                    )}
-                </>
+                    <button
+                        onClick={() => goToPage(currentPage + 1)}
+                        disabled={currentPage === totalPages - 1}
+                        className="yumeko-admin-logs-pagination-btn"
+                    >
+                        <ChevronRight size={18} />
+                    </button>
+                    
+                    <span className="yumeko-admin-logs-pagination-info">
+                        {currentPage + 1} / {totalPages}
+                    </span>
+                </div>
             )}
-        </div>
+        </section>
     );
 };
 

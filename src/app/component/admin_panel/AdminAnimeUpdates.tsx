@@ -288,9 +288,9 @@ const AdminAnimeUpdates: React.FC = () => {
 
     const getSourceDisplay = (source: 'KODIK_AUTO' | 'MANUAL') => {
         switch (source) {
-            case 'KODIK_AUTO': return { text: 'Кодик (Авто)', className: 'admin-anime-updates-source-kodik' };
-            case 'MANUAL': return { text: 'Вручную', className: 'admin-anime-updates-source-manual' };
-            default: return { text: source, className: 'admin-anime-updates-source-unknown' };
+            case 'KODIK_AUTO': return { text: 'Кодик (Авто)', className: 'yumeko-admin-update-source-kodik' };
+            case 'MANUAL': return { text: 'Вручную', className: 'yumeko-admin-update-source-manual' };
+            default: return { text: source, className: 'yumeko-admin-update-source-unknown' };
         }
     };
 
@@ -325,11 +325,18 @@ const AdminAnimeUpdates: React.FC = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                // Группируем данные: обновленные и не обновленные
-                const updated = data.filter((item: Record<string, unknown>) => Number(item.animeId) > 0);
+                // Фильтруем только обновленные и убираем дубликаты по animeId
+                const updatedRaw = data.filter((item: Record<string, unknown>) => Number(item.animeId) > 0);
+                const uniqueMap = new Map<number, AnimeUpdateLog>();
+                updatedRaw.forEach((item: AnimeUpdateLog) => {
+                    if (!uniqueMap.has(item.animeId)) {
+                        uniqueMap.set(item.animeId, item);
+                    }
+                });
+                const updated = Array.from(uniqueMap.values());
                 const processedData = {
                     updated: updated,
-                    total: parseInt(log.newEpisodeCount.match(/\d+/)?.[0] || '0'), // Извлекаем общее количество
+                    total: parseInt(log.newEpisodeCount.match(/\d+/)?.[0] || '0'),
                     updatedCount: updated.length
                 };
                 setSummaryData(processedData);
@@ -351,13 +358,13 @@ const AdminAnimeUpdates: React.FC = () => {
     };
 
     if (loading) return (
-        <div className="admin-section">
+        <div className="yumeko-admin-section">
             <div className="mobile-loading">Загрузка логов обновлений...</div>
         </div>
     );
 
     if (error) return (
-        <div className="admin-section">
+        <div className="yumeko-admin-section">
             <div className="mobile-error">
                 <AlertCircle size={20} />
                 <span>{error}</span>
@@ -366,15 +373,15 @@ const AdminAnimeUpdates: React.FC = () => {
     );
 
     return (
-        <div className="admin-section admin-anime-updates-container">
-            <div className="admin-anime-updates-header">
-                <div className="admin-anime-updates-title">
+        <div className="yumeko-admin-section yumeko-admin-update-container">
+            <div className="yumeko-admin-update-header">
+                <div className="yumeko-admin-update-title">
                     <h2>Обновления аниме</h2>
                 </div>
                 
-                <div className="admin-anime-updates-controls">
+                <div className="yumeko-admin-update-controls">
                     <button 
-                        className={`admin-anime-updates-sync-btn ${isSyncActive ? 'active' : ''}`}
+                        className={`yumeko-admin-update-sync-btn ${isSyncActive ? 'active' : ''}`}
                         onClick={runManualSync}
                         disabled={isManualSyncRunning || isSyncActive}
                         title={isManualSyncRunning || isSyncActive ? 'Синхронизация в процессе' : 'Запустить синхронизацию'}
@@ -384,7 +391,7 @@ const AdminAnimeUpdates: React.FC = () => {
                     </button>
                     {(isManualSyncRunning || isSyncActive) && (
                         <button 
-                            className="admin-anime-updates-reset-btn"
+                            className="yumeko-admin-update-reset-btn"
                             onClick={() => {
                                 console.log('Принудительный сброс состояния синхронизации');
                                 setIsManualSyncRunning(false);
@@ -401,7 +408,7 @@ const AdminAnimeUpdates: React.FC = () => {
                     <select
                         value={filterType}
                         onChange={(e) => setFilterType(e.target.value)}
-                        className="admin-anime-updates-filter-select"
+                        className="yumeko-admin-update-filter-select"
                     >
                         <option value="ALL">Все источники</option>
                         <option value="KODIK_AUTO">Кодик (Авто)</option>
@@ -410,65 +417,65 @@ const AdminAnimeUpdates: React.FC = () => {
                 </div>
             </div>
 
-            <div className="admin-anime-updates-stats">
-                <span className="admin-anime-updates-stats-text">
+            <div className="yumeko-admin-update-stats">
+                <span className="yumeko-admin-update-stats-text">
                     Показано: {currentLogs.length} из {filteredLogs.length}
                 </span>
             </div>
 
-            <div className="admin-anime-updates-desktop-only">
-                <div className="admin-anime-updates-table">
-                    <div className="admin-anime-updates-table-header">
-                        <div className="admin-anime-updates-header-cell">Время</div>
-                        <div className="admin-anime-updates-header-cell">Аниме</div>
-                        <div className="admin-anime-updates-header-cell">Изменение эпизодов</div>
-                        <div className="admin-anime-updates-header-cell">Источник</div>
-                        <div className="admin-anime-updates-header-cell">Действия</div>
+            <div className="yumeko-admin-update-desktop-only">
+                <div className="yumeko-admin-update-table">
+                    <div className="yumeko-admin-update-table-header">
+                        <div className="yumeko-admin-update-header-cell">Время</div>
+                        <div className="yumeko-admin-update-header-cell">Аниме</div>
+                        <div className="yumeko-admin-update-header-cell">Изменение эпизодов</div>
+                        <div className="yumeko-admin-update-header-cell">Источник</div>
+                        <div className="yumeko-admin-update-header-cell">Действия</div>
                     </div>
-                    <div className="admin-anime-updates-table-body">
+                    <div className="yumeko-admin-update-table-body">
                         {currentLogs.length > 0 ? (
                             currentLogs.map((log) => {
                                 const sourceInfo = getSourceDisplay(log.updateSource);
                                 return (
-                                    <div className="admin-anime-updates-table-row" key={log.id}>
-                                        <div className="admin-anime-updates-cell admin-anime-updates-cell-time">
-                                            <span className="admin-anime-updates-time-text">
+                                    <div className="yumeko-admin-update-table-row" key={log.id}>
+                                        <div className="yumeko-admin-update-cell yumeko-admin-update-cell-time">
+                                            <span className="yumeko-admin-update-time-text">
                                                 {formatDate(log.timestamp)}
                                             </span>
                                         </div>
-                                        <div className="admin-anime-updates-cell admin-anime-updates-cell-anime">
-                                            <div className="admin-anime-updates-anime-info">
-                                                <span className={`admin-anime-updates-anime-title ${isSystemLog(log) ? 'system-log' : ''}`}>
+                                        <div className="yumeko-admin-update-cell yumeko-admin-update-cell-anime">
+                                            <div className="yumeko-admin-update-anime-info">
+                                                <span className={`yumeko-admin-update-anime-title ${isSystemLog(log) ? 'system-log' : ''}`}>
                                                     {log.animeTitle}
                                                 </span>
                                                 {!isSystemLog(log) && (
-                                                    <span className="admin-anime-updates-anime-id">ID: {log.animeId}</span>
+                                                    <span className="yumeko-admin-update-anime-id">ID: {log.animeId}</span>
                                                 )}
                                             </div>
                                         </div>
-                                        <div className="admin-anime-updates-cell admin-anime-updates-cell-episodes">
+                                        <div className="yumeko-admin-update-cell yumeko-admin-update-cell-episodes">
                                             {isSystemLog(log) ? (
-                                                <div className="admin-anime-updates-system-result">
+                                                <div className="yumeko-admin-update-system-result">
                                                     <div className="system-description">{log.oldEpisodeCount}</div>
                                                     <div className="system-summary">{log.newEpisodeCount}</div>
                                                 </div>
                                             ) : (
-                                                <div className="admin-anime-updates-episodes-change">
-                                                    <span className="admin-anime-updates-episodes-before">{log.oldEpisodeCount}</span>
-                                                    <span className="admin-anime-updates-arrow">→</span>
-                                                    <span className="admin-anime-updates-episodes-after">{log.newEpisodeCount}</span>
+                                                <div className="yumeko-admin-update-episodes-change">
+                                                    <span className="yumeko-admin-update-episodes-before">{log.oldEpisodeCount}</span>
+                                                    <span className="yumeko-admin-update-arrow">→</span>
+                                                    <span className="yumeko-admin-update-episodes-after">{log.newEpisodeCount}</span>
                                                 </div>
                                             )}
                                         </div>
-                                        <div className="admin-anime-updates-cell admin-anime-updates-cell-source">
-                                            <span className={`admin-anime-updates-source-badge ${sourceInfo.className}`}>
+                                        <div className="yumeko-admin-update-cell yumeko-admin-update-cell-source">
+                                            <span className={`yumeko-admin-update-source-badge ${sourceInfo.className}`}>
                                                 {sourceInfo.text}
                                             </span>
                                         </div>
-                                        <div className="admin-anime-updates-cell admin-anime-updates-cell-actions">
+                                        <div className="yumeko-admin-update-cell yumeko-admin-update-cell-actions">
                                             {isSystemLog(log) && (
                                                 <button 
-                                                    className="admin-anime-updates-summary-btn"
+                                                    className="yumeko-admin-update-summary-btn"
                                                     onClick={() => openSummaryModal(log)}
                                                 >
                                                     Сводка
@@ -479,7 +486,7 @@ const AdminAnimeUpdates: React.FC = () => {
                                 );
                             })
                         ) : (
-                            <div className="admin-anime-updates-no-data">
+                            <div className="yumeko-admin-update-no-data">
                                 <RefreshCw size={48} />
                                 <p>Нет логов обновлений</p>
                                 <span>Обновления будут отображаться здесь после автоматической проверки или ручной синхронизации</span>
@@ -489,23 +496,23 @@ const AdminAnimeUpdates: React.FC = () => {
                 </div>
             </div>
 
-            <div className="admin-anime-updates-mobile-only">
-                <div className="admin-anime-updates-mobile-list">
+            <div className="yumeko-admin-update-mobile-only">
+                <div className="yumeko-admin-update-mobile-list">
                     {currentLogs.length > 0 ? (
                         currentLogs.map((log) => {
                             const sourceInfo = getSourceDisplay(log.updateSource);
                             return (
-                                <div className="admin-anime-updates-mobile-card" key={log.id}>
-                                    <div className="admin-anime-updates-mobile-header">
-                                        <div className="admin-anime-updates-mobile-time">
+                                <div className="yumeko-admin-update-mobile-card" key={log.id}>
+                                    <div className="yumeko-admin-update-mobile-header">
+                                        <div className="yumeko-admin-update-mobile-time">
                                             {formatDate(log.timestamp)}
                                         </div>
-                                    <div className={`admin-anime-updates-mobile-source ${sourceInfo.className}`}>
+                                    <div className={`yumeko-admin-update-mobile-source ${sourceInfo.className}`}>
                                         {sourceInfo.text}
                                     </div>
                                     {isSystemLog(log) && (
                                         <button 
-                                            className="admin-anime-updates-mobile-summary-btn"
+                                            className="yumeko-admin-update-mobile-summary-btn"
                                             onClick={() => openSummaryModal(log)}
                                         >
                                             Сводка
@@ -513,25 +520,25 @@ const AdminAnimeUpdates: React.FC = () => {
                                     )}
                                 </div>
                                     
-                                    <div className="admin-anime-updates-mobile-anime">
-                                        <span className={`admin-anime-updates-anime-title ${isSystemLog(log) ? 'system-log' : ''}`}>
+                                    <div className="yumeko-admin-update-mobile-anime">
+                                        <span className={`yumeko-admin-update-anime-title ${isSystemLog(log) ? 'system-log' : ''}`}>
                                             {log.animeTitle}
                                         </span>
                                         {!isSystemLog(log) && (
-                                            <span className="admin-anime-updates-anime-id">ID: {log.animeId}</span>
+                                            <span className="yumeko-admin-update-anime-id">ID: {log.animeId}</span>
                                         )}
                                     </div>
                                     
-                                    <div className="admin-anime-updates-mobile-episodes">
+                                    <div className="yumeko-admin-update-mobile-episodes">
                                         {isSystemLog(log) ? (
-                                            <div className="admin-anime-updates-mobile-system-result">
+                                            <div className="yumeko-admin-update-mobile-system-result">
                                                 <div className="mobile-system-description">{log.oldEpisodeCount}</div>
                                                 <div className="mobile-system-summary">{log.newEpisodeCount}</div>
                                             </div>
                                         ) : (
                                             <>
                                                 <span>Эпизоды: </span>
-                                                <span className="admin-anime-updates-episodes-change">
+                                                <span className="yumeko-admin-update-episodes-change">
                                                     {log.oldEpisodeCount} → {log.newEpisodeCount}
                                                 </span>
                                             </>
@@ -541,7 +548,7 @@ const AdminAnimeUpdates: React.FC = () => {
                             );
                         })
                     ) : (
-                        <div className="admin-anime-updates-no-data">
+                        <div className="yumeko-admin-update-no-data">
                             <RefreshCw size={48} />
                             <p>Нет логов обновлений</p>
                             <span>Обновления будут отображаться здесь после автоматической проверки</span>
@@ -551,11 +558,11 @@ const AdminAnimeUpdates: React.FC = () => {
             </div>
 
             {totalPages > 1 && (
-                <div className="admin-anime-updates-pagination">
+                <div className="yumeko-admin-update-pagination">
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                         <button
                             key={page}
-                            className={currentPage === page ? 'admin-anime-updates-active' : ''}
+                            className={currentPage === page ? 'yumeko-admin-update-active' : ''}
                             onClick={() => setCurrentPage(page)}
                         >
                             {page}
@@ -565,18 +572,18 @@ const AdminAnimeUpdates: React.FC = () => {
             )}
             {/* Модальное окно сводки */}
             {showSummaryModal && (
-                <div className="admin-anime-updates-modal-overlay" onClick={closeSummaryModal}>
-                    <div className="admin-anime-updates-modal" onClick={(e) => e.stopPropagation()}>
-                        <div className="admin-anime-updates-modal-header">
+                <div className="yumeko-admin-update-modal-overlay" onClick={closeSummaryModal}>
+                    <div className="yumeko-admin-update-modal" onClick={(e) => e.stopPropagation()}>
+                        <div className="yumeko-admin-update-modal-header">
                             <h3>Сводка синхронизации</h3>
-                            <button className="admin-anime-updates-modal-close" onClick={closeSummaryModal}>
+                            <button className="yumeko-admin-update-modal-close" onClick={closeSummaryModal}>
                                 ✕
                             </button>
                         </div>
                         
-                        <div className="admin-anime-updates-modal-content">
+                        <div className="yumeko-admin-update-modal-content">
                             {selectedSyncLog && (
-                                <div className="admin-anime-updates-modal-info">
+                                <div className="yumeko-admin-update-modal-info">
                                     <div className="modal-sync-title">{selectedSyncLog.animeTitle}</div>
                                     <div className="modal-sync-time">
                                         {formatDate(selectedSyncLog.timestamp)}
@@ -587,7 +594,7 @@ const AdminAnimeUpdates: React.FC = () => {
                                 </div>
                             )}
 
-                            <div className="admin-anime-updates-modal-details">
+                            <div className="yumeko-admin-update-modal-details">
                                 <h4>Детальные результаты:</h4>
                                 
                                 {loadingSummary ? (

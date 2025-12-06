@@ -11,7 +11,7 @@ const AdminTesting = () => {
     ];
 
     return (
-        <div className="admin-section admin-testing-container">
+        <div className="yumeko-admin-section admin-testing-container">
             {/* Десктопная версия */}
             <div className="desktop-only">
                 <h2>Тестовые страницы</h2>

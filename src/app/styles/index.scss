@@ -20,7 +20,15 @@
 @import './components/episode-audio-selector';
 @import './components/search-modal';
 @import './components/searchloader';
-@import './components/admin-panel-ac';
+@import './components/yumeko-admin-panel';
+@import './components/yumeko-admin-anime';
+@import './components/yumeko-admin-updates';
+@import './components/yumeko-admin-users';
+@import './components/yumeko-admin-category';
+@import './components/yumeko-admin-logs';
+@import './components/yumeko-admin-edit-anime';
+@import './components/yumeko-admin-add-anime';
+@import './components/yumeko-admin-video-queue';
 @import './components/admin-mobile';
 @import './components/add-anime';
 @import './components/admin-categories-modern';
@@ -249,8 +257,6 @@ h1, h2, h3, h4, h5, h6 {
 @import "./anime-related";
 @import "./franchise-sections";
 
-// Глобальное переопределение цветов - должно быть в самом конце
-@import "./components/_color-override";
 
 // Дополнительные стили для светлой темы
 .theme-light {

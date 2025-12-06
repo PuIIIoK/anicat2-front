@@ -139,11 +139,11 @@ const AdminUsers = () => {
     const visibleUsers = filteredUsers.slice(startIndex, startIndex + usersPerPage);
 
     return (
-        <div className="modern-admin-users admin-users-container">
+        <section className="yumeko-admin-section yumeko-admin-users">
             {/* Десктопная версия */}
-            <div className="admin-desktop-user desktop-only">
-                <div className="controls-header">
-                    <div className="search-container">
+            <div className="yumeko-admin-users-desktop">
+                <div className="yumeko-admin-users-header">
+                    <div className="yumeko-admin-users-search">
                         <svg className="search-icon" viewBox="0 0 24 24">
                             <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
                         </svg>
@@ -152,25 +152,25 @@ const AdminUsers = () => {
                             placeholder="Поиск по нику или логину..."
                             value={search}
                             onChange={e => setSearch(e.target.value)}
-                            className="search-input"
+                            className="yumeko-admin-users-input"
                         />
                     </div>
-                    <button className="sort-button" onClick={() => setSortAsc(prev => !prev)}>
-                        <svg className="sort-icon" viewBox="0 0 24 24">
+                    <button className="yumeko-admin-users-sort-btn" onClick={() => setSortAsc(prev => !prev)}>
+                        <svg className="yumeko-admin-users-sort-icon" viewBox="0 0 24 24">
                             <path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"/>
                         </svg>
                         Сортировка {sortAsc ? '↑' : '↓'}
                     </button>
                 </div>
 
-                <div className="users-grid">
+                <div className="yumeko-admin-users-grid">
                     {visibleUsers.map(user => (
-                        <div className="modern-user-card" key={user.id}>
-                            <div className="user-header">
-                                <div className="avatar-container">
+                        <div className="yumeko-admin-users-card" key={user.id}>
+                            <div className="yumeko-admin-users-card-header">
+                                <div className="yumeko-admin-users-avatar">
                                     {avatarUrls[user.username] ? (
                                         <Image
-                                            className="user-avatar"
+                                            className="yumeko-admin-users-avatar-img"
                                             src={avatarUrls[user.username]}
                                             alt={user.nickname || 'Аватар'}
                                             width={56}
@@ -178,36 +178,36 @@ const AdminUsers = () => {
                                             unoptimized
                                         />
                                     ) : (
-                                        <div className="user-avatar-placeholder">
+                                        <div className="yumeko-admin-users-avatar-placeholder">
                                             {user.username?.charAt(0)?.toUpperCase() || '?'}
                                         </div>
                                     )}
-                                    <div className="status-indicators">
-                                        {user.isBanned && <div className="status-badge banned">Бан</div>}
-                                        {user.isMuted && <div className="status-badge muted">Мут</div>}
+                                    <div className="yumeko-admin-users-status">
+                                        {user.isBanned && <div className="yumeko-admin-users-badge banned">Бан</div>}
+                                        {user.isMuted && <div className="yumeko-admin-users-badge muted">Мут</div>}
                                     </div>
                                 </div>
-                                <div className="user-details">
-                                    <div className="user-name-container">
-                                        <h3 className="display-name">
+                                <div className="yumeko-admin-users-info">
+                                    <div className="yumeko-admin-users-name">
+                                        <h3 className="yumeko-admin-users-nickname">
                                             {user.nickname || `@${user.username}`}
                                             {user.verified && (
-                                                <svg className="verified-badge" viewBox="0 0 24 24" width="18" height="18">
+                                                <svg className="yumeko-admin-users-verified" viewBox="0 0 24 24" width="18" height="18">
                                                     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="#1DA1F2"/>
                                                 </svg>
                                             )}
                                         </h3>
                                         {user.nickname && (
-                                            <p className="username-secondary">@{user.username}</p>
+                                            <p className="yumeko-admin-users-username">@{user.username}</p>
                                         )}
                                     </div>
-                                    <div className="roles-container">
+                                    <div className="yumeko-admin-users-roles">
                                         {user.roles
                                             .filter(role => role !== 'USER')
                                             .map(role => (
                                                 <span 
                                                     key={role} 
-                                                    className={`role-badge ${role.toLowerCase()}`}
+                                                    className={`yumeko-admin-users-role ${role.toLowerCase()}`}
                                                 >
                                                     {role === 'ADMIN' ? 'Админ' : 'Модер'}
                                                 </span>
@@ -216,10 +216,10 @@ const AdminUsers = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="user-actions">
+                            <div className="yumeko-admin-users-actions">
                                 <Link 
                                     href={`/profile/${user.username}`}
-                                    className="action-btn view"
+                                    className="yumeko-admin-users-btn view"
                                 >
                                     <svg viewBox="0 0 24 24">
                                         <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
@@ -227,7 +227,7 @@ const AdminUsers = () => {
                                     Посмотреть
                                 </Link>
                                 <button 
-                                    className="action-btn edit"
+                                    className="yumeko-admin-users-btn edit"
                                     onClick={() => router.push(`/admin_panel/edit-users/${user.username}`)}
                                 >
                                     <svg viewBox="0 0 24 24">
@@ -236,7 +236,7 @@ const AdminUsers = () => {
                                     Настроить
                                 </button>
                                 <button 
-                                    className="action-btn delete"
+                                    className="yumeko-admin-users-btn delete"
                                     onClick={() => handleDeleteUser(user)}
                                 >
                                     <svg viewBox="0 0 24 24">
@@ -249,9 +249,9 @@ const AdminUsers = () => {
                     ))}
                 </div>
 
-                <div className="modern-pagination">
+                <div className="yumeko-admin-users-pagination">
                     <button 
-                        className="pagination-btn"
+                        className="yumeko-admin-users-page-btn"
                         onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))} 
                         disabled={currentPage === 1}
                     >
@@ -260,13 +260,13 @@ const AdminUsers = () => {
                         </svg>
                         Назад
                     </button>
-                    <div className="page-info">
-                        <span className="current-page">{currentPage}</span>
-                        <span className="page-separator">из</span>
-                        <span className="total-pages">{totalPages}</span>
+                    <div className="yumeko-admin-users-page-info">
+                        <span className="current">{currentPage}</span>
+                        <span className="separator">из</span>
+                        <span className="total">{totalPages}</span>
                     </div>
                     <button 
-                        className="pagination-btn"
+                        className="yumeko-admin-users-page-btn"
                         onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                         disabled={currentPage === totalPages}
                     >
@@ -279,7 +279,7 @@ const AdminUsers = () => {
             </div>
 
             {/* Мобильная версия */}
-            <div className="admin-mobile-user mobile-only admin-users-container">
+            <div className="yumeko-admin-users-mobile">
                 <div className="mobile-controls">
                     <div className="mobile-search-container">
                         <svg className="search-icon" viewBox="0 0 24 24">
@@ -408,7 +408,7 @@ const AdminUsers = () => {
                 onClose={handleCloseDeleteModal}
                 onDelete={handleConfirmDelete}
             />
-        </div>
+        </section>
     );
 };
 

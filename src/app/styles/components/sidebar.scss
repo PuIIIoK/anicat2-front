@@ -63,18 +63,18 @@ $sidebar-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 }
 
-// Mobile Close Button
+// Close Button - всегда видна
 .sidebar-mobile-close-btn {
-    display: none;
+    display: flex;
     position: absolute;
     top: 12px;
     right: 12px;
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.08);
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    color: var(--text-primary);
+    color: var(--text-secondary, #a1a1aa);
     cursor: pointer;
     z-index: 10;
     align-items: center;
@@ -82,9 +82,9 @@ $sidebar-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transition: all 0.2s ease;
     
     &:hover {
-        background: rgba(255, 255, 255, 0.12);
-        border-color: var(--primary-color);
-        color: var(--primary-color);
+        background: rgba(239, 68, 68, 0.15);
+        border-color: #ef4444;
+        color: #ef4444;
     }
     
     &:active {
@@ -92,12 +92,10 @@ $sidebar-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
     svg {
+        width: 18px;
+        height: 18px;
         stroke-linecap: round;
         stroke-linejoin: round;
-    }
-    
-    @media (max-width: 1024px) {
-        display: flex;
     }
 }
 

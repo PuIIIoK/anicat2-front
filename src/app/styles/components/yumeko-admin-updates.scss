@@ -1,0 +1,673 @@
+// ================================================
+// YUMEKO ADMIN UPDATES - ОБНОВЛЕНИЯ АНИМЕ
+// ================================================
+
+.yumeko-admin-update-container {
+  // === HEADER ===
+  .yumeko-admin-update-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+
+    .yumeko-admin-update-title h2 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #f5f5f5;
+    }
+  }
+
+  .yumeko-admin-update-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .yumeko-admin-update-sync-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #af52de 0%, #8b3fc4 100%);
+    border: none;
+    padding: 10px 16px;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.85rem;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover:not(:disabled) {
+      filter: brightness(1.1);
+    }
+
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    &.active {
+      background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    }
+
+    svg.spinning {
+      animation: spin 1s linear infinite;
+    }
+  }
+
+  .yumeko-admin-update-reset-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 8px;
+    color: #f87171;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: rgba(239, 68, 68, 0.2);
+    }
+  }
+
+  .yumeko-admin-update-filter-select {
+    background: #141414;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: #e5e5e5;
+    font-size: 0.85rem;
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+      border-color: #af52de;
+    }
+
+    option {
+      background: #141414;
+    }
+  }
+
+  // === STATS ===
+  .yumeko-admin-update-stats {
+    margin-bottom: 1rem;
+
+    &-text {
+      color: #71717a;
+      font-size: 0.875rem;
+    }
+  }
+
+  // === DESKTOP TABLE ===
+  .yumeko-admin-update-desktop-only {
+    display: block;
+
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
+  .yumeko-admin-update-table {
+    width: 100%;
+  }
+
+  .yumeko-admin-update-table-header {
+    display: grid;
+    grid-template-columns: 120px 1fr 200px 120px 100px;
+    gap: 1rem;
+    padding: 14px 20px;
+    background: #161616;
+    border-radius: 12px;
+    margin-bottom: 8px;
+
+    .yumeko-admin-update-header-cell {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #52525b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  .yumeko-admin-update-table-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .yumeko-admin-update-table-row {
+    display: grid;
+    grid-template-columns: 120px 1fr 200px 120px 100px;
+    gap: 1rem;
+    padding: 16px 20px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    align-items: center;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: #161616;
+      border-color: #262626;
+    }
+  }
+
+  .yumeko-admin-update-cell {
+    font-size: 0.875rem;
+    color: #d4d4d8;
+  }
+
+  // Time cell
+  .yumeko-admin-update-cell-time {
+    .yumeko-admin-update-time-text {
+      color: #71717a;
+      font-size: 0.8rem;
+    }
+  }
+
+  // Anime cell
+  .yumeko-admin-update-cell-anime {
+    .yumeko-admin-update-anime-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .yumeko-admin-update-anime-title {
+      color: #f5f5f5;
+      font-weight: 500;
+
+      &.system-log {
+        color: #fbbf24;
+        font-weight: 600;
+      }
+    }
+
+    .yumeko-admin-update-anime-id {
+      color: #52525b;
+      font-size: 0.75rem;
+    }
+  }
+
+  // Episodes cell
+  .yumeko-admin-update-cell-episodes {
+    .yumeko-admin-update-episodes-change {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .yumeko-admin-update-episodes-before {
+      color: #71717a;
+    }
+
+    .yumeko-admin-update-arrow {
+      color: #4ade80;
+    }
+
+    .yumeko-admin-update-episodes-after {
+      color: #4ade80;
+      font-weight: 600;
+    }
+
+    .yumeko-admin-update-system-result {
+      .system-description {
+        color: #a1a1aa;
+        font-size: 0.8rem;
+        margin-bottom: 4px;
+      }
+
+      .system-summary {
+        color: #4ade80;
+        font-size: 0.85rem;
+        font-weight: 500;
+      }
+    }
+  }
+
+  // Source cell
+  .yumeko-admin-update-cell-source {
+    .yumeko-admin-update-source-badge {
+      display: inline-flex;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+
+      &.yumeko-admin-update-source-kodik {
+        background: rgba(251, 191, 36, 0.15);
+        color: #fbbf24;
+      }
+
+      &.yumeko-admin-update-source-manual {
+        background: rgba(59, 130, 246, 0.15);
+        color: #60a5fa;
+      }
+
+      &.yumeko-admin-update-source-auto {
+        background: rgba(34, 197, 94, 0.15);
+        color: #4ade80;
+      }
+    }
+  }
+
+  // Actions cell
+  .yumeko-admin-update-cell-actions {
+    .yumeko-admin-update-summary-btn {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      color: #60a5fa;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+
+      &:hover {
+        background: rgba(59, 130, 246, 0.2);
+      }
+    }
+  }
+
+  // No data
+  .yumeko-admin-update-no-data {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    color: #52525b;
+    text-align: center;
+
+    svg {
+      margin-bottom: 1rem;
+      opacity: 0.3;
+    }
+
+    p {
+      margin: 0 0 0.5rem;
+      font-size: 1rem;
+      color: #71717a;
+    }
+
+    span {
+      font-size: 0.85rem;
+    }
+  }
+
+  // === MOBILE ===
+  .yumeko-admin-update-mobile-only {
+    display: none;
+
+    @media (max-width: 768px) {
+      display: block;
+    }
+  }
+
+  .yumeko-admin-update-mobile-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .yumeko-admin-update-mobile-card {
+    background: #111111;
+    border: 1px solid #1f1f1f;
+    border-radius: 12px;
+    padding: 14px;
+
+    .yumeko-admin-update-mobile-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .yumeko-admin-update-mobile-time {
+      color: #71717a;
+      font-size: 0.8rem;
+    }
+
+    .yumeko-admin-update-mobile-source {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+
+      &.yumeko-admin-update-source-kodik {
+        background: rgba(251, 191, 36, 0.15);
+        color: #fbbf24;
+      }
+
+      &.yumeko-admin-update-source-manual {
+        background: rgba(59, 130, 246, 0.15);
+        color: #60a5fa;
+      }
+    }
+
+    .yumeko-admin-update-mobile-summary-btn {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      color: #60a5fa;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      cursor: pointer;
+    }
+  }
+
+  // === PAGINATION ===
+  .yumeko-admin-update-pagination {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+
+    button {
+      padding: 8px 14px;
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      color: #71717a;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+
+      &:hover {
+        background: #262626;
+        color: #e5e5e5;
+        border-color: #3f3f46;
+      }
+
+      &.yumeko-admin-update-active {
+        background: #af52de;
+        border-color: #af52de;
+        color: #ffffff;
+      }
+    }
+
+    .yumeko-admin-update-page-btn {
+      padding: 8px 12px;
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 6px;
+      color: #71717a;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+
+      &:hover:not(:disabled) {
+        background: #262626;
+        color: #e5e5e5;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      &.active {
+        background: #af52de;
+        border-color: #af52de;
+        color: #ffffff;
+      }
+    }
+  }
+
+  // === MODAL ===
+  .yumeko-admin-update-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 1rem;
+  }
+
+  .yumeko-admin-update-modal {
+    background: #111111;
+    border: 1px solid #2a2a2a;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .yumeko-admin-update-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #1f1f1f;
+
+    h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #f5f5f5;
+    }
+  }
+
+  .yumeko-admin-update-modal-close {
+    width: 32px;
+    height: 32px;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    color: #71717a;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: rgba(239, 68, 68, 0.3);
+      color: #f87171;
+    }
+  }
+
+  .yumeko-admin-update-modal-content {
+    padding: 1.5rem;
+    overflow-y: auto;
+  }
+
+  .yumeko-admin-update-modal-info {
+    background: #161616;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+
+    .modal-sync-title {
+      color: #fbbf24;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+    }
+
+    .modal-sync-time {
+      color: #71717a;
+      font-size: 0.8rem;
+      margin-bottom: 8px;
+    }
+
+    .modal-sync-result {
+      color: #4ade80;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+  }
+
+  .yumeko-admin-update-modal-details {
+    h4 {
+      color: #f5f5f5;
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin: 0 0 1rem 0;
+    }
+
+    h5 {
+      color: #a1a1aa;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin: 1.25rem 0 0.75rem 0;
+    }
+
+    .modal-loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 2rem;
+      color: #71717a;
+
+      svg.spinning {
+        animation: spin 1s linear infinite;
+      }
+    }
+
+    .modal-summary-stats {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+
+      .summary-stat {
+        background: #161616;
+        border-radius: 10px;
+        padding: 12px 16px;
+        flex: 1;
+        min-width: 120px;
+
+        .stat-label {
+          display: block;
+          color: #71717a;
+          font-size: 0.75rem;
+          margin-bottom: 4px;
+        }
+
+        .stat-value {
+          display: block;
+          color: #f5f5f5;
+          font-size: 1.1rem;
+          font-weight: 600;
+
+          &.updated {
+            color: #4ade80;
+          }
+
+          &.no-changes {
+            color: #71717a;
+          }
+        }
+      }
+    }
+
+    .modal-results-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 300px;
+      overflow-y: auto;
+
+      .modal-result-item {
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+        gap: 12px;
+        align-items: center;
+        background: #161616;
+        border-radius: 10px;
+        padding: 12px 14px;
+
+        &.updated {
+          border-left: 3px solid #4ade80;
+        }
+
+        .modal-anime-info {
+          .modal-anime-title {
+            color: #f5f5f5;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 2px;
+          }
+
+          .modal-anime-id {
+            color: #52525b;
+            font-size: 0.7rem;
+          }
+        }
+
+        .modal-episode-change {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 0.8rem;
+
+          .before {
+            color: #71717a;
+          }
+
+          .arrow {
+            color: #4ade80;
+          }
+
+          .after {
+            color: #4ade80;
+            font-weight: 600;
+          }
+        }
+
+        .update-status {
+          .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+
+            &.success {
+              background: rgba(34, 197, 94, 0.15);
+              color: #4ade80;
+            }
+          }
+        }
+      }
+    }
+
+    .no-updates-info {
+      background: #161616;
+      border-radius: 10px;
+      padding: 1rem;
+      color: #71717a;
+      font-size: 0.85rem;
+      text-align: center;
+      margin-top: 1rem;
+    }
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
