@@ -218,13 +218,23 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
             <DiscordStatusTracker status={`На странице аниме ${anime.title}`} />
 
             <div className="anime-page-container modern">
-                {/* Хлебные крошки */}
+                {/* Хлебные крошки и переключатель вида */}
                 <div className="anime-breadcrumbs">
-                    <Link href="/" className="breadcrumb-link">Главная</Link>
-                    <span className="breadcrumb-separator">/</span>
-                    <span className="breadcrumb-current">
-                        {anime.title}{anime.season ? ` ${anime.season}` : ''}
-                    </span>
+                    <div className="breadcrumbs-left">
+                        <Link href="/" className="breadcrumb-link">Главная</Link>
+                        <span className="breadcrumb-separator">/</span>
+                        <span className="breadcrumb-current">
+                            {anime.title}{anime.season ? ` ${anime.season}` : ''}
+                        </span>
+                    </div>
+                    
+                    <div className="anime-view-switcher">
+                        <span className="view-switcher-label">Вид:</span>
+                        <div className="view-switcher-buttons">
+                            <Link href={`/anime-page-cl/${animeId}`} className="view-btn" onClick={() => localStorage.setItem('animePageView', 'new')}>Новый</Link>
+                            <button className="view-btn active">Старый</button>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Баннер */}

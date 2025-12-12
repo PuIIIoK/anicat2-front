@@ -41,8 +41,15 @@ body:has(.anime-page-container) {
     margin: 0 auto;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 10px;
     font-size: 0.875rem;
+
+    .breadcrumbs-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
     .breadcrumb-link {
       color: var(--text-muted);
@@ -67,6 +74,53 @@ body:has(.anime-page-container) {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+
+    // ===== Переключатель вида страницы =====
+    .anime-view-switcher {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .view-switcher-label {
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        white-space: nowrap;
+      }
+
+      .view-switcher-buttons {
+        display: flex;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        padding: 3px;
+        gap: 2px;
+
+        .view-btn {
+          padding: 6px 14px;
+          border: none;
+          background: transparent;
+          color: var(--text-muted);
+          font-size: 0.8rem;
+          font-weight: 500;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          white-space: nowrap;
+          text-decoration: none;
+          display: inline-block;
+
+          &:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.05);
+          }
+
+          &.active {
+            background: var(--primary-color);
+            color: #fff;
+            box-shadow: 0 2px 8px var(--primary-bg-hover, rgba(175, 82, 222, 0.3));
+          }
+        }
+      }
     }
   }
 

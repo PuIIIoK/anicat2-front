@@ -96,9 +96,9 @@ export const useAnimePageLogic = (animeId: string) => {
     // Состояние для дизайна
 
     // UI состояния
-    const [activeTab, setActiveTab] = useState<'screenshots' | 'details' | 'reviews' | 'comments'>(() => {
-        const tabFromUrl = searchParams.get('tab') as 'screenshots' | 'details' | 'reviews' | 'comments' | null;
-        return tabFromUrl && ['screenshots', 'details', 'reviews', 'comments'].includes(tabFromUrl) 
+    const [activeTab, setActiveTab] = useState<'screenshots' | 'details' | 'reviews' | 'comments' | 'episodes'>(() => {
+        const tabFromUrl = searchParams.get('tab') as 'screenshots' | 'details' | 'reviews' | 'comments' | 'episodes' | null;
+        return tabFromUrl && ['screenshots', 'details', 'reviews', 'comments', 'episodes'].includes(tabFromUrl) 
             ? tabFromUrl 
             : 'screenshots';
     });
@@ -212,6 +212,21 @@ export const useAnimePageLogic = (animeId: string) => {
                 const data = await animeResponse.json();
                 setAnime(data);
 
+                // Загружаем количество отзывов и комментариев параллельно (не блокируя)
+                const headers: Record<string, string> = {};
+                if (hasToken()) {
+                    headers['Authorization'] = `Bearer ${getAuthToken()}`;
+                }
+                
+                Promise.all([
+                    fetch(`${API_SERVER}/api/anime/ratings/${animeId}/all`).then(r => r.ok ? r.json() : { userRatings: [] }),
+                    fetch(`${API_SERVER}/api/comments/all/${animeId}`, { headers }).then(r => r.ok ? r.json() : [])
+                ]).then(([ratingsData, commentsData]) => {
+                    const reviewsWithComments = (ratingsData?.userRatings || []).filter((r: { comment?: string }) => r.comment && r.comment.trim().length > 0);
+                    setTotalReviews(reviewsWithComments.length);
+                    setComments(commentsData || []);
+                }).catch(console.error);
+
                 // Установка официального рейтинга из основных данных
                 if (data.officialRating) {
                     setOfficialRating(data.officialRating);
@@ -298,110 +313,49 @@ export const useAnimePageLogic = (animeId: string) => {
 
     // Загрузка скриншотов (ленивая)
     const loadScreenshots = useCallback(async () => {
-        console.log('🚀 loadScreenshots вызван с условиями:', {
-            screenshotsLoaded,
-            screenshotsLoading,
-            screenshotsCount: anime?.screenshotsCount,
-            animeId,
-            animeTitle: anime?.title
-        });
-
         if (screenshotsLoaded || screenshotsLoading || !anime?.screenshotsCount) {
-            console.log('⏹️ Прерываем загрузку скриншотов:', {
-                screenshotsLoaded: screenshotsLoaded ? 'уже загружены' : 'не загружены',
-                screenshotsLoading: screenshotsLoading ? 'в процессе' : 'не загружаются',
-                screenshotsCount: anime?.screenshotsCount || 'отсутствует'
-            });
             return;
         }
 
-        console.log('📡 Начинаем загрузку скриншотов для аниме ID:', animeId);
         setScreenshotsLoading(true);
         
         try {
-            const apiUrl = `${API_SERVER}/api/anime/optimized/get-anime/${animeId}/screenshots-urls`;
-            console.log('📡 Отправляем запрос на:', apiUrl);
-            
-            const res = await fetch(apiUrl);
-            console.log('📡 Ответ сервера:', res.status, res.statusText);
+            const res = await fetch(`${API_SERVER}/api/anime/optimized/get-anime/${animeId}/screenshots-urls`);
             
             if (res.ok) {
                 const data = await res.json();
-                console.log('📸 === ПОЛНЫЙ ОТВЕТ API СКРИНШОТОВ ===');
-                console.log('📸 Данные:', data);
-                console.log('📸 Тип данных:', typeof data);
-                console.log('📸 Является массивом:', Array.isArray(data));
-                console.log('📸 Длина массива:', data?.length);
                 
-                // Проверяем разные варианты структуры ответа
                 let screenshots = [];
                 if (Array.isArray(data)) {
                     screenshots = data;
-                    console.log('📸 Использована структура: прямой массив');
                 } else if (data.screenshots && Array.isArray(data.screenshots)) {
                     screenshots = data.screenshots;
-                    console.log('📸 Использована структура: data.screenshots');
                 } else if (data.data && Array.isArray(data.data)) {
                     screenshots = data.data;
-                    console.log('📸 Использована структура: data.data');
-                } else {
-                    console.error('❌ Неизвестная структура данных скриншотов:', data);
                 }
-                
-                console.log('📸 === ОБРАБОТАННЫЕ СКРИНШОТЫ ===');
-                console.log('📸 Количество скриншотов:', screenshots.length);
-                console.log('📸 Данные скриншотов:', screenshots);
-                
-                // Проверяем каждый URL скриншота
-                screenshots.forEach((screenshot: {id: number, url: string, name: string}, index: number) => {
-                    console.log(`📸 Скриншот ${index + 1}:`, {
-                        id: screenshot.id,
-                        url: screenshot.url,
-                        name: screenshot.name,
-                        urlValid: screenshot.url && screenshot.url.startsWith('http'),
-                        urlLength: screenshot.url?.length || 0
-                    });
-                });
                 
                 setScreenshotUrls(screenshots);
                 setScreenshotsLoaded(true);
-                console.log('✅ Скриншоты успешно установлены в состояние');
-            } else {
-                console.warn('⚠️ Ошибка ответа сервера:', res.status, res.statusText);
-                const errorText = await res.text();
-                console.warn('⚠️ Текст ошибки:', errorText);
             }
         } catch (error) {
-            console.error('❌ Ошибка загрузки скриншотов:', error);
+            console.error('Ошибка загрузки скриншотов:', error);
         } finally {
             setScreenshotsLoading(false);
-            console.log('🏁 Загрузка скриншотов завершена');
         }
     }, [animeId, anime?.screenshotsCount, anime?.title, screenshotsLoaded, screenshotsLoading]);
 
     // Загрузка скриншотов при переключении на соответствующую вкладку
     useEffect(() => {
-        console.log('🔄 Переключение вкладки:', activeTab);
-        console.log('🔄 Состояние скриншотов:', {
-            screenshotsCount: anime?.screenshotsCount,
-            screenshotsLoaded,
-            screenshotsLoading,
-            screenshotUrls: screenshotUrls.length,
-            animeData: anime ? 'есть' : 'нет'
-        });
-        
         if (activeTab === 'screenshots' && anime) {
-            console.log('🎯 Начинаем загрузку скриншотов для аниме:', anime.title);
             loadScreenshots();
         } else if (activeTab === 'reviews' && anime) {
-            console.log('🎯 Начинаем загрузку отзывов для аниме:', anime.title);
             loadReviews();
         } else if (activeTab === 'comments' && anime) {
-            console.log('🎯 Начинаем загрузку комментариев для аниме:', anime.title);
             loadComments();
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeTab, loadScreenshots, anime, screenshotUrls.length, screenshotsLoaded, screenshotsLoading]);
+
 
     // Загрузка профиля текущего пользователя для проверки владельца комментариев
     useEffect(() => {
@@ -426,8 +380,8 @@ export const useAnimePageLogic = (animeId: string) => {
                                     const avatarData = await avatarResponse.json();
                                     avatarUrl = avatarData.url || '';
                                 }
-                            } catch (error) {
-                                console.log('Не удалось загрузить аватарку:', error);
+                            } catch {
+                                // Не удалось загрузить аватарку
                             }
                         }
 
@@ -438,29 +392,16 @@ export const useAnimePageLogic = (animeId: string) => {
                             verified: profileData.verified || false,
                             avatarUrl: avatarUrl
                         });
-                        
-                        console.log('✅ Профиль пользователя загружен из localStorage:', {
-                            username: profileData.username,
-                            nickname: profileData.nickname,
-                            role: Array.isArray(profileData.roles) ? profileData.roles.join(', ') : (profileData.roles || ''),
-                            verified: profileData.verified || false,
-                            avatarUrl: avatarUrl,
-                            token: token ? 'есть' : 'нет'
-                        });
-                    } else {
-                        console.log('❌ Ошибка загрузки профиля:', response.status);
                     }
                 } catch (error) {
-                    console.error('❌ Ошибка загрузки профиля пользователя:', error);
+                    console.error('Ошибка загрузки профиля:', error);
                 }
             };
             loadUserProfile();
-        } else {
-            console.log('❌ Токен не найден в localStorage');
         }
-    }, []); // Убрал зависимость от hasToken
+    }, []);
 
-    // Переключение избранного
+    // Переключение избранного (независимо от статуса просмотра)
     const toggleFavorite = async () => {
         if (!hasToken()) {
             setShowAuthPrompt(true);
@@ -472,7 +413,8 @@ export const useAnimePageLogic = (animeId: string) => {
 
         try {
             const token = getAuthToken();
-            const res = await fetch(`${API_SERVER}/api/collection/${newFavorite ? 'set' : 'remove'}?animeId=${animeId}${newFavorite ? '&type=FAVORITE' : ''}`, {
+            // Всегда указываем type=FAVORITE для обоих операций
+            const res = await fetch(`${API_SERVER}/api/collection/${newFavorite ? 'set' : 'remove'}?animeId=${animeId}&type=FAVORITE`, {
                 method: newFavorite ? 'POST' : 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -560,13 +502,12 @@ export const useAnimePageLogic = (animeId: string) => {
 
     // Обработчик выбора источника из модального окна
     const handleSourceSelect = (url: string) => {
-        console.log('[handleSourceSelect] Navigating to:', url);
         router.push(url);
     };
 
 
     // Функция для обновления URL с табом
-    const updateUrlWithTab = (tab: 'screenshots' | 'details' | 'reviews' | 'comments') => {
+    const updateUrlWithTab = (tab: 'screenshots' | 'details' | 'reviews' | 'comments' | 'episodes') => {
         const currentUrl = new URL(window.location.href);
         if (tab === 'screenshots') {
             // Убираем параметр tab если это вкладка по умолчанию
@@ -591,7 +532,7 @@ export const useAnimePageLogic = (animeId: string) => {
     };
 
     // Обработчики для UI
-    const handleTabChange = (tab: 'screenshots' | 'details' | 'reviews' | 'comments') => {
+    const handleTabChange = (tab: 'screenshots' | 'details' | 'reviews' | 'comments' | 'episodes') => {
         setActiveTab(tab);
         updateUrlWithTab(tab);
     };
@@ -631,74 +572,38 @@ export const useAnimePageLogic = (animeId: string) => {
                             });
             if (response.ok) {
                 const data = await response.json();
-                console.log('📝 Загруженные комментарии:', data);
                 
-                // Правильно маппим данные с сервера
-                const processedComments = (data || []).map((comment: Record<string, unknown>, index: number) => {
-                    console.log(`🔍 Комментарий #${index}:`, {
-                        id: comment.id,
-                        userUsername: comment.userUsername,
-                        nickname: comment.nickname,
-                        roles: comment.roles,
-                        verified: comment.verified,
-                        avatarUrl: comment.avatarUrl,
-                        isLiked: comment.isLiked,
-                        isDisliked: comment.isDisliked,
-                        likes: comment.likes,
-                        dislikes: comment.dislikes,
-                        text: String(comment.text || '').substring(0, 50) + '...'
-                    });
-
-                    return {
-                        id: comment.id || `comment-${index}-${Date.now()}`,
-                        username: comment.userUsername || 'Аноним', // Всегда используем userUsername для отображения
-                        realUsername: comment.userUsername || 'Аноним', // Реальный username для проверки владельца
-                        nickname: comment.nickname || null,
-                        text: comment.text || '',
-                        timestamp: comment.createdAt || new Date().toISOString(),
-                        likes: comment.likes || 0,
-                        dislikes: comment.dislikes || 0,
-                        isLiked: Boolean(comment.isLiked),
-                        isDisliked: Boolean(comment.isDisliked),
-                        role: comment.roles || '',
-                        verified: comment.verified || false,
-                        avatarUrl: comment.avatarUrl || '',
-                        replies: ((comment.replies as Record<string, unknown>[]) || []).map((reply: Record<string, unknown>, replyIndex: number) => {
-                            console.log(`  🔍 Ответ #${replyIndex}:`, {
-                                replyId: reply.replyId,
-                                username: reply.username,
-                                nickname: reply.nickname,
-                                roles: reply.roles,
-                                verified: reply.verified,
-                                isLiked: reply.isLiked,
-                                isDisliked: reply.isDisliked,
-                                likes: reply.likes,
-                                dislikes: reply.dislikes,
-                                avatarUrl: reply.avatarUrl
-                            });
-
-                            return {
-                                id: reply.replyId || `reply-${index}-${replyIndex}-${Date.now()}`,
-                                username: reply.username || 'Аноним', // Всегда используем username для отображения
-                                realUsername: reply.username || 'Аноним', // Реальный username для проверки владельца
-                                nickname: reply.nickname || null,
-                                text: reply.text || '',
-                                timestamp: reply.createdAt || new Date().toISOString(),
-                                likes: reply.likes || 0,
-                                dislikes: reply.dislikes || 0,
-                                isLiked: Boolean(reply.isLiked),
-                                isDisliked: Boolean(reply.isDisliked),
-                                role: Array.isArray(reply.roles) ? reply.roles.join(', ') : (reply.roles || ''),
-                                verified: reply.verified || false,
-                                avatarUrl: reply.avatarUrl || '',
-                            };
-                        })
-                    };
-                });
+                const processedComments = (data || []).map((comment: Record<string, unknown>, index: number) => ({
+                    id: comment.id || `comment-${index}-${Date.now()}`,
+                    username: comment.userUsername || 'Аноним',
+                    realUsername: comment.userUsername || 'Аноним',
+                    nickname: comment.nickname || null,
+                    text: comment.text || '',
+                    timestamp: comment.createdAt || new Date().toISOString(),
+                    likes: comment.likes || 0,
+                    dislikes: comment.dislikes || 0,
+                    isLiked: Boolean(comment.isLiked),
+                    isDisliked: Boolean(comment.isDisliked),
+                    role: comment.roles || '',
+                    verified: comment.verified || false,
+                    avatarUrl: comment.avatarUrl || '',
+                    replies: ((comment.replies as Record<string, unknown>[]) || []).map((reply: Record<string, unknown>, replyIndex: number) => ({
+                        id: reply.replyId || `reply-${index}-${replyIndex}-${Date.now()}`,
+                        username: reply.username || 'Аноним',
+                        realUsername: reply.username || 'Аноним',
+                        nickname: reply.nickname || null,
+                        text: reply.text || '',
+                        timestamp: reply.createdAt || new Date().toISOString(),
+                        likes: reply.likes || 0,
+                        dislikes: reply.dislikes || 0,
+                        isLiked: Boolean(reply.isLiked),
+                        isDisliked: Boolean(reply.isDisliked),
+                        role: Array.isArray(reply.roles) ? reply.roles.join(', ') : (reply.roles || ''),
+                        verified: reply.verified || false,
+                        avatarUrl: reply.avatarUrl || '',
+                    }))
+                }));
                 
-                console.log('✅ Обработанные комментарии:', processedComments);
-                
-                // Сортируем комментарии по дате (новые сверху)
                 const sortedComments = processedComments.sort((a: Comment, b: Comment) => 
                     new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
                 );
@@ -723,37 +628,19 @@ export const useAnimePageLogic = (animeId: string) => {
             const response = await fetch(`${API_SERVER}/api/anime/ratings/${animeId}/all`);
             if (response.ok) {
                 const data = await response.json();
-                console.log('🔍 Данные отзывов:', data);
                 
-                // Преобразуем рейтинги в формат отзывов с правильным маппингом из API
                 const reviewsData = await Promise.all(
                     (data.userRatings || []).map(async (rating: Record<string, unknown>, index: number) => {
-                        console.log(`🔍 Рейтинг #${index}:`, {
-                            userId: rating.userId,
-                            username: rating.username,
-                            nickname: rating.nickname,
-                            roles: rating.roles,
-                            verified: rating.verified,
-                            avatarId: rating.avatarId,
-                            score: rating.score,
-                            comment: String(rating.comment || '').substring(0, 50) + '...'
-                        });
-
-                        // Получение реального URL аватарки
                         let avatarUrl = '';
                         if (rating.username) {
                             try {
                                 const avatarResponse = await fetch(`${API_SERVER}/api/profiles/avatar?username=${rating.username}`);
                                 if (avatarResponse.ok) {
                                     const avatarData = await avatarResponse.json();
-                                    // Prefer staticUrl for images, fallback to url if not webm
                                     avatarUrl = avatarData.staticUrl || (avatarData.url && !avatarData.url.endsWith('.webm') ? avatarData.url : '');
-                                    console.log('✅ Получен URL аватарки для отзыва:', avatarUrl);
-                                } else {
-                                    console.log('❌ Не удалось получить URL аватарки для отзыва, статус:', avatarResponse.status);
                                 }
-                            } catch (error) {
-                                console.error('❌ Ошибка получения аватарки для отзыва:', error);
+                            } catch {
+                                // Не удалось получить аватарку
                             }
                         }
 
@@ -783,10 +670,7 @@ export const useAnimePageLogic = (animeId: string) => {
                     })
                 );
                 
-                // Показываем ВСЕ отзывы, включая те что без комментариев (только рейтинг)
                 const filteredReviewsData = reviewsData;
-                
-                console.log('✅ Обработанные отзывы с API:', filteredReviewsData);
                 
                 // Найдем отзыв текущего пользователя
                 const currentUser = getCurrentUser();
@@ -830,16 +714,17 @@ export const useAnimePageLogic = (animeId: string) => {
                     });
                 }
                 
-                console.log('👤 Отзыв текущего пользователя:', currentUserReview);
                 setUserReview(currentUserReview);
                 
-                console.log('📝 Все отзывы (включая собственный):', filteredReviewsData);
-                
-                // Сортируем отзывы по дате - новые сверху
+                // Сортируем отзывы по id - новые сверху (больший id = новее)
                 const sortedReviews = filteredReviewsData.sort((a, b) => {
-                    const dateA = new Date(a.timestamp || 0);
-                    const dateB = new Date(b.timestamp || 0);
-                    return dateB.getTime() - dateA.getTime();
+                    // Собственный отзыв всегда первый
+                    if (a.isOwn) return -1;
+                    if (b.isOwn) return 1;
+                    // Сортируем по id в обратном порядке (новые сверху)
+                    const idA = typeof a.id === 'number' ? a.id : 0;
+                    const idB = typeof b.id === 'number' ? b.id : 0;
+                    return idB - idA;
                 });
                 
                 setReviews(sortedReviews);
@@ -902,7 +787,6 @@ export const useAnimePageLogic = (animeId: string) => {
 
             if (response.ok) {
                 const newComment = await response.json();
-                console.log('✅ Комментарий отправлен успешно:', newComment);
                 
                 // Заменяем временный комментарий на реальный
                 setComments(prevComments => 
@@ -942,7 +826,6 @@ export const useAnimePageLogic = (animeId: string) => {
 
         // Проверяем, не обрабатывается ли уже запрос для этого комментария
         if (likingComments.has(commentId)) {
-            console.log('⏳ Запрос уже обрабатывается для комментария:', commentId);
             return;
         }
 
@@ -1036,7 +919,6 @@ export const useAnimePageLogic = (animeId: string) => {
 
         // Проверяем, не обрабатывается ли уже запрос для этого комментария
         if (likingComments.has(commentId)) {
-            console.log('⏳ Запрос уже обрабатывается для комментария:', commentId);
             return;
         }
 
@@ -1207,7 +1089,6 @@ export const useAnimePageLogic = (animeId: string) => {
 
         try {
             await handleReplyComment(commentId, replyText);
-            console.log('✅ Ответ отправлен успешно');
             
             // Убираем флаг pending с ответа (реальный ID будет получен при следующей загрузке)
             setComments(prevComments => 
@@ -1254,7 +1135,6 @@ export const useAnimePageLogic = (animeId: string) => {
 
         // Проверяем, не обрабатывается ли уже запрос для этого ответа
         if (likingReplies.has(replyId)) {
-            console.log('⏳ Запрос уже обрабатывается для ответа:', replyId);
             return;
         }
 
@@ -1361,7 +1241,6 @@ export const useAnimePageLogic = (animeId: string) => {
 
         // Проверяем, не обрабатывается ли уже запрос для этого ответа
         if (likingReplies.has(replyId)) {
-            console.log('⏳ Запрос уже обрабатывается для ответа:', replyId);
             return;
         }
 
@@ -1501,7 +1380,6 @@ export const useAnimePageLogic = (animeId: string) => {
                     )
                 );
                 handleCancelEdit();
-                console.log('✅ Комментарий обновлен успешно');
             } else {
                 throw new Error('Ошибка обновления комментария');
             }
@@ -1539,7 +1417,6 @@ export const useAnimePageLogic = (animeId: string) => {
                     }))
                 );
                 handleCancelEdit();
-                console.log('✅ Ответ обновлен успешно');
             } else {
                 throw new Error('Ошибка обновления ответа');
             }
@@ -1568,7 +1445,6 @@ export const useAnimePageLogic = (animeId: string) => {
                 setComments(prevComments => 
                     prevComments.filter(comment => comment.id !== deleteTarget.id)
                 );
-                console.log('✅ Комментарий удален успешно');
             } else {
                 throw new Error('Ошибка удаления комментария');
             }
@@ -1603,7 +1479,6 @@ export const useAnimePageLogic = (animeId: string) => {
                         replies: comment.replies?.filter(reply => reply.id !== deleteTarget.id)
                     }))
                 );
-                console.log('✅ Ответ удален успешно');
             } else {
                 throw new Error('Ошибка удаления ответа');
             }
@@ -1685,7 +1560,6 @@ export const useAnimePageLogic = (animeId: string) => {
                     if (ratingResponse.ok) {
                         const ratingData = await ratingResponse.json();
                         setAverageRating(ratingData.average);
-                        console.log('✅ Рейтинг обновлен:', ratingData.average);
                     }
                 } catch (ratingError) {
                     console.error('❌ Ошибка обновления рейтинга:', ratingError);
@@ -1722,7 +1596,6 @@ export const useAnimePageLogic = (animeId: string) => {
                     if (ratingResponse.ok) {
                         const ratingData = await ratingResponse.json();
                         setAverageRating(ratingData.average);
-                        console.log('✅ Рейтинг обновлен после удаления:', ratingData.average);
                     }
                 } catch (ratingError) {
                     console.error('❌ Ошибка обновления рейтинга:', ratingError);

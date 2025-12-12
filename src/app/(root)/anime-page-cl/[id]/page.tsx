@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useEffect, useState, Suspense } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import AnimePagePC from '../../../component/anime-page-new/AnimePagePC';
+import { useParams } from 'next/navigation';
+import AnimePageCrunch from '../../../component/anime-page-crunch/AnimePageCrunch';
 import AnimePageMobile from '../../../component/anime-page-new/AnimePageMobile';
 import AnimePageSkeleton from '../../../component/anime-page-new/AnimePageSkeleton';
 
@@ -21,31 +21,23 @@ function useIsMobile(breakpoint = 900) {
 
 const AnimePageContent: React.FC<{ animeId: string }> = ({ animeId }) => {
     const isMobile = useIsMobile();
-    const router = useRouter();
-    const [viewChecked, setViewChecked] = useState(false);
 
-    // Проверяем сохранённый вид в localStorage
+    // Сохраняем выбор нового вида при посещении этой страницы
     useEffect(() => {
-        const savedView = localStorage.getItem('animePageView');
-        // По умолчанию — новый вид (anime-page-cl), редиректим если не выбран старый
-        if (savedView !== 'old') {
-            router.replace(`/anime-page-cl/${animeId}`);
-        } else {
-            setViewChecked(true);
-        }
-    }, [animeId, router]);
+        localStorage.setItem('animePageView', 'new');
+    }, []);
 
-    // Показываем skeleton пока не проверим вид или пока не определим мобильность
-    if (!viewChecked || isMobile === null) {
+    if (isMobile === null) {
         return <AnimePageSkeleton />;
     }
 
+    // Мобильная версия одинаковая, PC версия - Crunch стиль
     return isMobile
         ? <AnimePageMobile animeId={animeId}/>
-        : <AnimePagePC animeId={animeId}/>;
+        : <AnimePageCrunch animeId={animeId}/>;
 };
 
-const AnimePageWrapper: React.FC = () => {
+const AnimePageCrunchWrapper: React.FC = () => {
     const params = useParams();
     let animeId = params?.id;
     if (Array.isArray(animeId)) animeId = animeId[0];
@@ -61,4 +53,4 @@ const AnimePageWrapper: React.FC = () => {
     );
 };
 
-export default AnimePageWrapper;
+export default AnimePageCrunchWrapper;

@@ -142,17 +142,36 @@
 
     .franchise-list,
     .similar-list {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: 1.65rem;
-
-        @media (max-width: 1200px) {
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        }
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
 
         @media (max-width: 768px) {
-            grid-template-columns: 1fr;
             gap: 1rem;
+            justify-content: center;
+        }
+    }
+    
+    // Wrapper для карточек франшизы с бейджем "ВЫ ЗДЕСЬ"
+    .franchise-card-wrapper {
+        position: relative;
+        
+        .current-anime-badge {
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            background: linear-gradient(135deg, var(--primary-color), #ff6b35);
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+            white-space: nowrap;
         }
     }
 

@@ -28,12 +28,18 @@ export const SidebarProvider: React.FC<SidebarProviderProps> = ({ children }) =>
     const [isOpen, setIsOpen] = useState(false);
     const [isInitialized, setIsInitialized] = useState(false);
 
-    // Set initial state based on screen width (only on desktop open by default)
+    // Set initial state based on localStorage and screen width
     useEffect(() => {
         const isDesktop = window.innerWidth > 1024;
-        // На мобильных устройствах сайдбар всегда закрыт при загрузке
-        // На десктопе - открыт по умолчанию
-        setIsOpen(isDesktop);
+        const savedState = localStorage.getItem('sidebarOpen');
+        
+        if (savedState !== null) {
+            // Если есть сохранённое состояние - используем его (но только на десктопе)
+            setIsOpen(isDesktop && savedState === 'true');
+        } else {
+            // Если нет сохранённого состояния - на десктопе открыт по умолчанию
+            setIsOpen(isDesktop);
+        }
         setIsInitialized(true);
     }, []);
     
@@ -58,6 +64,7 @@ export const SidebarProvider: React.FC<SidebarProviderProps> = ({ children }) =>
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape' && isOpen) {
                 setIsOpen(false);
+                localStorage.setItem('sidebarOpen', 'false');
             }
         };
 
@@ -65,9 +72,23 @@ export const SidebarProvider: React.FC<SidebarProviderProps> = ({ children }) =>
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [isOpen]);
 
-    const toggle = () => setIsOpen(prev => !prev);
-    const open = () => setIsOpen(true);
-    const close = () => setIsOpen(false);
+    const toggle = () => {
+        setIsOpen(prev => {
+            const newState = !prev;
+            localStorage.setItem('sidebarOpen', String(newState));
+            return newState;
+        });
+    };
+    
+    const open = () => {
+        setIsOpen(true);
+        localStorage.setItem('sidebarOpen', 'true');
+    };
+    
+    const close = () => {
+        setIsOpen(false);
+        localStorage.setItem('sidebarOpen', 'false');
+    };
 
     return (
         <SidebarContext.Provider value={{ isOpen, toggle, open, close }}>
