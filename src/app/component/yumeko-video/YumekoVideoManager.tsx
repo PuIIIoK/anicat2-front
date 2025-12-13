@@ -177,13 +177,20 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
             const res = await fetch(`${SERVER_URL2}/api/admin/yumeko/anime/${animeId}/voices`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
+            if (!res.ok) {
+                console.error('Ошибка загрузки озвучек:', res.status);
+                setVoices([]);
+                return;
+            }
             const data = await res.json();
-            setVoices(data);
-            if (data.length > 0 && !selectedVoiceId) {
-                setSelectedVoiceId(data[0].id);
+            const voicesArray = Array.isArray(data) ? data : [];
+            setVoices(voicesArray);
+            if (voicesArray.length > 0 && !selectedVoiceId) {
+                setSelectedVoiceId(voicesArray[0].id);
             }
         } catch (error) {
             console.error('Ошибка загрузки озвучек:', error);
+            setVoices([]);
         }
     };
 
@@ -336,6 +343,7 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
     };
 
     const getSelectedVoice = () => {
+        if (!Array.isArray(voices)) return undefined;
         return voices.find(v => v.id === selectedVoiceId);
     };
 
@@ -1051,7 +1059,7 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                             )}
 
                             <div className="voices-list">
-                                {voices.map(voice => {
+                                {Array.isArray(voices) && voices.map(voice => {
                                     const uploadingCount = getUploadingCountForVoice(voice.name);
                                     const queuedCount = getQueuedCountForVoice(voice.name);
                                     return (

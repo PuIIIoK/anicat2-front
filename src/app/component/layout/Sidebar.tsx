@@ -72,6 +72,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
     const [isResizing, setIsResizing] = useState(false);
     const sidebarRef = useRef<HTMLElement>(null);
     
+    // Hydration fix
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => { setMounted(true); }, []);
+    
     // Set initial CSS variable
     useEffect(() => {
         document.documentElement.style.setProperty('--sidebar-width', `${DEFAULT_SIDEBAR_WIDTH}px`);
@@ -659,7 +663,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
                                     {colorSchemes.map((scheme) => (
                                         <button
                                             key={scheme.value}
-                                            className={`sidebar-color-option ${colorScheme === scheme.value ? 'active' : ''}`}
+                                            className={`sidebar-color-option ${mounted && colorScheme === scheme.value ? 'active' : ''}`}
                                             onClick={() => setColorScheme(scheme.value)}
                                             title={scheme.label}
                                         >
