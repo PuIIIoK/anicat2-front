@@ -608,15 +608,94 @@
             select {
                 padding: 10px 12px;
                 background: rgba(0, 0, 0, 0.3);
-                border: 1px solid rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.1) !important;
                 border-radius: 8px;
                 color: #fff;
                 font-size: 13px;
 
                 &:focus {
                     outline: none;
-                    border-color: #10b981;
+                    border-color: #10b981 !important;
                 }
+            }
+            
+            &.multi-resolution-row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 12px;
+                padding: 10px 14px;
+                background: rgba(147, 51, 234, 0.08);
+                border: 1px solid rgba(147, 51, 234, 0.2) !important;
+                border-radius: 8px;
+            }
+        }
+        
+        .multi-resolution-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            user-select: none;
+            
+            input[type="checkbox"] {
+                width: 18px;
+                height: 18px;
+                accent-color: #a855f7;
+                cursor: pointer;
+            }
+            
+            .toggle-label {
+                color: rgba(255, 255, 255, 0.8);
+                font-size: 13px;
+            }
+        }
+        
+        .min-quality-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            
+            span {
+                color: rgba(255, 255, 255, 0.6);
+                font-size: 12px;
+            }
+            
+            select {
+                padding: 6px 10px;
+                background: rgba(0, 0, 0, 0.4);
+                border: 1px solid rgba(147, 51, 234, 0.3) !important;
+                border-radius: 6px;
+                color: #a855f7;
+                font-size: 12px;
+                cursor: pointer;
+                
+                &:focus {
+                    outline: none;
+                    border-color: #a855f7 !important;
+                }
+            }
+        }
+        
+        .quality-preview {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 14px;
+            background: rgba(147, 51, 234, 0.1);
+            border-radius: 6px;
+            margin-bottom: 12px;
+            
+            .preview-label {
+                color: rgba(255, 255, 255, 0.6);
+                font-size: 12px;
+            }
+            
+            .preview-qualities {
+                color: #a855f7;
+                font-size: 13px;
+                font-weight: 500;
             }
         }
 
@@ -682,6 +761,195 @@
                 &:hover { background: rgba(239, 68, 68, 0.2); }
             }
         }
+        
+        // Переключатель источника файла
+        .source-toggle {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            
+            .toggle-btn {
+                flex: 1;
+                padding: 10px 12px;
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 8px;
+                color: rgba(255, 255, 255, 0.6);
+                font-size: 13px;
+                font-weight: 500;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                transition: all 0.2s;
+                
+                svg {
+                    width: 16px;
+                    height: 16px;
+                }
+                
+                &:hover {
+                    background: rgba(255, 255, 255, 0.08);
+                    border-color: rgba(255, 255, 255, 0.15);
+                }
+                
+                &.active {
+                    background: rgba(147, 51, 234, 0.15);
+                    border-color: rgba(147, 51, 234, 0.4);
+                    color: #a855f7;
+                    
+                    svg {
+                        color: #a855f7;
+                    }
+                }
+            }
+        }
+        
+        // Выбор локального файла
+        .local-file-selector {
+            margin-bottom: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(147, 51, 234, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+            
+            .local-file-header {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 10px 12px;
+                background: rgba(147, 51, 234, 0.1);
+                border-bottom: 1px solid rgba(147, 51, 234, 0.15);
+                color: rgba(255, 255, 255, 0.7);
+                font-size: 12px;
+                
+                svg {
+                    color: #a855f7;
+                    width: 16px;
+                    height: 16px;
+                }
+                
+                .btn-refresh-files {
+                    margin-left: auto;
+                    padding: 4px;
+                    background: rgba(147, 51, 234, 0.2);
+                    border: none;
+                    border-radius: 4px;
+                    color: #a855f7;
+                    cursor: pointer;
+                    display: flex;
+                    
+                    &:hover {
+                        background: rgba(147, 51, 234, 0.3);
+                    }
+                    
+                    &:disabled {
+                        opacity: 0.5;
+                        cursor: not-allowed;
+                    }
+                }
+            }
+            
+            .local-files-loading {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                padding: 20px;
+                color: rgba(255, 255, 255, 0.5);
+                font-size: 13px;
+                
+                svg {
+                    color: #a855f7;
+                }
+            }
+            
+            .local-files-list {
+                max-height: 200px;
+                overflow-y: auto;
+                
+                .local-file-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    padding: 10px 12px;
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                    cursor: pointer;
+                    transition: all 0.15s;
+                    
+                    svg {
+                        color: rgba(255, 255, 255, 0.4);
+                        width: 16px;
+                        height: 16px;
+                        flex-shrink: 0;
+                    }
+                    
+                    .file-name {
+                        flex: 1;
+                        font-size: 13px;
+                        color: rgba(255, 255, 255, 0.8);
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+                    
+                    .file-size {
+                        font-size: 11px;
+                        color: rgba(255, 255, 255, 0.4);
+                        flex-shrink: 0;
+                    }
+                    
+                    &:hover {
+                        background: rgba(147, 51, 234, 0.1);
+                    }
+                    
+                    &.selected {
+                        background: rgba(147, 51, 234, 0.2);
+                        border-color: rgba(147, 51, 234, 0.3);
+                        
+                        svg {
+                            color: #a855f7;
+                        }
+                        
+                        .file-name {
+                            color: #fff;
+                        }
+                    }
+                    
+                    &:last-child {
+                        border-bottom: none;
+                    }
+                }
+            }
+            
+            .local-files-empty {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 4px;
+                padding: 20px;
+                text-align: center;
+                
+                span {
+                    color: rgba(255, 255, 255, 0.5);
+                    font-size: 13px;
+                }
+                
+                .hint {
+                    font-size: 11px;
+                    color: rgba(255, 255, 255, 0.3);
+                }
+            }
+        }
+        
+        .btn-convert {
+            background: #a855f7 !important;
+            
+            &:hover:not(:disabled) {
+                background: #9333ea !important;
+            }
+        }
 
         .form-actions {
             display: flex;
@@ -715,36 +983,49 @@
         }
     }
 
-    // Episodes List - Compact
+    // Episodes List - Improved UI
     .episodes-list {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 10px;
         margin: 0;
         padding: 0 20px;
 
         .episode-card {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 10px;
-            padding: 12px;
+            border-radius: 12px;
+            padding: 14px;
             display: flex;
-            align-items: center;
-            gap: 12px;
+            align-items: stretch;
+            gap: 14px;
             transition: all 0.2s;
+            position: relative;
 
             &:hover {
                 background: rgba(255, 255, 255, 0.05);
+                border-color: rgba(255, 255, 255, 0.1);
             }
             
-            &.uploading { border-left: 3px solid #a855f7; }
-            &.converting { border-left: 3px solid #3b82f6; }
-            &.ready { border-left: 3px solid #10b981;
+            // Status indicators
+            &.episode-card--uploading { 
+                border-left: 4px solid #a855f7;
+                background: rgba(168, 85, 247, 0.03);
             }
-            
-            &.error {
-                border-left-color: #ef4444;
-                border-left-width: 3px;
+            &.episode-card--converting { 
+                border-left: 4px solid #3b82f6;
+                background: rgba(59, 130, 246, 0.03);
+            }
+            &.episode-card--ready { 
+                border-left: 4px solid #10b981;
+            }
+            &.episode-card--error {
+                border-left: 4px solid #ef4444;
+                background: rgba(239, 68, 68, 0.03);
+            }
+            &.episode-card--queued {
+                border-left: 4px solid #f59e0b;
+                background: rgba(245, 158, 11, 0.03);
             }
 
             .episode-thumbnail {
@@ -755,27 +1036,77 @@
                 overflow: hidden;
                 background: rgba(15, 23, 42, 0.6);
                 border: 1px solid rgba(148, 163, 184, 0.15);
-                transition: all 0.3s ease;
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: center;
 
                 img {
                     width: 100%;
                     height: 100%;
                     object-fit: cover;
                     display: block;
-                    
-                    &.fade-in {
-                        animation: fadeIn 0.5s ease-in;
+                }
+                
+                &.placeholder {
+                    svg {
+                        color: rgba(148, 163, 184, 0.4);
                     }
                 }
                 
-                &.uploading-placeholder {
+                // Circular progress overlay
+                .thumbnail-progress-overlay {
+                    position: absolute;
+                    inset: 0;
+                    background: rgba(0, 0, 0, 0.7);
                     display: flex;
                     align-items: center;
                     justify-content: center;
+                    backdrop-filter: blur(2px);
                     
-                    svg {
-                        color: rgba(148, 163, 184, 0.4);
-                        animation: pulse 2s ease-in-out infinite;
+                    &.processing {
+                        background: rgba(16, 185, 129, 0.2);
+                        
+                        svg {
+                            color: #34d399;
+                        }
+                    }
+                    
+                    .circular-progress {
+                        position: relative;
+                        width: 50px;
+                        height: 50px;
+                        
+                        svg {
+                            width: 100%;
+                            height: 100%;
+                            transform: rotate(-90deg);
+                            
+                            .circle-bg {
+                                fill: none;
+                                stroke: rgba(255, 255, 255, 0.1);
+                                stroke-width: 3;
+                            }
+                            
+                            .circle-progress {
+                                fill: none;
+                                stroke: #3b82f6;
+                                stroke-width: 3;
+                                stroke-linecap: round;
+                                transition: stroke-dasharray 0.3s ease;
+                            }
+                        }
+                        
+                        .progress-text {
+                            position: absolute;
+                            inset: 0;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: 11px;
+                            font-weight: 700;
+                            color: #fff;
+                        }
                     }
                 }
             }
@@ -784,152 +1115,376 @@
                 flex: 1;
                 display: flex;
                 flex-direction: column;
-                gap: 10px;
+                gap: 6px;
                 min-width: 0;
 
-                h4 {
-                    font-size: 16px;
-                    font-weight: 700;
-                    color: #fff;
-                    margin: 0;
-                }
-
-                .episode-meta {
+                .episode-header {
                     display: flex;
                     align-items: center;
-                    gap: 12px;
+                    gap: 10px;
                     flex-wrap: wrap;
-
+                    
+                    h4 {
+                        font-size: 15px;
+                        font-weight: 700;
+                        color: #fff;
+                        margin: 0;
+                    }
+                    
+                    .quality-badges {
+                        display: flex;
+                        gap: 4px;
+                        flex-wrap: wrap;
+                    }
+                    
                     .quality-badge {
                         display: inline-flex;
-                        padding: 5px 10px;
+                        padding: 3px 8px;
                         background: rgba(16, 185, 129, 0.15);
                         border: 1px solid rgba(16, 185, 129, 0.4);
-                        border-radius: 6px;
-                        font-size: 11px;
+                        border-radius: 4px;
+                        font-size: 10px;
                         font-weight: 700;
                         color: #34d399;
                         text-transform: uppercase;
                     }
-
-                    .duration {
-                        font-size: 13px;
-                        font-weight: 500;
-                        color: rgba(203, 213, 225, 0.8);
+                }
+                
+                .episode-duration {
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+                    font-size: 12px;
+                    color: rgba(255, 255, 255, 0.5);
+                    
+                    svg {
+                        width: 12px;
+                        height: 12px;
                     }
                 }
 
                 .episode-status {
-                    font-size: 13px;
-                    color: rgba(255, 255, 255, 0.6);
                     display: flex;
                     align-items: center;
                     gap: 8px;
+                    font-size: 13px;
+                    margin-top: 2px;
 
                     svg {
                         flex-shrink: 0;
+                        width: 16px;
+                        height: 16px;
                     }
-
-                    .conversion-progress {
-                        display: flex;
-                        align-items: center;
-                        gap: 8px;
-                        margin-left: 4px;
-
-                        .mini-progress-bar {
-                            width: 80px;
-                            height: 4px;
-                            background: rgba(0, 0, 0, 0.3);
-                            border-radius: 2px;
-                            overflow: hidden;
-
-                            .mini-progress-fill {
-                                height: 100%;
-                                background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
-                                transition: width 0.3s ease;
-                            }
+                    
+                    .status-label {
+                        color: rgba(255, 255, 255, 0.7);
+                    }
+                    
+                    .status-progress {
+                        font-weight: 700;
+                        color: #60a5fa;
+                        margin-left: auto;
+                    }
+                    
+                    &.episode-status--ready {
+                        .status-label { color: #34d399; }
+                        svg { color: #34d399; }
+                    }
+                    &.episode-status--converting {
+                        svg { color: #60a5fa; }
+                    }
+                    &.episode-status--uploading {
+                        svg { color: #a855f7; }
+                    }
+                    &.episode-status--error {
+                        .status-label { color: #f87171; }
+                        svg { color: #f87171; }
+                    }
+                }
+                
+                // Progress bar
+                .progress-bar-container {
+                    margin-top: 4px;
+                    
+                    .progress-bar {
+                        height: 4px;
+                        background: rgba(0, 0, 0, 0.3);
+                        border-radius: 4px;
+                        overflow: hidden;
+                        
+                        .progress-bar-fill {
+                            height: 100%;
+                            background: linear-gradient(90deg, #3b82f6 0%, #60a5fa 100%);
+                            border-radius: 4px;
+                            transition: width 0.3s ease;
                         }
-
-                        span {
-                            font-size: 12px;
-                            font-weight: 700;
-                            color: #10b981;
+                        
+                        // S3 upload animation
+                        &.progress-bar--s3 {
+                            .progress-bar-fill--s3 {
+                                background: linear-gradient(90deg, #10b981, #34d399, #10b981);
+                                background-size: 200% 100%;
+                                animation: s3-upload 1.5s ease-in-out infinite;
+                            }
                         }
                     }
                 }
                 
-                .episode-status-detailed {
-                    display: flex;
-                    align-items: flex-start;
-                    gap: 8px;
-                    font-size: 13px;
-                    
-                    svg {
-                        flex-shrink: 0;
-                        margin-top: 2px;
-                        transition: all 0.3s ease;
+                // S3 status styling
+                .episode-status--s3 {
+                    .status-label {
+                        color: #34d399 !important;
                     }
+                    svg {
+                        color: #34d399 !important;
+                    }
+                }
+                
+                // Conversion stages - detailed view
+                .conversion-stages {
+                    margin-top: 8px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
                     
-                    .status-text-wrapper {
-                        display: flex;
-                        flex-direction: column;
-                        gap: 6px;
-                        flex: 1;
+                    // Overall progress bar
+                    .overall-progress {
+                        padding: 10px 12px;
+                        background: linear-gradient(135deg, rgba(147, 51, 234, 0.15), rgba(59, 130, 246, 0.1));
+                        border: 1px solid rgba(147, 51, 234, 0.3);
+                        border-radius: 8px;
                         
-                        .status-main {
-                            font-size: 14px;
-                            font-weight: 600;
-                            color: rgba(255, 255, 255, 0.9);
+                        .overall-progress-header {
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            margin-bottom: 8px;
+                            
+                            .overall-label {
+                                font-size: 12px;
+                                font-weight: 600;
+                                color: #a855f7;
+                            }
+                            
+                            .overall-percent {
+                                font-size: 14px;
+                                font-weight: 700;
+                                color: #a855f7;
+                            }
                         }
                         
-                        .conversion-progress {
+                        .overall-progress-bar {
+                            height: 8px;
+                            background: rgba(0, 0, 0, 0.3);
+                            border-radius: 4px;
+                            overflow: hidden;
+                            
+                            .overall-progress-fill {
+                                height: 100%;
+                                background: linear-gradient(90deg, #a855f7, #60a5fa);
+                                border-radius: 4px;
+                                transition: width 0.3s ease;
+                            }
+                        }
+                    }
+                    
+                    .stage-block {
+                        padding: 10px 12px;
+                        background: rgba(0, 0, 0, 0.2);
+                        border: 1px solid rgba(255, 255, 255, 0.05);
+                        border-radius: 8px;
+                        opacity: 0.5;
+                        transition: all 0.3s ease;
+                        
+                        &.stage-block--active {
+                            opacity: 1;
+                            background: rgba(59, 130, 246, 0.1);
+                            border-color: rgba(59, 130, 246, 0.3);
+                        }
+                        
+                        &.stage-block--done {
+                            opacity: 1;
+                            background: rgba(16, 185, 129, 0.1);
+                            border-color: rgba(16, 185, 129, 0.3);
+                        }
+                        
+                        .stage-header {
+                            display: flex;
+                            align-items: center;
+                            gap: 8px;
+                            margin-bottom: 8px;
+                            font-size: 12px;
+                            font-weight: 600;
+                            color: rgba(255, 255, 255, 0.8);
+                            
+                            .stage-number {
+                                width: 20px;
+                                height: 20px;
+                                border-radius: 50%;
+                                background: rgba(255, 255, 255, 0.1);
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-size: 11px;
+                                font-weight: 700;
+                                color: rgba(255, 255, 255, 0.5);
+                            }
+                            
+                            svg {
+                                width: 14px;
+                                height: 14px;
+                                color: rgba(255, 255, 255, 0.5);
+                            }
+                            
+                            .stage-done {
+                                color: #34d399;
+                            }
+                            
+                            .s3-counter {
+                                margin-left: auto;
+                                font-size: 11px;
+                                color: #60a5fa;
+                                background: rgba(59, 130, 246, 0.2);
+                                padding: 2px 8px;
+                                border-radius: 10px;
+                            }
+                        }
+                        
+                        .quality-grid {
+                            display: flex;
+                            flex-wrap: wrap;
+                            gap: 6px;
+                            
+                            &.quality-grid--pending {
+                                opacity: 0.4;
+                            }
+                        }
+                        
+                        .quality-chip {
+                            display: flex;
+                            align-items: center;
+                            gap: 4px;
+                            padding: 4px 10px;
+                            background: rgba(0, 0, 0, 0.3);
+                            border-radius: 12px;
+                            font-size: 11px;
+                            font-weight: 600;
+                            color: rgba(255, 255, 255, 0.5);
+                            transition: all 0.2s ease;
+                            
+                            svg {
+                                width: 10px;
+                                height: 10px;
+                            }
+                            
+                            &.quality-chip--done {
+                                background: rgba(16, 185, 129, 0.2);
+                                color: #34d399;
+                                svg { color: #34d399; }
+                            }
+                            
+                            &.quality-chip--processing {
+                                background: rgba(59, 130, 246, 0.2);
+                                color: #60a5fa;
+                                svg { color: #60a5fa; }
+                            }
+                            
+                            &.quality-chip--pending {
+                                opacity: 0.5;
+                            }
+                        }
+                        
+                        .s3-progress {
                             display: flex;
                             align-items: center;
                             gap: 10px;
-
-                            .mini-progress-bar {
+                            
+                            .s3-progress-bar {
                                 flex: 1;
-                                max-width: 150px;
                                 height: 6px;
-                                background: rgba(0, 0, 0, 0.4);
-                                border-radius: 8px;
+                                background: rgba(0, 0, 0, 0.3);
+                                border-radius: 3px;
                                 overflow: hidden;
-
-                                .mini-progress-fill {
+                                
+                                .s3-progress-fill {
                                     height: 100%;
-                                    background: linear-gradient(90deg, #3b82f6, #60a5fa);
-                                    transition: width 0.5s ease-out;
-                                    border-radius: 8px;
+                                    background: linear-gradient(90deg, #10b981, #34d399, #10b981);
+                                    background-size: 200% 100%;
+                                    border-radius: 3px;
+                                    animation: s3-upload 1.5s ease-in-out infinite;
+                                    transition: width 0.3s ease;
                                 }
                             }
-
-                            span {
-                                font-size: 13px;
-                                font-weight: 700;
-                                color: #60a5fa;
-                                min-width: 38px;
-                                text-align: right;
-                            }
-                        }
-                        
-                        .processing-indicator {
-                            display: flex;
-                            align-items: center;
-                            gap: 6px;
                             
-                            .spinning-icon {
+                            .s3-percent {
+                                font-size: 12px;
+                                font-weight: 700;
                                 color: #34d399;
-                                animation: spin 1s linear infinite;
+                                min-width: 40px;
+                                text-align: right;
                             }
                         }
                     }
                 }
             }
-
+            
+            // Action buttons
             .episode-actions {
                 display: flex;
-                gap: 8px;
+                flex-direction: column;
+                gap: 6px;
+                align-self: center;
+                
+                .btn-action {
+                    padding: 8px;
+                    border: none;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    
+                    svg {
+                        width: 16px;
+                        height: 16px;
+                    }
+                    
+                    &.btn-delete {
+                        background: rgba(239, 68, 68, 0.1);
+                        color: #ef4444;
+                        
+                        &:hover {
+                            background: rgba(239, 68, 68, 0.2);
+                            transform: scale(1.1);
+                        }
+                    }
+                    
+                    &.btn-cancel {
+                        background: rgba(239, 68, 68, 0.1);
+                        color: #ef4444;
+                        
+                        &:hover {
+                            background: rgba(239, 68, 68, 0.2);
+                        }
+                    }
+                    
+                    &.btn-close {
+                        background: rgba(255, 255, 255, 0.05);
+                        color: rgba(255, 255, 255, 0.6);
+                        
+                        &:hover {
+                            background: rgba(255, 255, 255, 0.1);
+                        }
+                    }
+                }
             }
+            
+            // Legacy support for old classes
+            &.uploading { border-left: 4px solid #a855f7; }
+            &.converting { border-left: 4px solid #3b82f6; }
+            &.ready { border-left: 4px solid #10b981; }
+            &.error { border-left: 4px solid #ef4444; }
 
             .btn-delete-episode {
                 padding: 8px;
@@ -948,14 +1503,102 @@
                     border-color: rgba(239, 68, 68, 0.5);
                     transform: scale(1.1);
                 }
-
-                &:active {
-                    transform: scale(0.95);
-                }
                 
                 &.btn-cancel-upload {
                     background: rgba(239, 68, 68, 0.15);
                     border-color: rgba(239, 68, 68, 0.4);
+                }
+            }
+            
+            // Legacy episode-meta
+            .episode-meta {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                flex-wrap: wrap;
+
+                .quality-badge {
+                    display: inline-flex;
+                    padding: 5px 10px;
+                    background: rgba(16, 185, 129, 0.15);
+                    border: 1px solid rgba(16, 185, 129, 0.4);
+                    border-radius: 6px;
+                    font-size: 11px;
+                    font-weight: 700;
+                    color: #34d399;
+                    text-transform: uppercase;
+                }
+
+                .duration {
+                    font-size: 13px;
+                    font-weight: 500;
+                    color: rgba(203, 213, 225, 0.8);
+                }
+            }
+                
+            .episode-status-detailed {
+                display: flex;
+                align-items: flex-start;
+                gap: 8px;
+                font-size: 13px;
+                
+                svg {
+                    flex-shrink: 0;
+                    margin-top: 2px;
+                }
+                
+                .status-text-wrapper {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 6px;
+                    flex: 1;
+                    
+                    .status-main {
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: rgba(255, 255, 255, 0.9);
+                    }
+                    
+                    .conversion-progress {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+
+                        .mini-progress-bar {
+                            flex: 1;
+                            max-width: 150px;
+                            height: 6px;
+                            background: rgba(0, 0, 0, 0.4);
+                            border-radius: 8px;
+                            overflow: hidden;
+
+                            .mini-progress-fill {
+                                height: 100%;
+                                background: linear-gradient(90deg, #3b82f6, #60a5fa);
+                                transition: width 0.5s ease-out;
+                                border-radius: 8px;
+                            }
+                        }
+
+                        span {
+                            font-size: 13px;
+                            font-weight: 700;
+                            color: #60a5fa;
+                            min-width: 38px;
+                            text-align: right;
+                        }
+                    }
+                    
+                    .processing-indicator {
+                        display: flex;
+                        align-items: center;
+                        gap: 6px;
+                        
+                        .spinning-icon {
+                            color: #34d399;
+                            animation: spin 1s linear infinite;
+                        }
+                    }
                 }
             }
         }
@@ -1696,6 +2339,19 @@
     to {
         opacity: 1;
         transform: scale(1);
+    }
+}
+
+// Анимация загрузки S3
+@keyframes s3-upload {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
     }
 }
 

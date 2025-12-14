@@ -16,6 +16,7 @@ export interface YumekoUploadProgress {
     onCancel?: () => void;
     screenshotUrl?: string; // URL скриншота эпизода
     duration?: number; // Длительность в секундах
+    conversionDetails?: string; // JSON с деталями конвертации по качествам
 }
 
 interface YumekoUploadContextType {
@@ -37,42 +38,17 @@ export const YumekoUploadProvider: React.FC<{ children: ReactNode }> = ({ childr
     const [activeTab, setActiveTab] = useState<string | null>(null);
     const [isInitialized, setIsInitialized] = useState(false);
 
-    // Восстанавливаем состояние из localStorage при монтировании
+    // Очищаем localStorage при монтировании - не восстанавливаем старые загрузки
     React.useEffect(() => {
         if (typeof window !== 'undefined' && !isInitialized) {
-            try {
-                const saved = localStorage.getItem('yumeko-uploads');
-                if (saved) {
-                    const parsed = JSON.parse(saved);
-                    // Восстанавливаем только активные загрузки (не ready и не error)
-                    const activeUploads = parsed.filter((u: YumekoUploadProgress) => 
-                        u.status === 'uploading' || u.status === 'converting'
-                    );
-                    if (activeUploads.length > 0) {
-                        setUploads(activeUploads);
-                        console.log('📦 Восстановлено загрузок из localStorage:', activeUploads.length);
-                    }
-                }
-            } catch (error) {
-                console.error('Ошибка восстановления загрузок:', error);
-            }
+            // Очищаем localStorage - конвертация отслеживается через API
+            localStorage.removeItem('yumeko-uploads');
             setIsInitialized(true);
         }
     }, [isInitialized]);
 
-    // Сохраняем состояние в localStorage
-    React.useEffect(() => {
-        if (typeof window !== 'undefined' && isInitialized) {
-            if (uploads.length > 0) {
-                // Сохраняем в localStorage без функции onCancel
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                const toSave = uploads.map(({ onCancel, ...rest }) => rest);
-                localStorage.setItem('yumeko-uploads', JSON.stringify(toSave));
-            } else {
-                localStorage.removeItem('yumeko-uploads');
-            }
-        }
-    }, [uploads, isInitialized]);
+    // НЕ сохраняем в localStorage - конвертация отслеживается через API бэкенда
+    // localStorage больше не используется для хранения прогресса
 
     const addUpload = (upload: YumekoUploadProgress) => {
         setUploads(prev => [...prev, upload]);

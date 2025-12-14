@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
-import { X, Plus, Upload, Trash2, CheckCircle, Clock, AlertCircle, Film, Mic, XCircle, RefreshCw, Edit2, Check, Users } from 'lucide-react';
+import { X, Plus, Upload, Trash2, CheckCircle, Clock, AlertCircle, Film, Mic, XCircle, RefreshCw, Edit2, Check, Users, FolderOpen, HardDrive } from 'lucide-react';
 import { SERVER_URL2 } from '@/hosts/constants';
 import { useYumekoUpload } from '../../context/YumekoUploadContext';
 import UploadQueueViewer from './UploadQueueViewer';
@@ -16,12 +16,32 @@ interface Voice {
     episodesCount: number;
 }
 
+interface ConversionQuality {
+    name: string;
+    status: 'pending' | 'processing' | 'done' | 'error';
+}
+
+interface S3Progress {
+    uploaded: number;
+    total: number;
+    percent: number;
+    currentFile: string;
+}
+
+interface ConversionDetails {
+    stage: 'starting' | 'converting' | 'uploading' | 'done' | 'error';
+    qualities: ConversionQuality[];
+    s3Progress?: S3Progress;
+}
+
 interface Episode {
     id: number;
     episodeNumber: number;
     maxQuality: string;
+    minQuality?: string;
     videoStatus: string;
     conversionProgress: number;
+    conversionDetails?: string; // JSON string
     screenshotPath?: string;
     durationSeconds?: number;
 }
@@ -73,8 +93,16 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
     // Форма добавления эпизода
     const [newEpisodeNumber, setNewEpisodeNumber] = useState('');
     const [newEpisodeQuality, setNewEpisodeQuality] = useState('1080p');
+    const [multiResolution, setMultiResolution] = useState(false); // Режим мультирезолюции
+    const [minQuality, setMinQuality] = useState('720p'); // Минимальное качество для даунскейла
     const [videoFile, setVideoFile] = useState<File | null>(null);
     const [isDragging, setIsDragging] = useState(false); // Состояние для drag-n-drop
+    
+    // Локальные файлы (temp/videos)
+    const [useLocalFile, setUseLocalFile] = useState(false); // Режим локального файла
+    const [localFiles, setLocalFiles] = useState<{fileName: string; fileSize: number; lastModified: number}[]>([]);
+    const [selectedLocalFile, setSelectedLocalFile] = useState<string>('');
+    const [loadingLocalFiles, setLoadingLocalFiles] = useState(false);
 
     useEffect(() => {
         loadVoices();
@@ -135,41 +163,6 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedVoiceId]);
 
-    // Восстанавливаем отслеживание для загрузок из localStorage
-    useEffect(() => {
-        if (!selectedVoiceId) return;
-        
-        // Проверяем загрузки для текущей озвучки
-        const voiceUploads = uploads.filter(u => 
-            u.animeId === animeId && 
-            (u.status === 'uploading' || u.status === 'converting')
-        );
-        
-        voiceUploads.forEach(upload => {
-            // Проверяем, не отслеживаем ли мы уже этот эпизод
-            if (trackingIntervalRef.current.has(upload.uploadId)) {
-                return; // Уже отслеживаем
-            }
-            
-            console.log('🔄 Возобновляем отслеживание для загрузки:', upload.uploadId);
-            
-            // Если статус converting, запускаем отслеживание конвертации
-            if (upload.status === 'converting' && upload.episodeId > 0) {
-                const selectedVoice = voices.find(v => v.id === selectedVoiceId);
-                if (selectedVoice) {
-                    startConversionTracking({
-                        uploadId: upload.uploadId,
-                        episodeId: upload.episodeId,
-                        voiceName: selectedVoice.name,
-                        episodeNumber: upload.episodeNumber,
-                        quality: upload.quality
-                    });
-                }
-            }
-            // Для uploading статуса XHR уже потерян, но отслеживание конвертации начнется автоматически
-            // когда мы увидим episodeId в БД
-        });
-    }, [uploads, selectedVoiceId, animeId]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const loadVoices = async () => {
         try {
@@ -200,51 +193,19 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
             const res = await fetch(`${SERVER_URL2}/api/admin/yumeko/voices/${voiceId}/episodes`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
-            const data = await res.json();
-            setEpisodes(data);
             
-            // Связываем восстановленные загрузки с эпизодами в БД
-            uploads.forEach(upload => {
-                if (upload.animeId !== animeId) return;
-                
-                // Ищем эпизод по номеру
-                const episode = data.find((ep: Episode) => ep.episodeNumber === upload.episodeNumber);
-                
-                if (episode) {
-                    // Если нашли эпизод и у загрузки еще нет episodeId, обновляем
-                    if (upload.episodeId === 0 || upload.episodeId !== episode.id) {
-                        console.log('🔗 Связываем загрузку с эпизодом:', upload.uploadId, '→', episode.id);
-                        
-                        episodeIdRef.current.set(upload.uploadId, episode.id);
-                        updateUpload(upload.uploadId, {
-                            episodeId: episode.id,
-                            status: 'converting',
-                            step: 'Конвертация в очереди...',
-                            screenshotUrl: episode.screenshotPath 
-                                ? `${SERVER_URL2}/api/video/screenshot/${episode.screenshotPath}` 
-                                : undefined,
-                            duration: episode.durationSeconds
-                        });
-                        
-                        // Начинаем отслеживание конвертации
-                        if (!trackingIntervalRef.current.has(upload.uploadId)) {
-                            const selectedVoice = voices.find(v => v.id === voiceId);
-                            if (selectedVoice) {
-                                startConversionTracking({
-                                    uploadId: upload.uploadId,
-                                    episodeId: episode.id,
-                                    voiceName: selectedVoice.name,
-                                    episodeNumber: upload.episodeNumber,
-                                    quality: upload.quality
-                                });
-                            }
-                        }
-                    }
-                }
-            });
+            if (!res.ok) {
+                console.error('Ошибка загрузки эпизодов:', res.status);
+                setEpisodes([]);
+                return [];
+            }
+            
+            const data = await res.json();
+            const episodesArray = Array.isArray(data) ? data : [];
+            setEpisodes(episodesArray);
             
             // Очищаем висящие загрузки, которых нет в БД
-            const existingEpisodeIds = new Set(data.map((ep: Episode) => ep.id));
+            const existingEpisodeIds = new Set(episodesArray.map((ep: Episode) => ep.id));
             
             uploads.forEach(upload => {
                 // Проверяем только загрузки для текущей озвучки с установленным episodeId
@@ -268,9 +229,10 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                 }
             });
             
-            return data;
+            return episodesArray;
         } catch (error) {
             console.error('Ошибка загрузки эпизодов:', error);
+            setEpisodes([]);
             return [];
         }
     };
@@ -459,7 +421,7 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                 }
                 
                 const episode = await res.json();
-                console.log('📊 Статус конвертации:', episode.videoStatus, 'Прогресс:', episode.conversionProgress);
+                console.log('📊 Статус конвертации:', episode.videoStatus, 'Прогресс:', episode.conversionProgress, 'Details:', episode.conversionDetails);
                 
                 // Проверяем отмену
                 if (cancelledRef.current.get(uploadId)) {
@@ -486,12 +448,34 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                         const progress = episode.conversionProgress || 0;
                         let step: string;
                         
-                        if (progress === 0) {
+                        // Парсим conversionDetails для определения этапа
+                        let conversionStage: string | null = null;
+                        let s3Progress: { uploaded: number; total: number; percent: number; currentFile: string } | null = null;
+                        
+                        if (episode.conversionDetails) {
+                            try {
+                                const details = JSON.parse(episode.conversionDetails);
+                                conversionStage = details.stage;
+                                if (details.s3Progress) {
+                                    s3Progress = details.s3Progress;
+                                }
+                            } catch (e) {
+                                console.warn('Failed to parse conversionDetails:', e);
+                            }
+                        }
+                        
+                        if (conversionStage === 'uploading' && s3Progress) {
+                            // Загрузка в S3 с прогрессом
+                            step = `☁️ S3: ${s3Progress.uploaded}/${s3Progress.total} файлов (${s3Progress.percent}%)`;
+                        } else if (conversionStage === 'uploading') {
+                            // Загрузка в S3 без деталей
+                            step = '☁️ Загрузка в S3 Yandex Cloud...';
+                        } else if (progress === 0) {
                             // В очереди на конвертацию
                             step = 'Конвертация в очереди...';
                         } else if (progress >= 95) {
-                            // При 95%+ показываем "Обработка" без процентов
-                            step = 'Обработка';
+                            // При 95%+ показываем "Финализация"
+                            step = 'Финализация...';
                         } else {
                             // Идёт конвертация
                             step = `Конвертация видео...`;
@@ -504,7 +488,8 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                             screenshotUrl: episode.screenshotPath 
                                 ? `${SERVER_URL2}/api/video/screenshot/${episode.screenshotPath}` 
                                 : undefined,
-                            duration: episode.durationSeconds
+                            duration: episode.durationSeconds,
+                            conversionDetails: episode.conversionDetails
                         });
                         return false;
                         
@@ -576,6 +561,149 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
         trackingIntervalRef.current.set(uploadId, interval);
     };
 
+    // Загрузка списка локальных файлов с сервера
+    const loadLocalFiles = async () => {
+        setLoadingLocalFiles(true);
+        try {
+            const token = getTokenFromCookie();
+            const res = await fetch(`${SERVER_URL2}/api/admin/yumeko/local-videos`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) {
+                const files = await res.json();
+                setLocalFiles(files);
+                console.log(`📁 Загружено ${files.length} локальных файлов`);
+            }
+        } catch (error) {
+            console.error('Ошибка загрузки локальных файлов:', error);
+        } finally {
+            setLoadingLocalFiles(false);
+        }
+    };
+    
+    // Конвертация из локального файла
+    const handleUploadFromLocal = async () => {
+        if (!selectedVoiceId || !newEpisodeNumber || !selectedLocalFile) return;
+        
+        const selectedVoice = getSelectedVoice();
+        if (!selectedVoice) return;
+        
+        const episodeNumberToUpload = parseInt(newEpisodeNumber);
+        const existingEpisode = episodes.find(ep => ep.episodeNumber === episodeNumberToUpload);
+        if (existingEpisode) {
+            alert(`Эпизод ${episodeNumberToUpload} уже существует!`);
+            return;
+        }
+        
+        setShowAddEpisode(false);
+        
+        const uploadId = `local-${animeId}-${selectedVoiceId}-${episodeNumberToUpload}-${Date.now()}`;
+        const qualityToUpload = newEpisodeQuality;
+        const minQualityToUpload = multiResolution ? minQuality : null;
+        const localFileName = selectedLocalFile;
+        const voiceNameToUpload = selectedVoice.name;
+        
+        // Очищаем форму
+        setNewEpisodeNumber('');
+        setNewEpisodeQuality('1080p');
+        setMultiResolution(false);
+        setMinQuality('720p');
+        setSelectedLocalFile('');
+        setUseLocalFile(false);
+        
+        // Запускаем конвертацию из локального файла
+        startLocalFileConversion(uploadId, episodeNumberToUpload, qualityToUpload, minQualityToUpload, localFileName, voiceNameToUpload, selectedVoiceId);
+    };
+    
+    // Функция запуска конвертации из локального файла
+    const startLocalFileConversion = async (
+        uploadId: string,
+        episodeNumber: number,
+        quality: string,
+        minQualityParam: string | null,
+        localFileName: string,
+        voiceName: string,
+        voiceId: number
+    ) => {
+        try {
+            const token = getTokenFromCookie();
+            
+            // Добавляем в список загрузок
+            addUpload({
+                uploadId,
+                episodeId: 0,
+                voiceName,
+                episodeNumber,
+                animeId: animeId,
+                quality,
+                step: 'Запуск конвертации из локального файла...',
+                progress: 5,
+                status: 'uploading'
+            });
+            
+            // Формируем URL с параметрами
+            const params = new URLSearchParams({
+                episodeNumber: episodeNumber.toString(),
+                maxQuality: quality,
+                localFileName: localFileName
+            });
+            if (minQualityParam) {
+                params.append('minQuality', minQualityParam);
+            }
+            
+            const res = await fetch(`${SERVER_URL2}/api/admin/yumeko/voices/${voiceId}/episodes/local?${params}`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            if (res.ok) {
+                const episode = await res.json();
+                episodeIdRef.current.set(uploadId, episode.id);
+                
+                updateUpload(uploadId, {
+                    episodeId: episode.id,
+                    step: 'Конвертация запущена...',
+                    progress: 15,
+                    status: 'converting',
+                    conversionDetails: episode.conversionDetails
+                });
+                
+                if (selectedVoiceId) {
+                    await loadEpisodes(selectedVoiceId);
+                }
+                
+                // Добавляем в очередь конвертации для отслеживания
+                const conversionTask: ConversionTask = {
+                    uploadId,
+                    episodeId: episode.id,
+                    voiceName,
+                    episodeNumber,
+                    quality
+                };
+                conversionQueueRef.current.push(conversionTask);
+                processNextConversion();
+                
+            } else {
+                const errorText = await res.text();
+                console.error('Ошибка запуска конвертации:', errorText);
+                updateUpload(uploadId, {
+                    step: 'Ошибка',
+                    progress: 0,
+                    status: 'error',
+                    errorMessage: 'Ошибка запуска конвертации'
+                });
+            }
+        } catch (error) {
+            console.error('Ошибка конвертации из локального файла:', error);
+            updateUpload(uploadId, {
+                step: 'Ошибка',
+                progress: 0,
+                status: 'error',
+                errorMessage: 'Ошибка конвертации'
+            });
+        }
+    };
+
     const handleUploadEpisode = async () => {
         if (!selectedVoiceId || !newEpisodeNumber || !videoFile) return;
         
@@ -598,16 +726,19 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
         
         // Сохраняем параметры загрузки
         const qualityToUpload = newEpisodeQuality;
+        const minQualityToUpload = multiResolution ? minQuality : null;
         const fileToUpload = videoFile;
         const voiceNameToUpload = selectedVoice.name;
         
         // Очищаем форму сразу
         setNewEpisodeNumber('');
         setNewEpisodeQuality('1080p');
+        setMultiResolution(false);
+        setMinQuality('720p');
         setVideoFile(null);
         
         // Запускаем загрузку файла ПАРАЛЛЕЛЬНО (не в очереди)
-        startFileUpload(uploadId, episodeNumberToUpload, qualityToUpload, fileToUpload, voiceNameToUpload, selectedVoiceId);
+        startFileUpload(uploadId, episodeNumberToUpload, qualityToUpload, minQualityToUpload, fileToUpload, voiceNameToUpload, selectedVoiceId);
     };
     
     // Функция загрузки файла на сервер (выполняется параллельно)
@@ -615,6 +746,7 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
         uploadId: string,
         episodeNumber: number,
         quality: string,
+        minQualityParam: string | null,
         file: File,
         voiceName: string,
         voiceId: number
@@ -624,6 +756,9 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
             const formData = new FormData();
             formData.append('episodeNumber', episodeNumber.toString());
             formData.append('maxQuality', quality);
+            if (minQualityParam) {
+                formData.append('minQuality', minQualityParam);
+            }
             formData.append('video', file);
             
             const xhr = new XMLHttpRequest();
@@ -725,7 +860,8 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                         step: 'В очереди на конвертацию...',
                         progress: 15,
                         status: 'uploading',
-                        onCancel: cancelUploadFn
+                        onCancel: cancelUploadFn,
+                        conversionDetails: episode.conversionDetails
                     });
                     
                     if (selectedVoiceId) {
@@ -894,8 +1030,9 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
         
                 const uploadId = `${animeId}-${selectedVoiceId}-${episodeNumber}-${Date.now()}-${index}`;
                 
-                // Запускаем загрузку параллельно
-                startFileUpload(uploadId, episodeNumber, newEpisodeQuality, file, selectedVoice.name, selectedVoiceId);
+                // Запускаем загрузку параллельно (null для minQuality - однорезолюция при bulk upload)
+                const minQualityForBulk = multiResolution ? minQuality : null;
+                startFileUpload(uploadId, episodeNumber, newEpisodeQuality, minQualityForBulk, file, selectedVoice.name, selectedVoiceId);
             });
             
             console.log(`📤 Начата параллельная загрузка ${mp4Files.length} файлов`);
@@ -962,27 +1099,262 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
     const getStatusIcon = (status: string) => {
         switch (status) {
             case 'ready': return <CheckCircle className="status-icon success" />;
-            case 'converting': return <Clock className="status-icon converting" />;
+            case 'converting': return <RefreshCw className="status-icon converting spinning-icon" />;
             case 'uploading': return <Upload className="status-icon uploading" />;
             case 'error': return <AlertCircle className="status-icon error" />;
+            case 'queued': return <Clock className="status-icon queued" />;
             default: return <Clock className="status-icon" />;
         }
     };
 
-    const getStatusText = (status: string, progress?: number) => {
+    const getStatusText = (status: string, progress?: number, step?: string) => {
+        // Если есть кастомный step - используем его
+        if (step && step !== 'Конвертация видео...') return step;
+        
         switch (status) {
             case 'ready': return 'Готово';
             case 'converting': 
                 if (progress === 0 || progress === undefined) {
-                    return 'Конвертация в очереди...';
+                    return 'В очереди на конвертацию';
                 } else if (progress >= 95) {
-                    return 'Обработка';
+                    return 'Финализация...';
                 } else {
-                    return 'Конвертация видео...';
+                    return 'Конвертация';
                 }
-            case 'uploading': return 'Загрузка...';
+            case 'uploading': return 'Загрузка на сервер';
             case 'error': return 'Ошибка';
+            case 'queued': return 'В очереди';
             default: return status;
+        }
+    };
+    
+    // Форматирование времени
+    const formatDuration = (seconds: number) => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    };
+    
+    // Получить список качеств между max и min
+    const getQualitiesList = (maxQuality: string, minQuality?: string): string[] => {
+        const allQualities = ['2160p', '1440p', '1080p', '720p'];
+        const qualityNames: Record<string, string> = {
+            '2160p': '4K', '1440p': '2K', '1080p': '1080p', '720p': '720p'
+        };
+        const getIndex = (q: string) => {
+            if (q === '2160p' || q === '4K') return 0;
+            if (q === '1440p' || q === '2K') return 1;
+            if (q === '1080p') return 2;
+            if (q === '720p') return 3;
+            return 2;
+        };
+        const maxIdx = getIndex(maxQuality);
+        const minIdx = minQuality ? getIndex(minQuality) : maxIdx;
+        const result: string[] = [];
+        for (let i = maxIdx; i <= minIdx && i < allQualities.length; i++) {
+            result.push(qualityNames[allQualities[i]]);
+        }
+        return result.length > 0 ? result : [maxQuality];
+    };
+    
+    // Единый компонент карточки эпизода
+    const renderEpisodeCard = (data: {
+        key: string;
+        episodeNumber: number;
+        quality: string;
+        minQuality?: string;
+        status: string;
+        progress: number;
+        step?: string;
+        duration?: number;
+        screenshotUrl?: string;
+        conversionDetails?: string;
+        onDelete?: () => void;
+        onCancel?: () => void;
+        isUpload?: boolean;
+    }) => {
+        const details = data.conversionDetails ? parseConversionDetails(data.conversionDetails) : null;
+        const showProgress = data.status === 'converting' && data.progress > 0 && data.progress < 100;
+        const isQueued = data.status === 'converting' && data.progress === 0;
+        const qualities = getQualitiesList(data.quality, data.minQuality);
+        
+        return (
+            <div key={data.key} className={`episode-card episode-card--${data.status} ${isQueued ? 'episode-card--queued' : ''}`}>
+                <div className={`episode-thumbnail ${!data.screenshotUrl ? 'placeholder' : ''}`}>
+                    {data.screenshotUrl ? (
+                        <img 
+                            src={data.screenshotUrl} 
+                            alt={`Episode ${data.episodeNumber}`}
+                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        />
+                    ) : (
+                        <Film size={32} />
+                    )}
+                </div>
+                
+                <div className="episode-info">
+                    <div className="episode-header">
+                        <h4>Эпизод {data.episodeNumber}</h4>
+                        <div className="quality-badges">
+                            {qualities.map((q, idx) => (
+                                <span key={idx} className="quality-badge">{q}</span>
+                            ))}
+                        </div>
+                    </div>
+                    
+                    {data.duration && data.duration > 0 && (
+                        <div className="episode-duration">
+                            <Clock size={12} />
+                            <span>{formatDuration(data.duration)}</span>
+                        </div>
+                    )}
+                    
+                    {/* Статус "Готово" для ready эпизодов */}
+                    {data.status === 'ready' && (
+                        <div className="episode-status episode-status--ready">
+                            <CheckCircle size={14} className="status-icon-ready" />
+                            <span className="status-label status-label--ready">Готово</span>
+                        </div>
+                    )}
+                    
+                    {/* Статус - только если нет деталей качества и не ready */}
+                    {!details && data.status !== 'ready' && (
+                        <div className={`episode-status episode-status--${data.status}`}>
+                            {getStatusIcon(isQueued ? 'queued' : data.status)}
+                            <span className="status-label">
+                                {getStatusText(data.status, data.progress, data.step)}
+                            </span>
+                            {showProgress && (
+                                <span className="status-progress">{Math.round(data.progress)}%</span>
+                            )}
+                        </div>
+                    )}
+                    
+                    {/* Прогресс-бар - только если нет деталей качества */}
+                    {!details && showProgress && (
+                        <div className="progress-bar-container">
+                            <div className="progress-bar">
+                                <div 
+                                    className="progress-bar-fill"
+                                    style={{ width: `${data.progress}%` }}
+                                />
+                            </div>
+                        </div>
+                    )}
+                    
+                    {/* Детальное отображение качеств с прогрессом */}
+                    {details && data.status === 'converting' && (
+                        <div className="conversion-stages">
+                            {/* Общий прогресс */}
+                            <div className="overall-progress">
+                                <div className="overall-progress-header">
+                                    <span className="overall-label">Общий прогресс</span>
+                                    <span className="overall-percent">{Math.round(data.progress)}%</span>
+                                </div>
+                                <div className="overall-progress-bar">
+                                    <div 
+                                        className="overall-progress-fill"
+                                        style={{ width: `${data.progress}%` }}
+                                    />
+                                </div>
+                            </div>
+                            
+                            {/* Этап 1: Конвертация */}
+                            <div className={`stage-block ${details.stage === 'converting' ? 'stage-block--active' : details.stage === 'uploading' ? 'stage-block--done' : ''}`}>
+                                <div className="stage-header">
+                                    <span className="stage-number">1</span>
+                                    {details.stage === 'uploading' ? <CheckCircle size={14} className="stage-done" /> : <RefreshCw size={14} className="spinning-icon" />}
+                                    <span>Конвертация видео</span>
+                                </div>
+                                <div className="quality-grid">
+                                    {details.qualities.map((q, idx) => (
+                                        <div key={idx} className={`quality-chip quality-chip--${q.status}`}>
+                                            {q.status === 'done' ? <CheckCircle size={10} /> :
+                                             q.status === 'processing' ? <RefreshCw size={10} className="spinning-icon" /> :
+                                             <Clock size={10} />}
+                                            <span>{q.name}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            
+                            {/* Этап 2: Загрузка в S3 */}
+                            <div className={`stage-block ${details.stage === 'uploading' ? 'stage-block--active' : ''}`}>
+                                <div className="stage-header">
+                                    <span className="stage-number">2</span>
+                                    {details.stage === 'uploading' ? <RefreshCw size={14} className="spinning-icon" /> : <Clock size={14} />}
+                                    <span>Загрузка в S3 Yandex Cloud</span>
+                                    {details.s3Progress && (
+                                        <span className="s3-counter">{details.s3Progress.uploaded}/{details.s3Progress.total}</span>
+                                    )}
+                                </div>
+                                {details.stage === 'uploading' && details.s3Progress && (
+                                    <div className="s3-progress">
+                                        <div className="s3-progress-bar">
+                                            <div 
+                                                className="s3-progress-fill"
+                                                style={{ width: `${details.s3Progress.percent}%` }}
+                                            />
+                                        </div>
+                                        <span className="s3-percent">{details.s3Progress.percent}%</span>
+                                    </div>
+                                )}
+                                {details.stage !== 'uploading' && (
+                                    <div className="quality-grid quality-grid--pending">
+                                        {details.qualities.map((q, idx) => (
+                                            <div key={idx} className="quality-chip quality-chip--pending">
+                                                <Clock size={10} />
+                                                <span>{q.name}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                </div>
+                
+                {/* Кнопки действий */}
+                <div className="episode-actions">
+                    {data.status === 'ready' && data.onDelete && (
+                        <button className="btn-action btn-delete" onClick={data.onDelete} title="Удалить">
+                            <Trash2 size={16} />
+                        </button>
+                    )}
+                    {data.status === 'ready' && data.isUpload && data.onCancel && (
+                        <button className="btn-action btn-close" onClick={data.onCancel} title="Закрыть">
+                            <X size={16} />
+                        </button>
+                    )}
+                    {(data.status === 'uploading' || data.status === 'converting') && data.onCancel && (
+                        <button 
+                            className="btn-action btn-cancel" 
+                            onClick={() => {
+                                if (confirm('Отменить обработку?')) data.onCancel?.();
+                            }} 
+                            title="Отменить"
+                        >
+                            <XCircle size={16} />
+                        </button>
+                    )}
+                    {data.status !== 'ready' && !data.onCancel && data.onDelete && (
+                        <button className="btn-action btn-delete" onClick={data.onDelete} title="Удалить">
+                            <Trash2 size={16} />
+                        </button>
+                    )}
+                </div>
+            </div>
+        );
+    };
+
+    // Парсинг деталей конвертации из JSON
+    const parseConversionDetails = (detailsJson?: string): ConversionDetails | null => {
+        if (!detailsJson) return null;
+        try {
+            return JSON.parse(detailsJson) as ConversionDetails;
+        } catch (e) {
+            console.warn('Failed to parse conversion details:', e);
+            return null;
         }
     };
 
@@ -1194,56 +1566,169 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                                             min="1"
                                         />
                                         <select value={newEpisodeQuality} onChange={(e) => setNewEpisodeQuality(e.target.value)}>
-                                            <option value="1080p">1080p</option>
+                                            <option value="2160p">4K (2160p)</option>
                                             <option value="1440p">2K (1440p)</option>
+                                            <option value="1080p">1080p</option>
+                                            <option value="720p">720p</option>
                                         </select>
                                     </div>
-                                    <div 
-                                        className={`file-upload-wrapper ${isDragging ? 'dragging' : ''}`}
-                                        onDragEnter={handleDragEnter}
-                                        onDragOver={handleDragOver}
-                                        onDragLeave={handleDragLeave}
-                                        onDrop={handleDrop}
-                                    >
-                                        <input
-                                            type="file"
-                                            accept=".mp4"
-                                            multiple
-                                            onChange={(e) => {
-                                                const files = e.target.files;
-                                                if (files && files.length > 0) {
-                                                    // Если один файл - устанавливаем в форму
-                                                    if (files.length === 1) {
-                                                        setVideoFile(files[0]);
-                                                    } else {
-                                                        // Множественная загрузка через handleDrop
-                                                        const event = {
-                                                            preventDefault: () => {},
-                                                            stopPropagation: () => {},
-                                                            dataTransfer: { files }
-                                                        } as React.DragEvent<HTMLDivElement>;
-                                                        handleDrop(event);
-                                                    }
-                                                }
-                                            }}
-                                            id="video-file-input"
-                                            className="file-input"
-                                        />
-                                        <label htmlFor="video-file-input" className={`file-upload-label ${videoFile ? 'has-file' : ''}`}>
-                                            <Upload size={20} />
-                                            <span>{videoFile ? videoFile.name : isDragging ? 'Отпустите файл(ы) здесь' : 'Выберите или перетащите MP4 файл(ы)'}</span>
+                                    
+                                    {/* Режим мультирезолюции */}
+                                    <div className="form-row multi-resolution-row">
+                                        <label className="multi-resolution-toggle">
+                                            <input
+                                                type="checkbox"
+                                                checked={multiResolution}
+                                                onChange={(e) => setMultiResolution(e.target.checked)}
+                                            />
+                                            <span className="toggle-label">Мультирезолюция (как на YouTube)</span>
                                         </label>
-                                        {videoFile && (
-                                            <button 
-                                                type="button"
-                                                className="btn-clear-file"
-                                                onClick={() => setVideoFile(null)}
-                                                title="Очистить файл"
-                                            >
-                                                <XCircle size={20} />
-                                            </button>
+                                        
+                                        {multiResolution && (
+                                            <div className="min-quality-selector">
+                                                <span>До:</span>
+                                                <select 
+                                                    value={minQuality} 
+                                                    onChange={(e) => setMinQuality(e.target.value)}
+                                                >
+                                                    {newEpisodeQuality === '2160p' && <option value="1440p">2K (1440p)</option>}
+                                                    {(newEpisodeQuality === '2160p' || newEpisodeQuality === '1440p') && <option value="1080p">1080p</option>}
+                                                    <option value="720p">720p</option>
+                                                </select>
+                                            </div>
                                         )}
                                     </div>
+                                    
+                                    {multiResolution && (
+                                        <div className="quality-preview">
+                                            <span className="preview-label">Качества:</span>
+                                            <span className="preview-qualities">
+                                                {newEpisodeQuality}
+                                                {newEpisodeQuality === '2160p' && minQuality !== '2160p' && ' → 1440p'}
+                                                {(newEpisodeQuality === '2160p' || newEpisodeQuality === '1440p') && 
+                                                    (minQuality === '1080p' || minQuality === '720p') && ' → 1080p'}
+                                                {minQuality === '720p' && ' → 720p'}
+                                            </span>
+                                        </div>
+                                    )}
+                                    
+                                    {/* Переключатель: загрузка файла / локальный файл */}
+                                    <div className="source-toggle">
+                                        <button 
+                                            type="button"
+                                            className={`toggle-btn ${!useLocalFile ? 'active' : ''}`}
+                                            onClick={() => {
+                                                setUseLocalFile(false);
+                                                setSelectedLocalFile('');
+                                            }}
+                                        >
+                                            <Upload size={16} />
+                                            Загрузить файл
+                                        </button>
+                                        <button 
+                                            type="button"
+                                            className={`toggle-btn ${useLocalFile ? 'active' : ''}`}
+                                            onClick={() => {
+                                                setUseLocalFile(true);
+                                                setVideoFile(null);
+                                                loadLocalFiles();
+                                            }}
+                                        >
+                                            <HardDrive size={16} />
+                                            Локальный файл
+                                        </button>
+                                    </div>
+                                    
+                                    {!useLocalFile ? (
+                                        /* Обычная загрузка файла */
+                                        <div 
+                                            className={`file-upload-wrapper ${isDragging ? 'dragging' : ''}`}
+                                            onDragEnter={handleDragEnter}
+                                            onDragOver={handleDragOver}
+                                            onDragLeave={handleDragLeave}
+                                            onDrop={handleDrop}
+                                        >
+                                            <input
+                                                type="file"
+                                                accept=".mp4"
+                                                multiple
+                                                onChange={(e) => {
+                                                    const files = e.target.files;
+                                                    if (files && files.length > 0) {
+                                                        if (files.length === 1) {
+                                                            setVideoFile(files[0]);
+                                                        } else {
+                                                            const event = {
+                                                                preventDefault: () => {},
+                                                                stopPropagation: () => {},
+                                                                dataTransfer: { files }
+                                                            } as React.DragEvent<HTMLDivElement>;
+                                                            handleDrop(event);
+                                                        }
+                                                    }
+                                                }}
+                                                id="video-file-input"
+                                                className="file-input"
+                                            />
+                                            <label htmlFor="video-file-input" className={`file-upload-label ${videoFile ? 'has-file' : ''}`}>
+                                                <Upload size={20} />
+                                                <span>{videoFile ? videoFile.name : isDragging ? 'Отпустите файл(ы) здесь' : 'Выберите или перетащите MP4 файл(ы)'}</span>
+                                            </label>
+                                            {videoFile && (
+                                                <button 
+                                                    type="button"
+                                                    className="btn-clear-file"
+                                                    onClick={() => setVideoFile(null)}
+                                                    title="Очистить файл"
+                                                >
+                                                    <XCircle size={20} />
+                                                </button>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        /* Выбор локального файла из temp/videos */
+                                        <div className="local-file-selector">
+                                            <div className="local-file-header">
+                                                <FolderOpen size={16} />
+                                                <span>Папка: temp/videos</span>
+                                                <button 
+                                                    type="button" 
+                                                    className="btn-refresh-files"
+                                                    onClick={loadLocalFiles}
+                                                    disabled={loadingLocalFiles}
+                                                    title="Обновить список"
+                                                >
+                                                    <RefreshCw size={14} className={loadingLocalFiles ? 'spinning-icon' : ''} />
+                                                </button>
+                                            </div>
+                                            {loadingLocalFiles ? (
+                                                <div className="local-files-loading">
+                                                    <RefreshCw size={20} className="spinning-icon" />
+                                                    <span>Загрузка списка файлов...</span>
+                                                </div>
+                                            ) : localFiles.length > 0 ? (
+                                                <div className="local-files-list">
+                                                    {localFiles.map(file => (
+                                                        <div 
+                                                            key={file.fileName}
+                                                            className={`local-file-item ${selectedLocalFile === file.fileName ? 'selected' : ''}`}
+                                                            onClick={() => setSelectedLocalFile(file.fileName)}
+                                                        >
+                                                            <Film size={16} />
+                                                            <span className="file-name">{file.fileName}</span>
+                                                            <span className="file-size">{Math.round(file.fileSize / 1024 / 1024)} MB</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <div className="local-files-empty">
+                                                    <span>Нет MP4 файлов в папке temp/videos</span>
+                                                    <span className="hint">Поместите файлы в папку и нажмите обновить</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                    
                                     <div className="form-actions">
                                         <button 
                                             className="btn-cancel"
@@ -1251,165 +1736,78 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                                                 setShowAddEpisode(false);
                                                 setNewEpisodeNumber('');
                                                 setVideoFile(null);
+                                                setSelectedLocalFile('');
+                                                setUseLocalFile(false);
                                             }}
                                         >
                                             Отмена
                                         </button>
-                                        <button 
-                                            className="btn-upload"
-                                            onClick={handleUploadEpisode}
-                                            disabled={!videoFile || !newEpisodeNumber}
-                                        >
-                                            <Upload size={16} />
-                                            Загрузить эпизод
-                                        </button>
+                                        {!useLocalFile ? (
+                                            <button 
+                                                className="btn-upload"
+                                                onClick={handleUploadEpisode}
+                                                disabled={!videoFile || !newEpisodeNumber}
+                                            >
+                                                <Upload size={16} />
+                                                Загрузить эпизод
+                                            </button>
+                                        ) : (
+                                            <button 
+                                                className="btn-upload btn-convert"
+                                                onClick={handleUploadFromLocal}
+                                                disabled={!selectedLocalFile || !newEpisodeNumber}
+                                            >
+                                                <HardDrive size={16} />
+                                                Конвертировать
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             )}
 
                             <div className="episodes-list">
-                                {/* Готовые эпизоды (исключая те, что сейчас загружаются) */}
+                                {/* Эпизоды из базы (исключая те, что в процессе загрузки) */}
                                 {episodes
                                     .filter(episode => {
-                                        // Проверяем, нет ли этого эпизода в списке загружаемых (любой статус)
                                         const isInUploads = uploads.some(u => 
                                             u.voiceName === selectedVoice?.name && 
                                             u.episodeNumber === episode.episodeNumber
                                         );
                                         return !isInUploads;
                                     })
-                                    .map(episode => (
-                                    <div key={episode.id} className={`episode-card ${episode.videoStatus === 'ready' ? 'ready' : episode.videoStatus}`}>
-                                        <div className="episode-thumbnail">
-                                            {episode.screenshotPath ? (
-                                                <img 
-                                                    src={`${SERVER_URL2}/api/video/screenshot/${episode.screenshotPath}`} 
-                                                    alt={`Episode ${episode.episodeNumber}`}
-                                                    onError={(e) => {
-                                                        e.currentTarget.style.display = 'none';
-                                                    }}
-                                                />
-                                            ) : (
-                                                <Film size={32} />
-                                            )}
-                                        </div>
-                                        <div className="episode-info">
-                                            <h4>Эпизод {episode.episodeNumber}</h4>
-                                            <div className="episode-meta">
-                                                <span className="quality-badge">{episode.maxQuality}</span>
-                                                {episode.durationSeconds && episode.durationSeconds > 0 && (
-                                                    <span className="duration">
-                                                        {Math.floor(episode.durationSeconds / 60)} мин {episode.durationSeconds % 60} сек
-                                                    </span>
-                                                )}
-                                            </div>
-                                            <div className="episode-status-detailed">
-                                                {getStatusIcon(episode.videoStatus)}
-                                                <div className="status-text-wrapper">
-                                                    <span className="status-main">{getStatusText(episode.videoStatus, episode.conversionProgress)}</span>
-                                                    {episode.videoStatus === 'converting' && episode.conversionProgress != null && episode.conversionProgress > 0 && episode.conversionProgress < 95 && (
-                                                        <div className="conversion-progress">
-                                                            <div className="mini-progress-bar">
-                                                                <div 
-                                                                    className="mini-progress-fill" 
-                                                                    style={{ width: `${episode.conversionProgress}%` }}
-                                                                />
-                                                            </div>
-                                                            <span>{Math.round(episode.conversionProgress)}%</span>
-                                                        </div>
-                                                    )}
-                                                    {episode.videoStatus === 'converting' && episode.conversionProgress != null && episode.conversionProgress >= 95 && (
-                                                        <div className="processing-indicator">
-                                                            <RefreshCw size={14} className="spinning-icon" />
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <button
-                                            className="btn-delete-episode"
-                                            onClick={() => handleDeleteEpisode(episode.id)}
-                                        >
-                                            <Trash2 size={16} />
-                                        </button>
-                                    </div>
-                                ))}
+                                    .map(episode => renderEpisodeCard({
+                                        key: `ep-${episode.id}`,
+                                        episodeNumber: episode.episodeNumber,
+                                        quality: episode.maxQuality,
+                                        minQuality: episode.minQuality,
+                                        status: episode.videoStatus,
+                                        progress: episode.conversionProgress || 0,
+                                        duration: episode.durationSeconds,
+                                        screenshotUrl: episode.screenshotPath 
+                                            ? `${SERVER_URL2}/api/video/screenshot/${episode.screenshotPath}` 
+                                            : undefined,
+                                        conversionDetails: episode.conversionDetails,
+                                        onDelete: () => handleDeleteEpisode(episode.id)
+                                    }))}
                                 
-                                {/* Загружающиеся эпизоды внизу */}
+                                {/* Активные загрузки/конвертации */}
                                 {uploads
                                     .filter(u => selectedVoice && u.voiceName === selectedVoice.name)
-                                    .map(upload => (
-                                        <div key={upload.uploadId} className={`episode-card ${upload.status}`}>
-                                            <div className={`episode-thumbnail ${upload.screenshotUrl ? '' : 'uploading-placeholder'}`}>
-                                                {upload.screenshotUrl ? (
-                                                    <img 
-                                                        src={upload.screenshotUrl} 
-                                                        alt={`Episode ${upload.episodeNumber}`}
-                                                        className="fade-in"
-                                                        onError={(e) => {
-                                                            e.currentTarget.style.display = 'none';
-                                                        }}
-                                                    />
-                                                ) : (
-                                                    <Upload size={32} />
-                                                )}
-                                            </div>
-                                            <div className="episode-info">
-                                                <h4>Эпизод {upload.episodeNumber}</h4>
-                                                <div className="episode-meta">
-                                                    <span className="quality-badge">{upload.quality}</span>
-                                                    {upload.duration && upload.duration > 0 && (
-                                                        <span className="duration">
-                                                            {Math.floor(upload.duration / 60)} мин {upload.duration % 60} сек
-                                                        </span>
-                                                    )}
-                                                </div>
-                                                <div className="episode-status-detailed">
-                                                    {getStatusIcon(upload.status)}
-                                                    <div className="status-text-wrapper">
-                                                        <span className="status-main">{upload.step}</span>
-                                                        {upload.status === 'converting' && upload.progress > 0 && upload.progress < 95 && (
-                                                            <div className="conversion-progress">
-                                                                <div className="mini-progress-bar">
-                                                                    <div 
-                                                                        className="mini-progress-fill" 
-                                                                        style={{ width: `${upload.progress}%` }}
-                                                                    />
-                                                                </div>
-                                                                <span>{Math.round(upload.progress)}%</span>
-                                                            </div>
-                                                        )}
-                                                        {upload.step === 'Обработка' && (
-                                                            <div className="processing-indicator">
-                                                                <RefreshCw size={14} className="spinning-icon" />
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            {upload.status === 'ready' ? (
-                                                <button
-                                                    className="btn-delete-episode"
-                                                    onClick={() => removeUpload(upload.uploadId)}
-                                                    title="Закрыть"
-                                                >
-                                                    <X size={16} />
-                                                </button>
-                                            ) : upload.onCancel && (upload.status === 'uploading' || upload.status === 'converting') && (
-                                                <button
-                                                    className="btn-delete-episode btn-cancel-upload"
-                                                    onClick={() => {
-                                                        if (confirm('Вы уверены, что хотите отменить загрузку?')) {
-                                                            upload.onCancel?.();
-                                                        }
-                                                    }}
-                                                    title="Отменить загрузку"
-                                                >
-                                                    <X size={16} />
-                                                </button>
-                                            )}
-                                        </div>
-                                    ))}
+                                    .map(upload => renderEpisodeCard({
+                                        key: upload.uploadId,
+                                        episodeNumber: upload.episodeNumber,
+                                        quality: upload.quality,
+                                        status: upload.status,
+                                        progress: upload.progress,
+                                        step: upload.step,
+                                        duration: upload.duration,
+                                        screenshotUrl: upload.screenshotUrl,
+                                        conversionDetails: upload.conversionDetails,
+                                        isUpload: true,
+                                        onCancel: upload.status === 'ready' 
+                                            ? () => removeUpload(upload.uploadId)
+                                            : upload.onCancel
+                                    }))}
                                     
                                 {episodes.length === 0 && uploads.filter(u => selectedVoice && u.voiceName === selectedVoice.name).length === 0 && (
                                     <div className="empty-state">
