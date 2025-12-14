@@ -1175,8 +1175,13 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
     }) => {
         const details = data.conversionDetails ? parseConversionDetails(data.conversionDetails) : null;
         const showProgress = data.status === 'converting' && data.progress > 0 && data.progress < 100;
-        const isQueued = data.status === 'converting' && data.progress === 0;
+        const isQueued = data.status === 'converting' && data.progress === 0 && !details;
         const qualities = getQualitiesList(data.quality, data.minQuality);
+        
+        // Debug: показываем детали конвертации если они есть
+        if (data.status === 'converting' && !details && data.conversionDetails) {
+            console.warn('⚠️ conversionDetails есть, но парсинг не удался:', data.conversionDetails);
+        }
         
         return (
             <div key={data.key} className={`episode-card episode-card--${data.status} ${isQueued ? 'episode-card--queued' : ''}`}>
@@ -1260,7 +1265,7 @@ const YumekoVideoManager: React.FC<Props> = ({ animeId, onClose }) => {
                             </div>
                             
                             {/* Этап 1: Конвертация */}
-                            <div className={`stage-block ${details.stage === 'converting' ? 'stage-block--active' : details.stage === 'uploading' ? 'stage-block--done' : ''}`}>
+                            <div className={`stage-block ${(details.stage === 'converting' || details.stage === 'starting') ? 'stage-block--active' : details.stage === 'uploading' ? 'stage-block--done' : ''}`}>
                                 <div className="stage-header">
                                     <span className="stage-number">1</span>
                                     {details.stage === 'uploading' ? <CheckCircle size={14} className="stage-done" /> : <RefreshCw size={14} className="spinning-icon" />}
