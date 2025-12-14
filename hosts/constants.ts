@@ -10,8 +10,8 @@ export const DEBUG = true;
 export const SERVER_URL2 = 'https://server.yumeko.ru'; // Сервер для загрузки видео
 //export const SERVER_URL3 = 'https://server3.yumeko.ru'; // Сервер для зарубежных пользователей
 // DEV:
-export const SERVER_URL2 = 'http://localhost:8080'; // Сервер для загрузки видео
-export const SERVER_URL3 = 'http://localhost:8080'; // Сервер для зарубежных пользователей
+//export const SERVER_URL2 = 'http://localhost:8080'; // Сервер для загрузки видео
+//export const SERVER_URL3 = 'http://localhost:8080'; // Сервер для зарубежных пользователей
 
 // Домен авторизации
 //export const AUTH_SITE_URL = 'http://localhost:3000';
