@@ -184,9 +184,14 @@ export default function SourceSelectionModal({
                                     <ExternalLink size={32} strokeWidth={2} />
                                 </div>
                                 <div className="source-option-content">
-                                    <h3 className="source-option-title">Сторонний источник</h3>
+                                    <h3 className="source-option-title">Внешние источники</h3>
                                     <p className="source-option-description">
                                         Со сторонними плеерами, без наших плюшек
+                                    </p>
+                                    <p className="source-option-sync-info">
+                                        <span className="sync-warning">Для источника Kodik - СИНХРОНИЗАЦИЯ НЕ РАБОТАЕТ</span>
+                                        {' | '}
+                                        <span className="sync-success">Для источника Libria - СИНХРОНИЗАЦИЯ РАБОТАЕТ!</span>
                                     </p>
                                 </div>
                             </div>
