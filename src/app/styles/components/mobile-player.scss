@@ -516,7 +516,7 @@
 /* Close button outside panel */
 .mobile-player-panel__close {
   position: fixed;
-  right: 14px;
+  right: 70px;
   top: calc(env(safe-area-inset-top) + 10px);
   z-index: 120;
   width: 60px;
@@ -535,10 +535,10 @@
   height: 18px;
 }
 
-/* back button near close (left side) */
+/* back button near close (right side, left of close button) */
 .mobile-player-panel__back {
   position: fixed;
-  left: 14px;
+  right: 100px;
   top: calc(env(safe-area-inset-top) + 10px);
   z-index: 120;
   width: 55px;

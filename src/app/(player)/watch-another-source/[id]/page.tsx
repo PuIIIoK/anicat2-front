@@ -3,8 +3,9 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { ExternalLink, Crown, ArrowLeft } from 'lucide-react';
-import PlyrPlayer from '@/component/anime-players/plyr-player';
+import { ArrowLeft, ExternalLink, Crown } from 'lucide-react';
+import PlayerPC from '@/app/(player)/test-new-player/PlayerPC';
+import PlayerMobile from '@/app/(player)/test-new-player/PlayerMobile';
 import { API_SERVER, KODIK_API_BASE, KODIK_API_TOKEN } from '@/hosts/constants';
 import { useTheme } from '@/app/context/ThemeContext';
 import '@/styles/components/source-selection-modal.scss';
@@ -27,6 +28,18 @@ export default function WatchAnotherSourcePage() {
     const kodik = searchParams.get('kodik') || '';
     const title = searchParams.get('title') || '';
     const season = searchParams.get('season') || '';
+
+    const [selectedPlayer, setSelectedPlayer] = useState<'kodik' | 'anilibria'>('anilibria');
+    const [kodikIframeUrl, setKodikIframeUrl] = useState<string>('');
+    const [libriaEpisodes, setLibriaEpisodes] = useState<LibriaEpisode[]>([]);
+    const [selectedEpisode, setSelectedEpisode] = useState<number>(0);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+    const [isSourcePanelCollapsed, setIsSourcePanelCollapsed] = useState(false);
+    
+    // Временно всегда показываем UI элементы
+    // TODO: добавить отслеживание видимости UI плеера через callback из PlayerMobile
+    const isPlayerUIVisible = true;
 
     // Форматируем название с сезоном
     const animeTitle = useMemo(() => {
@@ -61,21 +74,18 @@ export default function WatchAnotherSourcePage() {
         return title + seasonNumber;
     }, [title, season]);
 
-    const [selectedPlayer, setSelectedPlayer] = useState<'kodik' | 'anilibria' | null>(null);
-    const [kodikIframeUrl, setKodikIframeUrl] = useState<string>('');
-    const [libriaEpisodes, setLibriaEpisodes] = useState<LibriaEpisode[]>([]);
-    const [selectedEpisode, setSelectedEpisode] = useState<number>(0);
-    const [isLoading, setIsLoading] = useState(false);
-    const [isMobile, setIsMobile] = useState(false);
-
     // Определяем мобильное устройство
     useEffect(() => {
         const checkMobile = () => {
-            setIsMobile(window.innerWidth <= 768);
+            const hasTouchPoints = navigator.maxTouchPoints > 1;
+            const isSmallScreen = window.innerWidth <= 1024;
+            const isMobile = hasTouchPoints || isSmallScreen;
+            setIsMobile(isMobile);
         };
-        checkMobile();
-        window.addEventListener('resize', checkMobile);
-        return () => window.removeEventListener('resize', checkMobile);
+        // Добавляем небольшую задержку чтобы убедиться что окно инициализировано
+        const timer = setTimeout(checkMobile, 100);
+        // Убираем resize listener чтобы не переключаться при повороте
+        return () => clearTimeout(timer);
     }, []);
 
     // Динамические цвета на основе темы и цветовой схемы
@@ -131,27 +141,10 @@ export default function WatchAnotherSourcePage() {
         };
     }, [theme, colorScheme]);
 
-    // Загрузка Kodik iframe URL
+    // Автоматически выбираем Анилибрию при загрузке
     useEffect(() => {
-        if (selectedPlayer === 'kodik' && kodik) {
-            setIsLoading(true);
-            const fetchKodik = async () => {
-                try {
-                    const res = await fetch(`${KODIK_API_BASE}/search?token=${KODIK_API_TOKEN}&title=${encodeURIComponent(kodik)}`);
-                    const data = await res.json();
-                    const link = data.results?.[0]?.link;
-                    if (link) {
-                        setKodikIframeUrl(link);
-                    }
-                } catch (e) {
-                    console.error('Ошибка Kodik:', e);
-                } finally {
-                    setIsLoading(false);
-                }
-            };
-            fetchKodik();
-        }
-    }, [selectedPlayer, kodik]);
+        setSelectedPlayer('anilibria');
+    }, []);
 
     // Загрузка Анилибрия эпизодов
     useEffect(() => {
@@ -177,6 +170,28 @@ export default function WatchAnotherSourcePage() {
         }
     }, [selectedPlayer, animeId]);
 
+    // Загрузка Kodik iframe URL
+    useEffect(() => {
+        if (selectedPlayer === 'kodik' && kodik) {
+            setIsLoading(true);
+            const fetchKodik = async () => {
+                try {
+                    const res = await fetch(`${KODIK_API_BASE}/search?token=${KODIK_API_TOKEN}&title=${encodeURIComponent(kodik)}`);
+                    const data = await res.json();
+                    const link = data.results?.[0]?.link;
+                    if (link) {
+                        setKodikIframeUrl(link);
+                    }
+                } catch (e) {
+                    console.error('Ошибка Kodik:', e);
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+            fetchKodik();
+        }
+    }, [selectedPlayer, kodik]);
+
     const handleKodikSelect = () => {
         setSelectedPlayer('kodik');
     };
@@ -196,6 +211,14 @@ export default function WatchAnotherSourcePage() {
             setSelectedEpisode(selectedEpisode - 1);
         }
     };
+
+    // Обновление заголовка страницы
+    useEffect(() => {
+        if (!title) return;
+        
+        const episodeNum = libriaEpisodes[selectedEpisode]?.ordinal || selectedEpisode + 1;
+        document.title = `Эпизод ${episodeNum} || ${title}`;
+    }, [selectedEpisode, title, libriaEpisodes]);
 
     // Динамический CSS для скроллбаров
     useEffect(() => {
@@ -230,330 +253,242 @@ export default function WatchAnotherSourcePage() {
         `;
     }, [theme, colors.primary]);
 
-    // Обновление заголовка страницы
-    useEffect(() => {
-        if (!title) return;
-        
-        if (selectedPlayer === 'kodik') {
-            document.title = `Kodik || ${title}`;
-        } else if (selectedPlayer === 'anilibria') {
-            const episodeNum = libriaEpisodes[selectedEpisode]?.ordinal || selectedEpisode + 1;
-            document.title = `Эпизод ${episodeNum} || ${title}`;
-        } else {
-            document.title = title || 'Выбор плеера';
-        }
-    }, [selectedPlayer, selectedEpisode, title, libriaEpisodes]);
-
-    // Если выбран Kodik или Анилибрия - показываем с боковой панелью
-    if (selectedPlayer) {
-        const currentEpisode = libriaEpisodes[selectedEpisode];
-        const videoUrl = currentEpisode?.hls_1080 || currentEpisode?.hls_720 || currentEpisode?.hls_480 || '';
+    // Если выбрана Анилибрия - показываем плеер на полный экран с правой панелью
+    if (selectedPlayer === 'anilibria') {
+        // Создаем animeMeta для источника libria
+        const animeMeta = {
+            id: animeId,
+            source: 'libria' as const,
+            title: animeTitle,
+            episodeNumber: selectedEpisode + 1
+        };
 
         return (
             <div style={{ 
                 width: '100%', 
-                minHeight: '100vh', 
+                height: '100vh',
                 background: colors.bg,
                 display: 'flex',
-                flexDirection: isMobile ? 'column' : 'row',
-                padding: isMobile ? '70px 10px 10px 10px' : '95px 20px 20px 20px',
-                gap: isMobile ? '15px' : '20px',
-                marginTop: isMobile ? '0px' : '0px'
+                flexDirection: 'column',
+                padding: '0',
+                margin: '0',
+                position: 'relative',
+                overflow: 'hidden'
             }}>
-                {/* Боковая панель выбора плеера */}
-                <div 
-                    className="player-sidebar"
-                    style={{
-                        width: isMobile ? '100%' : '280px',
-                        background: colors.sidebarBg,
-                        borderRadius: isMobile ? '12px' : '16px',
-                        padding: isMobile ? '15px' : '20px',
-                        border: `1px solid ${colors.sidebarBorder}`,
-                        height: 'fit-content',
-                        maxHeight: isMobile ? 'none' : 'calc(100vh - 135px)',
-                        overflowY: 'auto'
-                    }}
-                >
-                    {/* Кнопка возврата на страницу аниме */}
-                    <Link 
-                        href={`/anime-page/${animeId}`}
+                {/* Кнопка скрытия/открытия панели источников (только на мобильных) */}
+                {isMobile && isPlayerUIVisible && (
+                    <button
+                        onClick={() => setIsSourcePanelCollapsed(!isSourcePanelCollapsed)}
                         style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: isMobile ? '10px' : '12px',
-                            background: colors.buttonBg,
-                            border: `1px solid ${colors.buttonBorder}`,
-                            borderRadius: isMobile ? '10px' : '12px',
-                            padding: isMobile ? '12px' : '14px',
-                            marginBottom: isMobile ? '15px' : '20px',
-                            textDecoration: 'none',
-                            transition: 'all 0.2s ease',
-                            cursor: 'pointer'
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.background = colors.primaryHover;
-                            e.currentTarget.style.borderColor = colors.primaryBorder;
-                            e.currentTarget.style.transform = 'translateX(-4px)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.background = colors.buttonBg;
-                            e.currentTarget.style.borderColor = colors.buttonBorder;
-                            e.currentTarget.style.transform = 'translateX(0)';
-                        }}
-                    >
-                        <div style={{
-                            width: isMobile ? '32px' : '36px',
-                            height: isMobile ? '32px' : '36px',
-                            borderRadius: '8px',
-                            background: colors.iconBg,
+                            position: 'absolute',
+                            right: isSourcePanelCollapsed ? '20px' : '200px',
+                            top: '20px',
+                            width: '44px',
+                            height: '44px',
+                            borderRadius: '50%',
+                            background: colors.sidebarBg,
+                            border: `2px solid ${colors.sidebarBorder}`,
+                            color: colors.textPrimary,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            color: colors.primary,
-                            flexShrink: 0
-                        }}>
-                            <ArrowLeft size={isMobile ? 16 : 18} strokeWidth={2.5} />
-                        </div>
-                        <div style={{ flex: 1, overflow: 'hidden' }}>
-                            <div style={{ 
-                                color: colors.textPrimary, 
-                                fontSize: isMobile ? '12px' : '13px', 
-                                fontWeight: '600',
-                                whiteSpace: 'nowrap',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis'
-                            }}>
-                                {animeTitle}
-                            </div>
-                            <div style={{ 
-                                color: colors.textSecondary, 
-                                fontSize: isMobile ? '10px' : '11px',
-                                marginTop: '2px'
-                            }}>
-                                Вернуться на страницу аниме
-                            </div>
-                        </div>
-                    </Link>
+                            cursor: 'pointer',
+                            zIndex: 1001,
+                            transition: 'all 0.3s ease',
+                            boxShadow: '0 2px 12px rgba(0,0,0,0.3)',
+                            backdropFilter: 'blur(10px)'
+                        }}
+                    >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            {isSourcePanelCollapsed ? (
+                                <path d="M15 18l-6-6 6-6" />
+                            ) : (
+                                <path d="M9 18l6-6-6-6" />
+                            )}
+                        </svg>
+                    </button>
+                )}
 
-                    <h3 style={{
+                {/* Правая панель переключения источников */}
+                <div
+                    style={{
+                        position: 'absolute',
+                        top: '20px',
+                        right: isSourcePanelCollapsed ? '-220px' : '20px',
+                        zIndex: 1000,
+                        background: colors.sidebarBg,
+                        border: `1px solid ${colors.sidebarBorder}`,
+                        borderRadius: '12px',
+                        padding: '12px',
+                        backdropFilter: 'blur(10px)',
+                        minWidth: '200px',
+                        transition: 'right 0.3s ease'
+                    }}
+                >
+                    <h4 style={{
                         color: colors.textPrimary,
-                        fontSize: isMobile ? '16px' : '18px',
-                        fontWeight: '700',
-                        marginBottom: isMobile ? '12px' : '16px',
-                        marginTop: 0
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        margin: '0 0 8px 0',
+                        textAlign: 'center'
                     }}>
-                        Выберите плеер:
-                    </h3>
-
+                        Источник:
+                    </h4>
+                    
                     {/* Кнопка Kodik */}
                     <div 
                         onClick={handleKodikSelect}
                         style={{
-                            background: selectedPlayer === 'kodik' ? colors.primaryBg : colors.buttonBg,
-                            border: `1px solid ${selectedPlayer === 'kodik' ? colors.primaryBorder : colors.buttonBorder}`,
-                            borderRadius: isMobile ? '10px' : '12px',
-                            padding: isMobile ? '12px' : '16px',
-                            marginBottom: isMobile ? '10px' : '12px',
+                            background: colors.buttonBg,
+                            border: `1px solid ${colors.buttonBorder}`,
+                            borderRadius: '8px',
+                            padding: '8px 12px',
+                            marginBottom: '6px',
                             cursor: 'pointer',
                             transition: 'all 0.2s ease',
                             display: 'flex',
                             alignItems: 'center',
-                            gap: isMobile ? '10px' : '12px'
+                            gap: '8px'
                         }}
                         onMouseEnter={(e) => {
-                            if (selectedPlayer !== 'kodik') {
-                                e.currentTarget.style.background = colors.buttonHoverBg;
-                                e.currentTarget.style.borderColor = colors.buttonHoverBorder;
-                            }
-                            if (!isMobile) e.currentTarget.style.transform = 'translateX(4px)';
+                            e.currentTarget.style.background = colors.buttonHoverBg;
+                            e.currentTarget.style.borderColor = colors.buttonHoverBorder;
                         }}
                         onMouseLeave={(e) => {
-                            if (selectedPlayer !== 'kodik') {
-                                e.currentTarget.style.background = colors.buttonBg;
-                                e.currentTarget.style.borderColor = colors.buttonBorder;
-                            }
-                            e.currentTarget.style.transform = 'translateX(0)';
+                            e.currentTarget.style.background = colors.buttonBg;
+                            e.currentTarget.style.borderColor = colors.buttonBorder;
                         }}
                     >
-                        <div style={{
-                            width: isMobile ? '36px' : '40px',
-                            height: isMobile ? '36px' : '40px',
-                            borderRadius: '8px',
-                            background: selectedPlayer === 'kodik' ? colors.primaryBg : colors.iconBg,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            color: selectedPlayer === 'kodik' ? colors.primary : colors.textPrimary,
-                            flexShrink: 0
-                        }}>
-                            <ExternalLink size={isMobile ? 18 : 20} strokeWidth={2} />
-                        </div>
+                        <ExternalLink size={14} strokeWidth={2} />
                         <div style={{ flex: 1 }}>
-                            <div style={{ color: colors.textPrimary, fontSize: isMobile ? '14px' : '15px', fontWeight: '600', marginBottom: '2px' }}>
-                                Kodik {selectedPlayer === 'kodik' && '✓'}
+                            <div style={{ color: colors.textPrimary, fontSize: '11px', fontWeight: '600' }}>
+                                Kodik
                             </div>
-                            <div style={{ color: colors.textSecondary, fontSize: isMobile ? '11px' : '12px' }}>
-                                До 720p, много озвучек
+                            <div style={{ color: colors.textSecondary, fontSize: '9px' }}>
+                                До 720p
                             </div>
                         </div>
                     </div>
 
                     {/* Кнопка Анилибрия */}
                     <div 
-                        onClick={handleAnilibriaSelect}
                         style={{
-                            background: selectedPlayer === 'anilibria' ? colors.primaryBg : colors.buttonBg,
-                            border: `1px solid ${selectedPlayer === 'anilibria' ? colors.primaryBorder : colors.buttonBorder}`,
-                            borderRadius: isMobile ? '10px' : '12px',
-                            padding: isMobile ? '12px' : '16px',
+                            background: colors.primaryBg,
+                            border: `1px solid ${colors.primaryBorder}`,
+                            borderRadius: '8px',
+                            padding: '8px 12px',
                             cursor: 'pointer',
                             transition: 'all 0.2s ease',
                             display: 'flex',
                             alignItems: 'center',
-                            gap: isMobile ? '10px' : '12px'
-                        }}
-                        onMouseEnter={(e) => {
-                            if (selectedPlayer !== 'anilibria') {
-                                e.currentTarget.style.background = colors.primaryHover;
-                                e.currentTarget.style.borderColor = colors.buttonHoverBorder;
-                            }
-                            if (!isMobile) e.currentTarget.style.transform = 'translateX(4px)';
-                        }}
-                        onMouseLeave={(e) => {
-                            if (selectedPlayer !== 'anilibria') {
-                                e.currentTarget.style.background = colors.buttonBg;
-                                e.currentTarget.style.borderColor = colors.buttonBorder;
-                            }
-                            e.currentTarget.style.transform = 'translateX(0)';
+                            gap: '8px'
                         }}
                     >
-                        <div style={{
-                            width: isMobile ? '36px' : '40px',
-                            height: isMobile ? '36px' : '40px',
-                            borderRadius: '8px',
-                            background: selectedPlayer === 'anilibria' ? colors.primaryBg : colors.iconBg,
-                            border: `1px solid ${selectedPlayer === 'anilibria' ? colors.primaryBorder : 'transparent'}`,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            color: selectedPlayer === 'anilibria' ? colors.primary : colors.textPrimary,
-                            flexShrink: 0
-                        }}>
-                            <Crown size={isMobile ? 18 : 20} strokeWidth={2} />
-                        </div>
+                        <Crown size={14} strokeWidth={2} />
                         <div style={{ flex: 1 }}>
-                            <div style={{ color: colors.textPrimary, fontSize: isMobile ? '14px' : '15px', fontWeight: '600', marginBottom: '2px' }}>
-                                Анилибрия {selectedPlayer === 'anilibria' && '✓'}
+                            <div style={{ color: colors.textPrimary, fontSize: '11px', fontWeight: '600' }}>
+                                Анилибрия ✓
                             </div>
-                            <div style={{ color: colors.textSecondary, fontSize: isMobile ? '11px' : '12px' }}>
-                                1080p качество
+                            <div style={{ color: colors.textSecondary, fontSize: '9px' }}>
+                                1080p
                             </div>
                         </div>
                     </div>
-
-                    {/* Список серий для Анилибрии */}
-                    {selectedPlayer === 'anilibria' && libriaEpisodes.length > 0 && (
-                        <div style={{
-                            marginTop: isMobile ? '15px' : '20px',
-                            borderTop: `1px solid ${colors.sidebarBorder}`,
-                            paddingTop: isMobile ? '15px' : '20px'
-                        }}>
-                            <h4 style={{
-                                color: colors.textPrimary,
-                                fontSize: isMobile ? '15px' : '16px',
-                                fontWeight: '600',
-                                marginBottom: isMobile ? '10px' : '12px',
-                                marginTop: 0
-                            }}>
-                                Выберите серию:
-                            </h4>
-                            <div 
-                                className="episodes-grid"
-                                style={{
-                                    display: 'grid',
-                                    gridTemplateColumns: isMobile ? 'repeat(5, 1fr)' : 'repeat(4, 1fr)',
-                                    gap: isMobile ? '6px' : '8px',
-                                    maxHeight: isMobile ? 'none' : '400px',
-                                    overflowY: 'auto',
-                                    paddingRight: '8px'
-                                }}
-                            >
-                                {libriaEpisodes.map((episode, index) => (
-                                    <div
-                                        key={episode.ordinal || index}
-                                        onClick={() => setSelectedEpisode(index)}
-                                        style={{
-                                            background: selectedEpisode === index ? colors.primaryBg : colors.buttonBg,
-                                            border: `1px solid ${selectedEpisode === index ? colors.primaryBorder : colors.buttonBorder}`,
-                                            borderRadius: '8px',
-                                            padding: isMobile ? '8px' : '10px',
-                                            cursor: 'pointer',
-                                            transition: 'all 0.2s ease',
-                                            textAlign: 'center',
-                                            color: selectedEpisode === index ? colors.primary : colors.textPrimary,
-                                            fontSize: isMobile ? '13px' : '14px',
-                                            fontWeight: selectedEpisode === index ? '600' : '500'
-                                        }}
-                                        onMouseEnter={(e) => {
-                                            if (selectedEpisode !== index) {
-                                                e.currentTarget.style.background = colors.buttonHoverBg;
-                                                e.currentTarget.style.borderColor = colors.buttonHoverBorder;
-                                            }
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            if (selectedEpisode !== index) {
-                                                e.currentTarget.style.background = colors.buttonBg;
-                                                e.currentTarget.style.borderColor = colors.buttonBorder;
-                                            }
-                                        }}
-                                    >
-                                        {episode.ordinal || index + 1}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
                 </div>
 
-                {/* Контейнер для плеера */}
+                {/* Кнопка возврата в углу */}
+                {isPlayerUIVisible && (
+                    <Link 
+                        href={`/anime-page/${animeId}`}
+                        style={{
+                            position: 'absolute',
+                            top: '20px',
+                            left: '20px',
+                            zIndex: 1000,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: isMobile ? '0' : '10px',
+                            background: 'rgba(0, 0, 0, 0.8)',
+                            border: `1px solid ${colors.primaryBorder}`,
+                            borderRadius: isMobile ? '50%' : '10px',
+                            padding: isMobile ? '10px' : '12px',
+                            textDecoration: 'none',
+                            transition: 'all 0.2s ease',
+                            cursor: 'pointer',
+                            backdropFilter: 'blur(10px)',
+                            width: isMobile ? '44px' : 'auto',
+                            height: isMobile ? '44px' : 'auto',
+                            justifyContent: 'center'
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.background = colors.primaryBg;
+                            e.currentTarget.style.borderColor = colors.primaryBorder;
+                            if (!isMobile) e.currentTarget.style.transform = 'translateX(-4px)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'rgba(0, 0, 0, 0.8)';
+                            e.currentTarget.style.borderColor = colors.primaryBorder;
+                            e.currentTarget.style.transform = 'translateX(0)';
+                        }}
+                    >
+                        {isMobile ? (
+                            <ArrowLeft size={20} strokeWidth={2.5} color={colors.primary} />
+                        ) : (
+                            <>
+                                <div style={{
+                                    width: '24px',
+                                    height: '24px',
+                                    borderRadius: '6px',
+                                    background: colors.primaryBg,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    color: colors.primary,
+                                    flexShrink: 0
+                                }}>
+                                    <ArrowLeft size={14} strokeWidth={2.5} />
+                                </div>
+                                <div style={{ color: '#fff', fontSize: '12px', fontWeight: '600' }}>
+                                    {animeTitle}
+                                </div>
+                            </>
+                        )}
+                    </Link>
+                )}
+
+                {/* Плеер на полный экран */}
                 <div style={{
                     flex: 1,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    minHeight: isMobile ? '250px' : '400px'
+                    width: '100%',
+                    height: '100%'
                 }}>
                     {isLoading ? (
                         <div style={{ color: colors.textPrimary, fontSize: '16px' }}>
                             Загрузка плеера...
                         </div>
-                    ) : selectedPlayer === 'kodik' && kodikIframeUrl ? (
-                        <div style={{
-                            width: '100%',
-                            maxWidth: isMobile ? '100%' : '1400px',
-                            aspectRatio: '16 / 9'
-                        }}>
-                            <iframe
-                                src={kodikIframeUrl}
-                                style={{ width: '100%', height: '100%', border: 'none', borderRadius: isMobile ? '8px' : '12px' }}
-                                allowFullScreen
-                                frameBorder="0"
-                            />
-                        </div>
-                    ) : selectedPlayer === 'anilibria' && videoUrl ? (
-                        <div style={{
-                            width: '100%',
-                            maxWidth: isMobile ? '100%' : '1400px'
-                        }}>
-                            <PlyrPlayer 
-                                videoUrl={videoUrl}
-                                onNext={handleNextEpisode}
-                                onPrev={handlePrevEpisode}
-                            />
-                        </div>
                     ) : (
-                        <div style={{ color: colors.textSecondary, fontSize: '16px', textAlign: 'center' }}>
-                            {selectedPlayer === 'kodik' ? 'Плеер Kodik не найден' : 'Эпизоды не найдены'}
+                        <div style={{
+                            width: '100%',
+                            height: '100%'
+                        }}>
+                            {isMobile ? (
+                                <PlayerMobile 
+                                    animeId={animeId}
+                                    animeMeta={animeMeta}
+                                    showSourceButton={false}
+                                />
+                            ) : (
+                                <PlayerPC 
+                                    animeId={animeId}
+                                    animeMeta={animeMeta}
+                                    onNextEpisode={handleNextEpisode}
+                                    onPrevEpisode={handlePrevEpisode}
+                                    showSourceButton={false}
+                                />
+                            )}
                         </div>
                     )}
                 </div>
@@ -561,8 +496,163 @@ export default function WatchAnotherSourcePage() {
         );
     }
 
+    // Если выбран Kodik - показываем iframe на полный экран
+    if (selectedPlayer === 'kodik') {
+        return (
+            <div style={{ 
+                width: '100%', 
+                height: '100vh',
+                background: colors.bg,
+                display: 'flex',
+                flexDirection: 'column',
+                padding: '0',
+                margin: '0',
+                position: 'relative'
+            }}>
+                {/* Кнопка переключения на Libria */}
+                <div
+                    onClick={handleAnilibriaSelect}
+                    style={{
+                        position: 'absolute',
+                        top: '20px',
+                        right: '20px',
+                        zIndex: 1000,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px',
+                        background: colors.primaryBg,
+                        border: `1px solid ${colors.primaryBorder}`,
+                        borderRadius: '10px',
+                        padding: '12px 16px',
+                        textDecoration: 'none',
+                        transition: 'all 0.2s ease',
+                        cursor: 'pointer',
+                        backdropFilter: 'blur(10px)'
+                    }}
+                    onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'translateX(4px)';
+                        e.currentTarget.style.background = colors.primaryHover;
+                    }}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'translateX(0)';
+                        e.currentTarget.style.background = colors.primaryBg;
+                    }}
+                >
+                    <div style={{
+                        width: '24px',
+                        height: '24px',
+                        borderRadius: '6px',
+                        background: colors.primaryBg,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: colors.primary,
+                        flexShrink: 0
+                    }}>
+                        <Crown size={14} strokeWidth={2.5} />
+                    </div>
+                    <div style={{ color: colors.primary, fontSize: '12px', fontWeight: '600' }}>
+                        Переключиться на источник Libria
+                    </div>
+                </div>
 
-    // Показываем выбор плеера со списком слева
+                {/* Кнопка возврата в углу */}
+                <Link 
+                    href={`/anime-page/${animeId}`}
+                    style={{
+                        position: 'absolute',
+                        top: '20px',
+                        left: '20px',
+                        zIndex: 1000,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: isMobile ? '0' : '10px',
+                        background: 'rgba(0, 0, 0, 0.8)',
+                        border: `1px solid ${colors.primaryBorder}`,
+                        borderRadius: isMobile ? '50%' : '10px',
+                        padding: isMobile ? '10px' : '12px',
+                        textDecoration: 'none',
+                        transition: 'all 0.2s ease',
+                        cursor: 'pointer',
+                        backdropFilter: 'blur(10px)',
+                        width: isMobile ? '44px' : 'auto',
+                        height: isMobile ? '44px' : 'auto',
+                        justifyContent: 'center'
+                    }}
+                    onMouseEnter={(e) => {
+                        e.currentTarget.style.background = colors.primaryBg;
+                        e.currentTarget.style.borderColor = colors.primaryBorder;
+                        if (!isMobile) e.currentTarget.style.transform = 'translateX(-4px)';
+                    }}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'rgba(0, 0, 0, 0.8)';
+                        e.currentTarget.style.borderColor = colors.primaryBorder;
+                        e.currentTarget.style.transform = 'translateX(0)';
+                    }}
+                >
+                    {isMobile ? (
+                        <ArrowLeft size={20} strokeWidth={2.5} color={colors.primary} />
+                    ) : (
+                        <>
+                            <div style={{
+                                width: '24px',
+                                height: '24px',
+                                borderRadius: '6px',
+                                background: colors.primaryBg,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                color: colors.primary,
+                                flexShrink: 0
+                            }}>
+                                <ArrowLeft size={14} strokeWidth={2.5} />
+                            </div>
+                            <div style={{ color: '#fff', fontSize: '12px', fontWeight: '600' }}>
+                                {animeTitle}
+                            </div>
+                        </>
+                    )}
+                </Link>
+
+                {/* Kodik iframe на полный экран */}
+                <div style={{
+                    flex: 1,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '100%',
+                    height: '100%'
+                }}>
+                    {isLoading ? (
+                        <div style={{ color: colors.textPrimary, fontSize: '16px' }}>
+                            Загрузка плеера...
+                        </div>
+                    ) : kodikIframeUrl ? (
+                        <iframe
+                            src={kodikIframeUrl}
+                            style={{ 
+                                width: '100%', 
+                                height: '100%', 
+                                border: 'none', 
+                                borderRadius: '0px',
+                                position: 'absolute',
+                                top: '0',
+                                left: '0'
+                            }}
+                            allowFullScreen
+                            frameBorder="0"
+                        />
+                    ) : (
+                        <div style={{ color: colors.textSecondary, fontSize: '16px', textAlign: 'center' }}>
+                            Плеер Kodik не найден
+                        </div>
+                    )}
+                </div>
+            </div>
+        );
+    }
+
+    // Показываем выбор плеера по умолчанию
     return (
         <div style={{ 
             width: '100%', 
@@ -572,17 +662,218 @@ export default function WatchAnotherSourcePage() {
             flexDirection: isMobile ? 'column' : 'row',
             padding: isMobile ? '70px 10px 10px 10px' : '95px 20px 20px 20px',
             gap: isMobile ? '15px' : '20px',
-            marginTop: isMobile ? '-70px' : '-95px'
+            marginTop: isMobile ? '-70px' : '-95px',
+            position: 'relative'
         }}>
-            {/* Боковая панель выбора плеера */}
-            <div style={{
-                width: isMobile ? '100%' : '280px',
-                background: colors.sidebarBg,
-                borderRadius: isMobile ? '12px' : '16px',
-                padding: isMobile ? '15px' : '20px',
-                border: `1px solid ${colors.sidebarBorder}`,
-                height: 'fit-content'
-            }}>
+  
+            {isMobile && (
+                <button
+                    onClick={() => setIsSourcePanelCollapsed(!isSourcePanelCollapsed)}
+                    style={{
+                        position: 'fixed',
+                        left: isSourcePanelCollapsed ? '10px' : 'calc(100% - 290px - 54px)',
+                        top: '90px',
+                        width: '44px',
+                        height: '44px',
+                        borderRadius: '50%',
+                        background: colors.sidebarBg,
+                        border: `2px solid ${colors.sidebarBorder}`,
+                        color: colors.textPrimary,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        zIndex: 100,
+                        transition: 'all 0.3s ease',
+                        boxShadow: '0 2px 12px rgba(0,0,0,0.3)'
+                    }}
+                >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        {isSourcePanelCollapsed ? (
+                            <path d="M9 18l6-6-6-6" />
+                        ) : (
+                            <path d="M15 18l-6-6 6-6" />
+                        )}
+                    </svg>
+                </button>
+            )}
+
+            {/* Скрывающаяся боковая панель для мобильных */}
+            {isMobile && (
+                <>
+                    
+                    {/* Боковая панель выбора плеера */}
+                    <div style={{
+                        position: isSourcePanelCollapsed ? 'absolute' : 'relative',
+                        right: isSourcePanelCollapsed ? '-280px' : '0',
+                        top: '70px',
+                        width: '280px',
+                        background: colors.sidebarBg,
+                        borderRadius: '12px',
+                        padding: '15px',
+                        border: `1px solid ${colors.sidebarBorder}`,
+                        height: 'fit-content',
+                        transition: 'right 0.3s ease',
+                        zIndex: 5,
+                        boxShadow: isSourcePanelCollapsed ? '0 4px 12px rgba(0,0,0,0.15)' : 'none'
+                    }}>
+                    {/* Кнопка возврата на страницу аниме */}
+                    <Link 
+                        href={`/anime-page/${animeId}`}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            background: colors.buttonBg,
+                            border: `1px solid ${colors.buttonBorder}`,
+                            borderRadius: '10px',
+                            padding: '10px',
+                            color: colors.textPrimary,
+                            textDecoration: 'none',
+                            fontSize: '14px',
+                            fontWeight: '500',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.background = colors.buttonHoverBg;
+                            e.currentTarget.style.borderColor = colors.buttonHoverBorder;
+                            e.currentTarget.style.transform = 'translateX(-2px)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.background = colors.buttonBg;
+                            e.currentTarget.style.borderColor = colors.buttonBorder;
+                            e.currentTarget.style.transform = 'translateX(0)';
+                        }}
+                    >
+                        <ArrowLeft size={16} strokeWidth={2} />
+                        <span>Назад к аниме</span>
+                    </Link>
+
+                    {/* Заголовок */}
+                    <h2 style={{
+                        color: colors.textPrimary,
+                        fontSize: '18px',
+                        fontWeight: '600',
+                        margin: '15px 0 10px 0'
+                    }}>
+                        Выбор плеера
+                    </h2>
+
+                    {/* Кнопка Kodik */}
+                    <div 
+                        onClick={handleKodikSelect}
+                        style={{
+                            background: colors.buttonBg,
+                            border: `1px solid ${colors.buttonBorder}`,
+                            borderRadius: '10px',
+                            padding: '12px',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px'
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.background = colors.buttonHoverBg;
+                            e.currentTarget.style.borderColor = colors.buttonHoverBorder;
+                            e.currentTarget.style.transform = 'translateX(-2px)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.background = colors.buttonBg;
+                            e.currentTarget.style.borderColor = colors.buttonBorder;
+                            e.currentTarget.style.transform = 'translateX(0)';
+                        }}
+                    >
+                        <div style={{
+                            width: '36px',
+                            height: '36px',
+                            borderRadius: '8px',
+                            background: colors.iconBg,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: colors.textPrimary,
+                            flexShrink: 0
+                        }}>
+                            <ExternalLink size={18} strokeWidth={2} />
+                        </div>
+                        <div style={{ flex: 1 }}>
+                            <div style={{ color: colors.textPrimary, fontSize: '14px', fontWeight: '600', marginBottom: '2px' }}>
+                                Kodik
+                            </div>
+                            <div style={{ color: colors.textSecondary, fontSize: '11px' }}>
+                                До 720p, много озвучек
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Кнопка Анилибрии */}
+                    <div 
+                        onClick={handleAnilibriaSelect}
+                        style={{
+                            background: colors.buttonBg,
+                            border: `1px solid ${colors.buttonBorder}`,
+                            borderRadius: '10px',
+                            padding: '12px',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            marginTop: '10px'
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.background = colors.buttonHoverBg;
+                            e.currentTarget.style.borderColor = colors.buttonHoverBorder;
+                            e.currentTarget.style.transform = 'translateX(-2px)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.background = colors.buttonBg;
+                            e.currentTarget.style.borderColor = colors.buttonBorder;
+                            e.currentTarget.style.transform = 'translateX(0)';
+                        }}
+                    >
+                        <div style={{
+                            width: '36px',
+                            height: '36px',
+                            borderRadius: '8px',
+                            background: colors.iconBg,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: colors.textPrimary,
+                            flexShrink: 0
+                        }}>
+                            <Crown size={18} strokeWidth={2} />
+                        </div>
+                        <div style={{ flex: 1 }}>
+                            <div style={{ color: colors.textPrimary, fontSize: '14px', fontWeight: '600', marginBottom: '2px' }}>
+                                Анилибрия
+                            </div>
+                            <div style={{ color: colors.textSecondary, fontSize: '11px' }}>
+                                1080p качество
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </>
+            )}
+            
+            {/* Десктопная боковая панель */}
+            {!isMobile && (
+                <div style={{
+                    position: isSourcePanelCollapsed ? 'fixed' : 'relative',
+                    right: isSourcePanelCollapsed ? '-280px' : '0',
+                    width: '280px',
+                    background: colors.sidebarBg,
+                    borderRadius: '16px',
+                    padding: '20px',
+                    border: `1px solid ${colors.sidebarBorder}`,
+                    height: 'fit-content',
+                    transition: 'right 0.3s ease',
+                    zIndex: 5
+                }}>
                 {/* Кнопка возврата на страницу аниме */}
                 <Link 
                     href={`/anime-page/${animeId}`}
@@ -718,8 +1009,8 @@ export default function WatchAnotherSourcePage() {
                         gap: isMobile ? '10px' : '12px'
                     }}
                     onMouseEnter={(e) => {
-                        e.currentTarget.style.background = colors.primaryHover;
-                        e.currentTarget.style.borderColor = colors.primaryBorder;
+                        e.currentTarget.style.background = colors.buttonHoverBg;
+                        e.currentTarget.style.borderColor = colors.buttonHoverBorder;
                         if (!isMobile) e.currentTarget.style.transform = 'translateX(4px)';
                     }}
                     onMouseLeave={(e) => {
@@ -733,11 +1024,10 @@ export default function WatchAnotherSourcePage() {
                         height: isMobile ? '36px' : '40px',
                         borderRadius: '8px',
                         background: colors.iconBg,
-                        border: `1px solid ${colors.primary}40`,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        color: colors.primary,
+                        color: colors.textPrimary,
                         flexShrink: 0
                     }}>
                         <Crown size={isMobile ? 18 : 20} strokeWidth={2} />
@@ -752,6 +1042,7 @@ export default function WatchAnotherSourcePage() {
                     </div>
                 </div>
             </div>
+            )}
 
             {/* Контейнер для плеера */}
             <div style={{
@@ -761,15 +1052,10 @@ export default function WatchAnotherSourcePage() {
                 justifyContent: 'center',
                 minHeight: isMobile ? '250px' : '400px'
             }}>
-                <div style={{
-                    color: colors.textSecondary,
-                    fontSize: '16px',
-                    textAlign: 'center'
-                }}>
-                    Выберите плеер из списка {isMobile ? 'сверху' : 'слева'}
+                <div style={{ color: colors.textSecondary, fontSize: '16px', textAlign: 'center' }}>
+                    Выберите плеер для просмотра
                 </div>
             </div>
         </div>
     );
 }
-

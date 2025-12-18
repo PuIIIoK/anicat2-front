@@ -42,11 +42,12 @@ interface PlayerMobileProps {
     animeId: string;
     animeMeta?: AnimeMeta | null;
     initError?: { code: number; message: string } | null;
+    showSourceButton?: boolean;
 }
 
 type OverlayType = 'none' | 'source' | 'voice' | 'quality' | 'playlist';
 
-export default function PlayerMobile({ animeId, animeMeta, initError }: PlayerMobileProps) {
+export default function PlayerMobile({ animeId, animeMeta, initError, showSourceButton = true }: PlayerMobileProps) {
     const router = useRouter();
     // const pathname = usePathname(); // Не используется после отключения URL синхронизации
     // const searchParams = useSearchParams(); // Не используется после отключения URL синхронизации
@@ -58,7 +59,9 @@ export default function PlayerMobile({ animeId, animeMeta, initError }: PlayerMo
     const didAutoStartRef = useRef<boolean>(false);
     const userInteractedRef = useRef<boolean>(false);
 
-    const [selectedSource, setSelectedSource] = useState<'kodik' | 'libria' | 'yumeko'>('kodik');
+    const [selectedSource, setSelectedSource] = useState<'kodik' | 'libria' | 'yumeko'>(
+        animeMeta?.source || 'kodik'
+    );
     const [availableVoices, setAvailableVoices] = useState<string[]>([]);
     const [selectedVoice, setSelectedVoice] = useState<string | null>(null);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -612,6 +615,66 @@ export default function PlayerMobile({ animeId, animeMeta, initError }: PlayerMo
         };
         
         initializeYumeko();
+    }, [animeMeta, animeId]);
+
+    // Отдельный useEffect для инициализации Libria источника
+    useEffect(() => {
+        if (!animeMeta || !animeId) return;
+        
+        // Только для Libria источника
+        if (animeMeta.source !== 'libria') return;
+        
+        console.log('[Libria-Mobile-init] Starting Libria player initialization');
+        
+        const initializeLibria = async () => {
+            try {
+                // Устанавливаем источник
+                setSelectedSource('libria');
+                
+                // Загружаем эпизоды
+                console.log('[Libria-Mobile-init] Loading Libria episodes for anime:', animeId);
+                const eps = await fetchLibriaEpisodes(animeId);
+                
+                if (eps && eps.length > 0) {
+                    console.log('[Libria-Mobile-init] Libria episodes loaded:', eps);
+                    
+                    // Маппим эпизоды в формат плейлиста
+                    const mapped = eps.map((e: LibriaEpisode, idx: number) => ({
+                        id: Number(e.ordinal ?? idx + 1),
+                        title: (e.title ?? `Эпизод ${e.ordinal ?? idx + 1}`) as string,
+                        duration: undefined,
+                        raw: e
+                    }));
+                    setPlaylistEpisodes(mapped);
+                    
+                    // Определяем целевой эпизод (из meta или первый)
+                    const targetEpisodeNumber = animeMeta.episodeNumber || 1;
+                    const targetEpisode = eps.find((e: LibriaEpisode) => e.ordinal === targetEpisodeNumber) || eps[0];
+                    
+                    setCurrentEpisode(targetEpisodeNumber);
+                    console.log('[Libria-Mobile-init] Selected Libria episode:', targetEpisodeNumber);
+                    
+                    // Устанавливаем качество по умолчанию
+                    const qlist = [
+                        { key: 'auto', label: 'Авто', url: '' as string },
+                        { key: '1080', label: '1080p', url: (targetEpisode?.hls_1080 || '') as string },
+                        { key: '720', label: '720p', url: (targetEpisode?.hls_720 || '') as string },
+                        { key: '480', label: '480p', url: (targetEpisode?.hls_480 || '') as string }
+                    ].filter(q => q.key === 'auto' || q.url);
+                    
+                    setLibriaQualities(qlist);
+                    setLibriaSelectedQualityKey('auto');
+                    
+                    // Устанавливаем активное качество - выбираем лучшее из доступных
+                    const bestQuality = qlist.find(q => q.key !== 'auto')?.key ?? '720';
+                    setLibriaCurrentActiveKey(bestQuality);
+                }
+            } catch (error) {
+                console.error('[Libria-Mobile-init] Error during Libria initialization:', error);
+            }
+        };
+        
+        initializeLibria();
     }, [animeMeta, animeId]);
 
     const sourceUrl = useMemo(() => fetchedSrc ?? undefined, [fetchedSrc]);
@@ -1826,15 +1889,12 @@ export default function PlayerMobile({ animeId, animeMeta, initError }: PlayerMo
                     </div>
                 </div>
                 <div className="mobile-player-topbar__right" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <button className="mobile-player-top-button" aria-label="Плейлист" onClick={() => openOverlay('playlist')}>
-                        <List />
-                    </button>
                     {selectedSource !== 'libria' && selectedSource !== 'yumeko' && (
                         <button className="mobile-player-top-button" aria-label="Озвучка" onClick={() => openOverlay('voice')}>
                             <Headphones />
                         </button>
                     )}
-                    {selectedSource !== 'yumeko' && (
+                    {selectedSource !== 'yumeko' && showSourceButton && (
                         <button className="mobile-player-top-button" aria-label="Источник" onClick={() => openOverlay('source')}>
                             <Sliders />
                         </button>
@@ -1942,6 +2002,9 @@ export default function PlayerMobile({ animeId, animeMeta, initError }: PlayerMo
                         <div className="mobile-player-time">{formatTime(currentTime)} / {formatTime(duration)}</div>
                     </div>
                     <div className="mobile-player-bottom-right">
+                        <button className="mobile-player-bottom-button" aria-label="Плейлист" onClick={() => openOverlay('playlist')}>
+                            <List />
+                        </button>
                         <button className="mobile-player-bottom-button" aria-label="Настройки" onClick={() => openOverlay('quality')}>
                             <Settings />
                         </button>

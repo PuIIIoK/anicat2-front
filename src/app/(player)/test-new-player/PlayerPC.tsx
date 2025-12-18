@@ -37,6 +37,10 @@ interface PlayerPCProps {
     src?: string; // HLS m3u8 ссылка
     onNextEpisode?: () => void;
     onPrevEpisode?: () => void;
+    showSourceButton?: boolean; // Показывать ли кнопку источника
+    autoShowPlaylist?: boolean; // Автоматически открывать плейлист
+    showPlaylist?: boolean; // Управление видимостью плейлиста извне
+    onPlaylistToggle?: (show: boolean) => void; // Callback для изменения состояния плейлиста
 }
 
 type OverlayKind = 'volume' | 'seek-forward' | 'seek-backward' | 'notice' | 'play-pause';
@@ -59,7 +63,7 @@ function decodeVoiceName(voiceName: string | null): string | null {
     }
 }
 
-export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPrevEpisode }: PlayerPCProps) {
+export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPrevEpisode, showSourceButton = true, autoShowPlaylist = false, showPlaylist: externalShowPlaylist, onPlaylistToggle }: PlayerPCProps) {
     console.log('[player] component mounted');
     // const router = useRouter(); // Не используется
     // const pathname = usePathname(); // Не используется после отключения URL синхронизации
@@ -118,7 +122,9 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
     const resumeCandidateRef = useRef<null | { epId: number; time: number; duration: number }>(null);
     const resumePromptShownForEpisodeRef = useRef<Set<number>>(new Set()); // Отслеживание показанных плашек для эпизодов
     const [showSourceDropdown, setShowSourceDropdown] = useState(false);
-    const [selectedSource, setSelectedSource] = useState<'kodik' | 'libria' | 'yumeko'>('kodik');
+    const [selectedSource, setSelectedSource] = useState<'kodik' | 'libria' | 'yumeko'>(
+        animeMeta?.source || 'kodik'
+    );
     const [selectedKodikVoice, setSelectedKodikVoice] = useState<string | null>(null);
     const [isLibriaAvailable, setIsLibriaAvailable] = useState(false);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -448,6 +454,27 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
         try { pushAllCacheForAnimeToServer(animeId); } catch {}
     }, [animeId, selectedSource, selectedKodikVoice, selectedYumekoVoice, playlistEpisodes, episodes, getVoiceForProgress]);
 
+    // Автоматическое открытие плейлиста при загрузке серий
+    useEffect(() => {
+        if (autoShowPlaylist && playlistEpisodes.length > 0 && !showPlaylist) {
+            setShowPlaylist(true);
+        }
+    }, [autoShowPlaylist, playlistEpisodes.length, showPlaylist]);
+
+    // Синхронизация внешнего состояния плейлиста с внутренним
+    useEffect(() => {
+        if (externalShowPlaylist !== undefined && externalShowPlaylist !== showPlaylist) {
+            setShowPlaylist(externalShowPlaylist);
+        }
+    }, [externalShowPlaylist, showPlaylist]);
+
+    // Callback для уведомления об изменении состояния плейлиста
+    useEffect(() => {
+        if (onPlaylistToggle && showPlaylist !== externalShowPlaylist) {
+            onPlaylistToggle(showPlaylist);
+        }
+    }, [showPlaylist, onPlaylistToggle, externalShowPlaylist]);
+
     // Восстановление времени из URL при загрузке
     useEffect(() => {
         const timeParam = animeMeta?.time;
@@ -529,6 +556,12 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
     }, [animeMeta]);
 
     useEffect(() => {
+        console.log('[Init-Debug] Standard init useEffect started', { 
+            animeMetaSource: animeMeta?.source, 
+            selectedSource, 
+            hasPlayerParamsInURL,
+            animeId 
+        });
         let mounted = true;
         // Если src передан пропсом — не нужно ничего запрашивать
         if (src) return;
@@ -537,8 +570,8 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
         if (!animeMeta) return;
         
         // Для Yumeko или Libria источника пропускаем этот useEffect полностью
-        if (animeMeta.source === 'yumeko' || animeMeta.source === 'libria') {
-            console.log('[Init] Yumeko/Libria source detected, skipping standard initialization');
+        if (animeMeta.source === 'yumeko' || animeMeta.source === 'libria' || selectedSource !== 'kodik') {
+            console.log('[Init] Yumeko/Libria source detected or non-Kodik source, skipping standard initialization');
             return;
         }
         
@@ -775,6 +808,12 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
 
     // Последовательная инициализация плеера на основе прогресса с сервера
     useEffect(() => {
+        console.log('[Server-Debug] Server init useEffect started', { 
+            animeMetaSource: animeMeta?.source, 
+            selectedSource, 
+            hasPlayerParamsInURL,
+            animeId 
+        });
         if (!animeMeta || !hasPlayerParamsInURL || !animeId) return;
         
         console.log('[Server-init] Starting player initialization from server progress');
@@ -843,7 +882,57 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                     return;
                 }
                 
-                // 1. Получаем последний прогресс с сервера (только для Kodik/Libria)
+                // ВАЖНО: Если явно указан источник Libria в URL - инициализируем только его
+                if (animeMeta.source === 'libria') {
+                    console.log('[Server-init] Libria source detected in URL, initializing Libria directly');
+                    setSelectedSource('libria');
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    
+                    // ЭТАП 1: Инициализируем Libria эпизоды
+                    const eps = await fetchLibriaEpisodes(animeId);
+                    if (eps && Array.isArray(eps)) {
+                        setIsLibriaAvailable(true);
+                        const mapped = eps.map((e: any, idx: number) => ({
+                            id: Number(e.ordinal ?? e.number ?? idx + 1),
+                            title: e.name ?? `Эпизод ${e.ordinal ?? e.number ?? idx + 1}`,
+                            duration: undefined,
+                            raw: e
+                        }));
+                        setPlaylistEpisodes(mapped);
+                        
+                        // Определяем целевой эпизод (из meta или первый)
+                        const targetEpisodeNumber = animeMeta.episodeNumber || 1;
+                        const targetEpisode = eps.find((e: any) => e.ordinal === targetEpisodeNumber) || eps[0];
+                        
+                        setCurrentEpisode(targetEpisodeNumber);
+                        console.log('[Server-init] Selected Libria episode:', targetEpisodeNumber);
+                        
+                        // Устанавливаем качество по умолчанию
+                        const qlist = [
+                            { key: 'auto', label: 'Авто', url: '' as string },
+                            { key: '1080', label: '1080p', url: (targetEpisode?.hls_1080 || '') as string },
+                            { key: '720', label: '720p', url: (targetEpisode?.hls_720 || '') as string },
+                            { key: '480', label: '480p', url: (targetEpisode?.hls_480 || '') as string }
+                        ].filter(q => q.key === 'auto' || q.url);
+                        
+                        setLibriaQualities(qlist);
+                        
+                        // Выбираем лучшее качество
+                        const defaultKey = qlist.length > 1 ? '1080' : 'auto';
+                        setLibriaSelectedQualityKey(defaultKey);
+                        setLibriaCurrentActiveKey(defaultKey);
+                        
+                        const chosen = qlist.find(q => q.key === defaultKey) ?? qlist[0];
+                        if (chosen && chosen.url && chosen.url !== '') {
+                            setFetchedSrc(chosen.url);
+                            console.log('[Server-init] Libria stream loaded:', chosen.url);
+                        }
+                    }
+                    
+                    return;
+                }
+                
+                // 1. Получаем последний прогресс с сервера (только для Kodik)
                 const lastProgress = await fetchLastWatchedProgress(animeId);
                 console.log('[Server-init] Fetched last progress from server:', lastProgress);
                 
@@ -1144,6 +1233,57 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                                     console.log('[Server-init] Yumeko stream loaded:', hlsUrl);
                                     setFetchedSrc(hlsUrl);
                                 }
+                            }
+                        }
+                        
+                        return;
+                    }
+                    
+                    // Для Libria - инициализируем эпизоды
+                    if (defaultSource === 'libria') {
+                        console.log('[Server-init] Initializing Libria from URL params');
+                        
+                        // Загружаем эпизоды
+                        const eps = await fetchLibriaEpisodes(animeId);
+                        
+                        if (eps && eps.length > 0) {
+                            setIsLibriaAvailable(true);
+                            
+                            // Маппим эпизоды в формат плейлиста
+                            const mapped = eps.map((ep: any) => ({
+                                id: ep.ordinal,
+                                title: ep.title || `Эпизод ${ep.ordinal}`,
+                                duration: undefined,
+                                raw: ep
+                            }));
+                            setPlaylistEpisodes(mapped);
+                            
+                            // Определяем целевой эпизод (из meta или первый)
+                            const targetEpisodeNumber = animeMeta.episodeNumber || 1;
+                            const targetEpisode = eps.find((e: any) => e.ordinal === targetEpisodeNumber) || eps[0];
+                            
+                            setCurrentEpisode(targetEpisodeNumber);
+                            console.log('[Server-init] Selected Libria episode:', targetEpisodeNumber);
+                            
+                            // Устанавливаем качество по умолчанию
+                            const qlist = [
+                                { key: 'auto', label: 'Авто', url: '' as string },
+                                { key: '1080', label: '1080p', url: (targetEpisode?.hls_1080 || '') as string },
+                                { key: '720', label: '720p', url: (targetEpisode?.hls_720 || '') as string },
+                                { key: '480', label: '480p', url: (targetEpisode?.hls_480 || '') as string }
+                            ].filter(q => q.key === 'auto' || q.url);
+                            
+                            setLibriaQualities(qlist);
+                            
+                            // Выбираем лучшее качество
+                            const defaultKey = qlist.length > 1 ? '1080' : 'auto';
+                            setLibriaSelectedQualityKey(defaultKey);
+                            setLibriaCurrentActiveKey(defaultKey);
+                            
+                            const chosen = qlist.find(q => q.key === defaultKey) ?? qlist[0];
+                            if (chosen && chosen.url && chosen.url !== '') {
+                                setFetchedSrc(chosen.url);
+                                console.log('[Server-init] Libria stream loaded:', chosen.url);
                             }
                         }
                         
@@ -2974,8 +3114,8 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                     )}
                 </div>
                 <div className="player-topbar__right">
-                    {/* Кнопка выбора источника скрыта для Yumeko */}
-                    {selectedSource !== 'yumeko' && (
+                    {/* Кнопка выбора источника скрыта для Yumeko и по параметру showSourceButton */}
+                    {selectedSource !== 'yumeko' && showSourceButton && (
                         <IconButton 
                             label="Источник видео" 
                             onClick={() => setShowSourceDropdown(!showSourceDropdown)} 
@@ -3654,8 +3794,8 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                 </div>
             )}
 
-            {/* Выдвигающееся окно выбора источника (скрыто для Yumeko) */}
-            {showSourceDropdown && selectedSource !== 'yumeko' && (
+            {/* Выдвигающееся окно выбора источника (скрыто для Yumeko и по параметру showSourceButton) */}
+            {showSourceDropdown && selectedSource !== 'yumeko' && showSourceButton && (
                 <div className="player-source-dropdown">
                     <div className="player-source-header">
                         <span>Источник:</span>
