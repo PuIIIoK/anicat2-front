@@ -1822,18 +1822,8 @@
   .franchise-section {
     max-width: none;
     margin: 0;
-    padding: 30px 40px;
-    padding-left: 275px; // Выравнивание по контенту выше (40px + 200px poster + 35px gap)
     
-    @media (max-width: 1200px) {
-      padding: 30px 40px;
-      padding-left: 275px;
-    }
-    
-    @media (max-width: 900px) {
-      padding: 24px 20px;
-      padding-left: 20px;
-    }
+    // Убраны все медиа-запросы, так как карточки все равно по 1 штуке
     
     .similar-section-header,
     .franchise-section-header {
@@ -1881,21 +1871,11 @@
         }
       }
       
-      @media (max-width: 768px) {
-        gap: 14px !important;
-        
-        .yumeko-anime-card {
-          width: 140px !important;
-          
-          .yumeko-anime-card-cover {
-            width: 140px !important;
-            height: 200px !important;
-          }
-        }
-      }
+      // Убран медиа-запрос, так как карточки все равно по 1 штуке
     }
   }
 }
+
 
 // ===== Стили для вкладки Эпизоды =====
 .crunch-episodes {

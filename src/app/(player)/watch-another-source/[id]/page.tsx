@@ -258,7 +258,7 @@ export default function WatchAnotherSourcePage() {
                 flexDirection: isMobile ? 'column' : 'row',
                 padding: isMobile ? '70px 10px 10px 10px' : '95px 20px 20px 20px',
                 gap: isMobile ? '15px' : '20px',
-                marginTop: isMobile ? '-70px' : '-95px'
+                marginTop: isMobile ? '0px' : '0px'
             }}>
                 {/* Боковая панель выбора плеера */}
                 <div 

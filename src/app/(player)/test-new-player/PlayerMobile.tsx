@@ -76,6 +76,9 @@ export default function PlayerMobile({ animeId, animeMeta, initError }: PlayerMo
     const [kodikQualities, setKodikQualities] = useState<Array<{ key: string; label: string; url: string }>>([]);
     const [kodikSelectedQualityKey, setKodikSelectedQualityKey] = useState<string | null>(null);
     const [kodikCurrentActiveKey, setKodikCurrentActiveKey] = useState<string | null>(null);
+    const [yumekoQualities, setYumekoQualities] = useState<Array<{ key: string; label: string; url: string }>>([]);
+    const [yumekoSelectedQualityKey, setYumekoSelectedQualityKey] = useState<string | null>(null);
+    const [yumekoCurrentActiveKey, setYumekoCurrentActiveKey] = useState<string | null>(null);
 
     const [fetchedSrc, setFetchedSrc] = useState<string | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -591,6 +594,15 @@ export default function PlayerMobile({ animeId, animeMeta, initError }: PlayerMo
                         if (hlsUrl) {
                             console.log('[Yumeko-Mobile-init] Yumeko stream loaded:', hlsUrl);
                             setFetchedSrc(hlsUrl);
+                            
+                            // Получаем реальные качества из m3u8
+                            const yumekoQualityList = await parseYumekoQualities(hlsUrl);
+                            setYumekoQualities(yumekoQualityList);
+                            setYumekoSelectedQualityKey('auto');
+                            
+                            // Устанавливаем активное качество - выбираем лучшее из доступных
+                            const bestQuality = yumekoQualityList.find(q => q.key !== 'auto')?.key ?? '720';
+                            setYumekoCurrentActiveKey(bestQuality);
                         }
                     }
                 }
@@ -1399,6 +1411,27 @@ export default function PlayerMobile({ animeId, animeMeta, initError }: PlayerMo
                 const chosen = qlist.find(q => q.key === defaultKey) ?? qlist[0];
                 if (chosen) setFetchedSrc(chosen.url);
             }
+        } else if (selectedSource === 'yumeko') {
+            // Обработка для Yumeko - загрузка HLS потока для нового эпизода
+            const ep = playlistEpisodes.find(p => p.id === epId);
+            if (ep && ep.raw) {
+                const yumekoEp = ep.raw as YumekoEpisode;
+                const hlsUrl = await fetchYumekoEpisodeStream(yumekoEp.id);
+                
+                if (hlsUrl) {
+                    console.log('[changeEpisode] Yumeko stream loaded for episode:', yumekoEp.episodeNumber);
+                    setFetchedSrc(hlsUrl);
+                    
+                    // Получаем реальные качества из m3u8
+                    const yumekoQualityList = await parseYumekoQualities(hlsUrl);
+                    setYumekoQualities(yumekoQualityList);
+                    setYumekoSelectedQualityKey('auto');
+                    
+                    // Устанавливаем активное качество - выбираем лучшее из доступных
+                    const bestQuality = yumekoQualityList.find(q => q.key !== 'auto')?.key ?? '720';
+                    setYumekoCurrentActiveKey(bestQuality);
+                }
+            }
         }
     };
 
@@ -1615,6 +1648,124 @@ export default function PlayerMobile({ animeId, animeMeta, initError }: PlayerMo
         closeOverlay();
     };
 
+    const chooseLibriaKey = (qlist: Array<{ key: string; label: string; url: string }>) => {
+        if (!qlist || !qlist.length) return null;
+        const et = getEffectiveNetworkType();
+        const priority = et.includes('2g') ? ['360','480','720','1080'] : et.includes('3g') ? ['480','720','1080'] : ['1080','720','480','360'];
+        for (const pref of priority) {
+            const found = qlist.find(q => q.key.toLowerCase().includes(pref) || q.label.toLowerCase().includes(pref));
+            if (found) return found.key;
+        }
+        return qlist[0].key;
+    };
+
+    const getEffectiveNetworkType = () => {
+        try {
+            const nav = navigator as Navigator & { connection?: { effectiveType?: string } };
+            return nav.connection?.effectiveType || '4g';
+        } catch { return '4g'; }
+    };
+
+    const parseYumekoQualities = async (hlsUrl: string): Promise<Array<{ key: string; label: string; url: string }>> => {
+        try {
+            console.log('[parseYumekoQualities] Starting to parse m3u8:', hlsUrl);
+            
+            // Получаем содержимое m3u8 файла
+            const response = await fetch(hlsUrl);
+            const m3u8Content = await response.text();
+            
+            console.log('[parseYumekoQualities] M3U8 content length:', m3u8Content.length);
+            console.log('[parseYumekoQualities] First 500 chars:', m3u8Content.substring(0, 500));
+            
+            const qualities: Array<{ key: string; label: string; url: string }> = [];
+            const lines = m3u8Content.split('\n');
+            
+            // Ищем пары EXT-X-STREAM-INF и URL
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (line.startsWith('#EXT-X-STREAM-INF:')) {
+                    // Ищем разрешение в строке
+                    const resolutionMatch = line.match(/RESOLUTION=(\d+x(\d+))/);
+                    const bandwidthMatch = line.match(/BANDWIDTH=(\d+)/);
+                    
+                    // Ищем следующую непустую строку - это URL
+                    let urlLine = '';
+                    for (let j = i + 1; j < lines.length; j++) {
+                        const nextLine = lines[j].trim();
+                        if (nextLine && !nextLine.startsWith('#')) {
+                            urlLine = nextLine;
+                            break;
+                        }
+                    }
+                    
+                    if (urlLine) {
+                        let qualityKey = '';
+                        let qualityLabel = '';
+                        
+                        if (resolutionMatch) {
+                            const height = parseInt(resolutionMatch[2]);
+                            // Исключаем качества ниже 720p
+                            if (height < 720) {
+                                continue;
+                            }
+                            qualityKey = resolutionMatch[2]; // высота
+                            qualityLabel = `${resolutionMatch[2]}p`;
+                        } else if (bandwidthMatch) {
+                            // Определяем качество по bandwidth (только 1080p и 720p)
+                            const bandwidth = parseInt(bandwidthMatch[1]);
+                            if (bandwidth > 5000000) {
+                                qualityKey = '1080';
+                                qualityLabel = '1080p';
+                            } else if (bandwidth > 2500000) {
+                                qualityKey = '720';
+                                qualityLabel = '720p';
+                            } else {
+                                // Пропускаем низкие качества
+                                continue;
+                            }
+                        }
+                        
+                        if (qualityKey) {
+                            // Если URL относительный, делаем абсолютным
+                            let fullUrl = urlLine;
+                            if (!urlLine.startsWith('http')) {
+                                const baseUrl = hlsUrl.substring(0, hlsUrl.lastIndexOf('/') + 1);
+                                fullUrl = baseUrl + urlLine;
+                            }
+                            
+                            qualities.push({
+                                key: qualityKey,
+                                label: qualityLabel,
+                                url: fullUrl
+                            });
+                        }
+                    }
+                }
+            }
+            
+            console.log('[parseYumekoQualities] Found qualities:', qualities);
+            
+            // Если не нашли качества, возвращаем пустой массив
+            // Опция "Auto" будет добавлена на уровне интерфейса
+            if (qualities.length === 0) {
+                console.log('[parseYumekoQualities] No qualities found, returning empty array');
+                return [];
+            } else {
+                // Сортируем по убыванию качества
+                qualities.sort((a, b) => parseInt(b.key) - parseInt(a.key));
+            }
+            
+            return qualities;
+        } catch (error) {
+            console.error('[parseYumekoQualities] Error parsing m3u8:', error);
+            // В случае ошибки возвращаем базовый список без Auto
+            return [
+                { key: '1080', label: '1080p', url: hlsUrl },
+                { key: '720', label: '720p', url: hlsUrl }
+            ];
+        }
+    };
+
     const onSelectQuality = (key: string) => {
         if (selectedSource === 'libria') {
             setLibriaSelectedQualityKey(key);
@@ -1623,6 +1774,10 @@ export default function PlayerMobile({ animeId, animeMeta, initError }: PlayerMo
         } else if (selectedSource === 'kodik') {
             setKodikSelectedQualityKey(key);
             const q = kodikQualities.find(q => q.key === key);
+            if (q) setFetchedSrc(q.url);
+        } else if (selectedSource === 'yumeko') {
+            setYumekoSelectedQualityKey(key);
+            const q = yumekoQualities.find(q => q.key === key);
             if (q) setFetchedSrc(q.url);
         }
         closeOverlay();
@@ -1854,7 +2009,11 @@ export default function PlayerMobile({ animeId, animeMeta, initError }: PlayerMo
                                         </div>
                                         <div className="mobile-player-list-item" onClick={() => setSettingsSection('quality')}>
                                             <span>Качество</span>
-                                            <span className="mobile-player-chip">{selectedSource === 'libria' ? (libriaCurrentActiveKey ?? 'Auto') : (kodikCurrentActiveKey ?? 'Auto')}</span>
+                                            <span className="mobile-player-chip">
+                                                {selectedSource === 'libria' ? (libriaSelectedQualityKey === 'auto' ? 'Auto' : (libriaCurrentActiveKey ?? 'Auto')) : 
+                                                 selectedSource === 'kodik' ? (kodikSelectedQualityKey === 'auto' ? 'Auto' : (kodikCurrentActiveKey ?? 'Auto')) :
+                                                 (yumekoCurrentActiveKey ?? 'Auto')}
+                                            </span>
                                         </div>
                                         {/* removed hotkeys from mobile settings */}
                                         <div className="mobile-player-list-item">
@@ -1877,10 +2036,51 @@ export default function PlayerMobile({ animeId, animeMeta, initError }: PlayerMo
 
                                 {settingsSection === 'quality' && (
                                     <div className="mobile-player-list settings">
-                                        {(selectedSource === 'libria' ? libriaQualities : kodikQualities).map(q => (
-                                            <div key={q.key} className={`mobile-player-list-item ${(selectedSource === 'libria' ? libriaSelectedQualityKey : kodikSelectedQualityKey) === q.key ? 'active' : ''}`} onClick={() => { onSelectQuality(q.key); setSettingsSection('main'); }}>
+                                        {[
+                                            { key: 'auto', label: 'Auto', url: '' },
+                                            ...(selectedSource === 'libria' ? libriaQualities : 
+                                              selectedSource === 'kodik' ? kodikQualities : 
+                                              yumekoQualities)
+                                        ].map(q => (
+                                            <div key={q.key} className={`mobile-player-list-item ${
+                                                (selectedSource === 'libria' ? (libriaSelectedQualityKey === 'auto' ? libriaCurrentActiveKey : libriaSelectedQualityKey) : 
+                                                 selectedSource === 'kodik' ? (kodikSelectedQualityKey === 'auto' ? kodikCurrentActiveKey : kodikSelectedQualityKey) :
+                                                 (yumekoSelectedQualityKey === 'auto' ? yumekoCurrentActiveKey : yumekoSelectedQualityKey)) === q.key ? 'active' : ''}`} onClick={() => { 
+                                                if (q.key === 'auto') {
+                                                    if (selectedSource === 'libria') {
+                                                        setLibriaSelectedQualityKey('auto');
+                                                        const activeKey = libriaCurrentActiveKey ?? chooseLibriaKey(libriaQualities) ?? (libriaQualities[0]?.key ?? null);
+                                                        setLibriaCurrentActiveKey(activeKey);
+                                                        if (activeKey) {
+                                                            const active = libriaQualities.find(x => x.key === activeKey);
+                                                            if (active) setFetchedSrc(active.url);
+                                                        }
+                                                    } else if (selectedSource === 'kodik') {
+                                                        setKodikSelectedQualityKey('auto');
+                                                        const activeKey = kodikCurrentActiveKey ?? (kodikQualities[0]?.key ?? null);
+                                                        setKodikCurrentActiveKey(activeKey);
+                                                        if (activeKey) {
+                                                            const active = kodikQualities.find(x => x.key === activeKey);
+                                                            if (active) setFetchedSrc(active.url);
+                                                        }
+                                                    } else if (selectedSource === 'yumeko') {
+                                                        setYumekoSelectedQualityKey('auto');
+                                                        const activeKey = yumekoCurrentActiveKey ?? (yumekoQualities[0]?.key ?? null);
+                                                        setYumekoCurrentActiveKey(activeKey);
+                                                        if (activeKey) {
+                                                            const active = yumekoQualities.find(x => x.key === activeKey);
+                                                            if (active) setFetchedSrc(active.url);
+                                                        }
+                                                    }
+                                                } else {
+                                                    onSelectQuality(q.key);
+                                                }
+                                                setSettingsSection('main'); 
+                                            }}>
                                                 <span>{q.label}</span>
-                                                {(selectedSource === 'libria' ? (libriaSelectedQualityKey === q.key || libriaCurrentActiveKey === q.key) : (kodikSelectedQualityKey === q.key || kodikCurrentActiveKey === q.key)) && <span className="mobile-player-chip">Выбрано</span>}
+                                                {(selectedSource === 'libria' ? (libriaSelectedQualityKey === 'auto' ? libriaCurrentActiveKey === q.key : libriaSelectedQualityKey === q.key) : 
+                                                 selectedSource === 'kodik' ? (kodikSelectedQualityKey === 'auto' ? kodikCurrentActiveKey === q.key : kodikSelectedQualityKey === q.key) :
+                                                 (yumekoSelectedQualityKey === 'auto' ? yumekoCurrentActiveKey === q.key : yumekoSelectedQualityKey === q.key)) && <span className="mobile-player-chip">Выбрано</span>}
                                             </div>
                                         ))}
                                     </div>
