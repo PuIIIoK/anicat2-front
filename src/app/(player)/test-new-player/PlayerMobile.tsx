@@ -404,10 +404,15 @@ export default function PlayerMobile({ animeId, animeMeta, initError, showSource
                             setAutoPlay(true);
                         }
                     } else if (targetSource === 'libria') {
-                        console.log('[Mobile-Server-init] Step 1: Initializing Libria from server progress');
+                        console.log('[Mobile-Server-init] Step 1: Checking Libria availability');
                         
-                        // ЭТАП 1: Инициализируем Libria эпизоды
-                        await bootstrapLibria(animeId);
+                        // ЭТАП 1: Проверяем доступность Libria (initializeLibria сделает полную инициализацию)
+                        try {
+                            const eps = await fetchLibriaEpisodes(animeId);
+                            setIsLibriaAvailable(Array.isArray(eps) && eps.length > 0);
+                        } catch {
+                            setIsLibriaAvailable(false);
+                        }
                         
                         // ЭТАП 2: Устанавливаем серию из прогресса
                         const targetEpisode = lastProgress.episodeId || 1;
@@ -522,12 +527,14 @@ export default function PlayerMobile({ animeId, animeMeta, initError, showSource
                             console.log('[Mobile-Server-init] Step 5: Stream loaded, setting video source');
                         }
                     } else {
-                        // Если нет Kodik параметров, пробуем Libria
-                        console.log('[Mobile-Server-init] No Kodik params, trying Libria initialization');
+                        // Если нет Kodik параметров, проверяем Libria
+                        console.log('[Mobile-Server-init] No Kodik params, checking Libria availability');
                         try {
-                            await bootstrapLibria(animeId);
+                            const eps = await fetchLibriaEpisodes(animeId);
+                            setIsLibriaAvailable(Array.isArray(eps) && eps.length > 0);
                         } catch (e) {
-                            console.warn('[Mobile-Server-init] Libria bootstrap failed:', e);
+                            console.warn('[Mobile-Server-init] Libria check failed:', e);
+                            setIsLibriaAvailable(false);
                         }
                     }
                 }
@@ -657,17 +664,33 @@ export default function PlayerMobile({ animeId, animeMeta, initError, showSource
                     // Устанавливаем качество по умолчанию
                     const qlist = [
                         { key: 'auto', label: 'Авто', url: '' as string },
-                        { key: '1080', label: '1080p', url: (targetEpisode?.hls_1080 || '') as string },
-                        { key: '720', label: '720p', url: (targetEpisode?.hls_720 || '') as string },
-                        { key: '480', label: '480p', url: (targetEpisode?.hls_480 || '') as string }
+                        { key: 'hls_1080', label: '1080p', url: (targetEpisode?.hls_1080 || '') as string },
+                        { key: 'hls_720', label: '720p', url: (targetEpisode?.hls_720 || '') as string },
+                        { key: 'hls_480', label: '480p', url: (targetEpisode?.hls_480 || '') as string }
                     ].filter(q => q.key === 'auto' || q.url);
                     
                     setLibriaQualities(qlist);
-                    setLibriaSelectedQualityKey('auto');
                     
-                    // Устанавливаем активное качество - выбираем лучшее из доступных
-                    const bestQuality = qlist.find(q => q.key !== 'auto')?.key ?? '720';
-                    setLibriaCurrentActiveKey(bestQuality);
+                    // Восстанавливаем сохраненное качество или используем auto
+                    const savedQuality = localStorage.getItem('libria-quality-preference') || 'auto';
+                    setLibriaSelectedQualityKey(savedQuality);
+                    
+                    // Устанавливаем активное качество и загружаем URL видео
+                    let activeQualityKey: string;
+                    if (savedQuality !== 'auto' && qlist.find(q => q.key === savedQuality)) {
+                        activeQualityKey = savedQuality;
+                        setLibriaCurrentActiveKey(savedQuality);
+                    } else {
+                        activeQualityKey = qlist.find(q => q.key !== 'auto')?.key ?? 'hls_720';
+                        setLibriaCurrentActiveKey(activeQualityKey);
+                    }
+                    
+                    // КРИТИЧНО: Загружаем URL видео для выбранной серии с выбранным качеством
+                    const videoUrl = targetEpisode?.[activeQualityKey as keyof LibriaEpisode] as string | undefined;
+                    if (videoUrl) {
+                        setFetchedSrc(videoUrl);
+                        console.log('[Libria-Mobile-init] Video URL loaded for episode', targetEpisodeNumber, 'quality:', activeQualityKey);
+                    }
                 }
             } catch (error) {
                 console.error('[Libria-Mobile-init] Error during Libria initialization:', error);
@@ -816,62 +839,8 @@ export default function PlayerMobile({ animeId, animeMeta, initError, showSource
         }
     }, []);
 
-    // Build Libria episodes/qualities
-    const bootstrapLibria = useCallback(async (id: string) => {
-        const eps = await fetchLibriaEpisodes(id);
-        if (!eps || !Array.isArray(eps)) {
-            setIsLibriaAvailable(false);
-            return;
-        }
-        setIsLibriaAvailable(true);
-        const mapped = eps.map((e: LibriaEpisode, idx: number) => ({
-            id: Number(e.ordinal ?? e.number ?? idx + 1),
-            title: e.name ?? `Эпизод ${e.ordinal ?? e.number ?? idx + 1}`,
-            duration: typeof e.duration === 'number'
-                ? formatEpisodeDurationNumber(normalizeDurationToSeconds(e.duration as number))
-                : (typeof e.duration === 'string' ? (e.duration as string) : undefined),
-            raw: e
-        }));
-        setPlaylistEpisodes(mapped);
-        setCurrentEpisode(mapped[0]?.id ?? 1);
-        const firstRaw = mapped[0]?.raw ?? null;
-        if (firstRaw) {
-            // extract Libria skips for opening/ending
-            const fr = firstRaw as Record<string, unknown>;
-            const opening0 = fr['opening'] ?? (fr['skips'] && (fr['skips'] as Record<string, unknown>)['opening'] ? ((fr['skips'] as Record<string, unknown>)['opening'] as unknown[])[0] : undefined);
-            const ending0 = fr['ending'] ?? (fr['skips'] && (fr['skips'] as Record<string, unknown>)['ending'] ? ((fr['skips'] as Record<string, unknown>)['ending'] as unknown[])[0] : undefined);
-            const segs: Record<string, { start: number; end: number }> = {};
-            if (opening0) {
-                const o = opening0 as Record<string, unknown>;
-                const startVal = o['start'];
-                const stopVal = o['stop'] ?? o['stop'];
-                if (typeof startVal !== 'undefined' && typeof stopVal !== 'undefined') {
-                    const s = normalizeDurationToSeconds(Number(startVal));
-                    const e = normalizeDurationToSeconds(Number(stopVal));
-                    if (Number.isFinite(s) && Number.isFinite(e)) segs.opening = { start: s, end: e };
-                }
-            }
-            if (ending0) {
-                const o = ending0 as Record<string, unknown>;
-                const startVal = o['start'];
-                const stopVal = o['stop'];
-                if (typeof startVal !== 'undefined' && typeof stopVal !== 'undefined') {
-                    const s = normalizeDurationToSeconds(Number(startVal));
-                    const e = normalizeDurationToSeconds(Number(stopVal));
-                    if (Number.isFinite(s) && Number.isFinite(e)) segs.ending = { start: s, end: e };
-                }
-            }
-            setLibriaSkips(Object.keys(segs).length ? segs : null);
-            const keys = Object.keys(fr).filter(k => /^hls_?/i.test(k));
-            const qlist = keys.map(k => ({ key: k, label: k.replace(/hls_?/i, '') + 'p', url: fr[k] as string })).filter(q => q.url);
-            setLibriaQualities(qlist);
-            setLibriaSelectedQualityKey('auto');
-            const defaultKey = qlist.find(q => /1080|720/.test(q.label))?.key ?? qlist[0]?.key ?? null;
-            setLibriaCurrentActiveKey(defaultKey);
-            const chosen = qlist.find(q => q.key === defaultKey) ?? qlist[0];
-            if (chosen) setFetchedSrc(chosen.url);
-        }
-    }, []);
+    // Build Libria episodes/qualities - эта функция удалена, используется initializeLibria вместо неё
+    // bootstrapLibria всегда загружала первую серию и конфликтовала с initializeLibria
 
     // Initial bootstrap from meta
     useEffect(() => {
@@ -886,9 +855,10 @@ export default function PlayerMobile({ animeId, animeMeta, initError, showSource
                 
                 // Всегда проверяем доступность libria для корректного отображения опций
                 try {
-                    await bootstrapLibria(animeId);
+                    const eps = await fetchLibriaEpisodes(animeId);
+                    setIsLibriaAvailable(Array.isArray(eps) && eps.length > 0);
                 } catch (e) {
-                    console.warn('[mobile] libria bootstrap failed:', e);
+                    console.warn('[mobile] libria check failed:', e);
                     setIsLibriaAvailable(false);
                 }
                 
@@ -912,7 +882,7 @@ export default function PlayerMobile({ animeId, animeMeta, initError, showSource
         })();
         return () => { mounted = false; };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [animeId, animeMeta, selectedSource, bootstrapKodik, bootstrapLibria, isLibriaAvailable]);
+    }, [animeId, animeMeta, selectedSource, bootstrapKodik, isLibriaAvailable]);
 
     // HLS init
     useEffect(() => {
@@ -1468,11 +1438,26 @@ export default function PlayerMobile({ animeId, animeMeta, initError, showSource
                 const keys = Object.keys(fr).filter((k: string) => /^hls_?/i.test(k));
                 const qlist = keys.map((k: string) => ({ key: k, label: k.replace(/hls_?/i, '') + 'p', url: fr[k] as string })).filter(q => q.url);
                 setLibriaQualities(qlist);
-                setLibriaSelectedQualityKey('auto');
-                const defaultKey = qlist.find(q => /1080|720/.test(q.label))?.key ?? qlist[0]?.key ?? null;
-                setLibriaCurrentActiveKey(defaultKey);
-                const chosen = qlist.find(q => q.key === defaultKey) ?? qlist[0];
-                if (chosen) setFetchedSrc(chosen.url);
+                
+                // Сохраняем выбранное пользователем качество при переключении серий
+                const savedQuality = localStorage.getItem('libria-quality-preference') || 'auto';
+                if (libriaSelectedQualityKey && libriaSelectedQualityKey !== 'auto' && fr[libriaSelectedQualityKey]) {
+                    setLibriaCurrentActiveKey(libriaSelectedQualityKey);
+                    setFetchedSrc(fr[libriaSelectedQualityKey] as string);
+                } else {
+                    // Режим auto или качество недоступно для этой серии
+                    if (savedQuality !== 'auto' && fr[savedQuality]) {
+                        setLibriaSelectedQualityKey(savedQuality);
+                        setLibriaCurrentActiveKey(savedQuality);
+                        setFetchedSrc(fr[savedQuality] as string);
+                    } else {
+                        setLibriaSelectedQualityKey('auto');
+                        const defaultKey = qlist.find(q => /1080|720/.test(q.label))?.key ?? qlist[0]?.key ?? null;
+                        setLibriaCurrentActiveKey(defaultKey);
+                        const chosen = qlist.find(q => q.key === defaultKey) ?? qlist[0];
+                        if (chosen) setFetchedSrc(chosen.url);
+                    }
+                }
             }
         } else if (selectedSource === 'yumeko') {
             // Обработка для Yumeko - загрузка HLS потока для нового эпизода
@@ -1660,19 +1645,18 @@ export default function PlayerMobile({ animeId, animeMeta, initError, showSource
                 
                 console.log('[Mobile-Source-Switch] Kodik reinitialized successfully');
             } catch (error) {
-                console.error('[Mobile-Source-Switch] Kodik reinit error:', error);
+                console.error('[Mobile-Source-Switch] Kodik error:', error);
             }
         } else if (src === 'libria') {
-            // Реинициализация Libria
-            console.log('[Mobile-Source-Switch] Reinitializing Libria');
+            console.log('[Mobile-Source-Switch] Checking Libria availability');
             
             try {
-                await bootstrapLibria(animeId);
-                console.log('[Mobile-Source-Switch] Libria reinitialized successfully');
+                const eps = await fetchLibriaEpisodes(animeId);
+                setIsLibriaAvailable(Array.isArray(eps) && eps.length > 0);
+                console.log('[Mobile-Source-Switch] Libria availability checked');
             } catch (error) {
-                console.error('[Mobile-Source-Switch] Libria reinit error:', error);
+                console.error('[Mobile-Source-Switch] Libria check error:', error);
                 setIsLibriaAvailable(false);
-                setSelectedSource('kodik');
             }
         }
         
@@ -1832,8 +1816,23 @@ export default function PlayerMobile({ animeId, animeMeta, initError, showSource
     const onSelectQuality = (key: string) => {
         if (selectedSource === 'libria') {
             setLibriaSelectedQualityKey(key);
-            const q = libriaQualities.find(q => q.key === key);
-            if (q) setFetchedSrc(q.url);
+            setLibriaCurrentActiveKey(key);
+            // Сохраняем в localStorage
+            try { localStorage.setItem('libria-quality-preference', key); } catch {}
+            
+            // Получаем текущую серию и применяем качество к ней
+            const ep = playlistEpisodes.find(p => p.id === currentEpisode);
+            if (ep && ep.raw) {
+                const raw = ep.raw as Record<string, string>;
+                if (raw[key]) {
+                    setFetchedSrc(raw[key]);
+                } else {
+                    // Если выбранное качество недоступно, используем лучшее доступное
+                    const keys = Object.keys(raw).filter(k => /^hls_?/i.test(k));
+                    const bestKey = keys.find(k => k.includes('1080')) ?? keys.find(k => k.includes('720')) ?? keys[0];
+                    if (bestKey) setFetchedSrc(raw[bestKey]);
+                }
+            }
         } else if (selectedSource === 'kodik') {
             setKodikSelectedQualityKey(key);
             const q = kodikQualities.find(q => q.key === key);
@@ -2073,9 +2072,16 @@ export default function PlayerMobile({ animeId, animeMeta, initError, showSource
                                         <div className="mobile-player-list-item" onClick={() => setSettingsSection('quality')}>
                                             <span>Качество</span>
                                             <span className="mobile-player-chip">
-                                                {selectedSource === 'libria' ? (libriaSelectedQualityKey === 'auto' ? 'Auto' : (libriaCurrentActiveKey ?? 'Auto')) : 
-                                                 selectedSource === 'kodik' ? (kodikSelectedQualityKey === 'auto' ? 'Auto' : (kodikCurrentActiveKey ?? 'Auto')) :
-                                                 (yumekoCurrentActiveKey ?? 'Auto')}
+                                                {selectedSource === 'libria' ? (
+                                                    libriaSelectedQualityKey === 'auto' ? 'Авто' : 
+                                                    libriaQualities.find(q => q.key === libriaSelectedQualityKey)?.label || 'Авто'
+                                                ) : selectedSource === 'kodik' ? (
+                                                    kodikSelectedQualityKey === 'auto' ? 'Авто' : 
+                                                    kodikQualities.find(q => q.key === kodikSelectedQualityKey)?.label || 'Авто'
+                                                ) : (
+                                                    yumekoSelectedQualityKey === 'auto' ? 'Авто' : 
+                                                    yumekoQualities.find(q => q.key === yumekoSelectedQualityKey)?.label || 'Авто'
+                                                )}
                                             </span>
                                         </div>
                                         {/* removed hotkeys from mobile settings */}
@@ -2100,15 +2106,15 @@ export default function PlayerMobile({ animeId, animeMeta, initError, showSource
                                 {settingsSection === 'quality' && (
                                     <div className="mobile-player-list settings">
                                         {[
-                                            { key: 'auto', label: 'Auto', url: '' },
+                                            { key: 'auto', label: 'Авто', url: '' },
                                             ...(selectedSource === 'libria' ? libriaQualities : 
                                               selectedSource === 'kodik' ? kodikQualities : 
                                               yumekoQualities)
                                         ].map(q => (
                                             <div key={q.key} className={`mobile-player-list-item ${
-                                                (selectedSource === 'libria' ? (libriaSelectedQualityKey === 'auto' ? libriaCurrentActiveKey : libriaSelectedQualityKey) : 
-                                                 selectedSource === 'kodik' ? (kodikSelectedQualityKey === 'auto' ? kodikCurrentActiveKey : kodikSelectedQualityKey) :
-                                                 (yumekoSelectedQualityKey === 'auto' ? yumekoCurrentActiveKey : yumekoSelectedQualityKey)) === q.key ? 'active' : ''}`} onClick={() => { 
+                                                (selectedSource === 'libria' ? libriaSelectedQualityKey : 
+                                                 selectedSource === 'kodik' ? kodikSelectedQualityKey :
+                                                 yumekoSelectedQualityKey) === q.key ? 'active' : ''}`} onClick={() => { 
                                                 if (q.key === 'auto') {
                                                     if (selectedSource === 'libria') {
                                                         setLibriaSelectedQualityKey('auto');
@@ -2141,9 +2147,9 @@ export default function PlayerMobile({ animeId, animeMeta, initError, showSource
                                                 setSettingsSection('main'); 
                                             }}>
                                                 <span>{q.label}</span>
-                                                {(selectedSource === 'libria' ? (libriaSelectedQualityKey === 'auto' ? libriaCurrentActiveKey === q.key : libriaSelectedQualityKey === q.key) : 
-                                                 selectedSource === 'kodik' ? (kodikSelectedQualityKey === 'auto' ? kodikCurrentActiveKey === q.key : kodikSelectedQualityKey === q.key) :
-                                                 (yumekoSelectedQualityKey === 'auto' ? yumekoCurrentActiveKey === q.key : yumekoSelectedQualityKey === q.key)) && <span className="mobile-player-chip">Выбрано</span>}
+                                                {(selectedSource === 'libria' ? libriaSelectedQualityKey === q.key : 
+                                                 selectedSource === 'kodik' ? kodikSelectedQualityKey === q.key :
+                                                 yumekoSelectedQualityKey === q.key) && <span className="mobile-player-chip">Выбрано</span>}
                                             </div>
                                         ))}
                                     </div>

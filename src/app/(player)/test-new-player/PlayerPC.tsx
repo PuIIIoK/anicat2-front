@@ -1726,6 +1726,10 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                 const raw = (ep.raw ?? {}) as Record<string, string>;
                 // collect available hls keys for this episode
                 const epKeys = Object.keys(raw).filter(k => /^hls_?/i.test(k));
+                
+                // Обновляем список качеств для текущей серии
+                const qlist = epKeys.map(k => ({ key: k, label: k.replace(/hls_?/i, '') + 'p', url: raw[k] as string })).filter(q => q.url);
+                setLibriaQualities(qlist);
 
                 // if user selected explicit quality (not auto)
                 if (libriaSelectedQualityKey && libriaSelectedQualityKey !== 'auto') {
@@ -1733,6 +1737,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                         if (mounted) setFetchedSrc(raw[libriaSelectedQualityKey]);
                         // remember active
                         setLibriaCurrentActiveKey(libriaSelectedQualityKey);
+                        setIsBuffering(false);
                         return;
                     }
                     // selected key not present for this episode -> fall back to auto
@@ -1756,6 +1761,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                     setLibriaCurrentActiveKey(chosenKey);
                     if (mounted) setFetchedSrc(raw[chosenKey]);
                 }
+                setIsBuffering(false);
             } else if (selectedSource === 'kodik') {
                 // For kodik, use selected voice and re-fetch stream for selected episode
                 const meta = animeMeta;
@@ -3525,36 +3531,42 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                                 <div className="player-settings-section">
                                     {selectedSource === 'libria' && libriaQualities.length ? (
                                         [
-                                            { key: 'auto', label: 'Auto', url: '' },
+                                            { key: 'auto', label: 'Авто', url: '' },
                                             ...libriaQualities
-                                        ].map(q => (
-                                            <div
-                                                key={q.key}
-                                                className={`player-settings-item ${((libriaSelectedQualityKey === 'auto' ? libriaCurrentActiveKey : libriaSelectedQualityKey) === q.key) ? 'active' : ''}`}
-                                                onClick={() => {
-                                                    if (q.key === 'auto') {
-                                                        setLibriaSelectedQualityKey('auto');
-                                                        const activeKey = libriaCurrentActiveKey ?? chooseLibriaKey(libriaQualities) ?? (libriaQualities[0]?.key ?? null);
-                                                        setLibriaCurrentActiveKey(activeKey);
-                                                        if (activeKey) {
-                                                            const active = libriaQualities.find(x => x.key === activeKey);
-                                                            if (active) setFetchedSrc(active.url);
+                                        ].map(q => {
+                                            const isActive = q.key === 'auto' 
+                                                ? libriaSelectedQualityKey === 'auto'
+                                                : libriaSelectedQualityKey === q.key;
+                                            
+                                            return (
+                                                <div
+                                                    key={q.key}
+                                                    className={`player-settings-item ${isActive ? 'active' : ''}`}
+                                                    onClick={() => {
+                                                        if (q.key === 'auto') {
+                                                            setLibriaSelectedQualityKey('auto');
+                                                            const activeKey = libriaCurrentActiveKey ?? chooseLibriaKey(libriaQualities) ?? (libriaQualities[0]?.key ?? null);
+                                                            setLibriaCurrentActiveKey(activeKey);
+                                                            if (activeKey) {
+                                                                const active = libriaQualities.find(x => x.key === activeKey);
+                                                                if (active) setFetchedSrc(active.url);
+                                                            }
+                                                        } else {
+                                                            setLibriaSelectedQualityKey(q.key);
+                                                            setLibriaCurrentActiveKey(q.key);
+                                                            setFetchedSrc(q.url);
                                                         }
-                                                    } else {
-                                                        setLibriaSelectedQualityKey(q.key);
-                                                        setLibriaCurrentActiveKey(q.key);
-                                                        setFetchedSrc(q.url);
-                                                    }
-                                                    setSettingsSection('main');
-                                                }}
-                                            >
-                                                <span>{q.label}</span>
-                                                {((libriaSelectedQualityKey === 'auto' ? libriaCurrentActiveKey : libriaSelectedQualityKey) === q.key) && <div className="player-settings-check" />}
-                                            </div>
-                                        ))
+                                                        setSettingsSection('main');
+                                                    }}
+                                                >
+                                                    <span>{q.label}</span>
+                                                    {isActive && <div className="player-settings-check" />}
+                                                </div>
+                                            );
+                                        })
                                     ) : selectedSource === 'kodik' && kodikQualities.length ? (
                                         [
-                                            { key: 'auto', label: 'Auto', url: '' },
+                                            { key: 'auto', label: 'Авто', url: '' },
                                             ...kodikQualities
                                         ].map(q => (
                                             <div

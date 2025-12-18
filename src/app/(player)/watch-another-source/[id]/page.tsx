@@ -256,11 +256,14 @@ export default function WatchAnotherSourcePage() {
     // Если выбрана Анилибрия - показываем плеер на полный экран с правой панелью
     if (selectedPlayer === 'anilibria') {
         // Создаем animeMeta для источника libria
+        // episodeNumber должен быть ordinal серии из API, а не индекс массива
+        const currentEpisodeOrdinal = libriaEpisodes[selectedEpisode]?.ordinal || (selectedEpisode + 1);
+        
         const animeMeta = {
             id: animeId,
             source: 'libria' as const,
             title: animeTitle,
-            episodeNumber: selectedEpisode + 1
+            episodeNumber: currentEpisodeOrdinal
         };
 
         return (
