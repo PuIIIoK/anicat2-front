@@ -160,33 +160,42 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
         };
     }, [anime?.id, anime?.coverUrl]);
 
+    // Определяем валидность рейтинга (шкала 0–5 из бекенда)
+    const sanitizeRating = (value: unknown): number | null => {
+        const toNumber = () => {
+            if (typeof value === 'number') return value;
+            if (typeof value === 'string') {
+                const parsed = parseFloat(value.replace(',', '.'));
+                return Number.isNaN(parsed) ? null : parsed;
+            }
+            return null;
+        };
+
+        const normalized = toNumber();
+        if (normalized === null) return null;
+
+        // Возрастные рейтинги (13+, 17+, 18+) заведомо вне шкалы 0–5, поэтому отбрасываем
+        if (normalized < 0 || normalized > 5) return null;
+
+        return normalized;
+    };
+
     // Fetch rating
     useEffect(() => {
         if (!showRating || !anime?.id) return;
 
         /* eslint-disable @typescript-eslint/no-explicit-any */
         const providedRating = (() => {
-            if (typeof (anime as any).averageRating === 'number') {
-                return (anime as any).averageRating as number;
-            }
-            if (typeof (anime as any).rating === 'number') {
-                return (anime as any).rating as number;
-            }
-            if (typeof (anime as any).rating === 'string') {
-                const parsed = parseFloat((anime as any).rating);
-                if (!Number.isNaN(parsed)) return parsed;
-            }
-            return null;
+            const avg = sanitizeRating((anime as any).averageRating);
+            if (avg !== null) return avg;
+            return sanitizeRating((anime as any).rating);
         })();
         /* eslint-enable @typescript-eslint/no-explicit-any */
 
-        if (providedRating !== null && !Number.isNaN(providedRating)) {
+        if (providedRating !== null) {
             setRating(providedRating);
             return;
         }
-        
-        // Если данные предзагружены, не делаем дополнительный запрос
-        if (dataPreloaded) return;
         
         // Try multiple endpoints as fallback
         const fetchRating = async () => {
@@ -329,7 +338,7 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
                 {/* Rating */}
                 {!isUpcoming && showRating && rating && rating > 0 && (
                     <div className="yumeko-anime-card-rating">
-                        <span>★</span> {rating.toFixed(1)}
+                        <span>★</span> {rating.toFixed(2)}/5
                     </div>
                 )}
 
