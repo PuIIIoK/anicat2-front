@@ -180,6 +180,11 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
         return normalized;
     };
 
+    const formatRatingDisplay = (value: number | null) => {
+        if (value === null) return '';
+        return value.toFixed(2).replace(/\.?0+$/, '');
+    };
+
     // Fetch rating
     useEffect(() => {
         if (!showRating || !anime?.id) return;
@@ -338,7 +343,7 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
                 {/* Rating */}
                 {!isUpcoming && showRating && rating && rating > 0 && (
                     <div className="yumeko-anime-card-rating">
-                        <span>★</span> {rating.toFixed(2)}/5
+                        <span>★</span> {formatRatingDisplay(rating)}
                     </div>
                 )}
 
