@@ -1,5 +1,5 @@
 'use client';
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback, useEffect } from 'react';
 import { Upload, Image, X, Camera, Edit3 } from 'lucide-react';
 
 interface Props {
@@ -12,6 +12,8 @@ interface Props {
     coverPreview: string;
     bannerPreview: string;
     screenshotPreviews: string[];
+    setCoverPreview: React.Dispatch<React.SetStateAction<string>>;
+    setBannerPreview: React.Dispatch<React.SetStateAction<string>>;
     setScreenshotPreviews: React.Dispatch<React.SetStateAction<string[]>>;
     keepScreenshotIds: number[];
     setKeepScreenshotIds: React.Dispatch<React.SetStateAction<number[]>>;
@@ -23,14 +25,95 @@ interface Props {
 
 const AnimeFileAndEpisode: React.FC<Props> = ({
     cover, banner, screenshots, setCover, setBanner, setScreenshots,
-    coverPreview, bannerPreview, screenshotPreviews, setScreenshotPreviews, keepScreenshotIds,
-    setKeepScreenshotIds, deletedCover, setDeletedCover, deletedBanner, setDeletedBanner
+    coverPreview, bannerPreview, screenshotPreviews, setCoverPreview, setBannerPreview,
+    setScreenshotPreviews, keepScreenshotIds, setKeepScreenshotIds, deletedCover, 
+    setDeletedCover, deletedBanner, setDeletedBanner
 }) => {
     const coverInputRef = useRef<HTMLInputElement>(null);
     const screenshotsInputRef = useRef<HTMLInputElement>(null);
     const bannerInputRef = useRef<HTMLInputElement>(null);
 
     const [dragOver, setDragOver] = useState<string | null>(null);
+    const [focusedField, setFocusedField] = useState<string | null>(null);
+
+    // Update preview when new files are selected
+    useEffect(() => {
+        if (cover) {
+            setCoverPreview(URL.createObjectURL(cover));
+        }
+    }, [cover, setCoverPreview]);
+
+    useEffect(() => {
+        if (banner) {
+            setBannerPreview(URL.createObjectURL(banner));
+        }
+    }, [banner, setBannerPreview]);
+
+    // Paste image handler
+    const handlePaste = useCallback((e: ClipboardEvent) => {
+        if (!focusedField) return;
+
+        const items = e.clipboardData?.items;
+        if (!items) return;
+
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].type.indexOf('image') !== -1) {
+                e.preventDefault();
+                const blob = items[i].getAsFile();
+                if (blob) {
+                    // Create a File object from the blob
+                    const file = new File([blob], `pasted-image-${Date.now()}.png`, { type: blob.type });
+                    
+                    if (focusedField === 'banner') {
+                        setBanner(file);
+                        setDeletedBanner(false);
+                    } else if (focusedField === 'cover') {
+                        setCover(file);
+                        setDeletedCover(false);
+                    }
+                }
+                break;
+            }
+        }
+    }, [focusedField, setBanner, setCover, setDeletedBanner, setDeletedCover]);
+
+    // Add paste event listener
+    useEffect(() => {
+        document.addEventListener('paste', handlePaste);
+        return () => {
+            document.removeEventListener('paste', handlePaste);
+        };
+    }, [handlePaste]);
+
+    // Context menu paste handler
+    const handleContextMenu = useCallback((e: React.MouseEvent, targetType: string) => {
+        e.preventDefault();
+        
+        // Request paste permission and trigger paste
+        navigator.clipboard.read().then(clipboardItems => {
+            for (const clipboardItem of clipboardItems) {
+                for (const mimeType of clipboardItem.types) {
+                    if (mimeType.startsWith('image/')) {
+                        clipboardItem.getType(mimeType).then(blob => {
+                            const file = new File([blob], `pasted-image-${Date.now()}.png`, { type: blob.type });
+                            
+                            if (targetType === 'banner') {
+                                setBanner(file);
+                                setDeletedBanner(false);
+                            } else if (targetType === 'cover') {
+                                setCover(file);
+                                setDeletedCover(false);
+                            }
+                        });
+                        break;
+                    }
+                }
+            }
+        }).catch(() => {
+            // Fallback: show instruction to use Ctrl+V
+            alert('Используйте Ctrl+V для вставки изображения из буфера обмена');
+        });
+    }, [setBanner, setCover, setDeletedBanner, setDeletedCover]);
 
     // Drag & Drop обработчики
     const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>, type: string) => {
@@ -43,23 +126,74 @@ const AnimeFileAndEpisode: React.FC<Props> = ({
         setDragOver(null);
     }, []);
 
-    const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>, type: string) => {
+    // Function to download image from URL and convert to File
+    const downloadImageFromUrl = useCallback(async (imageUrl: string, fileName: string): Promise<File | null> => {
+        try {
+            const response = await fetch(imageUrl, { mode: 'cors' });
+            if (!response.ok) throw new Error('Failed to fetch image');
+            
+            const blob = await response.blob();
+            if (!blob.type.startsWith('image/')) throw new Error('Not an image file');
+            
+            return new File([blob], fileName, { type: blob.type });
+        } catch (error) {
+            console.error('Error downloading image:', error);
+            alert('Не удалось скачать изображение. Попробуйте сохранить изображение локально и загрузить его.');
+            return null;
+        }
+    }, []);
+
+    const handleDrop = useCallback(async (e: React.DragEvent<HTMLDivElement>, type: string) => {
         e.preventDefault();
         setDragOver(null);
         
+        // Check for files first
         const files = Array.from(e.dataTransfer.files);
-        if (files.length === 0) return;
-
-        if (type === 'banner') {
-            setBanner(files[0]);
-            setDeletedBanner(false);
-        } else if (type === 'cover') {
-            setCover(files[0]);
-            setDeletedCover(false);
-        } else if (type === 'screenshots') {
-            setScreenshots([...screenshots, ...files]);
+        if (files.length > 0) {
+            if (type === 'banner') {
+                setBanner(files[0]);
+                setDeletedBanner(false);
+            } else if (type === 'cover') {
+                setCover(files[0]);
+                setDeletedCover(false);
+            } else if (type === 'screenshots') {
+                setScreenshots([...screenshots, ...files]);
+            }
+            return;
         }
-    }, [screenshots, setBanner, setCover, setScreenshots, setDeletedBanner, setDeletedCover]);
+        
+        // Check for image URLs (drag from web pages)
+        const urlList = e.dataTransfer.getData('text/uri-list');
+        const htmlData = e.dataTransfer.getData('text/html');
+        
+        let imageUrl = '';
+        
+        if (urlList && urlList.startsWith('http')) {
+            imageUrl = urlList.split('\n')[0]; // Take first URL
+        } else if (htmlData) {
+            // Extract image src from HTML
+            const imgMatch = htmlData.match(/<img[^>]+src="([^"]+)"/i);
+            if (imgMatch) {
+                imageUrl = imgMatch[1];
+            }
+        }
+        
+        if (imageUrl && (type === 'banner' || type === 'cover')) {
+            console.log('Downloading image from URL:', imageUrl);
+            const fileName = `${type}-${Date.now()}.jpg`;
+            const file = await downloadImageFromUrl(imageUrl, fileName);
+            
+            if (file) {
+                if (type === 'banner') {
+                    setBanner(file);
+                    setDeletedBanner(false);
+                } else if (type === 'cover') {
+                    setCover(file);
+                    setDeletedCover(false);
+                }
+            }
+        }
+    }, [screenshots, setBanner, setCover, setScreenshots, setDeletedBanner, setDeletedCover, downloadImageFromUrl]);
 
     // Обработчики файлов
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>, type: string) => {
@@ -145,13 +279,19 @@ const AnimeFileAndEpisode: React.FC<Props> = ({
         isDeleted: boolean;
     }) => (
         <div
-            className={`upload-card ${(file || (preview && !isDeleted)) ? 'has-file' : ''} ${type === 'banner' ? 'banner-upload' : ''} ${isDeleted ? 'deleted' : ''}`}
+            className={`upload-card ${(file || (preview && !isDeleted)) ? 'has-file' : ''} ${type === 'banner' ? 'banner-upload' : ''} ${isDeleted ? 'deleted' : ''} ${focusedField === type ? 'focused' : ''}`}
             onDragOver={(e) => handleDragOver(e, type)}
             onDragLeave={handleDragLeave}
             onDrop={(e) => handleDrop(e, type)}
+            onContextMenu={(e) => handleContextMenu(e, type)}
+            onFocus={() => setFocusedField(type)}
+            onBlur={() => setFocusedField(null)}
+            onMouseEnter={() => setFocusedField(type)}
+            onMouseLeave={() => setFocusedField(null)}
+            tabIndex={0}
             style={{
-                borderColor: dragOver === type ? 'rgba(255, 149, 0, 0.8)' : undefined,
-                background: dragOver === type ? 'rgba(255, 149, 0, 0.1)' : undefined
+                borderColor: dragOver === type ? 'rgba(255, 149, 0, 0.8)' : focusedField === type ? 'rgba(175, 82, 222, 0.6)' : undefined,
+                background: dragOver === type ? 'rgba(255, 149, 0, 0.1)' : focusedField === type ? 'rgba(175, 82, 222, 0.05)' : undefined
             }}
         >
             {file ? (

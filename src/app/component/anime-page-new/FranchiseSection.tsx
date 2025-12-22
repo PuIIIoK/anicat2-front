@@ -17,6 +17,7 @@ interface AnimeInFranchise {
     type?: string;
     imageUrl?: string;
     position?: number;
+    anons?: string;
     cover?: {
         id: number;
     };

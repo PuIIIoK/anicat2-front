@@ -385,7 +385,7 @@ const GlobalAnimeCard: React.FC<GlobalAnimeCardProps> = ({
                         // Для скоро выходящих аниме показываем анонс или "СКОРО"
                         return (
                             <div className="global-anime-card-anons">
-                                {anons && anons.trim() ? anons.toUpperCase() : 'СКОРО'}
+                                {anons && anons.trim() ? anons.toUpperCase().replace(/(\d+)Г/g, '$1 г.') : 'СКОРО'}
                             </div>
                         );
                     }

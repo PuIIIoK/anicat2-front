@@ -835,6 +835,8 @@ const EditAnimePage = () => {
                             coverPreview={coverPreview}
                             bannerPreview={bannerPreview}
                             screenshotPreviews={screenshotPreviews}
+                            setCoverPreview={setCoverPreview}
+                            setBannerPreview={setBannerPreview}
                             setScreenshotPreviews={setScreenshotPreviews}
                             keepScreenshotIds={keepScreenshotIds}
                             setKeepScreenshotIds={setKeepScreenshotIds}

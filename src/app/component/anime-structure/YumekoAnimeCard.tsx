@@ -301,7 +301,7 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
 
     // Episode text
     const getEpisodeText = () => {
-        if (isUpcoming) return anons?.trim() ? anons.toUpperCase() : 'СКОРО';
+        if (isUpcoming) return anons?.trim() ? anons.toUpperCase().replace(/(\d+)Г/g, '$1 г.') : 'СКОРО';
         if (isCompleted) return totalEp ? `${totalEp} эп.` : 'Завершен';
         if (currentEp && totalEp) return `${currentEp}/${totalEp} эп.`;
         if (totalEp) return `${totalEp} эп.`;
