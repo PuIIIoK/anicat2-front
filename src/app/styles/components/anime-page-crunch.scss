@@ -13,10 +13,58 @@
   @extend .cr-page;
 }
 
+.crunch-related-sections {
+  max-width: 1400px;
+  width: 100%;
+  margin: 10px 0 40px 220px;
+  padding: 0 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+
+  .franchise-section,
+  .similar-section {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .franchise-list,
+  .similar-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 2rem;
+    justify-items: center;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1.2rem;
+    }
+  }
+
+  .franchise-card-wrapper {
+    width: 100%;
+    max-width: 200px;
+    display: flex;
+    justify-content: center;
+  }
+
+  @media (max-width: 768px) {
+    padding: 0 20px;
+    margin: 40px 0 30px 20px;
+    gap: 32px;
+  }
+}
+
 // ===== NEW: Crunchyroll Hero =====
 .cr-hero {
   position: relative;
-  min-height: 84vh;
+  min-height: 87vh;
   display: flex;
   align-items: flex-end;
 

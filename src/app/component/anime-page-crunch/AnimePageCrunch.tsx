@@ -1031,8 +1031,10 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
             </div>
 
             {/* Франшиза и похожее */}
-            <FranchiseSection animeId={Number(animeId)} />
-            <SimilarAnimeSection animeId={Number(animeId)} genres={anime.genres || ''} />
+            <div className="crunch-related-sections">
+                <FranchiseSection animeId={Number(animeId)} />
+                <SimilarAnimeSection animeId={Number(animeId)} genres={anime.genres || ''} />
+            </div>
 
             {/* Модальные окна */}
             <CommentsModal 
