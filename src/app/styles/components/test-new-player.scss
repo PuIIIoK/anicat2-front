@@ -1387,4 +1387,41 @@
   }
 }
 
+.player-skip-button {
+  transition: none !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  transform: none !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4) !important;
+}
+.player-skip-button:hover {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  transform: none !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4) !important;
+}
 
+.player-icon-button--circle,
+.player-icon-button--primary,
+.player-icon-button {
+  transition: none !important;
+}
+.player-icon-button--circle:hover,
+.player-icon-button--primary:hover,
+.player-icon-button:hover {
+  border-color: inherit !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.player-source-option:hover,
+.player-voice-option:hover,
+.player-settings-item:hover {
+  border-color: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.player-playlist-arrow:hover {
+  background: rgba(10,10,15,0.9) !important;
+  border-color: rgba(255,255,255,0.15) !important;
+  transform: none !important;
+}

@@ -498,8 +498,91 @@ export default function WatchAnotherSourcePage() {
                     height: '100%'
                 }}>
                     {isLoading ? (
-                        <div style={{ color: colors.textPrimary, fontSize: '16px' }}>
-                            Загрузка плеера...
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '24px'
+                        }}>
+                            <style>{`
+                                @keyframes libriaRingPulse {
+                                    0% {
+                                        transform: translate(-50%, -50%) scale(0.3);
+                                        opacity: 0;
+                                    }
+                                    50% {
+                                        opacity: 0.8;
+                                    }
+                                    100% {
+                                        transform: translate(-50%, -50%) scale(1.2);
+                                        opacity: 0;
+                                    }
+                                }
+                                @keyframes libriaLoadingPulse {
+                                    0%, 100% { opacity: 0.5; }
+                                    50% { opacity: 1; }
+                                }
+                            `}</style>
+                            {/* 3 концентрических кольца от центра */}
+                            <div style={{
+                                position: 'relative',
+                                width: '100px',
+                                height: '100px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}>
+                                {/* Кольцо 1 - внутреннее */}
+                                <div style={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    width: '40px',
+                                    height: '40px',
+                                    borderRadius: '50%',
+                                    border: `3px solid ${colors.primary}`,
+                                    boxShadow: `0 0 8px ${colors.primary}60`,
+                                    animation: 'libriaRingPulse 1.5s ease-out infinite',
+                                    animationDelay: '0s'
+                                }}></div>
+                                {/* Кольцо 2 - среднее */}
+                                <div style={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    width: '60px',
+                                    height: '60px',
+                                    borderRadius: '50%',
+                                    border: `3px solid ${colors.primary}`,
+                                    boxShadow: `0 0 8px ${colors.primary}60`,
+                                    animation: 'libriaRingPulse 1.5s ease-out infinite',
+                                    animationDelay: '0.3s'
+                                }}></div>
+                                {/* Кольцо 3 - внешнее */}
+                                <div style={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    width: '80px',
+                                    height: '80px',
+                                    borderRadius: '50%',
+                                    border: `3px solid ${colors.primary}`,
+                                    boxShadow: `0 0 8px ${colors.primary}60`,
+                                    animation: 'libriaRingPulse 1.5s ease-out infinite',
+                                    animationDelay: '0.6s'
+                                }}></div>
+                            </div>
+                            {/* Текст */}
+                            <div style={{
+                                color: colors.textPrimary,
+                                fontSize: '18px',
+                                fontWeight: '500',
+                                letterSpacing: '0.5px',
+                                animation: 'libriaLoadingPulse 1.5s ease-in-out infinite'
+                            }}>
+                                Инциализация источника
+                            </div>
                         </div>
                     ) : sourceError ? (
                         <div style={{
