@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, ExternalLink, Crown } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Crown, AlertTriangle } from 'lucide-react';
 import PlayerPC from '@/app/(player)/test-new-player/PlayerPC';
 import PlayerMobile from '@/app/(player)/test-new-player/PlayerMobile';
 import { API_SERVER, KODIK_API_BASE, KODIK_API_TOKEN } from '@/hosts/constants';
@@ -36,6 +36,7 @@ export default function WatchAnotherSourcePage() {
     const [isLoading, setIsLoading] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
     const [isSourcePanelCollapsed, setIsSourcePanelCollapsed] = useState(false);
+    const [sourceError, setSourceError] = useState<boolean>(false);
     
     // Временно всегда показываем UI элементы
     // TODO: добавить отслеживание видимости UI плеера через callback из PlayerMobile
@@ -144,24 +145,37 @@ export default function WatchAnotherSourcePage() {
     // Автоматически выбираем Анилибрию при загрузке
     useEffect(() => {
         setSelectedPlayer('anilibria');
+        setSourceError(false);
     }, []);
 
     // Загрузка Анилибрия эпизодов
     useEffect(() => {
         if (selectedPlayer === 'anilibria' && animeId) {
             setIsLoading(true);
+            setSourceError(false);
             const fetchLibria = async () => {
                 try {
                     const res = await fetch(`${API_SERVER}/api/libria/episodes/${animeId}`);
-                    if (!res.ok) return;
+                    if (!res.ok) {
+                        // Проверяем статус ошибки 400, 404, 502
+                        if (res.status === 400 || res.status === 404 || res.status === 502) {
+                            setSourceError(true);
+                            setLibriaEpisodes([]);
+                        }
+                        return;
+                    }
 
                     const data: LibriaEpisode[] = await res.json();
                     if (data && data.length > 0) {
                         setLibriaEpisodes(data);
                         setSelectedEpisode(0);
+                        setSourceError(false);
+                    } else {
+                        setSourceError(true);
                     }
                 } catch (e) {
                     console.error('Ошибка Libria:', e);
+                    setSourceError(true);
                 } finally {
                     setIsLoading(false);
                 }
@@ -174,16 +188,29 @@ export default function WatchAnotherSourcePage() {
     useEffect(() => {
         if (selectedPlayer === 'kodik' && kodik) {
             setIsLoading(true);
+            setSourceError(false);
             const fetchKodik = async () => {
                 try {
                     const res = await fetch(`${KODIK_API_BASE}/search?token=${KODIK_API_TOKEN}&title=${encodeURIComponent(kodik)}`);
+                    if (!res.ok) {
+                        // Проверяем статус ошибки 400, 404, 502
+                        if (res.status === 400 || res.status === 404 || res.status === 502) {
+                            setSourceError(true);
+                            setKodikIframeUrl('');
+                        }
+                        return;
+                    }
                     const data = await res.json();
                     const link = data.results?.[0]?.link;
                     if (link) {
                         setKodikIframeUrl(link);
+                        setSourceError(false);
+                    } else {
+                        setSourceError(true);
                     }
                 } catch (e) {
                     console.error('Ошибка Kodik:', e);
+                    setSourceError(true);
                 } finally {
                     setIsLoading(false);
                 }
@@ -194,10 +221,12 @@ export default function WatchAnotherSourcePage() {
 
     const handleKodikSelect = () => {
         setSelectedPlayer('kodik');
+        setSourceError(false);
     };
 
     const handleAnilibriaSelect = () => {
         setSelectedPlayer('anilibria');
+        setSourceError(false);
     };
 
     const handleNextEpisode = () => {
@@ -472,6 +501,29 @@ export default function WatchAnotherSourcePage() {
                         <div style={{ color: colors.textPrimary, fontSize: '16px' }}>
                             Загрузка плеера...
                         </div>
+                    ) : sourceError ? (
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '16px',
+                            padding: '32px',
+                            background: colors.sidebarBg,
+                            border: `1px solid ${colors.primaryBorder}`,
+                            borderRadius: '16px',
+                            maxWidth: '500px',
+                            textAlign: 'center'
+                        }}>
+                            <AlertTriangle size={48} color={colors.primary} strokeWidth={2} />
+                            <div style={{
+                                color: colors.textPrimary,
+                                fontSize: '18px',
+                                fontWeight: '600'
+                            }}>
+                                Данный источник недоступен, пожалуйста выберите другой!
+                            </div>
+                        </div>
                     ) : (
                         <div style={{
                             width: '100%',
@@ -629,6 +681,29 @@ export default function WatchAnotherSourcePage() {
                     {isLoading ? (
                         <div style={{ color: colors.textPrimary, fontSize: '16px' }}>
                             Загрузка плеера...
+                        </div>
+                    ) : sourceError ? (
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '16px',
+                            padding: '32px',
+                            background: colors.sidebarBg,
+                            border: `1px solid ${colors.primaryBorder}`,
+                            borderRadius: '16px',
+                            maxWidth: '500px',
+                            textAlign: 'center'
+                        }}>
+                            <AlertTriangle size={48} color={colors.primary} strokeWidth={2} />
+                            <div style={{
+                                color: colors.textPrimary,
+                                fontSize: '18px',
+                                fontWeight: '600'
+                            }}>
+                                Данный источник недоступен, пожалуйста выберите другой!
+                            </div>
                         </div>
                     ) : kodikIframeUrl ? (
                         <iframe
