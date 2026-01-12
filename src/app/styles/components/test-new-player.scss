@@ -8,11 +8,11 @@
 }
 .player-topbar {
   position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 80px;
+  right: 80px;
   top: 5px;
   max-width: 1400px;
-  width: calc(100% - 160px);
+  margin: 0 auto;
   padding: 20px 32px 32px 32px;
   color: #fff;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -25,9 +25,7 @@
 /* Кнопка пропуска опенинга/эндинга */
 .player-skip-button {
   position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-left: calc(-800px + 40px);
+  left: 40px;
   bottom: 150px;
   z-index: 4;
   background: rgba(0, 0, 0, 0.9);
@@ -41,15 +39,16 @@
   overflow: hidden;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
   cursor: pointer;
+  backface-visibility: hidden;
 }
 .player-skip-button:hover {
   background: linear-gradient(135deg, rgba(102, 126, 234, 0.35) 0%, rgba(118, 75, 162, 0.35) 100%);
   border-color: rgba(102, 126, 234, 0.5);
-  transform: translateX(-50%) translateY(-2px);
+  transform: translate3d(0, -2px, 0);
   box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
 }
 .player-skip-button:active {
-  transform: translateX(-50%) translateY(0) scale(0.98);
+  transform: translate3d(0, 0, 0) scale(0.98);
 }
 .player-skip-label { position: relative; z-index: 2; }
 .player-skip-fill {
@@ -63,22 +62,7 @@
 }
 .player-topbar.hidden { 
   opacity: 0; 
-  pointer-events: auto; /* Оставляем auto, чтобы кнопки работали */
-  
-  /* Скрываем только текст и фон, но не кнопки */
-  .player-episode-title-main,
-  .player-episode-sub {
-    pointer-events: none;
-  }
-  
-  /* Отключаем hover эффекты когда UI скрыт */
-  .player-icon-button:hover,
-  button:hover {
-    transform: none !important;
-    background: rgba(255,255,255,0.1) !important;
-    border-color: rgba(255,255,255,0.15) !important;
-    box-shadow: none !important;
-  }
+  pointer-events: none;
 }
 .player-topbar.visible { opacity: 1; }
 .player-topbar__left { 
@@ -423,17 +407,8 @@
 }
 .player-center-controls.hidden { 
   opacity: 0; 
-  pointer-events: auto; /* Кнопки всегда кликабельны */
+  pointer-events: none;
   transform: translate(-50%, -50%) scale(0.9);
-  
-  /* Отключаем все hover эффекты когда скрыто */
-  .player-icon-button--circle:hover,
-  button:hover {
-    transform: scale(1) !important;
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.25) 0%, rgba(118, 75, 162, 0.25) 100%) !important;
-    border-color: rgba(255,255,255,0.3) !important;
-    box-shadow: none !important;
-  }
 }
 .player-center-controls.visible { 
   opacity: 1; 
@@ -475,10 +450,10 @@
 .player-controls {
   position: absolute;
   bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 40px;
+  right: 40px;
   max-width: 1600px;
-  width: calc(100% - 80px);
+  margin: 0 auto;
   background: rgba(0, 0, 0, 0.541);
   padding: 20px 32px 24px 32px;
   display: grid;
@@ -493,17 +468,7 @@
 
 .player-controls.hidden {
   opacity: 0;
-  pointer-events: auto;
-  
-  /* Отключаем hover эффекты когда контролы скрыты */
-  .player-icon-button:hover,
-  .player-icon-button--primary:hover,
-  button:hover {
-    transform: none !important;
-    background: rgba(255,255,255,0.08) !important;
-    border-color: rgba(255,255,255,0.15) !important;
-    box-shadow: none !important;
-  }
+  pointer-events: none;
 }
 
 .player-controls__left { justify-self: start; display: flex; align-items: center; gap: 8px; }
@@ -522,18 +487,18 @@
   border-radius: 14px;
   background: rgba(255,255,255,0.08);
   border: 1px solid rgba(255,255,255,0.15);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
   backdrop-filter: blur(8px);
   
   &:hover {
-    background: rgba(255,255,255,0.15);
-    border-color: rgba(255,255,255,0.25);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    background: rgba(255,255,255,0.18);
+    border-color: rgba(255,255,255,0.3);
+    box-shadow: 0 0 16px rgba(255, 255, 255, 0.2);
   }
   
   &:active {
-    transform: translateY(0) scale(0.95);
+    background: rgba(255,255,255,0.12);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
   }
 }
 
@@ -629,20 +594,19 @@
   border: 1px solid rgba(255,255,255,0.15);
   border-radius: 12px;
   color: #fff;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
-  pointer-events: auto; /* Кнопки всегда кликабельны */
-  z-index: 10; /* Выше других элементов */
+  z-index: 10;
   
   &:hover {
-    background: rgba(255,255,255,0.18);
-    border-color: rgba(255,255,255,0.25);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    background: rgba(255,255,255,0.2);
+    border-color: rgba(255,255,255,0.3);
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
   }
   
   &:active {
-    transform: translateY(0) scale(0.95);
+    background: rgba(255,255,255,0.15);
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.1);
   }
 }
 
@@ -718,10 +682,10 @@
 
 .player-hotbar {
   position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 40px;
+  right: 40px;
   max-width: 1600px;
-  width: calc(100% - 80px);
+  margin: 0 auto;
   bottom: 110px;
   height: 6px;
   border-radius: 12px;
@@ -737,18 +701,7 @@
 }
 .player-hotbar.hidden { 
   opacity: 0; 
-  pointer-events: auto; /* Хотбар всегда кликабелен для перемотки */
-  
-  /* Отключаем hover эффект изменения высоты когда скрыт */
-  &:hover {
-    height: 6px !important;
-    bottom: 110px !important;
-    
-    /* Отключаем появление thumb при наведении */
-    .player-hotbar__progress::after {
-      opacity: 0 !important;
-    }
-  }
+  pointer-events: none;
 }
 .player-hotbar.visible { opacity: 1; }
 
@@ -1112,6 +1065,86 @@
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* Индикатор ускорения 2x при зажатом пробеле */
+.player-speed-boost-indicator {
+  position: absolute;
+  top: 50%;
+  right: 80px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(16px);
+  padding: 16px 24px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(102, 126, 234, 0.5);
+  z-index: 5;
+  animation: speedBoostFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.player-speed-boost-text {
+  font-size: 32px;
+  font-weight: 800;
+  color: white;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.player-speed-boost-arrows {
+  display: flex;
+  align-items: center;
+  gap: -4px;
+  color: rgba(255, 255, 255, 0.9);
+  
+  svg {
+    animation: arrowSlide 1s ease-in-out infinite;
+    
+    &:nth-child(1) {
+      animation-delay: 0s;
+    }
+    
+    &:nth-child(2) {
+      animation-delay: 0.15s;
+    }
+    
+    &:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+  }
+}
+
+@keyframes speedBoostFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+}
+
+@keyframes arrowSlide {
+  0% {
+    opacity: 0.3;
+    transform: translateX(-8px);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0.3;
+    transform: translateX(8px);
   }
 }
 

@@ -107,6 +107,12 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
     const [showSettings, setShowSettings] = useState(false);
     const [settingsSection, setSettingsSection] = useState<'main' | 'quality' | 'speed' | 'hotkeys'>('main');
     const [playbackSpeed, setPlaybackSpeed] = useState(1);
+    const [isSpeedBoost, setIsSpeedBoost] = useState(false); // Для ускорения при зажатом пробеле
+    const speedBoostRef = useRef(false);
+    const normalSpeedRef = useRef(1);
+    const lastClickTimeRef = useRef<number>(0);
+    const spaceHoldTimerRef = useRef<number | null>(null);
+    const spaceHoldStartRef = useRef<number>(0);
     const initialSettings = loadSettings();
     const [skipOpening, setSkipOpening] = useState<boolean>(typeof initialSettings.skipOpening === 'boolean' ? initialSettings.skipOpening! : false);
     const [skipEnding, setSkipEnding] = useState<boolean>(typeof initialSettings.skipEnding === 'boolean' ? initialSettings.skipEnding! : false);
@@ -122,6 +128,8 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
     const resumeCandidateRef = useRef<null | { epId: number; time: number; duration: number }>(null);
     const resumePromptShownForEpisodeRef = useRef<Set<number>>(new Set()); // Отслеживание показанных плашек для эпизодов
     const [showSourceDropdown, setShowSourceDropdown] = useState(false);
+    const [libriaLoadingError, setLibriaLoadingError] = useState(false);
+    const libriaLoadingTimerRef = useRef<number | null>(null);
     const [selectedSource, setSelectedSource] = useState<'kodik' | 'libria' | 'yumeko'>(
         animeMeta?.source || 'kodik'
     );
@@ -1839,6 +1847,37 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
 
     // Восстановление прогресса теперь происходит только в onLoaded для избежания конфликтов
 
+    // Отслеживание загрузки для Libria
+    useEffect(() => {
+        // Очищаем предыдущий таймер
+        if (libriaLoadingTimerRef.current !== null) {
+            window.clearTimeout(libriaLoadingTimerRef.current);
+            libriaLoadingTimerRef.current = null;
+        }
+        
+        // Сбрасываем ошибку при смене источника или эпизода
+        setLibriaLoadingError(false);
+        
+        // Если выбран Libria и есть sourceUrl, запускаем таймер на 3 минуты
+        if (selectedSource === 'libria' && sourceUrl) {
+            libriaLoadingTimerRef.current = window.setTimeout(() => {
+                const video = videoRef.current;
+                // Показываем ошибку если видео не загрузилось за 3 минуты
+                if (video && (video.readyState < 2 || video.networkState === 3)) {
+                    setLibriaLoadingError(true);
+                    console.log('[Libria] Loading timeout - showing error message');
+                }
+            }, 180000); // 3 минуты
+        }
+        
+        return () => {
+            if (libriaLoadingTimerRef.current !== null) {
+                window.clearTimeout(libriaLoadingTimerRef.current);
+                libriaLoadingTimerRef.current = null;
+            }
+        };
+    }, [selectedSource, sourceUrl, currentEpisode]);
+
     // Инициализация HLS
     useEffect(() => {
         // ВАЖНО: Сбрасываем флаги при смене источника видео
@@ -2688,7 +2727,38 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
             const key = e.key.toLowerCase();
             // Вспомогательные наборы: RU/EN и символы
             const isAny = (...ks: string[]) => ks.includes(key);
-            if (isAny(' ', 'space')) { e.preventDefault(); showPlayPauseIcon(isPlaying); togglePlay(); return; }
+            
+            // Пробел: если зажат 1.5 секунды - ускорение 2x, иначе плей/пауза
+            if (isAny(' ', 'space')) { 
+                e.preventDefault();
+                
+                // Если это повторное нажатие (клавиша уже зажата), игнорируем
+                if (e.repeat) return;
+                
+                const video = videoRef.current;
+                if (!video) return;
+                
+                // Запоминаем время начала зажатия
+                spaceHoldStartRef.current = Date.now();
+                
+                // Если видео играет (проверяем актуальное состояние видео), запускаем таймер на 0.3 секунды для ускорения
+                if (!video.paused) {
+                    spaceHoldTimerRef.current = window.setTimeout(() => {
+                        // Через 0.3 секунды включаем ускорение
+                        const currentVideo = videoRef.current;
+                        if (!currentVideo) return;
+                        
+                        normalSpeedRef.current = playbackSpeed;
+                        speedBoostRef.current = true;
+                        setIsSpeedBoost(true);
+                        currentVideo.playbackRate = 2;
+                        
+                        console.log('[Speed Boost] Activated - 2x speed');
+                    }, 300);
+                }
+                
+                return; 
+            }
             // 1) F/А — fullscreen
             if (isAny('f', 'а')) { e.preventDefault(); const prev = isFullscreen; toggleFullscreen(); showNotice(prev ? 'Выход из полноэкранного режима' : 'Полноэкранный режим'); return; }
             // 2) K/Л/Space — уже покрыт space; добавим K/Л
@@ -2770,9 +2840,59 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                 return;
             }
         };
+        
+        const onKeyUp = (e: KeyboardEvent) => {
+            if (isInput(e.target as Element | null)) return;
+            const key = e.key.toLowerCase();
+            const isAny = (...ks: string[]) => ks.includes(key);
+            
+            // Отпускание пробела
+            if (isAny(' ', 'space')) {
+                e.preventDefault();
+                
+                const holdDuration = Date.now() - spaceHoldStartRef.current;
+                const video = videoRef.current;
+                
+                // Отменяем таймер если он еще не сработал
+                if (spaceHoldTimerRef.current !== null) {
+                    window.clearTimeout(spaceHoldTimerRef.current);
+                    spaceHoldTimerRef.current = null;
+                }
+                
+                // Если было ускорение - возвращаем к нормальной скорости
+                if (speedBoostRef.current) {
+                    if (video) {
+                        speedBoostRef.current = false;
+                        setIsSpeedBoost(false);
+                        video.playbackRate = normalSpeedRef.current;
+                        console.log('[Speed Boost] Deactivated - normal speed');
+                    }
+                } else if (holdDuration < 300) {
+                    // Если зажато меньше 0.3 секунды - это обычный клик, делаем плей/пауза
+                    if (video) {
+                        const wasPlaying = !video.paused;
+                        showPlayPauseIcon(wasPlaying);
+                        togglePlay();
+                    }
+                }
+                
+                return;
+            }
+        };
+        
         window.addEventListener('keydown', onKey);
-        return () => window.removeEventListener('keydown', onKey);
-    }, [volume, isMuted, isPlaying, isFullscreen, skipOpening, skipEnding, selectedSource, libriaQualities, libriaCurrentActiveKey, kodikQualities, kodikCurrentActiveKey]);
+        window.addEventListener('keyup', onKeyUp);
+        return () => {
+            window.removeEventListener('keydown', onKey);
+            window.removeEventListener('keyup', onKeyUp);
+            // Очистка таймера при размонтировании
+            if (spaceHoldTimerRef.current !== null) {
+                window.clearTimeout(spaceHoldTimerRef.current);
+                spaceHoldTimerRef.current = null;
+            }
+        };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [volume, isMuted, isPlaying, isFullscreen, skipOpening, skipEnding, selectedSource, libriaQualities, libriaCurrentActiveKey, kodikQualities, kodikCurrentActiveKey, playbackSpeed]);
 
     // Автоскрытие UI при бездействии с улучшенной стабильностью
     const lastPokeTime = useRef<number>(0);
@@ -3089,6 +3209,35 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
     };
 
     
+    const handleVideoDoubleClick = useCallback(() => {
+        toggleFullscreen();
+    }, [toggleFullscreen]);
+    
+    const handleVideoClick = useCallback((e: React.MouseEvent) => {
+        const now = Date.now();
+        const timeDiff = now - lastClickTimeRef.current;
+        
+        // Двойной клик (менее 300ms между кликами)
+        if (timeDiff < 300) {
+            e.stopPropagation();
+            handleVideoDoubleClick();
+            lastClickTimeRef.current = 0; // Сбрасываем чтобы не было тройного клика
+            return;
+        }
+        
+        lastClickTimeRef.current = now;
+        
+        // Одиночный клик - плей/пауза
+        if (!showUIRef.current) {
+            e.stopPropagation();
+            pokeUi();
+            return;
+        }
+        e.stopPropagation();
+        showPlayPauseIcon(isPlaying);
+        togglePlay();
+    }, [handleVideoDoubleClick, pokeUi, isPlaying, showPlayPauseIcon, togglePlay]);
+    
     const handleContainerClick: React.MouseEventHandler<HTMLDivElement> = useCallback((e) => {
         // Проверяем, не кликнули ли по кнопке или интерактивному элементу
         const target = e.target as HTMLElement;
@@ -3109,7 +3258,30 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
     return (
         <div ref={containerRef} className="player-pc" style={{ ...containerStyle, cursor: isUIStable && showUI ? 'default' : 'none', pointerEvents: 'auto' }} onMouseMove={handleMouseMove} onClick={handleContainerClick}>
             {/* Видео */}
-            <video ref={videoRef} className="player-video" style={videoStyle} onClick={(ev) => { if (!showUIRef.current) { ev.stopPropagation(); pokeUi(); return; } ev.stopPropagation(); showPlayPauseIcon(isPlaying); togglePlay(); }} onPlay={() => setIsPlaying(true)} onPause={() => setIsPlaying(false)} playsInline controls={false} />
+            <video 
+                ref={videoRef} 
+                className="player-video" 
+                style={videoStyle} 
+                onClick={handleVideoClick} 
+                onPlay={() => setIsPlaying(true)} 
+                onPause={() => setIsPlaying(false)} 
+                onCanPlay={() => {
+                    // Скрываем ошибку Libria когда видео загрузилось
+                    if (libriaLoadingError && selectedSource === 'libria') {
+                        setLibriaLoadingError(false);
+                        console.log('[Libria] Video loaded successfully, hiding error');
+                    }
+                }}
+                onError={() => {
+                    // Показываем ошибку при ошибке загрузки для Libria
+                    if (selectedSource === 'libria') {
+                        setLibriaLoadingError(true);
+                        console.log('[Libria] Video loading error');
+                    }
+                }}
+                playsInline 
+                controls={false} 
+            />
 
             {/* Верхняя панель */}
             <div className={uiClasses.topbar}>
@@ -3275,6 +3447,18 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                     ) : (
                         <Play size={48} style={iconStyle} strokeWidth={2} fill="white" />
                     )}
+                </div>
+            )}
+
+            {/* Индикатор ускорения 2x при зажатом пробеле */}
+            {isSpeedBoost && (
+                <div className="player-speed-boost-indicator">
+                    <span className="player-speed-boost-text">2×</span>
+                    <div className="player-speed-boost-arrows">
+                        <ChevronRight size={20} style={iconStyle} strokeWidth={3} />
+                        <ChevronRight size={20} style={iconStyle} strokeWidth={3} />
+                        <ChevronRight size={20} style={iconStyle} strokeWidth={3} />
+                    </div>
                 </div>
             )}
 
@@ -3920,6 +4104,27 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                             </div>
                         </div>
                     )}
+                </div>
+            )}
+
+            {/* Сообщение об ошибке загрузки Libria */}
+            {libriaLoadingError && selectedSource === 'libria' && (
+                <div 
+                    className="player-osd-center" 
+                    style={{ 
+                        fontSize: 15, 
+                        fontWeight: 600,
+                        padding: '16px 24px',
+                        maxWidth: '500px',
+                        textAlign: 'center',
+                        lineHeight: '1.5',
+                        background: 'rgba(255, 107, 107, 0.95)',
+                        border: '2px solid rgba(255, 255, 255, 0.3)',
+                        borderRadius: '12px',
+                        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)'
+                    }}
+                >
+                    ⚠️ Данный источник возможно временно не работает или отключен. Воспользуйтесь другим источником!
                 </div>
             )}
         </div>

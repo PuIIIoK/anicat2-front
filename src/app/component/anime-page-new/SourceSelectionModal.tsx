@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { X, ExternalLink, Crown, ChevronLeft } from 'lucide-react';
+import { X, ExternalLink, Crown, ChevronLeft, AlertTriangle, Tv, Video } from 'lucide-react';
 import { API_SERVER } from '@/hosts/constants';
 import Image from 'next/image';
 import { getEpisodeProgress } from '@/utils/player/progressCache';
@@ -54,6 +54,7 @@ export default function SourceSelectionModal({
     const [selectedVoice, setSelectedVoice] = useState<YumekoVoice | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [episodeProgress, setEpisodeProgress] = useState<Record<number, { time: number; ratio: number }>>({});
+    const [showExternalWarning, setShowExternalWarning] = useState(false);
 
     // Загрузка озвучек при открытии вида Yumeko
     useEffect(() => {
@@ -109,6 +110,19 @@ export default function SourceSelectionModal({
     };
 
     const handleKodikSelect = () => {
+        // Проверяем, показывали ли предупреждение раньше
+        const warningShown = localStorage.getItem('externalSourceWarningShown');
+        
+        if (warningShown === 'true') {
+            // Если уже показывали, сразу переходим
+            proceedToExternalSource();
+        } else {
+            // Показываем предупреждение
+            setShowExternalWarning(true);
+        }
+    };
+    
+    const proceedToExternalSource = () => {
         // Переход на страницу выбора стороннего источника (Kodik/Анилибрия)
         const baseParams = new URLSearchParams({
             kodik: animeTitle || '',
@@ -117,6 +131,17 @@ export default function SourceSelectionModal({
         });
         onSourceSelect(`/watch-another-source/${animeId}?${baseParams.toString()}`);
         onClose();
+    };
+    
+    const handleAcceptWarning = () => {
+        // Сохраняем что пользователь принял предупреждение
+        localStorage.setItem('externalSourceWarningShown', 'true');
+        setShowExternalWarning(false);
+        proceedToExternalSource();
+    };
+    
+    const handleCloseWarning = () => {
+        setShowExternalWarning(false);
     };
 
     const handleOurPlayerSelect = () => {
@@ -362,6 +387,69 @@ export default function SourceSelectionModal({
                     </>
                 )}
             </div>
+
+            {/* Модальное окно предупреждения о внешних источниках */}
+            {showExternalWarning && (
+                <div className="source-warning-overlay" onClick={handleCloseWarning}>
+                    <div className="source-warning-modal" onClick={e => e.stopPropagation()}>
+                        <div className="source-warning-header">
+                            <div className="source-warning-header-icon">
+                                <AlertTriangle size={28} strokeWidth={2.5} />
+                            </div>
+                            <h2 className="source-warning-title">Внимание!</h2>
+                            <button className="source-warning-close" onClick={handleCloseWarning} aria-label="Закрыть">
+                                <X size={20} strokeWidth={2} />
+                            </button>
+                        </div>
+                        
+                        <div className="source-warning-content">
+                            <div className="source-warning-section kodik-section">
+                                <div className="source-warning-section-header">
+                                    <div className="source-warning-section-icon">
+                                        <Video size={24} strokeWidth={2} />
+                                    </div>
+                                    <h3 className="source-warning-subtitle">Для источника Kodik:</h3>
+                                </div>
+                                <div className="source-warning-section-body">
+                                    <p className="source-warning-text">
+                                        Реклама источника <strong>НЕ НАША!</strong> Чтобы ее убрать, используйте любой адблок в браузере.
+                                    </p>
+                                    <div className="source-warning-highlight">
+                                        <strong>ПОЭТОМУ РЕКЛАМА В ИСТОЧНИКЕ KODIK - НЕ НАША!</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div className="source-warning-section libria-section">
+                                <div className="source-warning-section-header">
+                                    <div className="source-warning-section-icon">
+                                        <Tv size={24} strokeWidth={2} />
+                                    </div>
+                                    <h3 className="source-warning-subtitle">Для источника Libria:</h3>
+                                </div>
+                                <div className="source-warning-section-body">
+                                    <p className="source-warning-text">
+                                        Источник Libria может иногда <strong>подвисать и грузить дольше</strong>. 
+                                        Если у вас есть с ним проблемы - пожалуйста, <strong>не паникуйте</strong>, подождите 5 минут.
+                                    </p>
+                                    <p className="source-warning-text">
+                                        Если ничего не произойдет - перезапустите страницу.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div className="source-warning-actions">
+                            <button className="source-warning-btn accept" onClick={handleAcceptWarning}>
+                                Принять
+                            </button>
+                            <button className="source-warning-btn close" onClick={handleCloseWarning}>
+                                Закрыть
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
