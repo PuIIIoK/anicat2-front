@@ -559,13 +559,13 @@ export default function WatchAnotherSourcePage() {
                     </div>
                 </div>
 
-                {/* Кнопка возврата в углу */}
+                {/* Кнопка возврата - под кнопкой переключения на Libria */}
                 <Link 
                     href={`/anime-page/${animeId}`}
                     style={{
                         position: 'absolute',
-                        top: '20px',
-                        left: '20px',
+                        top: '80px',
+                        right: '20px',
                         zIndex: 1000,
                         display: 'flex',
                         alignItems: 'center',

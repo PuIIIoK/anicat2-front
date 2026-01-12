@@ -60,11 +60,11 @@ const TabIcon = ({ type }: { type: string }) => {
 };
 
 const CollectionsPc: React.FC = () => {
-    const { activeTab, setActiveTab, collections, loading } = useCollections();
+    const { activeTab, setActiveTab, collections, loading, hasCache, reloadCurrentTab } = useCollections();
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [localCollections, setLocalCollections] = useState(collections);
-    const [isInitialLoad, setIsInitialLoad] = useState(true);
     const [username, setUsername] = useState<string>('');
+    const [isSticky, setIsSticky] = useState<boolean>(false);
     
     // Получаем username из токена
     useEffect(() => {
@@ -74,24 +74,33 @@ const CollectionsPc: React.FC = () => {
         }
     }, []);
     
-    // При смене вкладки сбрасываем состояние
+    // Отслеживаем скролл для sticky эффекта и убираем блюр основного хедера
     useEffect(() => {
-        setIsInitialLoad(true);
-    }, [activeTab]);
-    
-    // Когда loading завершён — убираем флаг начальной загрузки
-    useEffect(() => {
-        if (!loading) {
-            setIsInitialLoad(false);
-        }
-    }, [loading]);
+        const handleScroll = () => {
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
+            setIsSticky(scrollTop > 10);
+            
+            // Убираем блюр основного хедера при скролле на странице коллекций
+            if (scrollTop > 10) {
+                document.body.classList.add('collection-page-scrolled');
+            } else {
+                document.body.classList.remove('collection-page-scrolled');
+            }
+        };
+        
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            document.body.classList.remove('collection-page-scrolled');
+        };
+    }, []);
     
     useEffect(() => {
         setLocalCollections(collections);
     }, [collections]);
     
-    // Показывать спиннер пока идёт loading ИЛИ пока это начальная загрузка
-    const showLoading = loading || isInitialLoad;
+    // Показывать спиннер только если идёт загрузка И нет кэша
+    const showLoading = loading && !hasCache;
     
     const filteredCollections = useMemo(() => {
         const q = searchQuery.trim().toLowerCase();
@@ -108,55 +117,71 @@ const CollectionsPc: React.FC = () => {
 
     return (
         <div className="yumeko-collection-service">
-            {/* Breadcrumbs */}
-            <nav className="yumeko-collection-service-breadcrumbs">
-                <Link href="/" className="breadcrumb-link">Главная</Link>
-                <span className="breadcrumb-separator">/</span>
-                <Link href={username ? `/profile/${username}` : '/profile'} className="breadcrumb-link">Профиль</Link>
-                <span className="breadcrumb-separator">/</span>
-                <span className="breadcrumb-current">Коллекции</span>
-            </nav>
+            {/* Fixed Header Zone */}
+            <div className={`yumeko-collection-service-fixed-header ${isSticky ? 'scrolled' : ''}`}>
+                {/* Breadcrumbs */}
+                <nav className="yumeko-collection-service-breadcrumbs">
+                    <Link href="/" className="breadcrumb-link">Главная</Link>
+                    <span className="breadcrumb-separator">/</span>
+                    <Link href={username ? `/profile/${username}` : '/profile'} className="breadcrumb-link">Профиль</Link>
+                    <span className="breadcrumb-separator">/</span>
+                    <span className="breadcrumb-current">Коллекции</span>
+                </nav>
 
-            {/* Header */}
-            <div className="yumeko-collection-service-header">
-                <div className="yumeko-collection-service-title">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
-                    </svg>
-                    Мои коллекции
-                </div>
-                
-                <div className="yumeko-collection-service-tools">
-                    <div className="yumeko-collection-service-count">
-                        {localCollections.length} аниме
-                    </div>
-                    <div className="yumeko-collection-service-search">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <circle cx="11" cy="11" r="8"/>
-                            <path d="m21 21-4.35-4.35"/>
+                {/* Header */}
+                <div className="yumeko-collection-service-header">
+                    <div className="yumeko-collection-service-title">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
                         </svg>
-                        <input
-                            type="text"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            placeholder="Поиск аниме..."
-                        />
+                        Мои коллекции
+                    </div>
+                    
+                    <div className="yumeko-collection-service-tools">
+                        <div className="yumeko-collection-service-count">
+                            {localCollections.length} аниме
+                        </div>
+                        <div className="yumeko-collection-service-search">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <circle cx="11" cy="11" r="8"/>
+                                <path d="m21 21-4.35-4.35"/>
+                            </svg>
+                            <input
+                                type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder="Поиск аниме..."
+                            />
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            {/* Tabs */}
-            <div className="yumeko-collection-service-tabs">
-                {tabs.map((tab) => (
-                    <button
-                        key={tab}
-                        className={`yumeko-collection-service-tab ${tab === activeTab ? 'active' : ''}`}
-                        onClick={() => setActiveTab(tab)}
+                {/* Tabs */}
+                <div className="yumeko-collection-service-tabs-wrapper">
+                    <div className="yumeko-collection-service-tabs">
+                        {tabs.map((tab) => (
+                            <button
+                                key={tab}
+                                className={`yumeko-collection-service-tab ${tab === activeTab ? 'active' : ''}`}
+                                onClick={() => setActiveTab(tab)}
+                            >
+                                <TabIcon type={tab} />
+                                <span>{tab}</span>
+                            </button>
+                        ))}
+                    </div>
+                    <button 
+                        className="yumeko-collection-service-reload-btn"
+                        onClick={reloadCurrentTab}
+                        disabled={loading}
+                        title="Перезагрузить текущую коллекцию"
                     >
-                        <TabIcon type={tab} />
-                        <span>{tab}</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+                        </svg>
+                        <span>Перезагрузить &laquo;{activeTab}&raquo;</span>
                     </button>
-                ))}
+                </div>
             </div>
 
             {/* Grid */}

@@ -30,8 +30,6 @@ export const collectionTypeMap: { [key: string]: string } = {
     DROPPED: 'Брошено',
 };
 
-const CACHE_TTL_MS = 30 * 60 * 1000; // 30 минут
-
 type CollectionCacheEntry = {
     items: AnimeCollectionItem[];
     lastUpdated: number;
@@ -70,7 +68,10 @@ export function useCollections() {
     const [activeTab, setActiveTab] = useState<string>('Просмотрено');
     const [collections, setCollections] = useState<AnimeCollectionItem[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [hasCache, setHasCache] = useState<boolean>(false);
     const abortRef = useRef<AbortController | null>(null);
+    const animationTimersRef = useRef<number[]>([]);
+    const isAnimatingRef = useRef<boolean>(false);
     const cache = getGlobalCollectionsCache();
 
     useEffect(() => {
@@ -86,30 +87,50 @@ export function useCollections() {
         onStep: (items: AnimeCollectionItem[]) => void,
         stepDelay = 80
     ) => {
+        isAnimatingRef.current = true;
         const seen = new Set<number>(base.map(i => i.collectionId));
         const merged: AnimeCollectionItem[] = [...base];
+        
         for (const it of incoming) {
+            // Проверяем, не была ли отменена анимация
+            if (!isAnimatingRef.current) {
+                return merged;
+            }
+            
             if (!seen.has(it.collectionId)) {
                 seen.add(it.collectionId);
                 merged.push(it);
                 onStep([...merged]);
+                
                 // eslint-disable-next-line no-await-in-loop
-                await new Promise(r => setTimeout(r, stepDelay));
+                await new Promise(r => {
+                    const timer = window.setTimeout(r, stepDelay);
+                    animationTimersRef.current.push(timer);
+                });
             }
         }
+        
+        isAnimatingRef.current = false;
         return merged;
     }, []);
 
-    const fetchCollection = useCallback(async (type: string, useBackground = false) => {
-        if (abortRef.current) abortRef.current.abort();
+    const fetchCollection = useCallback(async (type: string) => {
+        // Отменяем предыдущий запрос
+        if (abortRef.current) {
+            abortRef.current.abort();
+        }
+        
+        // Останавливаем анимацию
+        isAnimatingRef.current = false;
+        
+        // Очищаем все таймеры анимации
+        animationTimersRef.current.forEach(timer => window.clearTimeout(timer));
+        animationTimersRef.current = [];
+        
         const controller = new AbortController();
         abortRef.current = controller;
 
-        if (!useBackground) {
-            setLoading(true);
-            // очищаем предыдущие элементы, чтобы не мелькали элементы из другой вкладки
-            setCollections([]);
-        }
+        setLoading(true);
         try {
             const res = await fetch(`${API_SERVER}/api/collection/my?type=${type}`, {
                 headers: {
@@ -162,28 +183,69 @@ export function useCollections() {
     }, [cache, mergeAndAnimate]);
 
     useEffect(() => {
+        // СРАЗУ отменяем предыдущую загрузку и анимацию
+        if (abortRef.current) {
+            abortRef.current.abort();
+        }
+        isAnimatingRef.current = false;
+        animationTimersRef.current.forEach(timer => window.clearTimeout(timer));
+        animationTimersRef.current = [];
+        
         const type = tabMap[activeTab];
         const cached = cache.get(type);
-        const isFresh = cached && (Date.now() - cached.lastUpdated < CACHE_TTL_MS);
+        
         if (cached && cached.items.length > 0) {
-            // Безопасно отобразим только элементы нужного типа
+            // Есть кэш - показываем его сразу БЕЗ индикации загрузки и БЕЗ перезагрузки
             const safeItems = (cached.items || []).filter((it) => it.collectionType === type);
             setCollections(safeItems);
             setLoading(false);
-            if (!isFresh || !cached.fullyLoaded) {
-                fetchCollection(type, true);
-            }
+            setHasCache(true); // Указываем, что данные из кэша
+            // НЕ загружаем повторно - кэш живет до перезагрузки страницы
         } else {
-            // нет кэша — очищаем и показываем загрузку, чтобы не отображались элементы другой вкладки
+            // Нет кэша - загружаем первый раз с индикацией
             setCollections([]);
             setLoading(true);
-            fetchCollection(type, false);
+            setHasCache(false); // Данные загружаются впервые
+            fetchCollection(type);
         }
 
-        return () => { if (abortRef.current) abortRef.current.abort(); };
+        return () => {
+            // Отменяем запрос
+            if (abortRef.current) {
+                abortRef.current.abort();
+            }
+            
+            // Останавливаем анимацию
+            isAnimatingRef.current = false;
+            
+            // Очищаем все таймеры
+            animationTimersRef.current.forEach(timer => window.clearTimeout(timer));
+            animationTimersRef.current = [];
+        };
     }, [activeTab, cache, fetchCollection]);
 
-    return { activeTab, setActiveTab, collections, loading };
+    const reloadCurrentTab = useCallback(() => {
+        const type = tabMap[activeTab];
+        
+        // Очищаем кэш текущей вкладки
+        cache.delete(type);
+        
+        // Останавливаем текущую анимацию
+        if (abortRef.current) {
+            abortRef.current.abort();
+        }
+        isAnimatingRef.current = false;
+        animationTimersRef.current.forEach(timer => window.clearTimeout(timer));
+        animationTimersRef.current = [];
+        
+        // Очищаем коллекции и начинаем загрузку заново
+        setCollections([]);
+        setLoading(true);
+        setHasCache(false);
+        fetchCollection(type);
+    }, [activeTab, cache, fetchCollection]);
+
+    return { activeTab, setActiveTab, collections, loading, hasCache, reloadCurrentTab };
 }
 
 
