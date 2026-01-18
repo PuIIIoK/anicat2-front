@@ -7,6 +7,7 @@ import { API_SERVER } from '@/hosts/constants';
 interface StatsItem {
   name: string;
   value: number;
+  [key: string]: any;
 }
 
 interface StatsChartProps {
@@ -25,15 +26,15 @@ export const StatsChart: React.FC<StatsChartProps> = ({ username, colors }) => {
       try {
         const response = await fetch(`${API_SERVER}/api/collection/stats/user/${username}`);
         if (!response.ok) throw new Error('Ошибка загрузки статистики');
-        
+
         const stats = await response.json();
-        
+
         // Преобразуем данные в формат для графика
         const chartData: StatsItem[] = Object.entries(stats).map(([type, count]) => ({
           name: getCollectionTypeName(type),
           value: count as number
         }));
-        
+
         setData(chartData);
       } catch (error) {
         console.error('Ошибка загрузки статистики:', error);
@@ -88,7 +89,7 @@ export const StatsChart: React.FC<StatsChartProps> = ({ username, colors }) => {
       <div className="stats-chart-container">
         <h2>Статистика</h2>
         <div className="no-stats">Нет данных для отображения</div>
-        <button 
+        <button
           className="view-collection-btn"
           onClick={handleViewCollection}
         >
