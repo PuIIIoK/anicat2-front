@@ -21,7 +21,8 @@ interface NotificationStatus {
 }
 
 const NotificationManager: React.FC = () => {
-  const [welcomeModalOpen, setWelcomeModalOpen] = useState(false);
+  // Welcome modal disabled - no longer shown
+  const [welcomeModalOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [updateInfo, setUpdateInfo] = useState<UpdateInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -31,7 +32,7 @@ const NotificationManager: React.FC = () => {
     try {
       const token = getAuthToken();
       console.log('[NotificationManager] Проверка статуса уведомлений...', token ? 'с токеном' : 'без токена');
-      
+
       if (!token) {
         // Если пользователь не авторизован, проверяем localStorage для приветственного уведомления
         const welcomeShown = localStorage.getItem('welcomeNotificationShown') === 'true';
@@ -83,7 +84,7 @@ const NotificationManager: React.FC = () => {
     try {
       const token = getAuthToken();
       console.log('[NotificationManager] Отмечаем приветствие как просмотренное...', token ? 'на сервере' : 'локально');
-      
+
       if (!token) {
         // Если пользователь не авторизован, сохраняем в localStorage
         localStorage.setItem('welcomeNotificationShown', 'true');
@@ -117,7 +118,7 @@ const NotificationManager: React.FC = () => {
     try {
       const token = getAuthToken();
       console.log('[NotificationManager] Отмечаем обновление как просмотренное...', version, token ? 'на сервере' : 'локально');
-      
+
       if (!token) {
         // Если пользователь не авторизован, сохраняем в localStorage
         localStorage.setItem('lastSeenUpdateVersion', version);
@@ -147,31 +148,9 @@ const NotificationManager: React.FC = () => {
     }
   };
 
-  // Закрытие приветственного модального окна
-  const handleWelcomeClose = async () => {
-    console.log('[NotificationManager] Закрываем приветственное окно');
-    setWelcomeModalOpen(false);
-    await markWelcomeSeen();
-    
-    // После закрытия приветственного уведомления проверяем, есть ли обновления
-    setTimeout(async () => {
-      console.log('[NotificationManager] Проверяем обновления после приветствия...');
-      
-      // Проверяем статус еще раз, чтобы убедиться в актуальности данных
-      const status = await checkNotificationStatus();
-      
-      if (status && status.showUpdate && status.updateInfo) {
-        console.log('[NotificationManager] После приветствия показываем обновление:', status.updateInfo);
-        setUpdateInfo(status.updateInfo);
-        setUpdateModalOpen(true);
-      } else if (updateInfo) {
-        // Fallback на уже загруженную информацию об обновлении
-        console.log('[NotificationManager] Показываем уже загруженное обновление:', updateInfo);
-        setUpdateModalOpen(true);
-      } else {
-        console.log('[NotificationManager] Нет обновлений для показа после приветствия');
-      }
-    }, 500); // Небольшая задержка для плавного перехода
+  // Welcome modal handling removed - no longer used
+  const handleWelcomeClose = () => {
+    // No-op - welcome modal disabled
   };
 
   // Закрытие модального окна обновления
@@ -188,29 +167,23 @@ const NotificationManager: React.FC = () => {
     const initializeNotifications = async () => {
       console.log('[NotificationManager] Инициализация уведомлений...');
       setIsLoading(true);
-      
+
       // Небольшая задержка для лучшего UX
       await new Promise(resolve => setTimeout(resolve, 1000));
       console.log('[NotificationManager] Задержка завершена, проверяем уведомления');
-      
+
       const status = await checkNotificationStatus();
       console.log('[NotificationManager] Полученный статус:', status);
-      
+
       if (status) {
         if (status.updateInfo) {
           setUpdateInfo(status.updateInfo);
           console.log('[NotificationManager] Установлена информация об обновлении:', status.updateInfo);
         }
 
-        // Показываем уведомления в правильной последовательности:
-        // 1. Сначала приветствие (если нужно)
-        // 2. Затем обновления (если нет приветствия и есть обновления)
-        if (status.showWelcome) {
-          console.log('[NotificationManager] 📋 Показываем приветственное уведомление (обновления будут показаны после)');
-          setWelcomeModalOpen(true);
-          // Обновления будут показаны после закрытия приветствия в handleWelcomeClose
-        } else if (status.showUpdate && status.updateInfo) {
-          console.log('[NotificationManager] 🔔 Приветствие не нужно, показываем уведомление об обновлении');
+        // Welcome modal removed - only show updates
+        if (status.showUpdate && status.updateInfo) {
+          console.log('[NotificationManager] 🔔 Показываем уведомление об обновлении');
           setUpdateModalOpen(true);
         } else {
           console.log('[NotificationManager] ✅ Нет уведомлений для показа - пользователь все видел');
@@ -218,7 +191,7 @@ const NotificationManager: React.FC = () => {
       } else {
         console.log('[NotificationManager] Не удалось получить статус уведомлений');
       }
-      
+
       setIsLoading(false);
       console.log('[NotificationManager] Инициализация завершена');
     };
@@ -226,7 +199,7 @@ const NotificationManager: React.FC = () => {
     // Проверяем уведомления только после небольшой задержки, чтобы страница успела загрузиться
     console.log('[NotificationManager] Установка таймера инициализации...');
     const timer = setTimeout(initializeNotifications, 1500);
-    
+
     return () => clearTimeout(timer);
   }, []);
 
@@ -241,7 +214,7 @@ const NotificationManager: React.FC = () => {
         isOpen={welcomeModalOpen}
         onClose={handleWelcomeClose}
       />
-      
+
       <UpdateNotificationModal
         isOpen={updateModalOpen}
         onClose={handleUpdateClose}
@@ -299,11 +272,11 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
         notifications,
         addNotification,
         removeNotification,
-        showCollectionNotification 
+        showCollectionNotification
       }}
     >
       {children}
-      
+
       {/* Рендерим уведомления */}
       <div className="notification-container">
         {notifications.map(notification => (
@@ -330,10 +303,10 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
               </button>
             </div>
             <div className="notification-progress">
-              <div 
-                className="notification-progress-bar" 
-                style={{ 
-                  animationDuration: `${notification.duration || 3000}ms` 
+              <div
+                className="notification-progress-bar"
+                style={{
+                  animationDuration: `${notification.duration || 3000}ms`
                 }}
               />
             </div>

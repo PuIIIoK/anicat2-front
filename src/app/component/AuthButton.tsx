@@ -1,10 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { cookieStorage, UserData } from '@/utils/cookies';
 import { AUTH_SITE_URL } from '@/hosts/constants';
 
 export default function AuthButton() {
+  const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<UserData | null>(null);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -17,7 +19,7 @@ export default function AuthButton() {
   const checkAuth = () => {
     const token = cookieStorage.getAuthToken();
     const userData = cookieStorage.getUser();
-    
+
     if (token && userData) {
       setIsAuthenticated(true);
       setUser(userData);
@@ -26,8 +28,7 @@ export default function AuthButton() {
   };
 
   const handleLogin = () => {
-    const currentUrl = window.location.origin;
-    window.location.href = `${AUTH_SITE_URL}?redirect_url=${encodeURIComponent(currentUrl)}`;
+    router.push('/auth');
   };
 
   const handleLogout = () => {
@@ -45,7 +46,7 @@ export default function AuthButton() {
   if (isAuthenticated && user) {
     return (
       <div className="auth-user-menu" style={{ position: 'relative' }}>
-        <button 
+        <button
           className="user-button"
           onClick={() => setShowDropdown(!showDropdown)}
           style={{
@@ -119,7 +120,7 @@ export default function AuthButton() {
   }
 
   return (
-    <button 
+    <button
       onClick={handleLogin}
       className="auth-login-button"
       style={{

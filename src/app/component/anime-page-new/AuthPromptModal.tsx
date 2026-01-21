@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { AUTH_SITE_URL } from '@/hosts/constants';
 
 interface AuthPromptModalProps {
@@ -9,10 +10,12 @@ interface AuthPromptModalProps {
 }
 
 const AuthPromptModal: React.FC<AuthPromptModalProps> = ({ show, onClose }) => {
+  const router = useRouter();
+
   if (!show) return null;
 
   const handleAuth = () => {
-    window.location.href = AUTH_SITE_URL;
+    router.push('/auth');
   };
 
   return (
@@ -66,17 +69,17 @@ const AuthPromptModal: React.FC<AuthPromptModalProps> = ({ show, onClose }) => {
             ×
           </button>
         </div>
-        
+
         <div style={{ textAlign: 'center', padding: '0 8px 8px' }}>
-          <div style={{ 
-            fontSize: 15, 
-            lineHeight: 1.6, 
+          <div style={{
+            fontSize: 15,
+            lineHeight: 1.6,
             marginBottom: 24,
             color: 'rgba(255,255,255,0.9)'
           }}>
             Йоу, братишь, если хочешь больше функций от сайта, то пожалуйста авторизируйся. И тогда тебе будут доступны все функции сайта)
           </div>
-          
+
           <button
             onClick={handleAuth}
             style={{
