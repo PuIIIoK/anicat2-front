@@ -94,7 +94,7 @@
   padding-right: 8px;
   scrollbar-width: thin;
   scrollbar-color: var(--primary-color) transparent;
-  
+
   // GPU-ускорение для плавной прокрутки
   will-change: scroll-position;
   transform: translateZ(0);
@@ -102,7 +102,7 @@
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   -webkit-overflow-scrolling: touch;
-  
+
   // Оптимизация рендеринга
   contain: layout style paint;
 
@@ -117,7 +117,7 @@
   &::-webkit-scrollbar-thumb {
     background: var(--primary-bg-hover);
     border-radius: 3px;
-    
+
     &:hover {
       background: var(--primary-color);
     }
@@ -136,20 +136,20 @@
   cursor: pointer;
   border: 1px solid rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(5px);
-  
+
   // GPU-ускорение для карточек
   will-change: transform;
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  
+
   // Оптимизация рендеринга
   contain: layout style paint;
 
   &:hover {
     background: rgba(25, 25, 25, 0.7);
-    border-color: var(--primary-bg);    
+    border-color: var(--primary-bg);
     transform: translateY(-2px) translateZ(0);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   }
@@ -162,7 +162,7 @@
     flex-shrink: 0;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     transition: transform 0.25s ease;
-    
+
     // Оптимизация рендеринга изображений
     image-rendering: -webkit-optimize-contrast;
     transform: translateZ(0);
@@ -200,6 +200,16 @@
         font-weight: 500;
         border-radius: 4px;
         border: 1px solid var(--primary-bg-hover);
+      }
+
+      .anime-anons-badge {
+        background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+        color: #fff;
+        border: 1px solid #ff8c42;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
       }
     }
 
@@ -271,6 +281,7 @@
     opacity: 0;
     transform: scale(0.9) translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: scale(1) translateY(0);
@@ -378,7 +389,7 @@
     flex: 1;
     height: 100%;
     padding-right: 8px;
-    
+
     // GPU-ускорение для плавной прокрутки на мобильных
     will-change: scroll-position;
     transform: translateZ(0);
@@ -386,7 +397,7 @@
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
     -webkit-overflow-scrolling: touch;
-    
+
     // Оптимизация рендеринга
     contain: layout style paint;
 
@@ -417,14 +428,14 @@
     padding: 8px;
     min-height: 85px;
     border: 1px solid rgba(255, 255, 255, 0.05);
-    
+
     // GPU-ускорение для мобильных карточек
     will-change: transform;
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
-    
+
     // Оптимизация рендеринга
     contain: layout style paint;
 
@@ -443,7 +454,7 @@
     object-fit: cover;
     flex-shrink: 0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    
+
     // Оптимизация рендеринга изображений
     image-rendering: -webkit-optimize-contrast;
     transform: translateZ(0);
@@ -526,6 +537,7 @@
     opacity: 0;
     transform: translateY(100%);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

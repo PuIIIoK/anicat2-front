@@ -22,6 +22,8 @@ interface AnimeInfo {
     genres: string;
     imageUrl: string;
     description: string;
+    status?: string;
+    anons?: string;
 }
 
 interface ProfileInfo {
@@ -74,10 +76,10 @@ const Header: React.FC = () => {
                     setIsAuthenticated(true);
                     setUsername(data.username || '');
                     setUserRoles(data.roles || []);
-                    
+
                     // Загружаем настройки темы пользователя
                     await loadUserThemeSettings();
-                    
+
                     // Загружаем аватарку пользователя
                     const avatarRes = await fetch(`${API_SERVER}/api/anime/image-links?username=${encodeURIComponent(data.username)}`);
                     if (avatarRes.ok) {
@@ -127,13 +129,15 @@ const Header: React.FC = () => {
             await Promise.all(
                 searchResults.map(async (anime) => {
                     try {
-                        const res = await fetch(`${API_SERVER}/api/stream/${anime.id}/cover`);
-                        if (res.ok) {
-                            const blob = await res.blob();
-                            const url = URL.createObjectURL(blob);
-                            urls[anime.id] = url;
+                        // Используем тот же API, что и на главной странице
+                        const response = await fetch(`${API_SERVER}/api/anime/optimized/get-anime/${anime.id}/basic`);
+                        if (response.ok) {
+                            const data = await response.json();
+                            if (data.coverUrl && data.coverUrl.trim() && !data.coverUrl.includes('placeholder')) {
+                                urls[anime.id] = data.coverUrl;
+                            }
                         }
-                    } catch {}
+                    } catch { }
                 })
             );
 
@@ -152,7 +156,7 @@ const Header: React.FC = () => {
                         const res = await fetch(`${API_SERVER}/api/anime/image-links?username=${encodeURIComponent(profile.username)}`);
                         const data = await res.json();
                         if (data.avatarUrl) urls[profile.username] = data.avatarUrl;
-                    } catch {}
+                    } catch { }
                 })
             );
             setAvatarUrls(urls);
@@ -163,7 +167,7 @@ const Header: React.FC = () => {
 
     const performSearch = async (query: string, mode: 'anime' | 'profile') => {
         console.log('🚀 performSearch запущен:', { query, mode });
-        
+
         if (!query.trim()) {
             console.log('❌ Пустой запрос, отменяем');
             return;
@@ -180,12 +184,12 @@ const Header: React.FC = () => {
                 console.log('📡 Ответ сервера аниме:', res.status);
                 const data = await res.json();
                 console.log('📄 Данные аниме:', data);
-                
+
                 const results = data.anime || data || [];
                 console.log('✅ Устанавливаем результаты аниме:', results.length, 'найдено');
                 setSearchResults(results);
                 setProfileResults([]);
-                
+
                 if (results.length === 0) {
                     setErrorMessage('Аниме не найдено');
                 }
@@ -195,12 +199,12 @@ const Header: React.FC = () => {
                 console.log('📡 Ответ сервера профили:', res.status);
                 const data = await res.json();
                 console.log('📄 Данные профили:', data);
-                
+
                 const results = data.profiles || [];
                 console.log('✅ Устанавливаем результаты профили:', results.length, 'найдено');
                 setProfileResults(results);
                 setSearchResults([]);
-                
+
                 if (results.length === 0) {
                     setErrorMessage('Профили не найдены');
                 }
@@ -250,7 +254,7 @@ const Header: React.FC = () => {
             console.log('⏱️ ТАЙМЕР СРАБОТАЛ! Выполняем поиск для:', query);
             performSearch(query.trim(), searchMode);
         }, 1000);
-        
+
         setSearchTimeoutId(timeoutId);
         console.log('✅ Таймер установлен:', timeoutId);
     };
@@ -262,7 +266,7 @@ const Header: React.FC = () => {
             clearTimeout(searchTimeoutId);
             setSearchTimeoutId(null);
         }
-        
+
         setSearchModalVisible(false);
         setSearchQuery('');
         setCurrentSearchQuery('');
@@ -285,153 +289,163 @@ const Header: React.FC = () => {
 
     return (
         <>
-                <header className="header yumeko-header">
-                    <div className="header-content">
-                        {/* Left: Logo */}
-                        <div className="header-left">
-                            <Link href="/" className="header-logo-text">
-                                <span className="logo-yumeko">Yumeko</span>
-                                <span className="logo-animelib">AnimeLib</span>
-                            </Link>
-                            
-                            {/* Navigation Links - Desktop */}
-                            <nav className="header-nav desktop-only">
-                                <Link href="/" className={`nav-link ${pathname === '/' ? 'active' : ''}`}>Главная</Link>
-                                <Link href="/leaderboard" className={`nav-link ${pathname === '/leaderboard' ? 'active' : ''}`}>Рейтинг</Link>
-                                {isAuthenticated && (
-                                    <>
-                                        <Link href={`/profile/${username}`} className={`nav-link ${pathname?.startsWith('/profile/') && !pathname?.includes('/collection') && !pathname?.includes('/settings') ? 'active' : ''}`}>Мой профиль</Link>
-                                        <Link href="/profile/collection" className={`nav-link ${pathname === '/profile/collection' ? 'active' : ''}`}>Мои коллекции</Link>
-                                    </>
-                                )}
-                            </nav>
-                        </div>
+            <header className="header yumeko-header">
+                <div className="header-content">
+                    {/* Left: Logo */}
+                    <div className="header-left">
+                        <Link href="/" className="header-logo-text">
+                            <span className="logo-yumeko">Yumeko</span>
+                            <span className="logo-animelib">AnimeLib</span>
+                        </Link>
 
-                        {/* Center: Search */}
-                        <div className="header-center">
-                            <div className="search-bar-anime" onClick={openSearchModal}>
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                    <circle cx="11" cy="11" r="8"/>
-                                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                                </svg>
-                                <span className="search-placeholder">Поиск аниме...</span>
-                            </div>
-                        </div>
+                        {/* Navigation Links - Desktop */}
+                        <nav className="header-nav desktop-only">
+                            <Link href="/" className={`nav-link ${pathname === '/' ? 'active' : ''}`}>Главная</Link>
+                            <Link href="/leaderboard" className={`nav-link ${pathname === '/leaderboard' ? 'active' : ''}`}>Рейтинг</Link>
+                            {isAuthenticated && (
+                                <>
+                                    <Link href={`/profile/${username}`} className={`nav-link ${pathname?.startsWith('/profile/') && !pathname?.includes('/collection') && !pathname?.includes('/settings') ? 'active' : ''}`}>Мой профиль</Link>
+                                    <Link href="/profile/collection" className={`nav-link ${pathname === '/profile/collection' ? 'active' : ''}`}>Мои коллекции</Link>
+                                </>
+                            )}
+                        </nav>
+                    </div>
 
-                        {/* Right: Actions */}
-                        <div className="header-right">
-                            {/* Menu Toggle Button - Opens Right Sidebar */}
-                            <button 
-                                className="header-menu-btn"
-                                onClick={toggleSidebar}
-                                title="Меню"
-                            >
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                                    <line x1="3" y1="6" x2="21" y2="6"/>
-                                    <line x1="3" y1="12" x2="21" y2="12"/>
-                                    <line x1="3" y1="18" x2="21" y2="18"/>
-                                </svg>
-                            </button>
+                    {/* Center: Search */}
+                    <div className="header-center">
+                        <div className="search-bar-anime" onClick={openSearchModal}>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <circle cx="11" cy="11" r="8" />
+                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                            </svg>
+                            <span className="search-placeholder">Поиск аниме...</span>
                         </div>
                     </div>
 
-                </header>
+                    {/* Right: Actions */}
+                    <div className="header-right">
+                        {/* Menu Toggle Button - Opens Right Sidebar */}
+                        <button
+                            className="header-menu-btn"
+                            onClick={toggleSidebar}
+                            title="Меню"
+                        >
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                <line x1="3" y1="6" x2="21" y2="6" />
+                                <line x1="3" y1="12" x2="21" y2="12" />
+                                <line x1="3" y1="18" x2="21" y2="18" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
 
-                {isSearchModalVisible && (
-                    <div className="search-modal-overlay">
-                        <div className="search-modal">
-                            <div className="search-modal-content">
-                                <button className="close-button" onClick={closeSearchModal}>✖</button>
+            </header>
 
-                                <div className="search-mode-toggle">
-                                    <button className={searchMode === 'anime' ? 'active' : ''} onClick={() => {
-                                        setSearchMode('anime');
-                                        if (currentSearchQuery) {
-                                            if (searchTimeoutId) clearTimeout(searchTimeoutId);
-                                            setIsWaitingForSearch(true);
-                                            setSearchResults([]);
-                                            setProfileResults([]);
-                                            setErrorMessage('');
-                                            const timeoutId = setTimeout(() => performSearch(currentSearchQuery, 'anime'), 1000);
-                                            setSearchTimeoutId(timeoutId);
-                                        }
-                                    }}>Аниме</button>
-                                    <button className={searchMode === 'profile' ? 'active' : ''} onClick={() => {
-                                        setSearchMode('profile');
-                                        if (currentSearchQuery) {
-                                            if (searchTimeoutId) clearTimeout(searchTimeoutId);
-                                            setIsWaitingForSearch(true);
-                                            setSearchResults([]);
-                                            setProfileResults([]);
-                                            setErrorMessage('');
-                                            const timeoutId = setTimeout(() => performSearch(currentSearchQuery, 'profile'), 1000);
-                                            setSearchTimeoutId(timeoutId);
-                                        }
-                                    }}>Профили</button>
-                                </div>
+            {isSearchModalVisible && (
+                <div className="search-modal-overlay">
+                    <div className="search-modal">
+                        <div className="search-modal-content">
+                            <button className="close-button" onClick={closeSearchModal}>✖</button>
 
-                                <input
-                                    type="text"
-                                    value={searchQuery}
-                                    onChange={handleSearchInputChange}
-                                    placeholder=" Введите запрос..."
-                                    className="search-modal-input"
-                                />
+                            <div className="search-mode-toggle">
+                                <button className={searchMode === 'anime' ? 'active' : ''} onClick={() => {
+                                    setSearchMode('anime');
+                                    if (currentSearchQuery) {
+                                        if (searchTimeoutId) clearTimeout(searchTimeoutId);
+                                        setIsWaitingForSearch(true);
+                                        setSearchResults([]);
+                                        setProfileResults([]);
+                                        setErrorMessage('');
+                                        const timeoutId = setTimeout(() => performSearch(currentSearchQuery, 'anime'), 1000);
+                                        setSearchTimeoutId(timeoutId);
+                                    }
+                                }}>Аниме</button>
+                                <button className={searchMode === 'profile' ? 'active' : ''} onClick={() => {
+                                    setSearchMode('profile');
+                                    if (currentSearchQuery) {
+                                        if (searchTimeoutId) clearTimeout(searchTimeoutId);
+                                        setIsWaitingForSearch(true);
+                                        setSearchResults([]);
+                                        setProfileResults([]);
+                                        setErrorMessage('');
+                                        const timeoutId = setTimeout(() => performSearch(currentSearchQuery, 'profile'), 1000);
+                                        setSearchTimeoutId(timeoutId);
+                                    }
+                                }}>Профили</button>
+                            </div>
 
-                                <div className="search-results">
-                                    {!searchQuery ? (
-                                        <p className="loading-text">Введите поисковый запрос</p>
-                                    ) : isWaitingForSearch ? (
-                                        null
-                                    ) : isLoading ? (
-                                        <div className="loader-wrapper">
-                                            <div className="loader-modal-input"></div>
+                            <input
+                                type="text"
+                                value={searchQuery}
+                                onChange={handleSearchInputChange}
+                                placeholder=" Введите запрос..."
+                                className="search-modal-input"
+                            />
+
+                            <div className="search-results">
+                                {!searchQuery ? (
+                                    <p className="loading-text">Введите поисковый запрос</p>
+                                ) : isWaitingForSearch ? (
+                                    null
+                                ) : isLoading ? (
+                                    <div className="loader-wrapper">
+                                        <div className="loader-modal-input"></div>
+                                    </div>
+                                ) : searchMode === 'anime' && searchResults.length > 0 ? (
+                                    searchResults.map(anime => (
+                                        <div key={anime.id} className="anime-card-search" onClick={() => handleAnimeClick(anime.id)}>
+                                            {coverUrls[anime.id] && (
+                                                <Image className="anime-card-search-img" src={coverUrls[anime.id]} alt={anime.title} width={75} height={110} />
+                                            )}
+                                            <div className="anime-card-info-search">
+                                                <h3 className="anime-title-search">
+                                                    {anime.title}{anime.season ? ` [${anime.season}]` : ''}
+                                                    {['UPCOMING', 'NOT_YET_AIRED', 'SOON', 'АНОНС', 'СКОРО'].includes(anime.status?.toUpperCase() || '') ? (
+                                                        <>
+                                                            {anime.anons?.trim() && <span className="anime-episodes-search">{anime.anons.toUpperCase()}</span>}
+                                                            <span className="anime-episodes-search anime-anons-badge">АНОНС</span>
+                                                        </>
+                                                    ) : (
+                                                        <span className="anime-episodes-search">{anime.current_episode || '?'} из {anime.episode_all || '?'}</span>
+                                                    )}
+                                                </h3>
+                                                <p className="anime-meta-search">{anime.type}{['UPCOMING', 'NOT_YET_AIRED', 'SOON', 'АНОНС', 'СКОРО'].includes(anime.status?.toUpperCase() || '') ? '' : ` • ${anime.year}`} • {anime.genres.split(',').join(' • ')}</p>
+                                                <p className="anime-description-search">{anime.description}</p>
+                                            </div>
                                         </div>
-                                    ) : searchMode === 'anime' && searchResults.length > 0 ? (
-                                        searchResults.map(anime => (
-                                            <div key={anime.id} className="anime-card-search" onClick={() => handleAnimeClick(anime.id)}>
-                                                {coverUrls[anime.id] && (
-                                                    <Image className="anime-card-search-img" src={coverUrls[anime.id]} alt={anime.title} width={75} height={110} />
+                                    ))
+                                ) : searchMode === 'profile' && profileResults.length > 0 ? (
+                                    <>
+                                        <h3 className="search-section-title">Профили</h3>
+                                        {profileResults.map(profile => (
+                                            <div key={`profile-${profile.id}`} className="profile-search-card" onClick={() => handleProfileClick(profile.username)}>
+                                                {avatarUrls[profile.username] && (
+                                                    <Image
+                                                        className="profile-avatar"
+                                                        src={avatarUrls[profile.username]}
+                                                        alt={profile.nickname || 'Аватар'}
+                                                        width={50}
+                                                        height={50}
+                                                        unoptimized
+                                                    />
                                                 )}
-                                                <div className="anime-card-info-search">
-                                                    <h3 className="anime-title-search">{anime.title}{anime.season ? ` [${anime.season}]` : ''}<span className="anime-episodes-search">{anime.current_episode} из {anime.episode_all}</span></h3>
-                                                    <p className="anime-meta-search">{anime.type} • {anime.year} • {anime.genres.split(',').join(' • ')}</p>
-                                                    <p className="anime-description-search">{anime.description}</p>
+                                                <div className="profile-info">
+                                                    <h4>{profile.nickname} <span className="username">@{profile.username}</span></h4>
+                                                    <p className="profile-bio">{profile.bio}</p>
                                                 </div>
                                             </div>
-                                        ))
-                                    ) : searchMode === 'profile' && profileResults.length > 0 ? (
-                                        <>
-                                            <h3 className="search-section-title">Профили</h3>
-                                            {profileResults.map(profile => (
-                                                <div key={`profile-${profile.id}`} className="profile-search-card" onClick={() => handleProfileClick(profile.username)}>
-                                                    {avatarUrls[profile.username] && (
-                                                        <Image
-                                                            className="profile-avatar"
-                                                            src={avatarUrls[profile.username]}
-                                                            alt={profile.nickname || 'Аватар'}
-                                                            width={50}
-                                                            height={50}
-                                                            unoptimized
-                                                        />
-                                                    )}
-                                                    <div className="profile-info">
-                                                        <h4>{profile.nickname} <span className="username">@{profile.username}</span></h4>
-                                                        <p className="profile-bio">{profile.bio}</p>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </>
-                                    ) : errorMessage ? (
-                                        <p className="loading-text">{errorMessage}</p>
-                                    ) : (
-                                        <p className="loading-text">Ничего не найдено</p>
-                                    )}
-                                </div>
+                                        ))}
+                                    </>
+                                ) : errorMessage ? (
+                                    <p className="loading-text">{errorMessage}</p>
+                                ) : (
+                                    <p className="loading-text">Ничего не найдено</p>
+                                )}
                             </div>
                         </div>
                     </div>
-                )}
+                </div>
+            )}
         </>
     );
 };
