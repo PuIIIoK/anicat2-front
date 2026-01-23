@@ -118,14 +118,22 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
 
                 // Check coverUrl from props
                 if (anime.coverUrl && anime.coverUrl.trim() && !anime.coverUrl.includes('placeholder')) {
-                    setCoverUrl(anime.coverUrl);
+                    let url = anime.coverUrl;
+                    if (url.startsWith('/')) {
+                        url = `${API_SERVER}${url}`;
+                    }
+                    setCoverUrl(url);
                     setIsLoading(false);
                     return;
                 }
 
                 // Check image_url (old format)
                 if ('image_url' in anime && anime.image_url?.url && anime.image_url.url.trim()) {
-                    setCoverUrl(anime.image_url.url);
+                    let url = anime.image_url.url;
+                    if (url.startsWith('/')) {
+                        url = `${API_SERVER}${url}`;
+                    }
+                    setCoverUrl(url);
                     setIsLoading(false);
                     return;
                 }
@@ -136,7 +144,11 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
                     if (response.ok) {
                         const data = await response.json();
                         if (data.coverUrl && data.coverUrl.trim() && !data.coverUrl.includes('placeholder')) {
-                            setCoverUrl(data.coverUrl);
+                            let url = data.coverUrl;
+                            if (url.startsWith('/')) {
+                                url = `${API_SERVER}${url}`;
+                            }
+                            setCoverUrl(url);
                             setIsLoading(false);
                             return;
                         }

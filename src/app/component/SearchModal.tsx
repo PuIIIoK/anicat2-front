@@ -131,6 +131,28 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
         }
     };
 
+    // Populate covers from loaded anime list to avoid N+1 requests
+    useEffect(() => {
+        if (allAnime.length === 0) return;
+
+        const newUrls: { [id: number]: string } = {};
+        allAnime.forEach(anime => {
+            if (anime.imageUrl && anime.imageUrl.trim() && !anime.imageUrl.includes('placeholder')) {
+                let url = anime.imageUrl;
+                if (url.startsWith('/')) {
+                    url = `${API_SERVER}${url}`;
+                }
+                newUrls[anime.id] = url;
+            }
+        });
+
+        setCoverUrls(prev => {
+            // Only update if we have new urls to add to avoid unnecessary re-renders
+            if (Object.keys(newUrls).length === 0) return prev;
+            return { ...prev, ...newUrls };
+        });
+    }, [allAnime]);
+
     // Get recent anime based on IDs from update logs
     const getRecentAnime = useCallback((): AnimeInfo[] => {
         if (recentAnimeIds.length === 0) return [];
@@ -143,26 +165,31 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
             .slice(0, 12);
     }, [recentAnimeIds, allAnime]);
 
-    // Infinite scroll handler
-    const handleScroll = useCallback(() => {
-        if (!resultsRef.current) return;
+    // Intersection Observer for infinite scroll
+    const loaderRef = useRef<HTMLDivElement>(null);
 
-        const { scrollTop, scrollHeight, clientHeight } = resultsRef.current;
-        const isNearBottom = scrollTop + clientHeight >= scrollHeight - 200;
-
-        if (isNearBottom && !isLoading) {
-            setDisplayedCount(prev => prev + ITEMS_PER_PAGE);
-        }
-    }, [isLoading]);
-
-    // Attach scroll listener
     useEffect(() => {
-        const ref = resultsRef.current;
-        if (ref) {
-            ref.addEventListener('scroll', handleScroll);
-            return () => ref.removeEventListener('scroll', handleScroll);
+        const observer = new IntersectionObserver((entries) => {
+            const first = entries[0];
+            if (first.isIntersecting && !isLoading) {
+                setDisplayedCount(prev => prev + ITEMS_PER_PAGE);
+            }
+        }, {
+            threshold: 0.1,
+            rootMargin: '200px',
+            root: resultsRef.current // Explicitly set the scroll container as root
+        });
+
+        const currentLoader = loaderRef.current;
+        if (currentLoader) {
+            observer.observe(currentLoader);
         }
-    }, [handleScroll]);
+
+        return () => {
+            if (currentLoader) observer.unobserve(currentLoader);
+            observer.disconnect();
+        };
+    }, [isLoading, displayedCount, resultsRef.current]); // Re-run if ref changes
 
     // Close on Escape
     useEffect(() => {
@@ -193,9 +220,18 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
 
         const fetchCovers = async () => {
             const newUrls: { [id: number]: string } = { ...coverUrls };
-            const animeToFetch = displayAnime
+            const recentToFetch = recentAnime.filter(anime => !newUrls[anime.id]);
+            const displayToFetch = displayAnime
                 .slice(0, displayedCount + 20) // Fetch a bit more than displayed
                 .filter(anime => !newUrls[anime.id]);
+
+            // Combine and deduplicate
+            const animeToFetch = [...recentToFetch];
+            displayToFetch.forEach(anime => {
+                if (!animeToFetch.some(a => a.id === anime.id)) {
+                    animeToFetch.push(anime);
+                }
+            });
 
             if (animeToFetch.length === 0) return;
 
@@ -206,7 +242,11 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
                         if (response.ok) {
                             const data = await response.json();
                             if (data.coverUrl && data.coverUrl.trim() && !data.coverUrl.includes('placeholder')) {
-                                newUrls[anime.id] = data.coverUrl;
+                                let url = data.coverUrl;
+                                if (url.startsWith('/')) {
+                                    url = `${API_SERVER}${url}`;
+                                }
+                                newUrls[anime.id] = url;
                             }
                         }
                     } catch { }
@@ -573,9 +613,9 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
                                     {displayedAnime.length > 0 ? (
                                         <>
                                             <div className="search-results-grid">
-                                                {displayedAnime.map(anime => (
+                                                {displayedAnime.map((anime, index) => (
                                                     <div
-                                                        key={anime.id}
+                                                        key={`${anime.id}-${index}`}
                                                         className="anime-search-card"
                                                         onClick={() => handleAnimeClick(anime.id)}
                                                     >
@@ -635,7 +675,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
                                             </div>
 
                                             {hasMoreAnime && (
-                                                <div className="search-load-more">
+                                                <div className="search-load-more" ref={loaderRef}>
                                                     <div className="search-loader__spinner search-loader__spinner--small"></div>
                                                     <span>Загрузка...</span>
                                                 </div>

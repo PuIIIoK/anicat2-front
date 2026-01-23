@@ -1,46 +1,45 @@
 /* === КОНТЕЙНЕР УВЕДОМЛЕНИЙ === */
 .notification-container {
   position: fixed;
-  top: 20px;
-  right: 20px;
+  top: 24px;
+  right: 24px;
   z-index: 9999;
   pointer-events: none;
-  max-width: 400px;
+  max-width: 380px;
   width: 100%;
+  padding: 0;
 
   @media (max-width: 768px) {
-    top: 10px;
-    right: 10px;
-    left: 10px;
+    top: auto;
+    bottom: 24px;
+    right: 16px;
+    left: 16px;
     max-width: none;
+    width: auto;
   }
 }
 
 /* === ЭЛЕМЕНТ УВЕДОМЛЕНИЯ === */
 .notification-item {
-  background: linear-gradient(135deg, rgba(20, 20, 28, 0.98), rgba(30, 30, 40, 0.98));
-  border-radius: 14px;
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    0 4px 16px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.15);
-  margin-bottom: 12px;
+  background: #121215;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  margin-bottom: 8px;
   overflow: hidden;
   pointer-events: auto;
   position: relative;
   transform: translateX(100%);
-  animation: slideIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-  transition: all 0.25s ease;
-  backdrop-filter: blur(20px);
+  animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transition: all 0.2s ease;
+
+  /* Убираем блюр и градиенты для строгого вида */
+  backdrop-filter: none;
 
   &:hover {
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 
-      0 12px 40px rgba(0, 0, 0, 0.5),
-      0 6px 20px rgba(0, 0, 0, 0.35),
-      inset 0 1px 0 rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+    border-color: rgba(255, 255, 255, 0.2);
   }
 
   &:last-child {
@@ -61,17 +60,42 @@
     }
   }
 
+  /* Мобильные анимации */
+  @media (max-width: 768px) {
+    transform: translateY(20px);
+    opacity: 0;
+    animation: slideInMobile 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes slideInMobile {
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
   &.notification-removing {
-    animation: slideOut 0.3s ease-in forwards;
+    animation: slideOut 0.2s ease-in forwards;
+
+    @media (max-width: 768px) {
+      animation: slideOutMobile 0.2s ease-in forwards;
+    }
+  }
+
+  @keyframes slideOutMobile {
+    to {
+      transform: translateY(20px);
+      opacity: 0;
+    }
   }
 
   /* === СОДЕРЖИМОЕ === */
   .notification-content {
     display: flex;
-    align-items: center;
-    padding: 16px 18px;
+    align-items: center; // Центрируем по вертикали
+    padding: 12px 16px;
     gap: 12px;
-    min-height: 56px;
+    min-height: auto;
   }
 
   /* === ИКОНКА === */
@@ -80,11 +104,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    transition: all 0.25s ease;
+    width: 24px;
+    height: 24px;
+
+    // Убираем фон иконки
+    background: transparent;
+    border-radius: 0;
 
     svg {
       width: 20px;
@@ -96,10 +121,10 @@
   .notification-message {
     flex: 1;
     font-size: 14px;
-    font-weight: 600;
-    line-height: 1.5;
-    color: #ffffff;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    font-weight: 500;
+    line-height: 1.4;
+    color: #e5e5e5; // Чуть менее белый для мягкости
+    text-shadow: none;
   }
 
   /* === КНОПКА ЗАКРЫТИЯ === */
@@ -108,21 +133,16 @@
     background: transparent;
     border: none;
     cursor: pointer;
-    padding: 6px;
-    border-radius: 6px;
-    color: rgba(255, 255, 255, 0.5);
-    transition: all 0.2s ease;
+    padding: 4px;
+    color: rgba(255, 255, 255, 0.4);
+    transition: color 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: rgba(255, 255, 255, 0.85);
-    }
-
-    &:active {
-      transform: scale(0.95);
+      color: #ffffff;
+      background: transparent;
     }
   }
 
@@ -132,9 +152,8 @@
     bottom: 0;
     left: 0;
     right: 0;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.1);
-    overflow: hidden;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.05);
   }
 
   .notification-progress-bar {
@@ -143,324 +162,67 @@
     background: currentColor;
     transform-origin: left;
     animation: progressBar linear forwards;
-    box-shadow: 0 0 10px currentColor;
+    box-shadow: none;
   }
 
   @keyframes progressBar {
     from {
       transform: scaleX(1);
     }
+
     to {
       transform: scaleX(0);
     }
   }
 
   /* === ТИПЫ УВЕДОМЛЕНИЙ === */
+  /* Убираем массивные цветные бордеры и фоны, оставляем только цветовые акценты */
 
-  /* Успех */
   &.notification-success {
-    border-left: 4px solid #22c55e;
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(20, 20, 28, 0.95));
-    border-color: rgba(34, 197, 94, 0.4);
-    box-shadow: 
-      0 8px 32px rgba(34, 197, 94, 0.25),
-      0 4px 16px rgba(0, 0, 0, 0.3),
-      inset 0 1px 0 rgba(34, 197, 94, 0.2);
-    
+    // border-left: 3px solid #22c55e;
+
     .notification-icon {
       color: #22c55e;
-      filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.6));
     }
 
     .notification-progress-bar {
-      background: linear-gradient(90deg, #22c55e, #4ade80);
-    }
-
-    &:hover {
-      border-color: rgba(34, 197, 94, 0.6);
-      box-shadow: 
-        0 12px 40px rgba(34, 197, 94, 0.35),
-        0 6px 20px rgba(0, 0, 0, 0.35);
+      background: #22c55e;
     }
   }
 
-  /* Ошибка */
   &.notification-error {
-    border-left: 4px solid #ef4444;
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(20, 20, 28, 0.95));
-    border-color: rgba(239, 68, 68, 0.4);
-    box-shadow: 
-      0 8px 32px rgba(239, 68, 68, 0.25),
-      0 4px 16px rgba(0, 0, 0, 0.3),
-      inset 0 1px 0 rgba(239, 68, 68, 0.2);
-    
+    // border-left: 3px solid #ef4444;
+
     .notification-icon {
       color: #ef4444;
-      filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.6));
     }
 
     .notification-progress-bar {
-      background: linear-gradient(90deg, #ef4444, #f87171);
-    }
-
-    &:hover {
-      border-color: rgba(239, 68, 68, 0.6);
-      box-shadow: 
-        0 12px 40px rgba(239, 68, 68, 0.35),
-        0 6px 20px rgba(0, 0, 0, 0.35);
+      background: #ef4444;
     }
   }
 
-  /* Предупреждение */
   &.notification-warning {
-    border-left: 4px solid #f59e0b;
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(20, 20, 28, 0.95));
-    border-color: rgba(245, 158, 11, 0.4);
-    box-shadow: 
-      0 8px 32px rgba(245, 158, 11, 0.25),
-      0 4px 16px rgba(0, 0, 0, 0.3),
-      inset 0 1px 0 rgba(245, 158, 11, 0.2);
-    
+    // border-left: 3px solid #f59e0b;
+
     .notification-icon {
       color: #f59e0b;
-      filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.6));
     }
 
     .notification-progress-bar {
-      background: linear-gradient(90deg, #f59e0b, #fbbf24);
-    }
-
-    &:hover {
-      border-color: rgba(245, 158, 11, 0.6);
-      box-shadow: 
-        0 12px 40px rgba(245, 158, 11, 0.35),
-        0 6px 20px rgba(0, 0, 0, 0.35);
+      background: #f59e0b;
     }
   }
 
-  /* Информация - фиолетовый акцент для Yumeko */
   &.notification-info {
-    border-left: 4px solid #a855f7;
-    background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(20, 20, 28, 0.95));
-    border-color: rgba(168, 85, 247, 0.4);
-    box-shadow: 
-      0 8px 32px rgba(168, 85, 247, 0.25),
-      0 4px 16px rgba(0, 0, 0, 0.3),
-      inset 0 1px 0 rgba(168, 85, 247, 0.2);
-    
+    // border-left: 3px solid #a855f7;
+
     .notification-icon {
       color: #a855f7;
-      filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.6));
     }
 
     .notification-progress-bar {
-      background: linear-gradient(90deg, #a855f7, #c084fc);
-    }
-
-    &:hover {
-      border-color: rgba(168, 85, 247, 0.6);
-      box-shadow: 
-        0 12px 40px rgba(168, 85, 247, 0.35),
-        0 6px 20px rgba(0, 0, 0, 0.35);
+      background: #a855f7;
     }
   }
-}
-
-/* === СВЕТЛАЯ ТЕМА - ОТКЛЮЧЕНА для лучшей видимости === */
-/* Уведомления всегда темные для контраста */
-
-/* === МОБИЛЬНАЯ АДАПТАЦИЯ === */
-@media (max-width: 768px) {
-  .notification-container {
-    bottom: 16px;
-    top: auto;
-    right: 12px;
-    left: 12px;
-    max-width: none;
-    display: flex;
-    flex-direction: column-reverse;
-  }
-
-  .notification-item {
-    background: linear-gradient(135deg, rgba(20, 20, 28, 0.98), rgba(30, 30, 40, 0.98));
-    border-radius: 12px;
-    margin-bottom: 8px;
-    box-shadow: 
-      0 6px 24px rgba(0, 0, 0, 0.4),
-      0 3px 12px rgba(0, 0, 0, 0.3);
-    border: 2px solid rgba(255, 255, 255, 0.15);
-    transform: translateY(100%);
-    animation: slideUpMobile 0.3s ease-out forwards;
-    backdrop-filter: blur(20px);
-
-    &:hover {
-      transform: translateY(0);
-    }
-
-    &.notification-removing {
-      animation: slideDownMobile 0.25s ease-in forwards;
-    }
-
-    &:last-child {
-      margin-bottom: 8px;
-    }
-
-    &:first-child {
-      margin-top: 0;
-    }
-
-    .notification-content {
-      padding: 14px 16px;
-      gap: 12px;
-      min-height: auto;
-      align-items: center;
-    }
-
-    .notification-message {
-      font-size: 14px;
-      font-weight: 600;
-      line-height: 1.4;
-      color: #ffffff;
-      flex: 1;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-    }
-
-    .notification-icon {
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      background: rgba(255, 255, 255, 0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      svg {
-        width: 18px;
-        height: 18px;
-      }
-    }
-
-    .notification-close {
-      width: 28px;
-      height: 28px;
-      padding: 4px;
-      border-radius: 6px;
-      background: rgba(255, 255, 255, 0.1);
-
-      svg {
-        width: 16px;
-        height: 16px;
-      }
-
-      &:hover {
-        background: rgba(255, 255, 255, 0.2);
-      }
-    }
-
-    .notification-progress {
-      height: 3px;
-    }
-
-    // Яркие стили для типов уведомлений на мобильных
-    &.notification-success {
-      border-left: 4px solid #22c55e;
-      background: linear-gradient(135deg, rgba(34, 197, 94, 0.25), rgba(20, 20, 28, 0.95));
-      border-color: rgba(34, 197, 94, 0.5);
-      box-shadow: 0 6px 24px rgba(34, 197, 94, 0.3);
-      
-      .notification-icon {
-        color: #22c55e;
-        filter: drop-shadow(0 0 6px rgba(34, 197, 94, 0.6));
-      }
-    }
-
-    &.notification-error {
-      border-left: 4px solid #ef4444;
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(20, 20, 28, 0.95));
-      border-color: rgba(239, 68, 68, 0.5);
-      box-shadow: 0 6px 24px rgba(239, 68, 68, 0.3);
-      
-      .notification-icon {
-        color: #ef4444;
-        filter: drop-shadow(0 0 6px rgba(239, 68, 68, 0.6));
-      }
-    }
-
-    &.notification-warning {
-      border-left: 4px solid #f59e0b;
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(20, 20, 28, 0.95));
-      border-color: rgba(245, 158, 11, 0.5);
-      box-shadow: 0 6px 24px rgba(245, 158, 11, 0.3);
-      
-      .notification-icon {
-        color: #f59e0b;
-        filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.6));
-      }
-    }
-
-    &.notification-info {
-      border-left: 4px solid #a855f7;
-      background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(20, 20, 28, 0.95));
-      border-color: rgba(168, 85, 247, 0.5);
-      box-shadow: 0 6px 24px rgba(168, 85, 247, 0.3);
-      
-      .notification-icon {
-        color: #a855f7;
-        filter: drop-shadow(0 0 6px rgba(168, 85, 247, 0.6));
-      }
-    }
-  }
-
-  // Упрощенные мобильные анимации
-  @keyframes slideUpMobile {
-    from {
-      transform: translateY(100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-
-  @keyframes slideDownMobile {
-    from {
-      transform: translateY(0);
-      opacity: 1;
-    }
-    to {
-      transform: translateY(100%);
-      opacity: 0;
-    }
-  }
-}
-
-/* === ДОСТУПНОСТЬ === */
-@media (prefers-reduced-motion: reduce) {
-  .notification-item {
-    animation: none !important;
-    transform: none !important;
-  }
-
-  .notification-progress-bar {
-    animation: none !important;
-  }
-
-  .notification-close {
-    transition: none !important;
-    
-    &:hover {
-      transform: none !important;
-    }
-    
-    &:active {
-      transform: none !important;
-    }
-  }
-}
-
-/* === ФОКУС === */
-.notification-item:focus-within {
-  outline: 2px solid #4299e1;
-  outline-offset: 2px;
 }
