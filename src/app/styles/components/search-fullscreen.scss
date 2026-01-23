@@ -1,0 +1,877 @@
+// Fullscreen Search Modal Styles - New Layout
+.search-fullscreen {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    display: flex;
+    animation: searchFadeIn 0.3s ease-out;
+
+    &__backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(20px);
+    }
+
+    &__layout {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        animation: searchSlideUp 0.4s ease-out;
+    }
+
+    // Left Sidebar - Filters
+    &__sidebar {
+        width: 280px;
+        min-width: 280px;
+        height: 100%;
+        background: rgba(15, 15, 18, 0.98);
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        overflow-y: auto;
+
+        &::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 2px;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            margin: 0;
+        }
+
+        .filter-clear-btn {
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: rgba(255, 107, 107, 0.15);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            color: #ff6b6b;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+
+            &:hover {
+                background: rgba(255, 107, 107, 0.25);
+            }
+        }
+
+        .filter-section {
+            margin-bottom: 24px;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+
+        .filter-title {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-genres {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .filter-genre {
+            padding: 6px 10px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.1);
+                border-color: rgba(255, 255, 255, 0.2);
+            }
+
+            &.active {
+                background: linear-gradient(135deg, var(--primary-bg) 0%, rgba(168, 85, 247, 0.3) 100%);
+                border-color: var(--primary-color);
+                color: var(--primary-color);
+            }
+        }
+
+        .filter-rating {
+            padding-right: 8px;
+        }
+
+        .rating-slider {
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            appearance: none;
+            outline: none;
+
+            &::-webkit-slider-thumb {
+                appearance: none;
+                width: 16px;
+                height: 16px;
+                border-radius: 50%;
+                background: var(--primary-color);
+                cursor: pointer;
+                box-shadow: 0 2px 8px rgba(var(--primary-color-rgb), 0.4);
+            }
+        }
+
+        .rating-marks {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+
+            span {
+                color: rgba(255, 255, 255, 0.35);
+                font-size: 10px;
+            }
+        }
+
+        .filter-source {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .source-btn {
+            padding: 8px 14px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.1);
+            }
+
+            &.active {
+                border-color: var(--primary-color);
+                color: var(--primary-color);
+            }
+
+            &.libria.active {
+                background: linear-gradient(135deg, rgba(255, 87, 87, 0.15) 0%, rgba(255, 107, 107, 0.08) 100%);
+                border-color: #ff5757;
+                color: #ff5757;
+            }
+
+            &.yumeko.active {
+                background: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(147, 51, 234, 0.08) 100%);
+                border-color: #a855f7;
+                color: #a855f7;
+            }
+        }
+    }
+
+    // Main Content Area
+    &__main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        min-width: 0;
+    }
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(10, 10, 12, 0.8);
+
+        .logo-gradient {
+            font-size: 20px;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    }
+
+    &__close {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.6);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+
+        &:hover {
+            background: rgba(255, 107, 107, 0.2);
+            border-color: rgba(255, 107, 107, 0.5);
+            color: #ff6b6b;
+            transform: rotate(90deg);
+        }
+    }
+
+    &__search-area {
+        padding: 16px 24px;
+        background: rgba(10, 10, 12, 0.5);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    &__input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 0 14px;
+        transition: all 0.3s ease;
+
+        &:focus-within {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.12);
+        }
+
+        .search-icon {
+            color: rgba(255, 255, 255, 0.35);
+            flex-shrink: 0;
+        }
+    }
+
+    &__input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        padding: 12px 10px;
+        font-size: 14px;
+        color: #fff;
+        outline: none;
+
+        &::placeholder {
+            color: rgba(255, 255, 255, 0.35);
+        }
+    }
+
+    &__clear {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 0.2s ease;
+
+        &:hover {
+            background: rgba(255, 107, 107, 0.3);
+            color: #ff6b6b;
+        }
+    }
+
+    &__tabs {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+
+        .search-tab {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+
+            svg {
+                opacity: 0.65;
+            }
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.06);
+                color: rgba(255, 255, 255, 0.85);
+            }
+
+            &.active {
+                background: linear-gradient(135deg, var(--primary-bg) 0%, rgba(168, 85, 247, 0.2) 100%);
+                border-color: var(--primary-color);
+                color: var(--primary-color);
+
+                svg {
+                    opacity: 1;
+                }
+            }
+        }
+    }
+
+    &__results {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px 24px;
+
+        &::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 3px;
+
+            &:hover {
+                background: var(--primary-color);
+            }
+        }
+    }
+}
+
+// Search loader
+.search-loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 0;
+
+    &__spinner {
+        width: 36px;
+        height: 36px;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-top-color: var(--primary-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+
+        &--small {
+            width: 20px;
+            height: 20px;
+            border-width: 2px;
+        }
+    }
+
+    p {
+        margin-top: 12px;
+        color: rgba(255, 255, 255, 0.45);
+        font-size: 13px;
+    }
+}
+
+// Search empty state
+.search-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 0;
+    text-align: center;
+
+    svg {
+        margin-bottom: 20px;
+        color: rgba(255, 255, 255, 0.25);
+    }
+
+    p {
+        color: rgba(255, 255, 255, 0.55);
+        font-size: 15px;
+        font-weight: 500;
+        margin-bottom: 6px;
+    }
+
+    span {
+        color: rgba(255, 255, 255, 0.35);
+        font-size: 13px;
+    }
+}
+
+// Results grid - compact
+.search-results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+    padding: 4px 0;
+
+    &--recent {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 10px;
+    }
+}
+
+// Search section
+.search-section {
+    margin-bottom: 24px;
+
+    &__title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.85);
+        margin-bottom: 12px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+
+        svg {
+            color: var(--primary-color);
+            opacity: 0.75;
+        }
+    }
+}
+
+// Anime search card - clean design
+.anime-search-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: transparent;
+    border: none;
+    border-radius: 10px;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.25s ease;
+
+    &:hover {
+        transform: translateY(-4px);
+
+        .anime-search-card__cover {
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .anime-search-card__title {
+            color: var(--primary-color);
+        }
+    }
+
+    &__cover {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 3/4;
+        border-radius: 10px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.03);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        transition: box-shadow 0.3s ease;
+    }
+
+    &__image {
+        object-fit: cover;
+    }
+
+    &__placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.15);
+        background: linear-gradient(135deg, rgba(30, 30, 35, 1) 0%, rgba(20, 20, 25, 1) 100%);
+    }
+
+    &__type {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        padding: 4px 8px;
+        border-radius: 6px;
+        background: rgba(0, 0, 0, 0.75);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 600;
+        backdrop-filter: blur(8px);
+        letter-spacing: 0.3px;
+    }
+
+    &__rating {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        padding: 4px 8px;
+        border-radius: 6px;
+        background: linear-gradient(135deg, #ffd700 0%, #ffb700 100%);
+        color: #1a1a1a;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    &__anons {
+        position: absolute;
+        bottom: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 4px 10px;
+        border-radius: 6px;
+        background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 8px rgba(255, 107, 53, 0.4);
+    }
+
+    &__info {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        padding: 4px 2px;
+    }
+
+    &__title {
+        font-size: 13px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 4px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        line-height: 1.35;
+        transition: color 0.2s ease;
+
+        .season-tag {
+            color: var(--primary-color);
+            font-weight: 500;
+            margin-left: 4px;
+            font-size: 11px;
+            opacity: 0.85;
+        }
+    }
+
+    &__meta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 3px;
+
+        .episodes {
+            color: var(--primary-color);
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .anons-date {
+            color: #ff8c42;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .year {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 11px;
+        }
+    }
+
+    &__genres {
+        color: rgba(255, 255, 255, 0.35);
+        font-size: 11px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        margin: 0;
+    }
+
+    // Mini card variant (for recent section)
+    &--mini {
+        gap: 8px;
+        padding: 0;
+
+        .anime-search-card__cover {
+            border-radius: 8px;
+        }
+
+        .anime-search-card__info {
+            padding: 2px 0 0;
+        }
+
+        .anime-search-card__title {
+            font-size: 12px;
+            margin-bottom: 0;
+            -webkit-line-clamp: 2;
+        }
+
+        .anime-search-card__meta,
+        .anime-search-card__genres {
+            display: none;
+        }
+    }
+}
+
+// Load more indicator
+.search-load-more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px 0;
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 12px;
+}
+
+// Profiles list
+.search-profiles-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+// Profile search card
+.profile-search-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.06);
+        border-color: rgba(var(--primary-color-rgb), 0.3);
+        transform: translateX(3px);
+    }
+
+    &__avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        overflow: hidden;
+        flex-shrink: 0;
+
+        .profile-avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-avatar-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(var(--primary-color-rgb), 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
+            color: var(--primary-color);
+        }
+    }
+
+    &__info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    &__name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #fff;
+        margin-bottom: 3px;
+
+        .username {
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 400;
+            font-size: 12px;
+            margin-left: 6px;
+        }
+    }
+
+    &__bio {
+        color: rgba(255, 255, 255, 0.45);
+        font-size: 12px;
+        margin: 0 0 6px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &__roles {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+
+        .role-badge {
+            padding: 2px 6px;
+            border-radius: 5px;
+            font-size: 10px;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.65);
+
+            &.role-admin {
+                background: linear-gradient(135deg, rgba(255, 107, 107, 0.2) 0%, rgba(255, 87, 87, 0.1) 100%);
+                color: #ff6b6b;
+            }
+
+            &.role-moderator {
+                background: linear-gradient(135deg, rgba(47, 128, 237, 0.2) 0%, rgba(41, 112, 255, 0.1) 100%);
+                color: #2f80ed;
+            }
+
+            &.role-vip {
+                background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 183, 0, 0.1) 100%);
+                color: #ffd700;
+            }
+        }
+    }
+}
+
+// Animations
+@keyframes searchFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes searchSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+// Mobile responsive
+@media (max-width: 900px) {
+    .search-fullscreen {
+        &__layout {
+            flex-direction: column;
+        }
+
+        &__sidebar {
+            width: 100%;
+            min-width: unset;
+            height: auto;
+            max-height: 40vh;
+            border-right: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        &__main {
+            height: auto;
+            flex: 1;
+        }
+
+        &__header {
+            padding: 12px 16px;
+
+            .logo-gradient {
+                font-size: 18px;
+            }
+        }
+
+        &__close {
+            width: 32px;
+            height: 32px;
+        }
+
+        &__search-area {
+            padding: 12px 16px;
+        }
+
+        &__input {
+            font-size: 14px;
+            padding: 10px 8px;
+        }
+
+        &__results {
+            padding: 12px 16px;
+        }
+    }
+
+    .search-results-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 10px;
+
+        &--recent {
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 8px;
+        }
+    }
+
+    .anime-search-card {
+        &__title {
+            font-size: 12px;
+        }
+    }
+}
+
+@media (max-width: 600px) {
+    .search-fullscreen__sidebar {
+        max-height: 50vh;
+        padding: 16px;
+
+        .filter-genres {
+            gap: 4px;
+        }
+
+        .filter-genre {
+            padding: 5px 8px;
+            font-size: 11px;
+        }
+    }
+
+    .search-results-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+
+        &--recent {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+        }
+    }
+}

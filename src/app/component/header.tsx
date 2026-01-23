@@ -1,43 +1,16 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import '@/styles/index.scss';
 import { API_SERVER } from '@/hosts/constants';
 import { getAuthToken } from '../utils/auth';
 import { useTheme } from '../context/ThemeContext';
 import { useSidebar } from '../context/SidebarContext';
 import { getProfile } from '@/utils/profileCache';
-
-interface AnimeInfo {
-    id: number;
-    title: string;
-    alttitle: string;
-    season: string;
-    current_episode: string;
-    episode_all: string;
-    type: string;
-    year: string;
-    genres: string;
-    imageUrl: string;
-    description: string;
-    status?: string;
-    anons?: string;
-}
-
-interface ProfileInfo {
-    id: number;
-    username: string;
-    nickname: string;
-    bio: string;
-    avatarId: string;
-    bannerId: string;
-    roles: string[];
-}
+import SearchModal from './SearchModal';
 
 const Header: React.FC = () => {
-    const router = useRouter();
     const pathname = usePathname();
     const { loadUserThemeSettings } = useTheme();
     const { toggle: toggleSidebar } = useSidebar();
@@ -45,19 +18,8 @@ const Header: React.FC = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [username, setUsername] = useState<string>('');
     const [isSearchModalVisible, setSearchModalVisible] = useState(false);
-    const [searchMode, setSearchMode] = useState<'anime' | 'profile'>('anime');
-    const [searchQuery, setSearchQuery] = useState('');
-    const [searchResults, setSearchResults] = useState<AnimeInfo[]>([]);
-    const [profileResults, setProfileResults] = useState<ProfileInfo[]>([]);
-    const [avatarUrls, setAvatarUrls] = useState<{ [username: string]: string }>({});
-    const [isLoading, setIsLoading] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
     const [, setUserRoles] = useState<string[]>([]);
-    const [coverUrls, setCoverUrls] = useState<{ [animeId: number]: string }>({});
     const [, setUserAvatarUrl] = useState<string>('/profile.png');
-    const [searchTimeoutId, setSearchTimeoutId] = useState<NodeJS.Timeout | null>(null);
-    const [currentSearchQuery, setCurrentSearchQuery] = useState('');
-    const [isWaitingForSearch, setIsWaitingForSearch] = useState(false);
 
     const authCheckedRef = useRef(false);
 
@@ -99,15 +61,6 @@ const Header: React.FC = () => {
         checkAuth();
     }, [loadUserThemeSettings]);
 
-    // Cleanup поисковых таймеров при размонтировании
-    useEffect(() => {
-        return () => {
-            if (searchTimeoutId) {
-                clearTimeout(searchTimeoutId);
-            }
-        };
-    }, [searchTimeoutId]);
-
     useEffect(() => {
         if (isSearchModalVisible) {
             document.body.style.overflow = 'hidden';
@@ -122,170 +75,8 @@ const Header: React.FC = () => {
         };
     }, [isSearchModalVisible]);
 
-    useEffect(() => {
-        const fetchCovers = async () => {
-            const urls: { [id: number]: string } = {};
-
-            await Promise.all(
-                searchResults.map(async (anime) => {
-                    try {
-                        // Используем тот же API, что и на главной странице
-                        const response = await fetch(`${API_SERVER}/api/anime/optimized/get-anime/${anime.id}/basic`);
-                        if (response.ok) {
-                            const data = await response.json();
-                            if (data.coverUrl && data.coverUrl.trim() && !data.coverUrl.includes('placeholder')) {
-                                urls[anime.id] = data.coverUrl;
-                            }
-                        }
-                    } catch { }
-                })
-            );
-
-            setCoverUrls(urls);
-        };
-
-        if (searchResults.length > 0) fetchCovers();
-    }, [searchResults]);
-
-    useEffect(() => {
-        const fetchAvatars = async () => {
-            const urls: { [username: string]: string } = {};
-            await Promise.all(
-                profileResults.map(async (profile) => {
-                    try {
-                        const res = await fetch(`${API_SERVER}/api/anime/image-links?username=${encodeURIComponent(profile.username)}`);
-                        const data = await res.json();
-                        if (data.avatarUrl) urls[profile.username] = data.avatarUrl;
-                    } catch { }
-                })
-            );
-            setAvatarUrls(urls);
-        };
-
-        if (profileResults.length > 0) fetchAvatars();
-    }, [profileResults]);
-
-    const performSearch = async (query: string, mode: 'anime' | 'profile') => {
-        console.log('🚀 performSearch запущен:', { query, mode });
-
-        if (!query.trim()) {
-            console.log('❌ Пустой запрос, отменяем');
-            return;
-        }
-
-        setIsWaitingForSearch(false); // Сбрасываем состояние ожидания
-        setIsLoading(true);
-        setErrorMessage('');
-
-        try {
-            if (mode === 'anime') {
-                console.log('🎬 Ищем аниме:', query);
-                const res = await fetch(`${API_SERVER}/api/anime/search?query=${encodeURIComponent(query)}`);
-                console.log('📡 Ответ сервера аниме:', res.status);
-                const data = await res.json();
-                console.log('📄 Данные аниме:', data);
-
-                const results = data.anime || data || [];
-                console.log('✅ Устанавливаем результаты аниме:', results.length, 'найдено');
-                setSearchResults(results);
-                setProfileResults([]);
-
-                if (results.length === 0) {
-                    setErrorMessage('Аниме не найдено');
-                }
-            } else {
-                console.log('👥 Ищем профили:', query);
-                const res = await fetch(`${API_SERVER}/api/anime/search-profiles?query=${encodeURIComponent(query)}`);
-                console.log('📡 Ответ сервера профили:', res.status);
-                const data = await res.json();
-                console.log('📄 Данные профили:', data);
-
-                const results = data.profiles || [];
-                console.log('✅ Устанавливаем результаты профили:', results.length, 'найдено');
-                setProfileResults(results);
-                setSearchResults([]);
-
-                if (results.length === 0) {
-                    setErrorMessage('Профили не найдены');
-                }
-            }
-        } catch (error) {
-            console.error('💥 Ошибка поиска:', error);
-            setErrorMessage('Ошибка при поиске');
-            setSearchResults([]);
-            setProfileResults([]);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const handleSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const query = event.target.value;
-        setSearchQuery(query);
-        setCurrentSearchQuery(query);
-
-        console.log('🔍 Ввод поиска:', query, 'режим:', searchMode);
-
-        // Отменяем предыдущий таймер поиска
-        if (searchTimeoutId) {
-            clearTimeout(searchTimeoutId);
-            console.log('🚫 Отменили предыдущий таймер');
-        }
-
-        if (!query.trim()) {
-            setSearchResults([]);
-            setProfileResults([]);
-            setErrorMessage('');
-            setIsLoading(false);
-            setIsWaitingForSearch(false);
-            console.log('🔄 Очистили результаты поиска');
-            return;
-        }
-
-        // Устанавливаем состояние ожидания поиска
-        setIsWaitingForSearch(true);
-        setSearchResults([]);
-        setProfileResults([]);
-        setErrorMessage('');
-
-        // Устанавливаем задержку для debounce (1 секунда)
-        console.log('⏰ Устанавливаем таймер на 1 секунду...');
-        const timeoutId = setTimeout(() => {
-            console.log('⏱️ ТАЙМЕР СРАБОТАЛ! Выполняем поиск для:', query);
-            performSearch(query.trim(), searchMode);
-        }, 1000);
-
-        setSearchTimeoutId(timeoutId);
-        console.log('✅ Таймер установлен:', timeoutId);
-    };
-
     const openSearchModal = () => setSearchModalVisible(true);
-    const closeSearchModal = () => {
-        // Отменяем активный поиск при закрытии модального окна
-        if (searchTimeoutId) {
-            clearTimeout(searchTimeoutId);
-            setSearchTimeoutId(null);
-        }
-
-        setSearchModalVisible(false);
-        setSearchQuery('');
-        setCurrentSearchQuery('');
-        setSearchResults([]);
-        setProfileResults([]);
-        setErrorMessage('');
-        setIsLoading(false);
-        setIsWaitingForSearch(false);
-    };
-
-    const handleAnimeClick = (id: number) => {
-        closeSearchModal();
-        router.push(`/anime-page/${id}`);
-    };
-
-    const handleProfileClick = (username: string) => {
-        closeSearchModal();
-        router.push(`/profile/${username}`);
-    };
+    const closeSearchModal = () => setSearchModalVisible(false);
 
     return (
         <>
@@ -338,114 +129,9 @@ const Header: React.FC = () => {
                         </button>
                     </div>
                 </div>
-
             </header>
 
-            {isSearchModalVisible && (
-                <div className="search-modal-overlay">
-                    <div className="search-modal">
-                        <div className="search-modal-content">
-                            <button className="close-button" onClick={closeSearchModal}>✖</button>
-
-                            <div className="search-mode-toggle">
-                                <button className={searchMode === 'anime' ? 'active' : ''} onClick={() => {
-                                    setSearchMode('anime');
-                                    if (currentSearchQuery) {
-                                        if (searchTimeoutId) clearTimeout(searchTimeoutId);
-                                        setIsWaitingForSearch(true);
-                                        setSearchResults([]);
-                                        setProfileResults([]);
-                                        setErrorMessage('');
-                                        const timeoutId = setTimeout(() => performSearch(currentSearchQuery, 'anime'), 1000);
-                                        setSearchTimeoutId(timeoutId);
-                                    }
-                                }}>Аниме</button>
-                                <button className={searchMode === 'profile' ? 'active' : ''} onClick={() => {
-                                    setSearchMode('profile');
-                                    if (currentSearchQuery) {
-                                        if (searchTimeoutId) clearTimeout(searchTimeoutId);
-                                        setIsWaitingForSearch(true);
-                                        setSearchResults([]);
-                                        setProfileResults([]);
-                                        setErrorMessage('');
-                                        const timeoutId = setTimeout(() => performSearch(currentSearchQuery, 'profile'), 1000);
-                                        setSearchTimeoutId(timeoutId);
-                                    }
-                                }}>Профили</button>
-                            </div>
-
-                            <input
-                                type="text"
-                                value={searchQuery}
-                                onChange={handleSearchInputChange}
-                                placeholder=" Введите запрос..."
-                                className="search-modal-input"
-                            />
-
-                            <div className="search-results">
-                                {!searchQuery ? (
-                                    <p className="loading-text">Введите поисковый запрос</p>
-                                ) : isWaitingForSearch ? (
-                                    null
-                                ) : isLoading ? (
-                                    <div className="loader-wrapper">
-                                        <div className="loader-modal-input"></div>
-                                    </div>
-                                ) : searchMode === 'anime' && searchResults.length > 0 ? (
-                                    searchResults.map(anime => (
-                                        <div key={anime.id} className="anime-card-search" onClick={() => handleAnimeClick(anime.id)}>
-                                            {coverUrls[anime.id] && (
-                                                <Image className="anime-card-search-img" src={coverUrls[anime.id]} alt={anime.title} width={75} height={110} />
-                                            )}
-                                            <div className="anime-card-info-search">
-                                                <h3 className="anime-title-search">
-                                                    {anime.title}{anime.season ? ` [${anime.season}]` : ''}
-                                                    {['UPCOMING', 'NOT_YET_AIRED', 'SOON', 'АНОНС', 'СКОРО'].includes(anime.status?.toUpperCase() || '') ? (
-                                                        <>
-                                                            {anime.anons?.trim() && <span className="anime-episodes-search">{anime.anons.toUpperCase()}</span>}
-                                                            <span className="anime-episodes-search anime-anons-badge">АНОНС</span>
-                                                        </>
-                                                    ) : (
-                                                        <span className="anime-episodes-search">{anime.current_episode || '?'} из {anime.episode_all || '?'}</span>
-                                                    )}
-                                                </h3>
-                                                <p className="anime-meta-search">{anime.type}{['UPCOMING', 'NOT_YET_AIRED', 'SOON', 'АНОНС', 'СКОРО'].includes(anime.status?.toUpperCase() || '') ? '' : ` • ${anime.year}`} • {anime.genres.split(',').join(' • ')}</p>
-                                                <p className="anime-description-search">{anime.description}</p>
-                                            </div>
-                                        </div>
-                                    ))
-                                ) : searchMode === 'profile' && profileResults.length > 0 ? (
-                                    <>
-                                        <h3 className="search-section-title">Профили</h3>
-                                        {profileResults.map(profile => (
-                                            <div key={`profile-${profile.id}`} className="profile-search-card" onClick={() => handleProfileClick(profile.username)}>
-                                                {avatarUrls[profile.username] && (
-                                                    <Image
-                                                        className="profile-avatar"
-                                                        src={avatarUrls[profile.username]}
-                                                        alt={profile.nickname || 'Аватар'}
-                                                        width={50}
-                                                        height={50}
-                                                        unoptimized
-                                                    />
-                                                )}
-                                                <div className="profile-info">
-                                                    <h4>{profile.nickname} <span className="username">@{profile.username}</span></h4>
-                                                    <p className="profile-bio">{profile.bio}</p>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </>
-                                ) : errorMessage ? (
-                                    <p className="loading-text">{errorMessage}</p>
-                                ) : (
-                                    <p className="loading-text">Ничего не найдено</p>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
+            <SearchModal isOpen={isSearchModalVisible} onClose={closeSearchModal} />
         </>
     );
 };

@@ -18,9 +18,9 @@ interface YumekoAnimeCardProps {
     dataPreloaded?: boolean;
 }
 
-const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({ 
-    anime, 
-    collectionType: propsCollectionType, 
+const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
+    anime,
+    collectionType: propsCollectionType,
     showCollectionStatus = true,
     showRating = true,
     showType = true,
@@ -73,14 +73,14 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
     const cleanType = (type: string) => {
         if (!type) return '';
         if (/\d/.test(type)) return type.trim();
-        
+
         const lower = type.toLowerCase().trim();
         if (lower.includes('фильм')) return 'Фильм';
         if (lower.includes('сезон')) return 'Сезон';
         if (lower.includes('ova')) return 'OVA';
         if (lower.includes('ona')) return 'ONA';
         if (lower.includes('special')) return 'Special';
-        if (lower.includes('тв') || lower.includes('tv')) return 'ТВ';
+        if (lower.includes('тв') || lower.includes('tv')) return 'TV';
         return type.trim();
     };
 
@@ -115,21 +115,21 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
             try {
                 setIsLoading(true);
                 setImageError(false);
-                
+
                 // Check coverUrl from props
                 if (anime.coverUrl && anime.coverUrl.trim() && !anime.coverUrl.includes('placeholder')) {
                     setCoverUrl(anime.coverUrl);
                     setIsLoading(false);
                     return;
                 }
-                
+
                 // Check image_url (old format)
                 if ('image_url' in anime && anime.image_url?.url && anime.image_url.url.trim()) {
                     setCoverUrl(anime.image_url.url);
                     setIsLoading(false);
                     return;
                 }
-                
+
                 // Try optimized endpoint
                 try {
                     const response = await fetch(`${API_SERVER}/api/anime/optimized/get-anime/${anime.id}/basic`);
@@ -141,7 +141,7 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
                             return;
                         }
                     }
-                } catch {}
+                } catch { }
 
                 setImageError(true);
             } catch {
@@ -155,7 +155,7 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
 
         return () => {
             if (coverUrl && coverUrl.startsWith('blob:')) {
-                try { URL.revokeObjectURL(coverUrl); } catch {}
+                try { URL.revokeObjectURL(coverUrl); } catch { }
             }
         };
     }, [anime?.id, anime?.coverUrl]);
@@ -201,7 +201,7 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
             setRating(providedRating);
             return;
         }
-        
+
         // Try multiple endpoints as fallback
         const fetchRating = async () => {
             try {
@@ -214,7 +214,7 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
                         return;
                     }
                 }
-                
+
                 // Try optimized endpoint
                 res = await fetch(`${API_SERVER}/api/anime/optimized/get-anime/${anime.id}/rating`);
                 if (res.ok) {
@@ -228,9 +228,9 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
                         return;
                     }
                 }
-            } catch {}
+            } catch { }
         };
-        
+
         fetchRating();
     }, [anime, showRating, dataPreloaded]);
 
@@ -244,11 +244,11 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
             setUserCollection(providedStatus);
             return;
         }
-        
+
         // Если данные предзагружены (collectionType уже проверен на сервере), не делаем запрос
         // Пустой collectionType означает что аниме не в коллекции
         if (dataPreloaded) return;
-        
+
         const token = getToken();
         if (!token) return;
 
@@ -256,19 +256,19 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
         fetch(`${API_SERVER}/api/anime/optimized/get-anime/${anime.id}/collection-status`, {
             headers: { Authorization: `Bearer ${token}` }
         })
-        .then(res => res.ok ? res.json() : null)
-        .then(data => {
-            // Check multiple response formats
-            if (data?.hasStatus === 'true' && data?.status) {
-                setUserCollection(data.status);
-            } else if (data?.collectionType) {
-                setUserCollection(data.collectionType);
-            } else if (data?.type) {
-                setUserCollection(data.type);
-            }
-        })
-        .catch(() => {})
-        .finally(() => setIsLoadingCollection(false));
+            .then(res => res.ok ? res.json() : null)
+            .then(data => {
+                // Check multiple response formats
+                if (data?.hasStatus === 'true' && data?.status) {
+                    setUserCollection(data.status);
+                } else if (data?.collectionType) {
+                    setUserCollection(data.collectionType);
+                } else if (data?.type) {
+                    setUserCollection(data.type);
+                }
+            })
+            .catch(() => { })
+            .finally(() => setIsLoadingCollection(false));
     }, [anime, showCollectionStatus, propsCollectionType, dataPreloaded]);
 
     // Image handlers
@@ -290,12 +290,12 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
     const animeStatus = anime.status?.toUpperCase() || '';
     const isUpcoming = ['UPCOMING', 'NOT_YET_AIRED', 'SOON', 'АНОНС', 'СКОРО'].includes(animeStatus);
     const anons = 'anons' in anime ? anime.anons : '';
-    
-    const currentEp = anime.current_episode || 
+
+    const currentEp = anime.current_episode ||
         ('currentEpisode' in anime ? (anime as { currentEpisode?: string }).currentEpisode : '') || '';
-    const totalEp = anime.episode_all || 
+    const totalEp = anime.episode_all ||
         ('episodeAll' in anime ? (anime as { episodeAll?: string }).episodeAll : '') || '';
-    
+
     const isCompleted = ['COMPLETED', 'FINISHED', 'ЗАВЕРШЕН', 'ВЫШЕЛ'].includes(animeStatus) ||
         (currentEp && totalEp && currentEp === totalEp);
 
@@ -317,13 +317,13 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
                         <div className="yumeko-anime-card-spinner" />
                     </div>
                 )}
-                
+
                 {imageError ? (
                     <div className="yumeko-anime-card-placeholder">
                         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                            <rect x="3" y="3" width="18" height="18" rx="2"/>
-                            <circle cx="8.5" cy="8.5" r="1.5"/>
-                            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                            <rect x="3" y="3" width="18" height="18" rx="2" />
+                            <circle cx="8.5" cy="8.5" r="1.5" />
+                            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
                         </svg>
                     </div>
                 ) : (
@@ -370,6 +370,11 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
                         <span className="yumeko-anime-card-year">{anime.year}</span>
                     )}
                 </div>
+                {anime.genres && (
+                    <p className="yumeko-anime-card-genres">
+                        {anime.genres.split(',').slice(0, 2).map(g => g.trim()).join(' • ')}
+                    </p>
+                )}
             </div>
         </Link>
     );

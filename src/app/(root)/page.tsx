@@ -4,10 +4,12 @@ import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 
 import YumekoCategorySection from '@/component/anime-structure/YumekoCategorySection';
+import RecentlyUpdatedSection from '@/component/anime-structure/RecentlyUpdatedSection';
 import YumekoMobileIndex from '@/component/mobile-navigation/YumekoMobileIndex';
 import ServerErrorPage from '@/component/common/ServerErrorPage';
 import ContinueWatchingSection from '@/component/continue-watching/ContinueWatchingSection';
 import { API_SERVER } from '@/hosts/constants';
+import '@/styles/components/recently-updated-section.scss';
 
 interface CategoryWithAnimeIds {
     id: string;
@@ -29,7 +31,7 @@ const CategoryList: React.FC = () => {
     // Установка title при заходе на страницу, чтобы точно обновить вкладку браузера
     useEffect(() => {
         document.title = 'Yumeko | Главная Страница';
-        
+
         // Проверяем сообщение о блокировке доступа к админке
         const adminAccessDenied = sessionStorage.getItem('adminAccessDenied');
         if (adminAccessDenied) {
@@ -87,7 +89,7 @@ const CategoryList: React.FC = () => {
 
     if (error) {
         return (
-            <ServerErrorPage 
+            <ServerErrorPage
                 title="Внутренняя ошибка сервера!"
                 message="Не удалось загрузить категории аниме.\nПожалуйста, попробуйте позже"
                 onRetry={() => window.location.reload()}
@@ -119,7 +121,7 @@ const CategoryList: React.FC = () => {
                     <div className="admin-access-content">
                         <div className="admin-access-icon">🔒</div>
                         <div className="admin-access-text">{adminAccessMessage}</div>
-                        <button 
+                        <button
                             className="admin-access-close"
                             onClick={() => setAdminAccessMessage(null)}
                         >
@@ -138,6 +140,11 @@ const CategoryList: React.FC = () => {
                 {/* Секция "Продолжить просмотр" - Desktop */}
                 <div className="desktop-only">
                     <ContinueWatchingSection />
+                </div>
+
+                {/* Секция "Недавно добавлено / Обновлено" - Desktop */}
+                <div className="desktop-only">
+                    <RecentlyUpdatedSection />
                 </div>
 
                 {/* Categories grid */}
