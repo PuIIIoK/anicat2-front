@@ -11,6 +11,7 @@ interface RecentUpdate {
     timestamp: string;
     updateSource: string; // KODIK_AUTO, MANUAL, NEW
     newEpisodeCount: string;
+    oldEpisodeCount?: string; // Для вычисления разницы
 }
 
 interface AnimeData {
@@ -36,6 +37,12 @@ const RecentlyUpdatedSection: React.FC = () => {
                 const res = await fetch(`${API_SERVER}/api/anime/recent-updates?limit=15`);
                 if (!res.ok) throw new Error('Failed to fetch recent updates');
                 const data: RecentUpdate[] = await res.json();
+
+                // СТРОГАЯ СОРТИРОВКА ПО ВРЕМЕНИ
+                data.sort((a, b) => {
+                    return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+                });
+
                 setUpdates(data);
 
                 // Fetch anime details for each
@@ -76,11 +83,22 @@ const RecentlyUpdatedSection: React.FC = () => {
         }
     };
 
-    const getUpdateLabel = (update: RecentUpdate) => {
+    const getUpdateLabel = (update: RecentUpdate, anime?: AnimeData) => {
         if (update.updateSource === 'NEW') {
             return { text: 'Новое', class: 'update-new' };
         }
-        return { text: `+ ${update.newEpisodeCount} эп.`, class: 'update-episode' };
+
+        if (update.updateSource === 'UPDATED') {
+            return { text: 'Обновлено', class: 'update-info' };
+        }
+
+        // MANUAL или KODIK_AUTO - показываем изменение эпизодов
+        const newEp = parseInt(update.newEpisodeCount || '0', 10);
+        const oldEp = parseInt(update.oldEpisodeCount || '0', 10);
+        const diff = newEp - oldEp;
+        const displayDiff = diff > 0 ? diff : newEp; // Если разница некорректна, показываем текущее
+
+        return { text: `+${displayDiff} эп`, class: 'update-episode' };
     };
 
     if (loading) {
@@ -119,6 +137,10 @@ const RecentlyUpdatedSection: React.FC = () => {
                     Недавно добавлено / Обновлено
                 </h2>
 
+                <Link href="/catalog" className="text-sm font-medium text-purple-400 hover:text-purple-300 transition-colors ml-4 mr-auto hidden sm:block">
+                    Посмотреть все
+                </Link>
+
                 <div className="recently-updated-controls">
                     <button
                         className="recently-updated-scroll-btn"
@@ -145,7 +167,7 @@ const RecentlyUpdatedSection: React.FC = () => {
             <div className="recently-updated-content" ref={scrollRef}>
                 {updates.map((update, index) => {
                     const anime = animeData.get(update.animeId);
-                    const label = getUpdateLabel(update);
+                    const label = getUpdateLabel(update, anime);
 
                     return (
                         <Link
@@ -184,11 +206,16 @@ const RecentlyUpdatedSection: React.FC = () => {
                             <div className="recently-updated-info">
                                 <h3 className="recently-updated-anime-title">{update.animeTitle}</h3>
                                 <div className="recently-updated-meta">
-                                    {anime?.current_episode && anime?.episode_all && (
-                                        <span className="recently-updated-episodes">
-                                            {anime.current_episode} / {anime.episode_all} эп.
-                                        </span>
-                                    )}
+                                    {(update.newEpisodeCount || anime?.episode_all) && (() => {
+                                        // Извлекаем только число из newEpisodeCount (может быть "2" или "2 из 11")
+                                        const epMatch = update.newEpisodeCount?.match(/^(\d+)/);
+                                        const epCount = epMatch ? epMatch[1] : (anime?.current_episode || '?');
+                                        return (
+                                            <span className="recently-updated-episodes">
+                                                {epCount} / {anime?.episode_all || '?'} эп.
+                                            </span>
+                                        );
+                                    })()}
                                     {anime?.year && (
                                         <span className="recently-updated-year">{anime.year}</span>
                                     )}

@@ -1,0 +1,180 @@
+// Admin Notification Styles (missing progress bar)
+
+.admin-notification {
+    position: fixed;
+    top: 120px;
+    right: 20px;
+    z-index: 9999;
+    min-width: 320px;
+    max-width: 400px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    animation: slideInRight 0.3s ease;
+    border: 1px solid #2a2a2a;
+    background: #181818;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+    }
+
+    .admin-notification-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 20px;
+        position: relative;
+        background: #181818;
+    }
+
+    .admin-notification-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .admin-notification-message {
+        flex: 1;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.4;
+        color: #e5e7eb;
+    }
+
+    .admin-notification-close {
+        background: none;
+        border: none;
+        cursor: pointer;
+        opacity: 0.6;
+        transition: all 0.2s ease;
+        border-radius: 4px;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: #9ca3af;
+
+        &:hover {
+            opacity: 1;
+            background: #2a2a2a;
+        }
+    }
+
+    .admin-notification-progress {
+        height: 3px;
+        background: rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+
+        .admin-notification-progress-bar {
+            height: 100%;
+            background: currentColor;
+            animation: progressShrink linear forwards;
+            transform-origin: left;
+        }
+    }
+
+    // Success variant
+    &.admin-notification-success {
+        .admin-notification-icon {
+            color: #10b981;
+        }
+
+        .admin-notification-content {
+            border-left: 4px solid #10b981;
+        }
+
+        .admin-notification-progress-bar {
+            background: #10b981;
+        }
+    }
+
+    // Error variant
+    &.admin-notification-error {
+        .admin-notification-icon {
+            color: #ef4444;
+        }
+
+        .admin-notification-content {
+            border-left: 4px solid #ef4444;
+        }
+
+        .admin-notification-progress-bar {
+            background: #ef4444;
+        }
+    }
+
+    // Warning variant
+    &.admin-notification-warning {
+        .admin-notification-icon {
+            color: #f59e0b;
+        }
+
+        .admin-notification-content {
+            border-left: 4px solid #f59e0b;
+        }
+
+        .admin-notification-progress-bar {
+            background: #f59e0b;
+        }
+    }
+
+    // Info variant
+    &.admin-notification-info {
+        .admin-notification-icon {
+            color: #3b82f6;
+        }
+
+        .admin-notification-content {
+            border-left: 4px solid #3b82f6;
+        }
+
+        .admin-notification-progress-bar {
+            background: #3b82f6;
+        }
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes progressShrink {
+    from {
+        width: 100%;
+    }
+
+    to {
+        width: 0%;
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-notification {
+        top: 100px;
+        right: 10px;
+        left: 10px;
+        min-width: auto;
+        max-width: none;
+
+        .admin-notification-content {
+            padding: 14px 16px;
+            gap: 10px;
+        }
+
+        .admin-notification-message {
+            font-size: 13px;
+        }
+    }
+}

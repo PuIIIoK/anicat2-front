@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { API_SERVER } from '@/hosts/constants';
 import '@/styles/components/search-fullscreen.scss';
@@ -562,10 +563,11 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
                                         </h3>
                                         <div className="search-results-grid search-results-grid--recent">
                                             {recentAnime.map(anime => (
-                                                <div
+                                                <Link
+                                                    href={`/anime-page/${anime.id}`}
                                                     key={`recent-${anime.id}`}
                                                     className="anime-search-card anime-search-card--mini"
-                                                    onClick={() => handleAnimeClick(anime.id)}
+                                                    onClick={onClose}
                                                 >
                                                     <div className="anime-search-card__cover">
                                                         {coverUrls[anime.id] ? (
@@ -592,7 +594,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
                                                     <div className="anime-search-card__info">
                                                         <h3 className="anime-search-card__title">{anime.title}</h3>
                                                     </div>
-                                                </div>
+                                                </Link>
                                             ))}
                                         </div>
                                     </div>
@@ -614,10 +616,11 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
                                         <>
                                             <div className="search-results-grid">
                                                 {displayedAnime.map((anime, index) => (
-                                                    <div
+                                                    <Link
+                                                        href={`/anime-page/${anime.id}`}
                                                         key={`${anime.id}-${index}`}
                                                         className="anime-search-card"
-                                                        onClick={() => handleAnimeClick(anime.id)}
+                                                        onClick={onClose}
                                                     >
                                                         <div className="anime-search-card__cover">
                                                             {coverUrls[anime.id] ? (
@@ -670,7 +673,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
 
                                                             <p className="anime-search-card__genres">{anime.genres?.split(',').slice(0, 3).join(' • ')}</p>
                                                         </div>
-                                                    </div>
+                                                    </Link>
                                                 ))}
                                             </div>
 
@@ -738,9 +741,17 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
                                                 {profile.bio && <p className="profile-search-card__bio">{profile.bio}</p>}
                                                 {profile.roles && profile.roles.length > 0 && (
                                                     <div className="profile-search-card__roles">
-                                                        {profile.roles.map(role => (
-                                                            <span key={role} className={`role-badge role-${role.toLowerCase()}`}>{role}</span>
-                                                        ))}
+                                                        {profile.roles
+                                                            .filter(role => role !== 'USER')
+                                                            .map(role => {
+                                                                const roleLabel = role === 'ADMIN' ? 'Администратор'
+                                                                    : role === 'MODERATOR' ? 'Модератор'
+                                                                        : role === 'SUPER_ADMIN' ? 'Главный админ'
+                                                                            : role;
+                                                                return (
+                                                                    <span key={role} className={`role-badge role-${role.toLowerCase()}`}>{roleLabel}</span>
+                                                                );
+                                                            })}
                                                     </div>
                                                 )}
                                             </div>

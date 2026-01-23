@@ -68,10 +68,10 @@ const YumekoMobileIndex: React.FC = () => {
     }), []);
 
     // Инициализация состояния из кэша для мгновенного отображения при возврате
-    const [categories, setCategories] = useState<Category[]>(() => 
+    const [categories, setCategories] = useState<Category[]>(() =>
         globalThis.__yumekoMobileCategoriesCache?.categories || []
     );
-    const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(() => 
+    const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(() =>
         globalThis.__yumekoLastSelectedCategoryId || globalThis.__yumekoMobileCategoriesCache?.categories?.[0]?.id || null
     );
     const [animeList, setAnimeList] = useState<AnimeBasicInfo[]>(() => {
@@ -81,7 +81,7 @@ const YumekoMobileIndex: React.FC = () => {
         }
         return [];
     });
-    const [loadingCategories, setLoadingCategories] = useState(() => 
+    const [loadingCategories, setLoadingCategories] = useState(() =>
         !globalThis.__yumekoMobileCategoriesCache?.categories?.length
     );
     const [loadingAnime, setLoadingAnime] = useState(false);
@@ -105,7 +105,7 @@ const YumekoMobileIndex: React.FC = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             const isFresh = Date.now() - categoriesCache.lastUpdated < CACHE_TTL_MS && categoriesCache.categories.length > 0;
-            
+
             // Если кэш свежий - просто используем его без загрузки
             if (isFresh) {
                 if (!mountedRef.current) return;
@@ -132,22 +132,22 @@ const YumekoMobileIndex: React.FC = () => {
             try {
                 const res = await fetch(`${API_SERVER}/api/anime/category/get-category`);
                 if (!res.ok) throw new Error('Ошибка загрузки');
-                
+
                 const data = await res.json();
                 const fetched: Category[] = (data.categories || []).sort(
                     (a: Category, b: Category) => a.position - b.position
                 );
-                
+
                 if (!mountedRef.current) return;
                 setCategories(fetched);
-                
+
                 if (!selectedCategoryId) {
                     const initialId = lastSelectedRef.value && fetched.some(c => c.id === lastSelectedRef.value)
                         ? lastSelectedRef.value
                         : (fetched[0]?.id || null);
                     setSelectedCategoryId(initialId);
                 }
-                
+
                 categoriesCache.categories = fetched;
                 categoriesCache.lastUpdated = Date.now();
             } catch {
@@ -167,14 +167,14 @@ const YumekoMobileIndex: React.FC = () => {
         const idx = categories.findIndex(c => c.id === selectedCategoryId);
         const el = categoryRefs.current[idx];
         const container = tabsContainerRef.current;
-        
+
         if (el && container) {
             requestAnimationFrame(() => {
                 setUnderlineStyle({
                     left: el.offsetLeft,
                     width: el.offsetWidth
                 });
-                
+
                 // Скролл к активному табу
                 const center = el.offsetLeft - container.clientWidth / 2 + el.offsetWidth / 2;
                 container.scrollTo({ left: Math.max(0, center), behavior: 'smooth' });
@@ -207,16 +207,16 @@ const YumekoMobileIndex: React.FC = () => {
             // Проверяем кэш
             const cached = animeCache.get(selectedCategoryId);
             const isFresh = cached && (Date.now() - cached.lastUpdated < CACHE_TTL_MS) && cached.animeList.length > 0;
-            
+
             // Если есть кэш - используем его сразу
             if (cached && cached.animeList.length > 0) {
                 if (!mountedRef.current) return;
                 setAnimeList(cached.animeList);
                 setLoadingAnime(false);
-                
+
                 // Если кэш свежий - не загружаем заново
                 if (isFresh && cached.fullyLoaded) return;
-                
+
                 // Иначе обновляем в фоне без показа загрузки
             } else {
                 // Показываем загрузку только если нет кэша
@@ -228,18 +228,18 @@ const YumekoMobileIndex: React.FC = () => {
                 // Используем animeIds из категории напрямую (без отдельного запроса)
                 const category = categories.find(c => c.id === selectedCategoryId);
                 const animeIds: number[] = (category?.animeIds || []).map(Number);
-                
+
                 if (animeIds.length === 0) {
                     setAnimeList([]);
                     setLoadingAnime(false);
                     return;
                 }
-                
+
                 const cacheKey = `mobile_cat_${selectedCategoryId}_${animeIds.join(',')}`;
-                
+
                 // Проверяем, есть ли уже pending запрос для этого ключа
                 let fetchPromise = pendingRequests.get(cacheKey);
-                
+
                 if (!fetchPromise) {
                     // Создаём новый запрос
                     const token = getAuthToken();
@@ -264,17 +264,17 @@ const YumekoMobileIndex: React.FC = () => {
                 }
 
                 const loadedAnime = await fetchPromise;
-                
+
                 if (!mountedRef.current || controller.signal.aborted) return;
 
                 // Сортируем в порядке категории
-                const sortedAnime = animeIds.map(id => 
+                const sortedAnime = animeIds.map(id =>
                     loadedAnime.find((anime: AnimeBasicInfo) => anime.id === id)
                 ).filter(Boolean) as AnimeBasicInfo[];
 
                 setLoadingAnime(false);
                 setAnimeList(sortedAnime);
-                
+
                 animeCache.set(selectedCategoryId, {
                     animeList: sortedAnime,
                     lastUpdated: Date.now(),
@@ -300,17 +300,17 @@ const YumekoMobileIndex: React.FC = () => {
 
     // Обработка свайпа
     const touchStartX = useRef<number | null>(null);
-    
+
     const handleTouchStart = (e: React.TouchEvent) => {
         touchStartX.current = e.touches[0].clientX;
     };
-    
+
     const handleTouchEnd = (e: React.TouchEvent) => {
         if (touchStartX.current === null) return;
-        
+
         const touchEndX = e.changedTouches[0].clientX;
         const deltaX = touchEndX - touchStartX.current;
-        
+
         if (Math.abs(deltaX) >= 50) {
             const currentIdx = categories.findIndex(c => c.id === selectedCategoryId);
             if (deltaX < 0 && currentIdx < categories.length - 1) {
@@ -319,7 +319,7 @@ const YumekoMobileIndex: React.FC = () => {
                 setSelectedCategoryId(categories[currentIdx - 1].id);
             }
         }
-        
+
         touchStartX.current = null;
     };
 
@@ -328,7 +328,7 @@ const YumekoMobileIndex: React.FC = () => {
             <div className="yumeko-mobile-index-error">
                 <span className="yumeko-mobile-index-error-icon">⚠️</span>
                 <span className="yumeko-mobile-index-error-text">{error}</span>
-                <button 
+                <button
                     className="yumeko-mobile-index-error-btn"
                     onClick={() => window.location.reload()}
                 >
@@ -347,14 +347,14 @@ const YumekoMobileIndex: React.FC = () => {
     }
 
     return (
-        <div 
+        <div
             className="yumeko-mobile-index"
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
         >
             {/* Tabs Navigation */}
             <div className="yumeko-mobile-index-tabs-wrapper">
-                <div 
+                <div
                     className="yumeko-mobile-index-tabs"
                     ref={tabsContainerRef}
                 >
@@ -368,9 +368,9 @@ const YumekoMobileIndex: React.FC = () => {
                             {cat.name}
                         </button>
                     ))}
-                    
+
                     {/* Underline */}
-                    <div 
+                    <div
                         className="yumeko-mobile-index-underline"
                         style={{
                             transform: `translateX(${underlineStyle.left}px)`,
@@ -395,7 +395,7 @@ const YumekoMobileIndex: React.FC = () => {
                                     <YumekoAnimeCard
                                         anime={anime}
                                         showRating={true}
-                                        showType={false}
+                                        showType={true}
                                         showCollectionStatus={true}
                                         dataPreloaded={true}
                                     />
