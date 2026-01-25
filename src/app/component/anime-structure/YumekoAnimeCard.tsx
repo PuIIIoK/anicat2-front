@@ -378,7 +378,7 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
                 <h3 className="yumeko-anime-card-title">{anime.title || 'Без названия'}</h3>
                 <div className="yumeko-anime-card-meta">
                     <span className={`yumeko-anime-card-episodes ${isUpcoming ? 'upcoming' : ''}`}>{getEpisodeText()}</span>
-                    {anime.year && (
+                    {anime.year && !isUpcoming && (
                         <span className="yumeko-anime-card-year">{anime.year}</span>
                     )}
                 </div>

@@ -1,23 +1,32 @@
-/* ===== YUMEKO CONTINUE WATCHING CARD ===== */
+/* ===== YUMEKO CONTINUE WATCHING CARD - Clean Vertical Design ===== */
 
 .yumeko-continue-card {
     display: flex;
     flex-direction: column;
-    width: 180px;
+    width: 170px;
     flex-shrink: 0;
-    transition: transform 0.2s ease;
-    
+    text-decoration: none;
+    color: inherit;
+    gap: 8px;
+
     &:hover {
-        transform: translateY(-4px);
-        
-        .yumeko-continue-card-image {
-            transform: scale(1.03);
-        }
-        
         .yumeko-continue-card-cover {
-            box-shadow: 0 8px 24px rgba(var(--primary-color-rgb, 175, 82, 222), 0.25);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+
+            &::after {
+                opacity: 1;
+            }
+
+            .yumeko-continue-card-play-icon {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
         }
-        
+
+        .yumeko-continue-card-image {
+            transform: scale(1.06);
+        }
+
         .yumeko-continue-card-title {
             color: var(--primary-color);
         }
@@ -27,18 +36,32 @@
 // Cover
 .yumeko-continue-card-cover {
     position: relative;
-    width: 180px;
-    height: 250px;
-    border-radius: 8px;
+    width: 100%;
+    aspect-ratio: 2/3;
+    border-radius: 12px;
     overflow: hidden;
-    background: rgba(255, 255, 255, 0.05);
-    transition: box-shadow 0.2s ease;
-    display: block;
+    background: linear-gradient(135deg, rgba(30, 30, 35, 1) 0%, rgba(20, 20, 25, 1) 100%);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    transition: box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+
+    &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.3);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 1;
+    }
 }
 
 .yumeko-continue-card-image {
     object-fit: cover;
-    transition: transform 0.3s ease;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease;
+    will-change: transform;
 }
 
 .yumeko-continue-card-placeholder {
@@ -51,132 +74,181 @@
     color: rgba(255, 255, 255, 0.2);
 }
 
+.yumeko-continue-card-play-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0;
+    z-index: 2;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    color: #fff;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
+    pointer-events: none;
+
+    svg {
+        display: block;
+    }
+}
+
 // Progress bar
 .yumeko-continue-card-progress {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 3px;
+    height: 4px;
     background: rgba(0, 0, 0, 0.5);
+    z-index: 3;
 }
 
 .yumeko-continue-card-progress-bar {
     height: 100%;
     background: var(--primary-color);
+    box-shadow: 0 0 8px var(--primary-color);
     transition: width 0.3s ease;
 }
 
 // Info section
 .yumeko-continue-card-info {
-    padding: 10px 2px 0;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
+    padding: 2px 0;
 }
 
 .yumeko-continue-card-title {
-    font-size: 13px;
-    font-weight: 500;
-    line-height: 1.3;
-    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: rgba(255, 255, 255, 0.95);
     text-decoration: none;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    height: 34px;
+    height: 38px;
     transition: color 0.2s ease;
 }
 
-.yumeko-continue-card-meta {
+.yumeko-continue-card-meta-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 2px;
+}
+
+.meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+}
+
+.episode-badge {
+    color: var(--primary-color);
+    font-weight: 600;
+    background: rgba(var(--primary-rgb), 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.time-badge {
+    color: rgba(255, 255, 255, 0.6);
+    font-family: monospace;
+    font-size: 11px;
+}
+
+.meta-details {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 11px;
-    color: var(--text-muted);
+    overflow: hidden;
 }
 
-.yumeko-continue-card-episode {
-    color: var(--text-secondary);
-    font-weight: 500;
-}
-
-.yumeko-continue-card-series {
-    color: var(--text-muted);
-}
-
-.yumeko-continue-card-time {
-    color: var(--text-muted);
-    margin-left: auto;
-}
-
-// Voice info
-.yumeko-continue-card-voice {
+.meta-text {
     display: flex;
     align-items: center;
     gap: 4px;
     font-size: 11px;
-    color: var(--text-secondary);
+    color: rgba(255, 255, 255, 0.7);
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
-    
+    max-width: 100%;
+
     svg {
         flex-shrink: 0;
         opacity: 0.7;
     }
+
+    &.source {
+        color: rgba(255, 255, 255, 0.5);
+
+        &::before {
+            content: '•';
+            margin-right: 4px;
+            color: rgba(255, 255, 255, 0.3);
+        }
+    }
 }
 
-// Continue button
+// Continue button - Subtle & Clean
 .yumeko-continue-card-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    padding: 8px 12px;
-    background: var(--primary-color);
-    color: white !important;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    text-decoration: none;
+    gap: 8px;
+    width: 100%;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9) !important;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
     transition: all 0.2s ease;
+    text-decoration: none;
     margin-top: 4px;
-    
+
     svg {
         flex-shrink: 0;
+        opacity: 0.8;
+        width: 14px;
+        height: 14px;
     }
-    
+
     &:hover {
-        opacity: 0.9;
+        background: rgba(var(--primary-rgb), 0.15);
+        border-color: var(--primary-color);
         color: white !important;
+
+        svg {
+            opacity: 1;
+            fill: var(--primary-color);
+        }
+    }
+
+    &:active {
+        opacity: 0.8;
     }
 }
 
 // Responsive
 @media (max-width: 768px) {
     .yumeko-continue-card {
-        width: 160px;
+        width: 140px;
     }
-    
-    .yumeko-continue-card-cover {
-        width: 160px;
-        height: 220px;
-    }
-    
+
     .yumeko-continue-card-title {
-        font-size: 12px;
-        height: 32px;
+        font-size: 13px;
+        height: 35px;
     }
-    
-    .yumeko-continue-card-meta {
-        font-size: 10px;
-    }
-    
+
     .yumeko-continue-card-btn {
-        padding: 6px 10px;
-        font-size: 11px;
+        padding: 6px;
+        font-size: 12px;
     }
 }

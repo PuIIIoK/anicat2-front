@@ -47,16 +47,16 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
         expandedComments, handleToggleReplies, replyingTo, handleStartReply, handleCancelReply,
         replyText, handleReplyTextChange, handleSubmitReply, handleLikeReply, handleDislikeReply,
         likingComments, likingReplies,
-        
+
         // Редактирование и удаление
         editingCommentId, editingReplyId, editText, setEditText,
         handleEditComment, handleEditReply, handleCancelEdit,
         handleSaveEditComment, handleSaveEditReply,
         handleDeleteComment, handleDeleteReply,
-        
+
         // Модалка удаления
         showDeleteModal, deleteTarget, closeDeleteModal, confirmDelete,
-        
+
         currentUserProfile,
 
         // Доступность и блокировки
@@ -77,7 +77,7 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
             console.log('❌ currentUserProfile.username не загружен из API');
             return false;
         }
-        
+
         // Сравнение username из API профиля с реальным username комментария
         const isOwner = currentUserProfile.username.toLowerCase() === String(comment.realUsername || comment.username).toLowerCase();
         console.log('👤 Проверка владельца (API):', {
@@ -91,35 +91,35 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
 
     const getRoleColor = (roleString: string) => {
         if (!roleString) return 'var(--text-primary)';
-        
+
         // Разделяем роли по запятой и приводим к нижнему регистру
         const roles = roleString.split(',').map(r => r.trim().toLowerCase());
         console.log('🎭 Обработка ролей:', roleString, '→', roles);
-        
+
         // Приоритет ролей (самая высокая роль определяет цвет)
         if (roles.includes('admin')) return '#ff4444';
         if (roles.includes('moderator')) return '#ffa500';
         if (roles.includes('premium')) return '#ffd700';
         if (roles.includes('verified')) return '#00ff88';
-        
+
         return 'var(--text-primary)';
     };
 
     const getRoleIcon = (roleString: string, verified?: boolean) => {
         console.log('🏅 Значки для:', roleString, 'verified:', verified);
-        
+
         if (verified) return <Verified size={18} className="verification-icon" />;
-        
+
         if (!roleString) return null;
-        
+
         // Разделяем роли по запятой и приводим к нижнему регистру
         const roles = roleString.split(',').map(r => r.trim().toLowerCase());
-        
+
         // Приоритет ролей (самая высокая роль определяет иконку)
         if (roles.includes('admin')) return <Shield size={14} className="role-icon admin" />;
         if (roles.includes('moderator')) return <Shield size={14} className="role-icon moderator" />;
         if (roles.includes('premium')) return <Crown size={14} className="role-icon premium" />;
-        
+
         return null;
     };
 
@@ -135,11 +135,11 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
 
         // Формируем данные для SEO
         // Если в anime.season уже есть слово "сезон", не дублируем его
-        const seasonText = anime.season 
+        const seasonText = anime.season
             ? (anime.season.toLowerCase().includes('сезон') ? ` ${anime.season}` : ` ${anime.season}`)
             : (anime.mouthSeason ? ` ${anime.mouthSeason}` : '');
         const pageTitle = `${anime.title}${seasonText} | Yumeko`;
-        
+
         const pageDescription = [
             `${anime.title}${seasonText}${anime.year ? `, ${anime.year}` : ''}${anime.type ? `, ${anime.type}` : ''}`,
             anime.description || '',
@@ -157,7 +157,7 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
 
         // Устанавливаем title
         document.title = pageTitle;
-        
+
         // Устанавливаем meta description
         let metaDescription = document.querySelector('meta[name="description"]');
         if (!metaDescription) {
@@ -166,7 +166,7 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
             document.head.appendChild(metaDescription);
         }
         metaDescription.setAttribute('content', pageDescription);
-        
+
         // Устанавливаем Open Graph теги
         const setMetaTag = (property: string, content: string) => {
             let meta = document.querySelector(`meta[property="${property}"]`);
@@ -177,14 +177,14 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
             }
             meta.setAttribute('content', content);
         };
-        
+
         setMetaTag('og:title', ogTitle);
         setMetaTag('og:description', ogDescription);
         setMetaTag('og:type', 'video.tv_show');
         setMetaTag('og:url', `https://anicat.fun/anime-page/${anime.id}`);
         if (anime.coverUrl) setMetaTag('og:image', anime.coverUrl);
         setMetaTag('og:site_name', 'Yumeko');
-        
+
         // Twitter Card
         const setTwitterTag = (name: string, content: string) => {
             let meta = document.querySelector(`meta[name="${name}"]`);
@@ -195,7 +195,7 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
             }
             meta.setAttribute('content', content);
         };
-        
+
         setTwitterTag('twitter:card', 'summary_large_image');
         setTwitterTag('twitter:title', ogTitle);
         setTwitterTag('twitter:description', ogDescription);
@@ -205,7 +205,7 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
     if (isLoading) return <AnimePageSkeleton isModern={true} />;
     if (error || !anime) {
         return (
-            <ServerErrorPage 
+            <ServerErrorPage
                 title="Внутренняя ошибка сервера!"
                 message={error || "Не удалось загрузить страницу аниме.\nПожалуйста, попробуйте позже"}
                 onRetry={() => window.location.reload()}
@@ -218,7 +218,7 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
             <DiscordStatusTracker status={`На странице аниме ${anime.title}`} />
 
             <div className="anime-page-container modern">
-                {/* Хлебные крошки и переключатель вида */}
+                {/* Хлебные крошки */}
                 <div className="anime-breadcrumbs">
                     <div className="breadcrumbs-left">
                         <Link href="/" className="breadcrumb-link">Главная</Link>
@@ -226,14 +226,6 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
                         <span className="breadcrumb-current">
                             {anime.title}{anime.season ? ` ${anime.season}` : ''}
                         </span>
-                    </div>
-                    
-                    <div className="anime-view-switcher">
-                        <span className="view-switcher-label">Вид:</span>
-                        <div className="view-switcher-buttons">
-                            <Link href={`/anime-page-cl/${animeId}`} className="view-btn" onClick={() => localStorage.setItem('animePageView', 'new')}>Новый</Link>
-                            <button className="view-btn active">Старый</button>
-                        </div>
                     </div>
                 </div>
 
@@ -259,9 +251,9 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
                             )}
                         </div>
 
-                        <button 
-                            className={`watch-button ${!anime.opened || isAccessible === false ? 'disabled' : ''}`} 
-                            onClick={handleWatchClick} 
+                        <button
+                            className={`watch-button ${!anime.opened || isAccessible === false ? 'disabled' : ''}`}
+                            onClick={handleWatchClick}
                             disabled={!anime.opened || isAccessible === false}
                         >
                             {anime.opened ? (<><Play size={20} />Смотреть</>) : (anime.anons || 'Скоро')}
@@ -279,8 +271,8 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
                         </div>
 
                         <div className="collection-dropdown">
-                            <button 
-                                className={`dropdown-trigger ${isSavingStatus ? 'saving' : ''}`} 
+                            <button
+                                className={`dropdown-trigger ${isSavingStatus ? 'saving' : ''}`}
                                 onClick={handleToggleStatusDropdown}
                                 disabled={isSavingStatus}
                             >
@@ -399,8 +391,8 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
                             <FileText size={18} />
                             <span>Подробности</span>
                         </button>
-                        <button 
-                            className={`anime-page-container-tab-button ${activeTab === 'reviews' ? 'active' : ''} ${(anime.status === 'Скоро' || anime.status === 'Анонс') ? 'disabled' : ''}`} 
+                        <button
+                            className={`anime-page-container-tab-button ${activeTab === 'reviews' ? 'active' : ''} ${(anime.status === 'Скоро' || anime.status === 'Анонс') ? 'disabled' : ''}`}
                             onClick={() => anime.status !== 'Скоро' && anime.status !== 'Анонс' && handleTabChange('reviews')}
                             disabled={anime.status === 'Скоро' || anime.status === 'Анонс'}
                         >
@@ -426,10 +418,10 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
                                         screenshotUrls.map((screenshot, index) => {
                                             console.log('🖼️ Рендерим скриншот:', screenshot);
                                             return (
-                                                <ScreenshotItem 
-                                                    key={screenshot.id || index} 
-                                                    screenshot={screenshot} 
-                                                    index={index} 
+                                                <ScreenshotItem
+                                                    key={screenshot.id || index}
+                                                    screenshot={screenshot}
+                                                    index={index}
                                                 />
                                             );
                                         })
@@ -489,15 +481,15 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
                                         <div className="user-review-header">
                                             <h3>Ваш отзыв</h3>
                                             <div className="user-review-actions">
-                                                <button 
-                                                    className="edit-review-btn" 
+                                                <button
+                                                    className="edit-review-btn"
                                                     onClick={handleEditReview}
                                                     title="Редактировать отзыв"
                                                 >
                                                     <Edit size={16} />
                                                 </button>
-                                                <button 
-                                                    className="delete-review-btn" 
+                                                <button
+                                                    className="delete-review-btn"
                                                     onClick={handleDeleteReview}
                                                     title="Удалить отзыв"
                                                 >
@@ -505,14 +497,14 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
                                                 </button>
                                             </div>
                                         </div>
-                                        
+
                                         <div className="user-review-notice">
                                             <div className="notice-icon">
                                                 <CheckCircle size={20} />
                                             </div>
                                             <span>Вы уже оставили отзыв!</span>
                                         </div>
-                                        
+
                                         <div className="user-review-content">
                                             <div className="user-review-rating">
                                                 <div className="rating-label">
@@ -534,7 +526,7 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
                                                     <span className="rating-score">{userReview.rating}/5</span>
                                                 </div>
                                             </div>
-                                            
+
                                             <div className="user-review-text">
                                                 <div className="review-label">
                                                     <BookOpen size={16} />
@@ -549,8 +541,8 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
                                         <div className="reviews-form-header">
                                             <h3>{isEditingReview ? 'Редактировать отзыв' : 'Оставить отзыв'}</h3>
                                             {isEditingReview && (
-                                                <button 
-                                                    className="cancel-edit-btn" 
+                                                <button
+                                                    className="cancel-edit-btn"
                                                     onClick={handleCancelEditReview}
                                                     title="Отменить редактирование"
                                                 >
@@ -558,18 +550,18 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
                                                 </button>
                                             )}
                                         </div>
-                                        
-                                        <form onSubmit={(e) => { 
-                                            e.preventDefault(); 
+
+                                        <form onSubmit={(e) => {
+                                            e.preventDefault();
                                             const formData = new FormData(e.target as HTMLFormElement);
                                             const reviewText = formData.get('review') as string;
                                             const ratingValue = formData.get('rating') as string;
-                                            
+
                                             if (!ratingValue && !(isEditingReview && userReview)) {
                                                 alert('Пожалуйста, выберите рейтинг!');
                                                 return;
                                             }
-                                            
+
                                             const rating = parseInt(ratingValue) || (isEditingReview && userReview ? userReview.rating : 1);
                                             handleSubmitReview(rating, '', reviewText);
                                             (e.target as HTMLFormElement).reset();
@@ -580,9 +572,9 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
                                                     <div className="rating-stars">
                                                         {[5, 4, 3, 2, 1].map((rating) => (
                                                             <label key={rating} className="star-label">
-                                                                <input 
-                                                                    type="radio" 
-                                                                    name="rating" 
+                                                                <input
+                                                                    type="radio"
+                                                                    name="rating"
                                                                     value={rating}
                                                                     defaultChecked={isEditingReview && userReview ? rating === userReview.rating : false}
                                                                 />
@@ -627,12 +619,12 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
                                                         colorResult: getRoleColor(review.role || ''),
                                                         iconResult: !!getRoleIcon(review.role || '', review.verified)
                                                     });
-                                                    
+
                                                     return (
                                                         <div key={review.id} className="review-item">
                                                             <div className="review-user-info">
-                                                                <Link 
-                                                                    href={`/profile/${review.realUsername || review.username}`} 
+                                                                <Link
+                                                                    href={`/profile/${review.realUsername || review.username}`}
                                                                     style={{ textDecoration: 'none', display: 'flex', alignItems: 'flex-start', gap: '12px' }}
                                                                 >
                                                                     <div className="review-avatar">
@@ -653,8 +645,8 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
                                                                     </div>
                                                                     <div className="review-user-details">
                                                                         <div className="review-username-row">
-                                                                            <span 
-                                                                                className="review-username" 
+                                                                            <span
+                                                                                className="review-username"
                                                                                 style={{ color: getRoleColor(review.role || '') }}
                                                                             >
                                                                                 {review.nickname || review.username || 'Аноним'}
@@ -664,43 +656,43 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
                                                                     </div>
                                                                 </Link>
                                                             </div>
-                                                        
-                                                   {review.content && review.content.trim() && (
-                                                       <div className="review-content">
-                                                           {review.content}
-                                                       </div>
-                                                   )}
-                                                   
-                                                   {(!review.content || !review.content.trim()) && (
-                                                       <div className="review-no-content">
-                                                           <em>Пользователь оставил только оценку</em>
-                                                       </div>
-                                                   )}
-                                                        
-                                                        <div className="review-rating">
-                                                            {Array.from({ length: 5 }, (_, i) => (
-                                                                <Star
-                                                                    key={i}
-                                                                    size={16}
-                                                                    fill={i < review.rating ? 'var(--primary-color)' : 'var(--primary-color)'}
-                                                                    color={i < review.rating ? 'var(--primary-color)' : 'var(--primary-color)'}
-                                                                    style={{
-                                                                        opacity: i < review.rating ? 1 : 0.3
-                                                                    }}
-                                                                />
-                                                            ))}
-                                                            <span className="review-score">{review.rating}/5</span>
+
+                                                            {review.content && review.content.trim() && (
+                                                                <div className="review-content">
+                                                                    {review.content}
+                                                                </div>
+                                                            )}
+
+                                                            {(!review.content || !review.content.trim()) && (
+                                                                <div className="review-no-content">
+                                                                    <em>Пользователь оставил только оценку</em>
+                                                                </div>
+                                                            )}
+
+                                                            <div className="review-rating">
+                                                                {Array.from({ length: 5 }, (_, i) => (
+                                                                    <Star
+                                                                        key={i}
+                                                                        size={16}
+                                                                        fill={i < review.rating ? 'var(--primary-color)' : 'var(--primary-color)'}
+                                                                        color={i < review.rating ? 'var(--primary-color)' : 'var(--primary-color)'}
+                                                                        style={{
+                                                                            opacity: i < review.rating ? 1 : 0.3
+                                                                        }}
+                                                                    />
+                                                                ))}
+                                                                <span className="review-score">{review.rating}/5</span>
+                                                            </div>
                                                         </div>
-                                                    </div>
                                                     );
                                                 })}
                                             </div>
-                                            
+
                                             {handleToggleShowAllReviews && reviews.length > 5 && (
                                                 <div className="reviews-show-more">
-                                                    <button 
+                                                    <button
                                                         className="show-more-btn"
-                                                            onClick={handleToggleShowAllReviews}
+                                                        onClick={handleToggleShowAllReviews}
                                                     >
                                                         {showAllReviews ? (
                                                             <>
@@ -732,8 +724,8 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
                             <div className="anime-page-container-tab-comments">
                                 <div className="comments-form">
                                     <h3>Оставить комментарий</h3>
-                                    <form onSubmit={(e) => { 
-                                        e.preventDefault(); 
+                                    <form onSubmit={(e) => {
+                                        e.preventDefault();
                                         const formData = new FormData(e.target as HTMLFormElement);
                                         const commentText = formData.get('comment') as string;
                                         handleSubmitComment(commentText);
@@ -784,12 +776,12 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
                                                         colorResult: getRoleColor(comment.role || ''),
                                                         iconResult: !!getRoleIcon(comment.role || '', comment.verified)
                                                     });
-                                                    
-                                                                        return (
-                                                                            <div key={comment.id} className={`comment-item ${comment.isPending ? 'pending' : ''}`}>
+
+                                                    return (
+                                                        <div key={comment.id} className={`comment-item ${comment.isPending ? 'pending' : ''}`}>
                                                             <div className="comment-user-info">
-                                                                <Link 
-                                                                    href={`/profile/${comment.realUsername || comment.username}`} 
+                                                                <Link
+                                                                    href={`/profile/${comment.realUsername || comment.username}`}
                                                                     style={{ textDecoration: 'none', display: 'flex', alignItems: 'flex-start', gap: '12px' }}
                                                                 >
                                                                     <div className="comment-avatar">
@@ -810,8 +802,8 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
                                                                     </div>
                                                                     <div className="comment-user-details">
                                                                         <div className="comment-username-row">
-                                                                            <span 
-                                                                                className="comment-username" 
+                                                                            <span
+                                                                                className="comment-username"
                                                                                 style={{ color: getRoleColor(comment.role || '') }}
                                                                             >
                                                                                 {comment.nickname || comment.username || 'Аноним'}
@@ -824,19 +816,19 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
                                                             <div className="comment-content">
                                                                 {editingCommentId === comment.id ? (
                                                                     <div className="comment-edit-form">
-                                                                        <textarea 
+                                                                        <textarea
                                                                             value={editText}
                                                                             onChange={(e) => setEditText(e.target.value)}
                                                                             className="comment-edit-textarea"
                                                                         />
                                                                         <div className="comment-edit-actions">
-                                                                            <button 
+                                                                            <button
                                                                                 className="comment-save-btn"
                                                                                 onClick={handleSaveEditComment}
                                                                             >
                                                                                 Сохранить
                                                                             </button>
-                                                                            <button 
+                                                                            <button
                                                                                 className="comment-cancel-btn"
                                                                                 onClick={handleCancelEdit}
                                                                             >
@@ -848,267 +840,267 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
                                                                     comment.text
                                                                 )}
                                                             </div>
-                                                                <div className="comment-actions">
-                                                                    <button 
-                                                                        className={`comment-action-btn comment-like-btn ${comment.isLiked ? 'liked' : ''} ${likingComments.has(comment.id) ? 'loading' : ''}`}
-                                                                        onClick={() => handleLikeComment(comment.id)}
-                                                                        disabled={likingComments.has(comment.id)}
-                                                                    >
-                                                                        {likingComments.has(comment.id) ? (
-                                                                            <div className="spinner" />
-                                                                        ) : (
-                                                                            <Heart size={16} />
-                                                                        )}
-                                                                        <span>{comment.likes || 0}</span>
-                                                                    </button>
-                                                                    <button 
-                                                                        className={`comment-action-btn comment-dislike-btn ${comment.isDisliked ? 'disliked' : ''} ${likingComments.has(comment.id) ? 'loading' : ''}`}
-                                                                        onClick={() => handleDislikeComment(comment.id)}
-                                                                        disabled={likingComments.has(comment.id)}
-                                                                    >
-                                                                        {likingComments.has(comment.id) ? (
-                                                                            <div className="spinner" />
-                                                                        ) : (
-                                                                            <Heart size={16} style={{transform: 'rotate(180deg)'}} />
-                                                                        )}
-                                                                        <span>{comment.dislikes || 0}</span>
-                                                                    </button>
-
-                                                                    {comment.replies && comment.replies.length > 0 ? (
-                                                                        <button 
-                                                                            className="comment-action-btn comment-show-replies-btn"
-                                                                            onClick={() => handleToggleReplies(comment.id)}
-                                                                        >
-                                                                            {expandedComments.has(comment.id) ? (
-                                                                                <>
-                                                                                    <ChevronUp size={16} />
-                                                                                    <span>Скрыть ответы</span>
-                                                                                </>
-                                                                            ) : (
-                                                                                <>
-                                                                                    <ChevronDown size={16} />
-                                                                                    <span>Посмотреть ответы ({comment.replies.length})</span>
-                                                                                </>
-                                                                            )}
-                                                                        </button>
+                                                            <div className="comment-actions">
+                                                                <button
+                                                                    className={`comment-action-btn comment-like-btn ${comment.isLiked ? 'liked' : ''} ${likingComments.has(comment.id) ? 'loading' : ''}`}
+                                                                    onClick={() => handleLikeComment(comment.id)}
+                                                                    disabled={likingComments.has(comment.id)}
+                                                                >
+                                                                    {likingComments.has(comment.id) ? (
+                                                                        <div className="spinner" />
                                                                     ) : (
-                                                                        <button 
-                                                                            className="comment-action-btn comment-show-replies-btn"
-                                                                            onClick={() => {
-                                                                                handleToggleReplies(comment.id);
-                                                                                handleStartReply(comment.id);
-                                                                            }}
+                                                                        <Heart size={16} />
+                                                                    )}
+                                                                    <span>{comment.likes || 0}</span>
+                                                                </button>
+                                                                <button
+                                                                    className={`comment-action-btn comment-dislike-btn ${comment.isDisliked ? 'disliked' : ''} ${likingComments.has(comment.id) ? 'loading' : ''}`}
+                                                                    onClick={() => handleDislikeComment(comment.id)}
+                                                                    disabled={likingComments.has(comment.id)}
+                                                                >
+                                                                    {likingComments.has(comment.id) ? (
+                                                                        <div className="spinner" />
+                                                                    ) : (
+                                                                        <Heart size={16} style={{ transform: 'rotate(180deg)' }} />
+                                                                    )}
+                                                                    <span>{comment.dislikes || 0}</span>
+                                                                </button>
+
+                                                                {comment.replies && comment.replies.length > 0 ? (
+                                                                    <button
+                                                                        className="comment-action-btn comment-show-replies-btn"
+                                                                        onClick={() => handleToggleReplies(comment.id)}
+                                                                    >
+                                                                        {expandedComments.has(comment.id) ? (
+                                                                            <>
+                                                                                <ChevronUp size={16} />
+                                                                                <span>Скрыть ответы</span>
+                                                                            </>
+                                                                        ) : (
+                                                                            <>
+                                                                                <ChevronDown size={16} />
+                                                                                <span>Посмотреть ответы ({comment.replies.length})</span>
+                                                                            </>
+                                                                        )}
+                                                                    </button>
+                                                                ) : (
+                                                                    <button
+                                                                        className="comment-action-btn comment-show-replies-btn"
+                                                                        onClick={() => {
+                                                                            handleToggleReplies(comment.id);
+                                                                            handleStartReply(comment.id);
+                                                                        }}
+                                                                    >
+                                                                        <MessageCircle size={16} />
+                                                                        <span>Ответить</span>
+                                                                    </button>
+                                                                )}
+
+                                                                {/* Кнопки редактирования и удаления для владельца комментария */}
+                                                                {isCommentOwner(comment as unknown as Record<string, unknown>) && (
+                                                                    <>
+                                                                        <button
+                                                                            className="comment-action-btn comment-edit-btn"
+                                                                            onClick={() => handleEditComment(comment.id, comment.text)}
                                                                         >
-                                                                            <MessageCircle size={16} />
-                                                                            <span>Ответить</span>
+                                                                            <Edit size={16} />
+                                                                            <span>Редактировать</span>
                                                                         </button>
-                                                                    )}
-
-                                                                    {/* Кнопки редактирования и удаления для владельца комментария */}
-                                                                    {isCommentOwner(comment as unknown as Record<string, unknown>) && (
-                                                                        <>
-                                                                            <button 
-                                                                                className="comment-action-btn comment-edit-btn"
-                                                                                onClick={() => handleEditComment(comment.id, comment.text)}
-                                                                            >
-                                                                                <Edit size={16} />
-                                                                                <span>Редактировать</span>
-                                                                            </button>
-                                                                            <button 
-                                                                                className="comment-action-btn comment-delete-btn"
-                                                                                onClick={() => handleDeleteComment(comment.id, comment.text)}
-                                                                            >
-                                                                                <Trash2 size={16} />
-                                                                                <span>Удалить</span>
-                                                                            </button>
-                                                                        </>
-                                                                    )}
-                                                                </div>
+                                                                        <button
+                                                                            className="comment-action-btn comment-delete-btn"
+                                                                            onClick={() => handleDeleteComment(comment.id, comment.text)}
+                                                                        >
+                                                                            <Trash2 size={16} />
+                                                                            <span>Удалить</span>
+                                                                        </button>
+                                                                    </>
+                                                                )}
+                                                            </div>
 
 
-                                                                {/* Ответы на комментарий и форма ответа */}
-                                                                {expandedComments.has(comment.id) && (
-                                                                    <div className="comment-replies">
-                                                                        {/* Список ответов */}
-                                                                        {comment.replies && comment.replies.length > 0 && (
-                                                                            <div className="replies-list">
-                                                                                {comment.replies.map((reply) => (
-                                                                                    <div key={reply.id} className={`comment-reply-item ${reply.isPending ? 'pending' : ''}`}>
-                                                                                        <div className="reply-user-info">
-                                                                                            <Link 
-                                                                                                href={`/profile/${reply.realUsername || reply.username}`} 
-                                                                                                style={{ textDecoration: 'none', display: 'flex', alignItems: 'flex-start', gap: '8px' }}
-                                                                                            >
-                                                                                                <div className="reply-avatar">
-                                                                                                    {reply.avatarUrl ? (
-                                                                                                        <img 
-                                                                                                            src={reply.avatarUrl} 
-                                                                                                            alt={reply.username || 'Аноним'}
-                                                                                                            onError={(e) => {
-                                                                                                                const target = e.target as HTMLImageElement;
-                                                                                                                target.style.display = 'none';
-                                                                                                                const parent = target.parentElement;
-                                                                                                                if (parent) {
-                                                                                                                    parent.innerHTML = `<span class="avatar-fallback">${(reply.username || 'A').charAt(0).toUpperCase()}</span>`;
-                                                                                                                }
-                                                                                                            }}
-                                                                                                        />
-                                                                                                    ) : (
-                                                                                                        <span className="avatar-fallback">{(reply.username || 'A').charAt(0).toUpperCase()}</span>
-                                                                                                    )}
-                                                                                                </div>
-                                                                                                <div className="reply-user-details">
-                                                                                                    <span 
-                                                                                                        className="reply-username"
-                                                                                                        style={{ color: getRoleColor(reply.role || '') }}
-                                                                                                    >
-                                                                                                        {reply.nickname || reply.username || 'Аноним'}
-                                                                                                    </span>
-                                                                                                    {getRoleIcon(reply.role || '', reply.verified)}
-                                                                                                </div>
-                                                                                            </Link>
-                                                                                        </div>
-                                                                                        <div className="reply-text">
-                                                                                            {editingReplyId === reply.id ? (
-                                                                                                <div className="reply-edit-form">
-                                                                                                    <textarea 
-                                                                                                        value={editText}
-                                                                                                        onChange={(e) => setEditText(e.target.value)}
-                                                                                                        className="reply-edit-textarea"
+                                                            {/* Ответы на комментарий и форма ответа */}
+                                                            {expandedComments.has(comment.id) && (
+                                                                <div className="comment-replies">
+                                                                    {/* Список ответов */}
+                                                                    {comment.replies && comment.replies.length > 0 && (
+                                                                        <div className="replies-list">
+                                                                            {comment.replies.map((reply) => (
+                                                                                <div key={reply.id} className={`comment-reply-item ${reply.isPending ? 'pending' : ''}`}>
+                                                                                    <div className="reply-user-info">
+                                                                                        <Link
+                                                                                            href={`/profile/${reply.realUsername || reply.username}`}
+                                                                                            style={{ textDecoration: 'none', display: 'flex', alignItems: 'flex-start', gap: '8px' }}
+                                                                                        >
+                                                                                            <div className="reply-avatar">
+                                                                                                {reply.avatarUrl ? (
+                                                                                                    <img
+                                                                                                        src={reply.avatarUrl}
+                                                                                                        alt={reply.username || 'Аноним'}
+                                                                                                        onError={(e) => {
+                                                                                                            const target = e.target as HTMLImageElement;
+                                                                                                            target.style.display = 'none';
+                                                                                                            const parent = target.parentElement;
+                                                                                                            if (parent) {
+                                                                                                                parent.innerHTML = `<span class="avatar-fallback">${(reply.username || 'A').charAt(0).toUpperCase()}</span>`;
+                                                                                                            }
+                                                                                                        }}
                                                                                                     />
-                                                                                                    <div className="reply-edit-actions">
-                                                                                                        <button 
-                                                                                                            className="reply-save-btn"
-                                                                                                            onClick={handleSaveEditReply}
-                                                                                                        >
-                                                                                                            Сохранить
-                                                                                                        </button>
-                                                                                                        <button 
-                                                                                                            className="reply-cancel-btn"
-                                                                                                            onClick={handleCancelEdit}
-                                                                                                        >
-                                                                                                            Отмена
-                                                                                                        </button>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            ) : (
-                                                                                                reply.text
-                                                                                            )}
-                                                                                        </div>
-                                                                                        <div className="reply-actions">
-                                                                                            <button 
-                                                                                                className={`reply-action-btn reply-like-btn ${reply.isLiked ? 'liked' : ''} ${likingReplies.has(reply.id) ? 'loading' : ''}`}
-                                                                                                onClick={() => handleLikeReply(reply.id)}
-                                                                                                disabled={likingReplies.has(reply.id)}
-                                                                                            >
-                                                                                                {likingReplies.has(reply.id) ? (
-                                                                                                    <div className="spinner" />
                                                                                                 ) : (
-                                                                                                    <Heart size={12} />
-                                                                                                )}
-                                                                                                <span>{reply.likes || 0}</span>
-                                                                                            </button>
-                                                                                            <button 
-                                                                                                className={`reply-action-btn reply-dislike-btn ${reply.isDisliked ? 'disliked' : ''} ${likingReplies.has(reply.id) ? 'loading' : ''}`}
-                                                                                                onClick={() => handleDislikeReply(reply.id)}
-                                                                                                disabled={likingReplies.has(reply.id)}
-                                                                                            >
-                                                                                                {likingReplies.has(reply.id) ? (
-                                                                                                    <div className="spinner" />
-                                                                                                ) : (
-                                                                                                    <Heart size={12} style={{transform: 'rotate(180deg)'}} />
-                                                                                                )}
-                                                                                                <span>{reply.dislikes || 0}</span>
-                                                                                            </button>
-                                                                                            
-                                                                                            <button 
-                                                                                                className="reply-action-btn"
-                                                                                                onClick={() => {
-                                                                                                    const replyToText = `@${reply.username || 'Аноним'}, `;
-                                                                                                    handleStartReply(comment.id);
-                                                                                                    handleReplyTextChange(replyToText);
-                                                                                                }}
-                                                                                                >
-                                                                                                    <MessageCircle size={12} />
-                                                                                                    Ответить
-                                                                                                </button>
-
-                                                                                                {/* Кнопки редактирования и удаления для владельца ответа */}
-                                                                                                {isCommentOwner(reply as unknown as Record<string, unknown>) && (
-                                                                                                    <>
-                                                                                                        <button 
-                                                                                                            className="reply-action-btn reply-edit-btn"
-                                                                                                            onClick={() => handleEditReply(reply.id, reply.text)}
-                                                                                                        >
-                                                                                                            <Edit size={12} />
-                                                                                                            Редактировать
-                                                                                                        </button>
-                                                                                                        <button 
-                                                                                                            className="reply-action-btn reply-delete-btn"
-                                                                                                            onClick={() => handleDeleteReply(reply.id, reply.text)}
-                                                                                                        >
-                                                                                                            <Trash2 size={12} />
-                                                                                                            Удалить
-                                                                                                        </button>
-                                                                                                    </>
+                                                                                                    <span className="avatar-fallback">{(reply.username || 'A').charAt(0).toUpperCase()}</span>
                                                                                                 )}
                                                                                             </div>
+                                                                                            <div className="reply-user-details">
+                                                                                                <span
+                                                                                                    className="reply-username"
+                                                                                                    style={{ color: getRoleColor(reply.role || '') }}
+                                                                                                >
+                                                                                                    {reply.nickname || reply.username || 'Аноним'}
+                                                                                                </span>
+                                                                                                {getRoleIcon(reply.role || '', reply.verified)}
+                                                                                            </div>
+                                                                                        </Link>
                                                                                     </div>
-                                                                                ))}
+                                                                                    <div className="reply-text">
+                                                                                        {editingReplyId === reply.id ? (
+                                                                                            <div className="reply-edit-form">
+                                                                                                <textarea
+                                                                                                    value={editText}
+                                                                                                    onChange={(e) => setEditText(e.target.value)}
+                                                                                                    className="reply-edit-textarea"
+                                                                                                />
+                                                                                                <div className="reply-edit-actions">
+                                                                                                    <button
+                                                                                                        className="reply-save-btn"
+                                                                                                        onClick={handleSaveEditReply}
+                                                                                                    >
+                                                                                                        Сохранить
+                                                                                                    </button>
+                                                                                                    <button
+                                                                                                        className="reply-cancel-btn"
+                                                                                                        onClick={handleCancelEdit}
+                                                                                                    >
+                                                                                                        Отмена
+                                                                                                    </button>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        ) : (
+                                                                                            reply.text
+                                                                                        )}
+                                                                                    </div>
+                                                                                    <div className="reply-actions">
+                                                                                        <button
+                                                                                            className={`reply-action-btn reply-like-btn ${reply.isLiked ? 'liked' : ''} ${likingReplies.has(reply.id) ? 'loading' : ''}`}
+                                                                                            onClick={() => handleLikeReply(reply.id)}
+                                                                                            disabled={likingReplies.has(reply.id)}
+                                                                                        >
+                                                                                            {likingReplies.has(reply.id) ? (
+                                                                                                <div className="spinner" />
+                                                                                            ) : (
+                                                                                                <Heart size={12} />
+                                                                                            )}
+                                                                                            <span>{reply.likes || 0}</span>
+                                                                                        </button>
+                                                                                        <button
+                                                                                            className={`reply-action-btn reply-dislike-btn ${reply.isDisliked ? 'disliked' : ''} ${likingReplies.has(reply.id) ? 'loading' : ''}`}
+                                                                                            onClick={() => handleDislikeReply(reply.id)}
+                                                                                            disabled={likingReplies.has(reply.id)}
+                                                                                        >
+                                                                                            {likingReplies.has(reply.id) ? (
+                                                                                                <div className="spinner" />
+                                                                                            ) : (
+                                                                                                <Heart size={12} style={{ transform: 'rotate(180deg)' }} />
+                                                                                            )}
+                                                                                            <span>{reply.dislikes || 0}</span>
+                                                                                        </button>
+
+                                                                                        <button
+                                                                                            className="reply-action-btn"
+                                                                                            onClick={() => {
+                                                                                                const replyToText = `@${reply.username || 'Аноним'}, `;
+                                                                                                handleStartReply(comment.id);
+                                                                                                handleReplyTextChange(replyToText);
+                                                                                            }}
+                                                                                        >
+                                                                                            <MessageCircle size={12} />
+                                                                                            Ответить
+                                                                                        </button>
+
+                                                                                        {/* Кнопки редактирования и удаления для владельца ответа */}
+                                                                                        {isCommentOwner(reply as unknown as Record<string, unknown>) && (
+                                                                                            <>
+                                                                                                <button
+                                                                                                    className="reply-action-btn reply-edit-btn"
+                                                                                                    onClick={() => handleEditReply(reply.id, reply.text)}
+                                                                                                >
+                                                                                                    <Edit size={12} />
+                                                                                                    Редактировать
+                                                                                                </button>
+                                                                                                <button
+                                                                                                    className="reply-action-btn reply-delete-btn"
+                                                                                                    onClick={() => handleDeleteReply(reply.id, reply.text)}
+                                                                                                >
+                                                                                                    <Trash2 size={12} />
+                                                                                                    Удалить
+                                                                                                </button>
+                                                                                            </>
+                                                                                        )}
+                                                                                    </div>
+                                                                                </div>
+                                                                            ))}
+                                                                        </div>
+                                                                    )}
+
+                                                                    {/* Форма для ответа внизу */}
+                                                                    <div className="comment-reply-form bottom-form">
+                                                                        <textarea
+                                                                            placeholder={`Ответить ${comment.username || 'пользователю'}...`}
+                                                                            className="reply-textarea enhanced"
+                                                                            value={replyingTo === comment.id ? replyText : ''}
+                                                                            onChange={(e) => {
+                                                                                if (replyingTo !== comment.id) {
+                                                                                    handleStartReply(comment.id);
+                                                                                }
+                                                                                handleReplyTextChange(e.target.value);
+                                                                            }}
+                                                                            onKeyDown={(e) => {
+                                                                                if (e.key === 'Enter' && !e.shiftKey) {
+                                                                                    e.preventDefault();
+                                                                                    if (replyText.trim()) {
+                                                                                        handleSubmitReply(comment.id);
+                                                                                    }
+                                                                                }
+                                                                            }}
+                                                                        />
+                                                                        {replyingTo === comment.id && replyText.trim() && (
+                                                                            <div className="reply-form-actions">
+                                                                                <button
+                                                                                    className="reply-submit-btn"
+                                                                                    onClick={() => handleSubmitReply(comment.id)}
+                                                                                >
+                                                                                    <Send size={14} />
+                                                                                    Ответить
+                                                                                </button>
+                                                                                <button
+                                                                                    className="reply-cancel-btn"
+                                                                                    onClick={handleCancelReply}
+                                                                                >
+                                                                                    Отмена
+                                                                                </button>
                                                                             </div>
                                                                         )}
-
-                                                                        {/* Форма для ответа внизу */}
-                                                                        <div className="comment-reply-form bottom-form">
-                                                                            <textarea
-                                                                                placeholder={`Ответить ${comment.username || 'пользователю'}...`}
-                                                                                className="reply-textarea enhanced"
-                                                                                value={replyingTo === comment.id ? replyText : ''}
-                                                                                onChange={(e) => {
-                                                                                    if (replyingTo !== comment.id) {
-                                                                                        handleStartReply(comment.id);
-                                                                                    }
-                                                                                    handleReplyTextChange(e.target.value);
-                                                                                }}
-                                                                                onKeyDown={(e) => {
-                                                                                    if (e.key === 'Enter' && !e.shiftKey) {
-                                                                                        e.preventDefault();
-                                                                                        if (replyText.trim()) {
-                                                                                            handleSubmitReply(comment.id);
-                                                                                        }
-                                                                                    }
-                                                                                }}
-                                                                            />
-                                                                            {replyingTo === comment.id && replyText.trim() && (
-                                                                                <div className="reply-form-actions">
-                                                                                    <button 
-                                                                                        className="reply-submit-btn"
-                                                                                        onClick={() => handleSubmitReply(comment.id)}
-                                                                                    >
-                                                                                        <Send size={14} />
-                                                                                        Ответить
-                                                                                    </button>
-                                                                                    <button 
-                                                                                        className="reply-cancel-btn"
-                                                                                        onClick={handleCancelReply}
-                                                                                    >
-                                                                                        Отмена
-                                                                                    </button>
-                                                                                </div>
-                                                                            )}
-                                                                        </div>
                                                                     </div>
-                                                                )}
+                                                                </div>
+                                                            )}
                                                         </div>
                                                     );
                                                 })}
                                             </div>
-                                            
+
                                             {comments.length > 5 && (
                                                 <div className="comments-show-more">
-                                                    <button 
+                                                    <button
                                                         className="show-more-btn"
-                                                            onClick={handleToggleShowAllComments}
+                                                        onClick={handleToggleShowAllComments}
                                                     >
                                                         {showAllComments ? (
                                                             <>
@@ -1147,20 +1139,20 @@ const AnimePagePC: React.FC<AnimePagePCProps> = ({ animeId }) => {
             </div>
 
             {/* Модальные окна */}
-            <CommentsModal 
-                show={showCommentsModal} 
-                onClose={() => setShowCommentsModal(false)} 
-                isModern={true} 
-                animeTitle={anime.title} 
-                comments={comments} 
-                onSubmitComment={handleSubmitComment} 
-                onLikeComment={handleLikeComment} 
+            <CommentsModal
+                show={showCommentsModal}
+                onClose={() => setShowCommentsModal(false)}
+                isModern={true}
+                animeTitle={anime.title}
+                comments={comments}
+                onSubmitComment={handleSubmitComment}
+                onLikeComment={handleLikeComment}
                 onReplyComment={handleReplyComment}
                 onOpen={loadComments}
                 loading={commentsLoading}
             />
             <AuthPromptModal show={showAuthPrompt} onClose={() => setShowAuthPrompt(false)} />
-            
+
             <DeleteCommentModal
                 isOpen={showDeleteModal}
                 onClose={closeDeleteModal}

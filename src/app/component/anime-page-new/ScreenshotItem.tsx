@@ -1,4 +1,7 @@
+'use client';
+
 import React, { useState } from 'react';
+import { X } from 'lucide-react';
 
 interface ScreenshotItemProps {
     screenshot: {
@@ -10,83 +13,54 @@ interface ScreenshotItemProps {
 }
 
 const ScreenshotItem: React.FC<ScreenshotItemProps> = ({ screenshot, index }) => {
-    const [imageLoaded, setImageLoaded] = useState(false);
-    const [imageError, setImageError] = useState(false);
-    
-    console.log(`🖼️ ScreenshotItem рендер для скриншота ${index + 1}:`, {
-        id: screenshot.id,
-        url: screenshot.url,
-        name: screenshot.name,
-        imageLoaded,
-        imageError
-    });
+    const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
-    const handleImageLoad = () => {
-        console.log('✅ Скриншот УСПЕШНО загружен:', screenshot.url);
-        setImageLoaded(true);
-        setImageError(false);
+    const openLightbox = () => {
+        setIsLightboxOpen(true);
+        document.body.style.overflow = 'hidden';
     };
 
-    const handleImageError = () => {
-        console.error('❌ ОШИБКА загрузки скриншота:', screenshot.url);
-        setImageError(true);
-        setImageLoaded(false);
-    };
-
-    const handleClick = () => {
-        if (imageLoaded && !imageError) {
-            window.open(screenshot.url, '_blank');
-        }
+    const closeLightbox = () => {
+        setIsLightboxOpen(false);
+        document.body.style.overflow = '';
     };
 
     if (!screenshot.url) {
-        console.error('❌ Нет URL для скриншота:', screenshot);
         return (
-            <div className="anime-screenshot-item">
-                <div className="screenshot-error">
-                    <span>📷</span>
-                    <span>Нет URL</span>
-                </div>
+            <div className="screenshot-item-modern error">
+                <span>📷</span>
             </div>
         );
     }
 
     return (
-        <div 
-            className="anime-screenshot-item"
-            onClick={handleClick}
-            title={screenshot.name || `Скриншот ${index + 1}`}
-        >
-            {/* Спиннер показывается пока изображение не загружено и нет ошибки */}
-            {!imageLoaded && !imageError && (
-                <div className="screenshot-loading">
-                    <div className="screenshot-spinner"></div>
-                    <span>Загрузка...</span>
+        <>
+            <div
+                className="screenshot-item-modern"
+                onClick={openLightbox}
+                title={screenshot.name || `Скриншот ${index + 1}`}
+            >
+                <img
+                    src={screenshot.url}
+                    alt={screenshot.name || `Скриншот ${index + 1}`}
+                    loading="lazy"
+                />
+            </div>
+
+            {/* Lightbox */}
+            {isLightboxOpen && (
+                <div className="screenshot-lightbox" onClick={closeLightbox}>
+                    <button className="lightbox-close" onClick={closeLightbox}>
+                        <X size={24} />
+                    </button>
+                    <img
+                        src={screenshot.url}
+                        alt={screenshot.name || `Скриншот ${index + 1}`}
+                        onClick={(e) => e.stopPropagation()}
+                    />
                 </div>
             )}
-            
-            {/* Ошибка показывается если изображение не загрузилось */}
-            {imageError && (
-                <div className="screenshot-error">
-                    <span>📷</span>
-                    <span>Не удалось загрузить</span>
-                </div>
-            )}
-            
-            {/* Изображение всегда присутствует в DOM, но скрыто пока не загрузится */}
-            <img 
-                src={screenshot.url} 
-                alt={screenshot.name || `Скриншот ${index + 1}`} 
-                loading="lazy"
-                className="screenshot-image"
-                style={{ 
-                    opacity: imageLoaded ? 1 : 0,
-                    visibility: imageLoaded ? 'visible' : 'hidden',
-                }}
-                onError={handleImageError}
-                onLoad={handleImageLoad}
-            />
-        </div>
+        </>
     );
 };
 

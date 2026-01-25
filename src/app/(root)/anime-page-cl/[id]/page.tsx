@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useEffect, useState, Suspense } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import AnimePageCrunch from '../../../component/anime-page-crunch/AnimePageCrunch';
 import AnimePageMobile from '../../../component/anime-page-new/AnimePageMobile';
 import AnimePageSkeleton from '../../../component/anime-page-new/AnimePageSkeleton';
+import { useTheme } from '../../../context/ThemeContext';
 
 function useIsMobile(breakpoint = 900) {
     const [isMobile, setIsMobile] = useState<boolean | null>(null);
@@ -21,20 +22,28 @@ function useIsMobile(breakpoint = 900) {
 
 const AnimePageContent: React.FC<{ animeId: string }> = ({ animeId }) => {
     const isMobile = useIsMobile();
+    const router = useRouter();
+    const { layoutMode } = useTheme();
+    const [viewChecked, setViewChecked] = useState(false);
 
-    // Сохраняем выбор нового вида при посещении этой страницы
+    // Проверяем режим вида из контекста
     useEffect(() => {
-        localStorage.setItem('animePageView', 'new');
-    }, []);
+        // Если режим централизованный - редирект на anime-page
+        if (layoutMode === 'centered') {
+            router.replace(`/anime-page/${animeId}`);
+        } else {
+            setViewChecked(true);
+        }
+    }, [animeId, router, layoutMode]);
 
-    if (isMobile === null) {
+    if (!viewChecked || isMobile === null) {
         return <AnimePageSkeleton />;
     }
 
     // Мобильная версия одинаковая, PC версия - Crunch стиль
     return isMobile
-        ? <AnimePageMobile animeId={animeId}/>
-        : <AnimePageCrunch animeId={animeId}/>;
+        ? <AnimePageMobile animeId={animeId} />
+        : <AnimePageCrunch animeId={animeId} />;
 };
 
 const AnimePageCrunchWrapper: React.FC = () => {
@@ -54,3 +63,4 @@ const AnimePageCrunchWrapper: React.FC = () => {
 };
 
 export default AnimePageCrunchWrapper;
+

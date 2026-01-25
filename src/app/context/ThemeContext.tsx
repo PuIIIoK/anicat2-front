@@ -9,12 +9,17 @@ export type Theme = 'dark' | 'light';
 // Цветовые схемы
 export type ColorScheme = 'orange' | 'purple' | 'red' | 'blue';
 
+// Режим отображения контента
+export type LayoutMode = 'centered' | 'fullscreen';
+
 // Интерфейс контекста
 interface ThemeContextType {
   theme: Theme;
   colorScheme: ColorScheme;
+  layoutMode: LayoutMode;
   setTheme: (theme: Theme) => void;
   setColorScheme: (scheme: ColorScheme) => void;
+  setLayoutMode: (mode: LayoutMode) => void;
   loadUserThemeSettings: () => Promise<void>;
   resetToDefaultTheme: () => void;
 }
@@ -30,11 +35,17 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const saved = localStorage.getItem('theme') as Theme;
     return saved && ['dark', 'light'].includes(saved) ? saved : 'dark';
   });
-  
+
   const [colorScheme, setColorScheme] = useState<ColorScheme>(() => {
     if (typeof window === 'undefined') return 'orange';
     const saved = localStorage.getItem('colorScheme') as ColorScheme;
     return saved && ['orange', 'purple', 'red', 'blue'].includes(saved) ? saved : 'orange';
+  });
+
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>(() => {
+    if (typeof window === 'undefined') return 'fullscreen';
+    const saved = localStorage.getItem('layoutMode') as LayoutMode;
+    return saved && ['centered', 'fullscreen'].includes(saved) ? saved : 'fullscreen';
   });
 
   // Функция для загрузки настроек темы пользователя с сервера
@@ -57,7 +68,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       if (response.ok) {
         const data = await response.json();
         console.log('Загружены настройки темы с сервера:', data);
-        
+
         if (data.theme) {
           setTheme(data.theme as Theme);
           localStorage.setItem('theme', data.theme);
@@ -86,17 +97,17 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Функция для загрузки настроек из localStorage
   const loadLocalThemeSettings = () => {
     if (typeof window === 'undefined') return;
-    
+
     const savedTheme = localStorage.getItem('theme') as Theme;
     const savedColorScheme = localStorage.getItem('colorScheme') as ColorScheme;
-    
+
     if (savedTheme && ['dark', 'light'].includes(savedTheme)) {
       setTheme(savedTheme);
     } else {
       setTheme('dark');
       localStorage.setItem('theme', 'dark');
     }
-    
+
     if (savedColorScheme && ['orange', 'purple', 'red', 'blue'].includes(savedColorScheme)) {
       setColorScheme(savedColorScheme);
     } else {
@@ -108,10 +119,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Загрузка настроек при инициализации
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    
+
     // Сначала загружаем из localStorage для быстрого отображения
     loadLocalThemeSettings();
-    
+
     // Затем пытаемся загрузить с сервера
     loadUserThemeSettings();
   }, []);
@@ -119,7 +130,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Программно убираем outline у табов
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    
+
     const removeOutline = () => {
       try {
         const tabs = document.querySelectorAll('.test-tabs-modern, .anime-tabs');
@@ -132,7 +143,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             tab.style.outlineOffset = '0';
           }
         });
-        
+
         const buttons = document.querySelectorAll('.test-tabs-modern button, .anime-tabs button, .anime-tabs .anime-tab');
         buttons.forEach(btn => {
           if (btn instanceof HTMLElement && btn.style) {
@@ -147,12 +158,12 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         console.log('Error in removeOutline:', error);
       }
     };
-    
+
     // Выполняем при загрузке и при любых изменениях DOM
     removeOutline();
     const observer = new MutationObserver(removeOutline);
     observer.observe(document.body, { childList: true, subtree: true });
-    
+
     // Убираем outline при фокусе
     const handleFocus = (e: FocusEvent) => {
       try {
@@ -173,11 +184,11 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         console.log('Error in handleFocus:', error);
       }
     };
-    
+
     document.addEventListener('focusin', handleFocus, true);
     document.addEventListener('focus', handleFocus, true);
     document.addEventListener('click', removeOutline, true);
-    
+
     // Специальный обработчик для hover
     const handleMouseOver = (e: MouseEvent) => {
       try {
@@ -193,7 +204,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           target.style.outlineStyle = 'none';
           target.style.outlineColor = 'transparent';
           target.style.outlineOffset = '0';
-          
+
           // Убираем outline у всех дочерних элементов
           if (target.querySelectorAll) {
             const children = target.querySelectorAll('*');
@@ -212,10 +223,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         console.log('Error in handleMouseOver:', error);
       }
     };
-    
+
     document.addEventListener('mouseover', handleMouseOver, true);
     document.addEventListener('mouseenter', handleMouseOver, true);
-    
+
     return () => {
       observer.disconnect();
       document.removeEventListener('focusin', handleFocus, true);
@@ -225,14 +236,15 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       document.removeEventListener('mouseenter', handleMouseOver, true);
     };
   }, []);
-  
+
   // Применяем тему сразу при монтировании (синхронно)
   if (typeof window !== 'undefined' && !document.body.classList.contains(`theme-${theme}`)) {
     document.body.classList.remove(
       'theme-dark', 'theme-light',
-      'color-orange', 'color-purple', 'color-red', 'color-blue'
+      'color-orange', 'color-purple', 'color-red', 'color-blue',
+      'layout-centered', 'layout-fullscreen'
     );
-    document.body.classList.add(`theme-${theme}`, `color-${colorScheme}`);
+    document.body.classList.add(`theme-${theme}`, `color-${colorScheme}`, `layout-${layoutMode}`);
     document.documentElement.setAttribute('data-theme', theme);
     document.documentElement.setAttribute('data-color', colorScheme);
   }
@@ -240,25 +252,25 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Применение темы и цветовой схемы к документу при изменениях
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    
+
     console.log('Applying theme:', theme, 'and color scheme:', colorScheme);
-    
+
     // Удаляем старые классы с body
     document.body.classList.remove(
       'theme-dark', 'theme-light',
       'color-orange', 'color-purple', 'color-red', 'color-blue'
     );
-    
+
     // Добавляем новые классы к body
     document.body.classList.add(
       `theme-${theme}`,
       `color-${colorScheme}`
     );
-    
+
     // Также добавляем атрибуты для дополнительной специфичности
     document.documentElement.setAttribute('data-theme', theme);
     document.documentElement.setAttribute('data-color', colorScheme);
-    
+
     // Определяем цвета в зависимости от темы и схемы
     const isDark = theme === 'dark';
     let primaryColor = '';
@@ -267,33 +279,33 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     let primaryLight = '';
     let primaryBg = '';
     let primaryBgHover = '';
-    
+
     // Переменные для фонов header и body
     let headerBg = '';
     let bodyBg = '';
-    
+
     // Переменные для global-anime-card-info
     let cardInfoBg = '';
     let cardInfoBorder = '';
     let cardInfoHoverBg = '';
-    
+
     // Переменные для search-bar-anime
     let searchBarBg = '';
     let searchBarHoverBg = '';
     let searchBarBorder = '';
     let searchBarHoverBorder = '';
     let searchBarShadow = '';
-    
+
     // Переменные для profile
     let profileIconBorder = '';
     let profileIconHoverBorder = '';
     let profileIconShadow = '';
     let profileIconHoverShadow = '';
     let profileDropdownHoverBg = '';
-    
+
     // Переменные для apps-dropdown
     let appsDropdownHoverBg = '';
-    
+
     // Переменные для profile блоков
     let friendsBlockBg = '';
     let friendsBlockBorder = '';
@@ -301,14 +313,14 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     let recentActivityBg = '';
     let recentActivityBorder = '';
     let activityIconColor = '';
-    
+
     // Переменные для кнопок
     let toggleReviewsBtnBg = '';
     let toggleReviewsBtnBorder = '';
     let toggleReviewsBtnHoverBg = '';
     let toggleReviewsBtnText = '';
     let toggleReviewsBtnHoverText = '';
-    
+
     // Переменные для anime-page
     let animeWatchButtonBg = '';
     let animeWatchButtonHoverBg = '';
@@ -318,54 +330,54 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     let animeGenreTagBg = '';
     let animeGenreTagHoverBg = '';
     let animeScreenshotHoverShadow = '';
-    
+
     // Переменные для collection-status
     let collectionStatusActiveBg = '';
     let collectionStatusActiveGradient = '';
-    
+
     // Переменные для test-comments-button
     let commentsButtonBg = '';
     let commentsButtonHoverBg = '';
     let commentsButtonBorder = '';
     let commentsButtonHoverBorder = '';
-    
+
     // Переменные для collection-status-button
     let collectionStatusButtonBg = '';
     let collectionStatusButtonHoverBg = '';
     let collectionStatusButtonBorder = '';
     let collectionStatusButtonHoverBorder = '';
-    
+
     // Переменные для активного состояния favorite-button
     let favoriteButtonActiveBg = '';
     let favoriteButtonActiveColor = '';
     let favoriteButtonActiveBorder = '';
     let favoriteButtonActiveShadow = '';
-    
+
     // Переменные для test-top-section-modern
     let topSectionModernBg = '';
-    
+
     // Переменные для test-extra-info-modern
     let extraInfoModernBg = '';
-    
+
     // Переменные для anime-description-section-modern
     let descriptionSectionModernBg = '';
-    
+
     // Переменная для reviews-section-standalone фон
     let reviewsSectionClassicBg = '';
-    
+
     // Переменная для user-rating-input фон
     let userRatingInputClassicBg = '';
-    
+
     // Переменная для comment-item фон
     let commentItemClassicBg = '';
-    
+
     // Переменные для show-all-btn
     let showAllBtnBg = '';
     let showAllBtnHoverBg = '';
     let showAllBtnBorder = '';
     let showAllBtnHoverBorder = '';
     let showAllBtnShadow = '';
-    
+
     switch (colorScheme) {
       case 'orange':
         if (isDark) {
@@ -375,33 +387,33 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           primaryLight = '#ffc166';
           primaryBg = 'rgba(255, 149, 0, 0.1)';
           primaryBgHover = 'rgba(255, 149, 0, 0.15)';
-          
+
           // Фоны для темной оранжевой темы
           headerBg = 'rgba(31, 26, 20, 0.65)'; // Header полупрозрачный с оранжевым оттенком
           bodyBg = '#130e06';   // Body с более насыщенным оранжевым оттенком
-          
+
           // Цвета для global-anime-card-info
           cardInfoBg = 'rgba(255, 149, 0, 0.05)';
           cardInfoBorder = 'rgba(255, 149, 0, 0.2)';
           cardInfoHoverBg = 'rgba(255, 149, 0, 0.12)';
-          
+
           // Цвета для search-bar-anime
           searchBarBg = 'rgba(20, 20, 20, 0.85)';
           searchBarHoverBg = 'rgba(25, 25, 25, 0.9)';
           searchBarBorder = 'rgba(255, 255, 255, 0.08)';
           searchBarHoverBorder = 'rgba(255, 149, 0, 0.4)';
           searchBarShadow = 'rgba(255, 149, 0, 0.12)';
-          
+
           // Цвета для profile
           profileIconBorder = 'rgba(255, 255, 255, 0.1)';
           profileIconHoverBorder = 'rgba(255, 149, 0, 0.5)';
           profileIconShadow = 'rgba(0, 0, 0, 0.2)';
           profileIconHoverShadow = 'rgba(255, 149, 0, 0.15)';
           profileDropdownHoverBg = 'rgba(255, 149, 0, 0.1)';
-          
+
           // Цвета для apps-dropdown
           appsDropdownHoverBg = 'radial-gradient(circle at center, rgba(255, 149, 0, 0.12), transparent 80%)';
-          
+
           // Цвета для profile блоков
           friendsBlockBg = '#1f1a17';
           friendsBlockBorder = '#3a2f29';
@@ -409,14 +421,14 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           recentActivityBg = '#1a1713';
           recentActivityBorder = '#2f2620';
           activityIconColor = '#ff7a3d';
-          
+
           // Цвета для кнопок - темная оранжевая тема
           toggleReviewsBtnBg = 'transparent';
           toggleReviewsBtnBorder = '#ff7a3d';
           toggleReviewsBtnHoverBg = '#ff7a3d';
           toggleReviewsBtnText = '#ff7a3d';
           toggleReviewsBtnHoverText = '#ffffff';
-          
+
           // Цвета для anime-page
           animeWatchButtonBg = 'linear-gradient(135deg, rgba(255, 149, 0, 0.9) 0%, rgba(255, 165, 0, 0.8) 100%)';
           animeWatchButtonHoverBg = 'linear-gradient(135deg, rgba(255, 149, 0, 1) 0%, rgba(255, 165, 0, 0.95) 100%)';
@@ -426,54 +438,54 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           animeGenreTagBg = 'rgba(255, 149, 0, 0.08)';
           animeGenreTagHoverBg = 'rgba(255, 149, 0, 0.15)';
           animeScreenshotHoverShadow = 'rgba(255, 149, 0, 0.3)';
-          
+
           // Цвета для collection-status
           collectionStatusActiveBg = 'rgba(255, 149, 0, 0.15)';
           collectionStatusActiveGradient = 'linear-gradient(135deg, rgba(255, 149, 0, 0.2) 0%, rgba(255, 149, 0, 0.1) 100%)';
-          
+
           // Цвета для comments-button
           commentsButtonBg = 'linear-gradient(135deg, rgba(255, 149, 0, 0.1) 0%, rgba(255, 149, 0, 0.05) 100%)';
           commentsButtonHoverBg = 'linear-gradient(135deg, rgba(255, 149, 0, 0.2) 0%, rgba(255, 149, 0, 0.1) 100%)';
           commentsButtonBorder = 'rgba(255, 149, 0, 0.3)';
           commentsButtonHoverBorder = 'rgba(255, 149, 0, 0.5)';
-          
+
           // Цвета для collection-status-button
           collectionStatusButtonBg = 'linear-gradient(135deg, rgba(255, 149, 0, 0.08) 0%, rgba(255, 149, 0, 0.03) 100%)';
           collectionStatusButtonHoverBg = 'linear-gradient(135deg, rgba(255, 149, 0, 0.15) 0%, rgba(255, 149, 0, 0.08) 100%)';
           collectionStatusButtonBorder = 'rgba(255, 149, 0, 0.2)';
           collectionStatusButtonHoverBorder = 'rgba(255, 149, 0, 0.4)';
-          
+
           // Активное состояние favorite-button
           favoriteButtonActiveBg = 'linear-gradient(135deg, rgba(255, 149, 0, 0.2) 0%, rgba(255, 149, 0, 0.1) 100%)';
           favoriteButtonActiveColor = '#ff9500';
           favoriteButtonActiveBorder = '#ff9500';
           favoriteButtonActiveShadow = '0 4px 16px rgba(255, 149, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)';
-          
+
           // Цвета для test-top-section-modern
           topSectionModernBg = 'linear-gradient(145deg, rgba(255, 149, 0, 0.08) 0%, rgba(255, 149, 0, 0.03) 20%, var(--bg-primary) 100%)';
-          
+
           // Цвета для test-extra-info-modern
           extraInfoModernBg = 'linear-gradient(135deg, rgba(255, 149, 0, 0.05) 0%, rgba(255, 149, 0, 0.02) 100%)';
-          
+
           // Цвета для anime-description-section-modern
           descriptionSectionModernBg = 'linear-gradient(145deg, rgba(255, 149, 0, 0.04) 0%, rgba(255, 149, 0, 0.01) 50%, var(--bg-primary) 100%)';
-          
+
           // Цвет фона для reviews-section-standalone (практически незаметный)
           reviewsSectionClassicBg = 'rgba(255, 149, 0, 0.025)';
-          
+
           // Цвет фона для user-rating-input (практически незаметный)
           userRatingInputClassicBg = 'rgba(255, 149, 0, 0.02)';
-          
+
           // Цвет фона для comment-item (практически незаметный)
           commentItemClassicBg = 'rgba(255, 149, 0, 0.018)';
-          
+
           // Цвета для show-all-btn (современный красивый, классический простой)
           showAllBtnBg = 'linear-gradient(135deg, #ff9500 0%, #ffb143 100%)';
           showAllBtnHoverBg = 'linear-gradient(135deg, #ffb143 0%, #ff9500 100%)';
           showAllBtnBorder = '1px solid rgba(255, 149, 0, 0.3)';
           showAllBtnHoverBorder = '1px solid rgba(255, 149, 0, 0.5)';
           showAllBtnShadow = '0 2px 8px rgba(255, 149, 0, 0.25)';
-          
+
         } else {
           primaryColor = '#e67700';
           primaryHover = '#ff8800';
@@ -481,33 +493,33 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           primaryLight = '#ff9933';
           primaryBg = 'rgba(230, 119, 0, 0.04)';
           primaryBgHover = 'rgba(230, 119, 0, 0.08)';
-          
+
           // Фоны для светлой оранжевой темы - более цветные
           headerBg = '#fef7f2'; // Header с легким оранжевым оттенком
           bodyBg = '#fdf3eb';   // Body с заметным оранжевым оттенком
-          
+
           // Цвета для global-anime-card-info - более заметные в светлой теме
           cardInfoBg = 'rgba(230, 119, 0, 0.08)';
           cardInfoBorder = 'rgba(230, 119, 0, 0.15)';
           cardInfoHoverBg = 'rgba(230, 119, 0, 0.12)';
-          
+
           // Цвета для search-bar-anime - убираем резкие тени
           searchBarBg = 'rgba(255, 255, 255, 0.95)';
           searchBarHoverBg = 'rgba(255, 255, 255, 1)';
           searchBarBorder = 'rgba(0, 0, 0, 0.06)';
           searchBarHoverBorder = 'rgba(230, 119, 0, 0.2)';
           searchBarShadow = 'rgba(230, 119, 0, 0.05)';
-          
+
           // Цвета для profile - мягче
           profileIconBorder = 'rgba(0, 0, 0, 0.08)';
           profileIconHoverBorder = 'rgba(230, 119, 0, 0.3)';
           profileIconShadow = 'rgba(0, 0, 0, 0.05)';
           profileIconHoverShadow = 'rgba(230, 119, 0, 0.08)';
           profileDropdownHoverBg = 'rgba(230, 119, 0, 0.05)';
-          
+
           // Цвета для apps-dropdown
           appsDropdownHoverBg = 'radial-gradient(circle at center, rgba(255, 119, 0, 0.1), transparent 80%)';
-          
+
           // Цвета для profile блоков - светлая оранжевая тема
           friendsBlockBg = '#fefbf8';
           friendsBlockBorder = '#f0e6d6';
@@ -515,14 +527,14 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           recentActivityBg = '#fff9f5';
           recentActivityBorder = '#f0e0d0';
           activityIconColor = '#ff7a3d';
-          
+
           // Цвета для кнопок - светлая оранжевая тема
           toggleReviewsBtnBg = 'transparent';
           toggleReviewsBtnBorder = '#ff7a3d';
           toggleReviewsBtnHoverBg = '#ff7a3d';
           toggleReviewsBtnText = '#ff7a3d';
           toggleReviewsBtnHoverText = '#ffffff';
-          
+
           // Цвета для anime-page
           animeWatchButtonBg = 'linear-gradient(135deg, rgba(255, 119, 0, 0.85) 0%, rgba(255, 140, 0, 0.75) 100%)';
           animeWatchButtonHoverBg = 'linear-gradient(135deg, rgba(255, 119, 0, 0.95) 0%, rgba(255, 140, 0, 0.85) 100%)';
@@ -532,57 +544,57 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           animeGenreTagBg = 'rgba(255, 119, 0, 0.06)';
           animeGenreTagHoverBg = 'rgba(255, 119, 0, 0.12)';
           animeScreenshotHoverShadow = 'rgba(255, 119, 0, 0.25)';
-          
+
           // Цвета для collection-status
           collectionStatusActiveBg = 'rgba(255, 119, 0, 0.12)';
           collectionStatusActiveGradient = 'linear-gradient(135deg, rgba(255, 119, 0, 0.15) 0%, rgba(255, 119, 0, 0.08) 100%)';
-          
+
           // Цвета для comments-button
           commentsButtonBg = 'linear-gradient(135deg, rgba(255, 119, 0, 0.08) 0%, rgba(255, 119, 0, 0.04) 100%)';
           commentsButtonHoverBg = 'linear-gradient(135deg, rgba(255, 119, 0, 0.15) 0%, rgba(255, 119, 0, 0.08) 100%)';
           commentsButtonBorder = 'rgba(255, 119, 0, 0.25)';
           commentsButtonHoverBorder = 'rgba(255, 119, 0, 0.4)';
-          
+
           // Цвета для collection-status-button
           collectionStatusButtonBg = 'linear-gradient(135deg, rgba(255, 119, 0, 0.06) 0%, rgba(255, 119, 0, 0.02) 100%)';
           collectionStatusButtonHoverBg = 'linear-gradient(135deg, rgba(255, 119, 0, 0.12) 0%, rgba(255, 119, 0, 0.06) 100%)';
           collectionStatusButtonBorder = 'rgba(255, 119, 0, 0.18)';
           collectionStatusButtonHoverBorder = 'rgba(255, 119, 0, 0.35)';
-          
+
           // Активное состояние favorite-button
           favoriteButtonActiveBg = 'linear-gradient(135deg, rgba(255, 119, 0, 0.18) 0%, rgba(255, 119, 0, 0.08) 100%)';
           favoriteButtonActiveColor = '#ff7700';
           favoriteButtonActiveBorder = '#ff7700';
           favoriteButtonActiveShadow = '0 4px 16px rgba(255, 119, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1)';
-          
+
           // Цвета для test-top-section-modern
           topSectionModernBg = 'linear-gradient(145deg, rgba(255, 119, 0, 0.06) 0%, rgba(255, 119, 0, 0.02) 20%, var(--bg-primary) 100%)';
-          
+
           // Цвета для test-extra-info-modern
           extraInfoModernBg = 'linear-gradient(135deg, rgba(255, 119, 0, 0.04) 0%, rgba(255, 119, 0, 0.015) 100%)';
-          
+
           // Цвета для anime-description-section-modern
           descriptionSectionModernBg = 'linear-gradient(145deg, rgba(255, 119, 0, 0.03) 0%, rgba(255, 119, 0, 0.008) 50%, var(--bg-primary) 100%)';
-          
+
           // Цвет фона для reviews-section-standalone (практически незаметный)
           reviewsSectionClassicBg = 'rgba(255, 119, 0, 0.02)';
-          
+
           // Цвет фона для user-rating-input (практически незаметный)
           userRatingInputClassicBg = 'rgba(255, 119, 0, 0.015)';
-          
+
           // Цвет фона для comment-item (практически незаметный)
           commentItemClassicBg = 'rgba(255, 119, 0, 0.012)';
-          
+
           // Цвета для show-all-btn - мягче
           showAllBtnBg = 'linear-gradient(135deg, #e67700 0%, #ff8800 100%)';
           showAllBtnHoverBg = 'linear-gradient(135deg, #ff8800 0%, #e67700 100%)';
           showAllBtnBorder = '1px solid rgba(230, 119, 0, 0.2)';
           showAllBtnHoverBorder = '1px solid rgba(230, 119, 0, 0.3)';
           showAllBtnShadow = '0 2px 6px rgba(230, 119, 0, 0.12)';
-          
+
         }
         break;
-      
+
       case 'purple':
         if (isDark) {
           primaryColor = '#af52de';
@@ -591,33 +603,33 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           primaryLight = '#d4a4f0';
           primaryBg = 'rgba(175, 82, 222, 0.1)';
           primaryBgHover = 'rgba(175, 82, 222, 0.15)';
-          
+
           // Фоны для темной фиолетовой темы
           headerBg = 'rgba(28, 26, 34, 0.65)'; // Header полупрозрачный с фиолетовым оттенком
           bodyBg = '#0d0b0f';   // Body с более заметным фиолетовым оттенком
-          
+
           // Цвета для global-anime-card-info
           cardInfoBg = 'rgba(175, 82, 222, 0.05)';
           cardInfoBorder = 'rgba(175, 82, 222, 0.2)';
           cardInfoHoverBg = 'rgba(175, 82, 222, 0.12)';
-          
+
           // Цвета для search-bar-anime
           searchBarBg = 'rgba(20, 20, 20, 0.85)';
           searchBarHoverBg = 'rgba(25, 25, 25, 0.9)';
           searchBarBorder = 'rgba(255, 255, 255, 0.08)';
           searchBarHoverBorder = 'rgba(175, 82, 222, 0.4)';
           searchBarShadow = 'rgba(175, 82, 222, 0.12)';
-          
+
           // Цвета для profile
           profileIconBorder = 'rgba(255, 255, 255, 0.1)';
           profileIconHoverBorder = 'rgba(175, 82, 222, 0.5)';
           profileIconShadow = 'rgba(0, 0, 0, 0.2)';
           profileIconHoverShadow = 'rgba(175, 82, 222, 0.15)';
           profileDropdownHoverBg = 'rgba(175, 82, 222, 0.1)';
-          
+
           // Цвета для apps-dropdown
           appsDropdownHoverBg = 'radial-gradient(circle at center, rgba(175, 82, 222, 0.12), transparent 80%)';
-          
+
           // Цвета для profile блоков
           friendsBlockBg = '#1a1625';
           friendsBlockBorder = '#2e2439';
@@ -625,14 +637,14 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           recentActivityBg = '#181425';
           recentActivityBorder = '#2a1f35';
           activityIconColor = '#9d4edd';
-          
+
           // Цвета для кнопок - темная фиолетовая тема
           toggleReviewsBtnBg = 'transparent';
           toggleReviewsBtnBorder = '#9d4edd';
           toggleReviewsBtnHoverBg = '#9d4edd';
           toggleReviewsBtnText = '#9d4edd';
           toggleReviewsBtnHoverText = '#ffffff';
-          
+
           // Цвета для anime-page
           animeWatchButtonBg = 'linear-gradient(135deg, rgba(175, 82, 222, 0.9) 0%, rgba(190, 100, 240, 0.8) 100%)';
           animeWatchButtonHoverBg = 'linear-gradient(135deg, rgba(175, 82, 222, 1) 0%, rgba(190, 100, 240, 0.95) 100%)';
@@ -642,54 +654,54 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           animeGenreTagBg = 'rgba(175, 82, 222, 0.08)';
           animeGenreTagHoverBg = 'rgba(175, 82, 222, 0.15)';
           animeScreenshotHoverShadow = 'rgba(175, 82, 222, 0.3)';
-          
+
           // Цвета для collection-status
           collectionStatusActiveBg = 'rgba(175, 82, 222, 0.15)';
           collectionStatusActiveGradient = 'linear-gradient(135deg, rgba(175, 82, 222, 0.2) 0%, rgba(175, 82, 222, 0.1) 100%)';
-          
+
           // Цвета для comments-button
           commentsButtonBg = 'linear-gradient(135deg, rgba(175, 82, 222, 0.1) 0%, rgba(175, 82, 222, 0.05) 100%)';
           commentsButtonHoverBg = 'linear-gradient(135deg, rgba(175, 82, 222, 0.2) 0%, rgba(175, 82, 222, 0.1) 100%)';
           commentsButtonBorder = 'rgba(175, 82, 222, 0.3)';
           commentsButtonHoverBorder = 'rgba(175, 82, 222, 0.5)';
-          
+
           // Цвета для collection-status-button
           collectionStatusButtonBg = 'linear-gradient(135deg, rgba(175, 82, 222, 0.08) 0%, rgba(175, 82, 222, 0.03) 100%)';
           collectionStatusButtonHoverBg = 'linear-gradient(135deg, rgba(175, 82, 222, 0.15) 0%, rgba(175, 82, 222, 0.08) 100%)';
           collectionStatusButtonBorder = 'rgba(175, 82, 222, 0.2)';
           collectionStatusButtonHoverBorder = 'rgba(175, 82, 222, 0.4)';
-          
+
           // Активное состояние favorite-button
           favoriteButtonActiveBg = 'linear-gradient(135deg, rgba(175, 82, 222, 0.2) 0%, rgba(175, 82, 222, 0.1) 100%)';
           favoriteButtonActiveColor = '#af52de';
           favoriteButtonActiveBorder = '#af52de';
           favoriteButtonActiveShadow = '0 4px 16px rgba(175, 82, 222, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)';
-          
+
           // Цвета для test-top-section-modern
           topSectionModernBg = 'linear-gradient(145deg, rgba(175, 82, 222, 0.08) 0%, rgba(175, 82, 222, 0.03) 20%, var(--bg-primary) 100%)';
-          
+
           // Цвета для test-extra-info-modern
           extraInfoModernBg = 'linear-gradient(135deg, rgba(175, 82, 222, 0.05) 0%, rgba(175, 82, 222, 0.02) 100%)';
-          
+
           // Цвета для anime-description-section-modern
           descriptionSectionModernBg = 'linear-gradient(145deg, rgba(175, 82, 222, 0.04) 0%, rgba(175, 82, 222, 0.01) 50%, var(--bg-primary) 100%)';
-          
+
           // Цвет фона для reviews-section-standalone (практически незаметный)
           reviewsSectionClassicBg = 'rgba(175, 82, 222, 0.025)';
-          
+
           // Цвет фона для user-rating-input (практически незаметный)
           userRatingInputClassicBg = 'rgba(175, 82, 222, 0.02)';
-          
+
           // Цвет фона для comment-item (практически незаметный)
           commentItemClassicBg = 'rgba(175, 82, 222, 0.018)';
-          
+
           // Цвета для show-all-btn (современный красивый, классический простой)
           showAllBtnBg = 'linear-gradient(135deg, #af52de 0%, #c084fc 100%)';
           showAllBtnHoverBg = 'linear-gradient(135deg, #c084fc 0%, #af52de 100%)';
           showAllBtnBorder = '1px solid rgba(175, 82, 222, 0.3)';
           showAllBtnHoverBorder = '1px solid rgba(175, 82, 222, 0.5)';
           showAllBtnShadow = '0 2px 8px rgba(175, 82, 222, 0.25)';
-          
+
         } else {
           primaryColor = '#8030a0';
           primaryHover = '#9040b0';
@@ -697,33 +709,33 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           primaryLight = '#a855d8';
           primaryBg = 'rgba(128, 48, 160, 0.04)';
           primaryBgHover = 'rgba(128, 48, 160, 0.08)';
-          
+
           // Фоны для светлой фиолетовой темы - более цветные
           headerBg = '#f8f6fc'; // Header с легким фиолетовым оттенком
           bodyBg = '#f3f0f8';   // Body с заметным фиолетовым оттенком
-          
+
           // Цвета для global-anime-card-info - более заметные в светлой теме
           cardInfoBg = 'rgba(128, 48, 160, 0.08)';
           cardInfoBorder = 'rgba(128, 48, 160, 0.15)';
           cardInfoHoverBg = 'rgba(128, 48, 160, 0.12)';
-          
+
           // Цвета для search-bar-anime - убираем резкие тени
           searchBarBg = 'rgba(255, 255, 255, 0.95)';
           searchBarHoverBg = 'rgba(255, 255, 255, 1)';
           searchBarBorder = 'rgba(0, 0, 0, 0.06)';
           searchBarHoverBorder = 'rgba(128, 48, 160, 0.2)';
           searchBarShadow = 'rgba(128, 48, 160, 0.05)';
-          
+
           // Цвета для profile - мягче
           profileIconBorder = 'rgba(0, 0, 0, 0.08)';
           profileIconHoverBorder = 'rgba(128, 48, 160, 0.3)';
           profileIconShadow = 'rgba(0, 0, 0, 0.05)';
           profileIconHoverShadow = 'rgba(128, 48, 160, 0.08)';
           profileDropdownHoverBg = 'rgba(128, 48, 160, 0.05)';
-          
+
           // Цвета для apps-dropdown
           appsDropdownHoverBg = 'radial-gradient(circle at center, rgba(144, 48, 192, 0.1), transparent 80%)';
-          
+
           // Цвета для profile блоков - светлая фиолетовая тема
           friendsBlockBg = '#fcfbff';
           friendsBlockBorder = '#e8e4f0';
@@ -731,14 +743,14 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           recentActivityBg = '#fdfbff';
           recentActivityBorder = '#e8e0f0';
           activityIconColor = '#9d4edd';
-          
+
           // Цвета для кнопок - светлая фиолетовая тема
           toggleReviewsBtnBg = 'transparent';
           toggleReviewsBtnBorder = '#9d4edd';
           toggleReviewsBtnHoverBg = '#9d4edd';
           toggleReviewsBtnText = '#9d4edd';
           toggleReviewsBtnHoverText = '#ffffff';
-          
+
           // Цвета для anime-page
           animeWatchButtonBg = 'linear-gradient(135deg, rgba(144, 48, 192, 0.85) 0%, rgba(160, 70, 210, 0.75) 100%)';
           animeWatchButtonHoverBg = 'linear-gradient(135deg, rgba(144, 48, 192, 0.95) 0%, rgba(160, 70, 210, 0.85) 100%)';
@@ -748,57 +760,57 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           animeGenreTagBg = 'rgba(144, 48, 192, 0.06)';
           animeGenreTagHoverBg = 'rgba(144, 48, 192, 0.12)';
           animeScreenshotHoverShadow = 'rgba(144, 48, 192, 0.25)';
-          
+
           // Цвета для collection-status
           collectionStatusActiveBg = 'rgba(144, 48, 192, 0.12)';
           collectionStatusActiveGradient = 'linear-gradient(135deg, rgba(144, 48, 192, 0.15) 0%, rgba(144, 48, 192, 0.08) 100%)';
-          
+
           // Цвета для comments-button
           commentsButtonBg = 'linear-gradient(135deg, rgba(144, 48, 192, 0.08) 0%, rgba(144, 48, 192, 0.04) 100%)';
           commentsButtonHoverBg = 'linear-gradient(135deg, rgba(144, 48, 192, 0.15) 0%, rgba(144, 48, 192, 0.08) 100%)';
           commentsButtonBorder = 'rgba(144, 48, 192, 0.25)';
           commentsButtonHoverBorder = 'rgba(144, 48, 192, 0.4)';
-          
+
           // Цвета для collection-status-button
           collectionStatusButtonBg = 'linear-gradient(135deg, rgba(144, 48, 192, 0.06) 0%, rgba(144, 48, 192, 0.02) 100%)';
           collectionStatusButtonHoverBg = 'linear-gradient(135deg, rgba(144, 48, 192, 0.12) 0%, rgba(144, 48, 192, 0.06) 100%)';
           collectionStatusButtonBorder = 'rgba(144, 48, 192, 0.18)';
           collectionStatusButtonHoverBorder = 'rgba(144, 48, 192, 0.35)';
-          
+
           // Активное состояние favorite-button
           favoriteButtonActiveBg = 'linear-gradient(135deg, rgba(144, 48, 192, 0.18) 0%, rgba(144, 48, 192, 0.08) 100%)';
           favoriteButtonActiveColor = '#9030c0';
           favoriteButtonActiveBorder = '#9030c0';
           favoriteButtonActiveShadow = '0 4px 16px rgba(144, 48, 192, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1)';
-          
+
           // Цвета для test-top-section-modern
           topSectionModernBg = 'linear-gradient(145deg, rgba(144, 48, 192, 0.06) 0%, rgba(144, 48, 192, 0.02) 20%, var(--bg-primary) 100%)';
-          
+
           // Цвета для test-extra-info-modern
           extraInfoModernBg = 'linear-gradient(135deg, rgba(144, 48, 192, 0.04) 0%, rgba(144, 48, 192, 0.015) 100%)';
-          
+
           // Цвета для anime-description-section-modern
           descriptionSectionModernBg = 'linear-gradient(145deg, rgba(144, 48, 192, 0.03) 0%, rgba(144, 48, 192, 0.008) 50%, var(--bg-primary) 100%)';
-          
+
           // Цвет фона для reviews-section-standalone (практически незаметный)
           reviewsSectionClassicBg = 'rgba(144, 48, 192, 0.02)';
-          
+
           // Цвет фона для user-rating-input (практически незаметный)
           userRatingInputClassicBg = 'rgba(144, 48, 192, 0.015)';
-          
+
           // Цвет фона для comment-item (практически незаметный)
           commentItemClassicBg = 'rgba(144, 48, 192, 0.012)';
-          
+
           // Цвета для show-all-btn - мягче
           showAllBtnBg = 'linear-gradient(135deg, #8030a0 0%, #9040b0 100%)';
           showAllBtnHoverBg = 'linear-gradient(135deg, #9040b0 0%, #8030a0 100%)';
           showAllBtnBorder = '1px solid rgba(128, 48, 160, 0.2)';
           showAllBtnHoverBorder = '1px solid rgba(128, 48, 160, 0.3)';
           showAllBtnShadow = '0 2px 6px rgba(128, 48, 160, 0.12)';
-          
+
         }
         break;
-      
+
       case 'red':
         if (isDark) {
           primaryColor = '#ff3b30';
@@ -807,33 +819,33 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           primaryLight = '#ff8a84';
           primaryBg = 'rgba(255, 59, 48, 0.1)';
           primaryBgHover = 'rgba(255, 59, 48, 0.15)';
-          
+
           // Фоны для темной красной темы
           headerBg = 'rgba(34, 24, 24, 0.65)'; // Header полупрозрачный с красным оттенком
           bodyBg = '#140606';   // Body с более насыщенным красным оттенком
-          
+
           // Цвета для global-anime-card-info
           cardInfoBg = 'rgba(255, 59, 48, 0.05)';
           cardInfoBorder = 'rgba(255, 59, 48, 0.2)';
           cardInfoHoverBg = 'rgba(255, 59, 48, 0.12)';
-          
+
           // Цвета для search-bar-anime
           searchBarBg = 'rgba(20, 20, 20, 0.85)';
           searchBarHoverBg = 'rgba(25, 25, 25, 0.9)';
           searchBarBorder = 'rgba(255, 255, 255, 0.08)';
           searchBarHoverBorder = 'rgba(255, 59, 48, 0.4)';
           searchBarShadow = 'rgba(255, 59, 48, 0.12)';
-          
+
           // Цвета для profile
           profileIconBorder = 'rgba(255, 255, 255, 0.1)';
           profileIconHoverBorder = 'rgba(255, 59, 48, 0.5)';
           profileIconShadow = 'rgba(0, 0, 0, 0.2)';
           profileIconHoverShadow = 'rgba(255, 59, 48, 0.15)';
           profileDropdownHoverBg = 'rgba(255, 59, 48, 0.1)';
-          
+
           // Цвета для apps-dropdown
           appsDropdownHoverBg = 'radial-gradient(circle at center, rgba(255, 59, 48, 0.12), transparent 80%)';
-          
+
           // Цвета для profile блоков
           friendsBlockBg = '#1f1515';
           friendsBlockBorder = '#3a2626';
@@ -841,14 +853,14 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           recentActivityBg = '#1a1313';
           recentActivityBorder = '#2f2020';
           activityIconColor = '#ff5252';
-          
+
           // Цвета для кнопок - темная красная тема
           toggleReviewsBtnBg = 'transparent';
           toggleReviewsBtnBorder = '#ff4c4c';
           toggleReviewsBtnHoverBg = '#ff4c4c';
           toggleReviewsBtnText = '#ff4c4c';
           toggleReviewsBtnHoverText = '#ffffff';
-          
+
           // Цвета для anime-page
           animeWatchButtonBg = 'linear-gradient(135deg, rgba(255, 59, 48, 0.9) 0%, rgba(255, 75, 65, 0.8) 100%)';
           animeWatchButtonHoverBg = 'linear-gradient(135deg, rgba(255, 59, 48, 1) 0%, rgba(255, 75, 65, 0.95) 100%)';
@@ -858,54 +870,54 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           animeGenreTagBg = 'rgba(255, 59, 48, 0.08)';
           animeGenreTagHoverBg = 'rgba(255, 59, 48, 0.15)';
           animeScreenshotHoverShadow = 'rgba(255, 59, 48, 0.3)';
-          
+
           // Цвета для collection-status
           collectionStatusActiveBg = 'rgba(255, 59, 48, 0.15)';
           collectionStatusActiveGradient = 'linear-gradient(135deg, rgba(255, 59, 48, 0.2) 0%, rgba(255, 59, 48, 0.1) 100%)';
-          
+
           // Цвета для comments-button
           commentsButtonBg = 'linear-gradient(135deg, rgba(255, 59, 48, 0.1) 0%, rgba(255, 59, 48, 0.05) 100%)';
           commentsButtonHoverBg = 'linear-gradient(135deg, rgba(255, 59, 48, 0.2) 0%, rgba(255, 59, 48, 0.1) 100%)';
           commentsButtonBorder = 'rgba(255, 59, 48, 0.3)';
           commentsButtonHoverBorder = 'rgba(255, 59, 48, 0.5)';
-          
+
           // Цвета для collection-status-button
           collectionStatusButtonBg = 'linear-gradient(135deg, rgba(255, 59, 48, 0.08) 0%, rgba(255, 59, 48, 0.03) 100%)';
           collectionStatusButtonHoverBg = 'linear-gradient(135deg, rgba(255, 59, 48, 0.15) 0%, rgba(255, 59, 48, 0.08) 100%)';
           collectionStatusButtonBorder = 'rgba(255, 59, 48, 0.2)';
           collectionStatusButtonHoverBorder = 'rgba(255, 59, 48, 0.4)';
-          
+
           // Активное состояние favorite-button
           favoriteButtonActiveBg = 'linear-gradient(135deg, rgba(255, 59, 48, 0.2) 0%, rgba(255, 59, 48, 0.1) 100%)';
           favoriteButtonActiveColor = '#ff3b30';
           favoriteButtonActiveBorder = '#ff3b30';
           favoriteButtonActiveShadow = '0 4px 16px rgba(255, 59, 48, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)';
-          
+
           // Цвета для test-top-section-modern
           topSectionModernBg = 'linear-gradient(145deg, rgba(255, 59, 48, 0.08) 0%, rgba(255, 59, 48, 0.03) 20%, var(--bg-primary) 100%)';
-          
+
           // Цвета для test-extra-info-modern
           extraInfoModernBg = 'linear-gradient(135deg, rgba(255, 59, 48, 0.05) 0%, rgba(255, 59, 48, 0.02) 100%)';
-          
+
           // Цвета для anime-description-section-modern
           descriptionSectionModernBg = 'linear-gradient(145deg, rgba(255, 59, 48, 0.04) 0%, rgba(255, 59, 48, 0.01) 50%, var(--bg-primary) 100%)';
-          
+
           // Цвет фона для reviews-section-standalone (практически незаметный)
           reviewsSectionClassicBg = 'rgba(255, 59, 48, 0.025)';
-          
+
           // Цвет фона для user-rating-input (практически незаметный)
           userRatingInputClassicBg = 'rgba(255, 59, 48, 0.02)';
-          
+
           // Цвет фона для comment-item (практически незаметный)
           commentItemClassicBg = 'rgba(255, 59, 48, 0.018)';
-          
+
           // Цвета для show-all-btn (современный красивый, классический простой)
           showAllBtnBg = 'linear-gradient(135deg, #ff3b30 0%, #ff5544 100%)';
           showAllBtnHoverBg = 'linear-gradient(135deg, #ff5544 0%, #ff3b30 100%)';
           showAllBtnBorder = '1px solid rgba(255, 59, 48, 0.3)';
           showAllBtnHoverBorder = '1px solid rgba(255, 59, 48, 0.5)';
           showAllBtnShadow = '0 2px 8px rgba(255, 59, 48, 0.25)';
-          
+
         } else {
           primaryColor = '#d62015';
           primaryHover = '#e63025';
@@ -913,33 +925,33 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           primaryLight = '#ff5544';
           primaryBg = 'rgba(214, 32, 21, 0.04)';
           primaryBgHover = 'rgba(214, 32, 21, 0.08)';
-          
+
           // Фоны для светлой красной темы - более цветные
           headerBg = '#fef6f5'; // Header с легким красным оттенком
           bodyBg = '#fdf0ee';   // Body с заметным красным оттенком
-          
+
           // Цвета для global-anime-card-info - более заметные в светлой теме
           cardInfoBg = 'rgba(214, 32, 21, 0.08)';
           cardInfoBorder = 'rgba(214, 32, 21, 0.15)';
           cardInfoHoverBg = 'rgba(214, 32, 21, 0.12)';
-          
+
           // Цвета для search-bar-anime - убираем резкие тени
           searchBarBg = 'rgba(255, 255, 255, 0.95)';
           searchBarHoverBg = 'rgba(255, 255, 255, 1)';
           searchBarBorder = 'rgba(0, 0, 0, 0.06)';
           searchBarHoverBorder = 'rgba(214, 32, 21, 0.2)';
           searchBarShadow = 'rgba(214, 32, 21, 0.05)';
-          
+
           // Цвета для profile - мягче
           profileIconBorder = 'rgba(0, 0, 0, 0.08)';
           profileIconHoverBorder = 'rgba(214, 32, 21, 0.3)';
           profileIconShadow = 'rgba(0, 0, 0, 0.05)';
           profileIconHoverShadow = 'rgba(214, 32, 21, 0.08)';
           profileDropdownHoverBg = 'rgba(214, 32, 21, 0.05)';
-          
+
           // Цвета для apps-dropdown
           appsDropdownHoverBg = 'radial-gradient(circle at center, rgba(230, 48, 37, 0.1), transparent 80%)';
-          
+
           // Цвета для profile блоков - светлая красная тема
           friendsBlockBg = '#fffbfb';
           friendsBlockBorder = '#f0e6e6';
@@ -947,14 +959,14 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           recentActivityBg = '#fff8f8';
           recentActivityBorder = '#f0e0e0';
           activityIconColor = '#ff5252';
-          
+
           // Цвета для кнопок - светлая красная тема
           toggleReviewsBtnBg = 'transparent';
           toggleReviewsBtnBorder = '#ff4c4c';
           toggleReviewsBtnHoverBg = '#ff4c4c';
           toggleReviewsBtnText = '#ff4c4c';
           toggleReviewsBtnHoverText = '#ffffff';
-          
+
           // Цвета для anime-page
           animeWatchButtonBg = 'linear-gradient(135deg, rgba(230, 48, 37, 0.85) 0%, rgba(245, 65, 55, 0.75) 100%)';
           animeWatchButtonHoverBg = 'linear-gradient(135deg, rgba(230, 48, 37, 0.95) 0%, rgba(245, 65, 55, 0.85) 100%)';
@@ -964,57 +976,57 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           animeGenreTagBg = 'rgba(230, 48, 37, 0.06)';
           animeGenreTagHoverBg = 'rgba(230, 48, 37, 0.12)';
           animeScreenshotHoverShadow = 'rgba(230, 48, 37, 0.25)';
-          
+
           // Цвета для collection-status
           collectionStatusActiveBg = 'rgba(230, 48, 37, 0.12)';
           collectionStatusActiveGradient = 'linear-gradient(135deg, rgba(230, 48, 37, 0.15) 0%, rgba(230, 48, 37, 0.08) 100%)';
-          
+
           // Цвета для comments-button
           commentsButtonBg = 'linear-gradient(135deg, rgba(230, 48, 37, 0.08) 0%, rgba(230, 48, 37, 0.04) 100%)';
           commentsButtonHoverBg = 'linear-gradient(135deg, rgba(230, 48, 37, 0.15) 0%, rgba(230, 48, 37, 0.08) 100%)';
           commentsButtonBorder = 'rgba(230, 48, 37, 0.25)';
           commentsButtonHoverBorder = 'rgba(230, 48, 37, 0.4)';
-          
+
           // Цвета для collection-status-button
           collectionStatusButtonBg = 'linear-gradient(135deg, rgba(230, 48, 37, 0.06) 0%, rgba(230, 48, 37, 0.02) 100%)';
           collectionStatusButtonHoverBg = 'linear-gradient(135deg, rgba(230, 48, 37, 0.12) 0%, rgba(230, 48, 37, 0.06) 100%)';
           collectionStatusButtonBorder = 'rgba(230, 48, 37, 0.18)';
           collectionStatusButtonHoverBorder = 'rgba(230, 48, 37, 0.35)';
-          
+
           // Активное состояние favorite-button
           favoriteButtonActiveBg = 'linear-gradient(135deg, rgba(230, 48, 37, 0.18) 0%, rgba(230, 48, 37, 0.08) 100%)';
           favoriteButtonActiveColor = '#e63025';
           favoriteButtonActiveBorder = '#e63025';
           favoriteButtonActiveShadow = '0 4px 16px rgba(230, 48, 37, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1)';
-          
+
           // Цвета для test-top-section-modern
           topSectionModernBg = 'linear-gradient(145deg, rgba(230, 48, 37, 0.06) 0%, rgba(230, 48, 37, 0.02) 20%, var(--bg-primary) 100%)';
-          
+
           // Цвета для test-extra-info-modern
           extraInfoModernBg = 'linear-gradient(135deg, rgba(230, 48, 37, 0.04) 0%, rgba(230, 48, 37, 0.015) 100%)';
-          
+
           // Цвета для anime-description-section-modern
           descriptionSectionModernBg = 'linear-gradient(145deg, rgba(230, 48, 37, 0.03) 0%, rgba(230, 48, 37, 0.008) 50%, var(--bg-primary) 100%)';
-          
+
           // Цвет фона для reviews-section-standalone (практически незаметный)
           reviewsSectionClassicBg = 'rgba(230, 48, 37, 0.02)';
-          
+
           // Цвет фона для user-rating-input (практически незаметный)
           userRatingInputClassicBg = 'rgba(230, 48, 37, 0.015)';
-          
+
           // Цвет фона для comment-item (практически незаметный)
           commentItemClassicBg = 'rgba(230, 48, 37, 0.012)';
-          
+
           // Цвета для show-all-btn - мягче
           showAllBtnBg = 'linear-gradient(135deg, #d62015 0%, #e63025 100%)';
           showAllBtnHoverBg = 'linear-gradient(135deg, #e63025 0%, #d62015 100%)';
           showAllBtnBorder = '1px solid rgba(214, 32, 21, 0.2)';
           showAllBtnHoverBorder = '1px solid rgba(214, 32, 21, 0.3)';
           showAllBtnShadow = '0 2px 6px rgba(214, 32, 21, 0.12)';
-          
+
         }
         break;
-      
+
       case 'blue':
         if (isDark) {
           primaryColor = '#007aff';
@@ -1023,33 +1035,33 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           primaryLight = '#66b0ff';
           primaryBg = 'rgba(0, 122, 255, 0.1)';
           primaryBgHover = 'rgba(0, 122, 255, 0.15)';
-          
+
           // Фоны для темной синей темы
           headerBg = 'rgba(24, 26, 36, 0.65)'; // Header полупрозрачный с синим оттенком
           bodyBg = '#08090f';   // Body с более заметным синим оттенком
-          
+
           // Цвета для global-anime-card-info
           cardInfoBg = 'rgba(0, 122, 255, 0.05)';
           cardInfoBorder = 'rgba(0, 122, 255, 0.2)';
           cardInfoHoverBg = 'rgba(0, 122, 255, 0.12)';
-          
+
           // Цвета для search-bar-anime
           searchBarBg = 'rgba(20, 20, 20, 0.85)';
           searchBarHoverBg = 'rgba(25, 25, 25, 0.9)';
           searchBarBorder = 'rgba(255, 255, 255, 0.08)';
           searchBarHoverBorder = 'rgba(0, 122, 255, 0.4)';
           searchBarShadow = 'rgba(0, 122, 255, 0.12)';
-          
+
           // Цвета для profile
           profileIconBorder = 'rgba(255, 255, 255, 0.1)';
           profileIconHoverBorder = 'rgba(0, 122, 255, 0.5)';
           profileIconShadow = 'rgba(0, 0, 0, 0.2)';
           profileIconHoverShadow = 'rgba(0, 122, 255, 0.15)';
           profileDropdownHoverBg = 'rgba(0, 122, 255, 0.1)';
-          
+
           // Цвета для apps-dropdown
           appsDropdownHoverBg = 'radial-gradient(circle at center, rgba(0, 122, 255, 0.12), transparent 80%)';
-          
+
           // Цвета для profile блоков
           friendsBlockBg = '#151a1f';
           friendsBlockBorder = '#26323a';
@@ -1057,14 +1069,14 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           recentActivityBg = '#13181a';
           recentActivityBorder = '#202f35';
           activityIconColor = '#4c9aff';
-          
+
           // Цвета для кнопок - темная синяя тема
           toggleReviewsBtnBg = 'transparent';
           toggleReviewsBtnBorder = '#4c9aff';
           toggleReviewsBtnHoverBg = '#4c9aff';
           toggleReviewsBtnText = '#4c9aff';
           toggleReviewsBtnHoverText = '#ffffff';
-          
+
           // Цвета для anime-page
           animeWatchButtonBg = 'linear-gradient(135deg, rgba(0, 122, 255, 0.9) 0%, rgba(30, 140, 255, 0.8) 100%)';
           animeWatchButtonHoverBg = 'linear-gradient(135deg, rgba(0, 122, 255, 1) 0%, rgba(30, 140, 255, 0.95) 100%)';
@@ -1074,54 +1086,54 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           animeGenreTagBg = 'rgba(0, 122, 255, 0.08)';
           animeGenreTagHoverBg = 'rgba(0, 122, 255, 0.15)';
           animeScreenshotHoverShadow = 'rgba(0, 122, 255, 0.3)';
-          
+
           // Цвета для collection-status
           collectionStatusActiveBg = 'rgba(0, 122, 255, 0.15)';
           collectionStatusActiveGradient = 'linear-gradient(135deg, rgba(0, 122, 255, 0.2) 0%, rgba(0, 122, 255, 0.1) 100%)';
-          
+
           // Цвета для comments-button
           commentsButtonBg = 'linear-gradient(135deg, rgba(0, 122, 255, 0.1) 0%, rgba(0, 122, 255, 0.05) 100%)';
           commentsButtonHoverBg = 'linear-gradient(135deg, rgba(0, 122, 255, 0.2) 0%, rgba(0, 122, 255, 0.1) 100%)';
           commentsButtonBorder = 'rgba(0, 122, 255, 0.3)';
           commentsButtonHoverBorder = 'rgba(0, 122, 255, 0.5)';
-          
+
           // Цвета для collection-status-button
           collectionStatusButtonBg = 'linear-gradient(135deg, rgba(0, 122, 255, 0.08) 0%, rgba(0, 122, 255, 0.03) 100%)';
           collectionStatusButtonHoverBg = 'linear-gradient(135deg, rgba(0, 122, 255, 0.15) 0%, rgba(0, 122, 255, 0.08) 100%)';
           collectionStatusButtonBorder = 'rgba(0, 122, 255, 0.2)';
           collectionStatusButtonHoverBorder = 'rgba(0, 122, 255, 0.4)';
-          
+
           // Активное состояние favorite-button
           favoriteButtonActiveBg = 'linear-gradient(135deg, rgba(0, 122, 255, 0.2) 0%, rgba(0, 122, 255, 0.1) 100%)';
           favoriteButtonActiveColor = '#007aff';
           favoriteButtonActiveBorder = '#007aff';
           favoriteButtonActiveShadow = '0 4px 16px rgba(0, 122, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)';
-          
+
           // Цвета для test-top-section-modern
           topSectionModernBg = 'linear-gradient(145deg, rgba(0, 122, 255, 0.08) 0%, rgba(0, 122, 255, 0.03) 20%, var(--bg-primary) 100%)';
-          
+
           // Цвета для test-extra-info-modern
           extraInfoModernBg = 'linear-gradient(135deg, rgba(0, 122, 255, 0.05) 0%, rgba(0, 122, 255, 0.02) 100%)';
-          
+
           // Цвета для anime-description-section-modern
           descriptionSectionModernBg = 'linear-gradient(145deg, rgba(0, 122, 255, 0.04) 0%, rgba(0, 122, 255, 0.01) 50%, var(--bg-primary) 100%)';
-          
+
           // Цвет фона для reviews-section-standalone (практически незаметный)
           reviewsSectionClassicBg = 'rgba(0, 122, 255, 0.025)';
-          
+
           // Цвет фона для user-rating-input (практически незаметный)
           userRatingInputClassicBg = 'rgba(0, 122, 255, 0.02)';
-          
+
           // Цвет фона для comment-item (практически незаметный)
           commentItemClassicBg = 'rgba(0, 122, 255, 0.018)';
-          
+
           // Цвета для show-all-btn (современный красивый, классический простой)
           showAllBtnBg = 'linear-gradient(135deg, #007aff 0%, #3388ff 100%)';
           showAllBtnHoverBg = 'linear-gradient(135deg, #3388ff 0%, #007aff 100%)';
           showAllBtnBorder = '1px solid rgba(0, 122, 255, 0.3)';
           showAllBtnHoverBorder = '1px solid rgba(0, 122, 255, 0.5)';
           showAllBtnShadow = '0 2px 8px rgba(0, 122, 255, 0.25)';
-          
+
         } else {
           primaryColor = '#0055bb';
           primaryHover = '#0066dd';
@@ -1129,33 +1141,33 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           primaryLight = '#3388ff';
           primaryBg = 'rgba(0, 85, 187, 0.04)';
           primaryBgHover = 'rgba(0, 85, 187, 0.08)';
-          
+
           // Фоны для светлой синей темы - более цветные
           headerBg = '#f4f8fe'; // Header с легким синим оттенком
           bodyBg = '#eef4fd';   // Body с заметным синим оттенком
-          
+
           // Цвета для global-anime-card-info - более заметные в светлой теме
           cardInfoBg = 'rgba(0, 85, 187, 0.08)';
           cardInfoBorder = 'rgba(0, 85, 187, 0.15)';
           cardInfoHoverBg = 'rgba(0, 85, 187, 0.12)';
-          
+
           // Цвета для search-bar-anime - убираем резкие тени
           searchBarBg = 'rgba(255, 255, 255, 0.95)';
           searchBarHoverBg = 'rgba(255, 255, 255, 1)';
           searchBarBorder = 'rgba(0, 0, 0, 0.06)';
           searchBarHoverBorder = 'rgba(0, 85, 187, 0.2)';
           searchBarShadow = 'rgba(0, 85, 187, 0.05)';
-          
+
           // Цвета для profile - мягче
           profileIconBorder = 'rgba(0, 0, 0, 0.08)';
           profileIconHoverBorder = 'rgba(0, 85, 187, 0.3)';
           profileIconShadow = 'rgba(0, 0, 0, 0.05)';
           profileIconHoverShadow = 'rgba(0, 85, 187, 0.08)';
           profileDropdownHoverBg = 'rgba(0, 85, 187, 0.05)';
-          
+
           // Цвета для apps-dropdown
           appsDropdownHoverBg = 'radial-gradient(circle at center, rgba(0, 102, 221, 0.1), transparent 80%)';
-          
+
           // Цвета для profile блоков - светлая синяя тема
           friendsBlockBg = '#f8fbff';
           friendsBlockBorder = '#e0f0ff';
@@ -1163,14 +1175,14 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           recentActivityBg = '#f8fbff';
           recentActivityBorder = '#e0f0ff';
           activityIconColor = '#4c9aff';
-          
+
           // Цвета для кнопок - светлая синяя тема
           toggleReviewsBtnBg = 'transparent';
           toggleReviewsBtnBorder = '#4c9aff';
           toggleReviewsBtnHoverBg = '#4c9aff';
           toggleReviewsBtnText = '#4c9aff';
           toggleReviewsBtnHoverText = '#ffffff';
-          
+
           // Цвета для anime-page
           animeWatchButtonBg = 'linear-gradient(135deg, rgba(0, 102, 221, 0.85) 0%, rgba(25, 120, 240, 0.75) 100%)';
           animeWatchButtonHoverBg = 'linear-gradient(135deg, rgba(0, 102, 221, 0.95) 0%, rgba(25, 120, 240, 0.85) 100%)';
@@ -1180,74 +1192,74 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           animeGenreTagBg = 'rgba(0, 102, 221, 0.06)';
           animeGenreTagHoverBg = 'rgba(0, 102, 221, 0.12)';
           animeScreenshotHoverShadow = 'rgba(0, 102, 221, 0.25)';
-          
+
           // Цвета для collection-status
           collectionStatusActiveBg = 'rgba(0, 102, 221, 0.12)';
           collectionStatusActiveGradient = 'linear-gradient(135deg, rgba(0, 102, 221, 0.15) 0%, rgba(0, 102, 221, 0.08) 100%)';
-          
+
           // Цвета для comments-button
           commentsButtonBg = 'linear-gradient(135deg, rgba(0, 102, 221, 0.08) 0%, rgba(0, 102, 221, 0.04) 100%)';
           commentsButtonHoverBg = 'linear-gradient(135deg, rgba(0, 102, 221, 0.15) 0%, rgba(0, 102, 221, 0.08) 100%)';
           commentsButtonBorder = 'rgba(0, 102, 221, 0.25)';
           commentsButtonHoverBorder = 'rgba(0, 102, 221, 0.4)';
-          
+
           // Цвета для collection-status-button
           collectionStatusButtonBg = 'linear-gradient(135deg, rgba(0, 102, 221, 0.06) 0%, rgba(0, 102, 221, 0.02) 100%)';
           collectionStatusButtonHoverBg = 'linear-gradient(135deg, rgba(0, 102, 221, 0.12) 0%, rgba(0, 102, 221, 0.06) 100%)';
           collectionStatusButtonBorder = 'rgba(0, 102, 221, 0.18)';
           collectionStatusButtonHoverBorder = 'rgba(0, 102, 221, 0.35)';
-          
+
           // Активное состояние favorite-button
           favoriteButtonActiveBg = 'linear-gradient(135deg, rgba(0, 102, 221, 0.18) 0%, rgba(0, 102, 221, 0.08) 100%)';
           favoriteButtonActiveColor = '#0066dd';
           favoriteButtonActiveBorder = '#0066dd';
           favoriteButtonActiveShadow = '0 4px 16px rgba(0, 102, 221, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1)';
-          
+
           // Цвета для test-top-section-modern
           topSectionModernBg = 'linear-gradient(145deg, rgba(0, 102, 221, 0.06) 0%, rgba(0, 102, 221, 0.02) 20%, var(--bg-primary) 100%)';
-          
+
           // Цвета для test-extra-info-modern
           extraInfoModernBg = 'linear-gradient(135deg, rgba(0, 102, 221, 0.04) 0%, rgba(0, 102, 221, 0.015) 100%)';
-          
+
           // Цвета для anime-description-section-modern
           descriptionSectionModernBg = 'linear-gradient(145deg, rgba(0, 102, 221, 0.03) 0%, rgba(0, 102, 221, 0.008) 50%, var(--bg-primary) 100%)';
-          
+
           // Цвет фона для reviews-section-standalone (практически незаметный)
           reviewsSectionClassicBg = 'rgba(0, 102, 221, 0.02)';
-          
+
           // Цвет фона для user-rating-input (практически незаметный)
           userRatingInputClassicBg = 'rgba(0, 102, 221, 0.015)';
-          
+
           // Цвет фона для comment-item (практически незаметный)
           commentItemClassicBg = 'rgba(0, 102, 221, 0.012)';
-          
+
           // Цвета для show-all-btn - мягче
           showAllBtnBg = 'linear-gradient(135deg, #0055bb 0%, #0066dd 100%)';
           showAllBtnHoverBg = 'linear-gradient(135deg, #0066dd 0%, #0055bb 100%)';
           showAllBtnBorder = '1px solid rgba(0, 85, 187, 0.2)';
           showAllBtnHoverBorder = '1px solid rgba(0, 85, 187, 0.3)';
           showAllBtnShadow = '0 2px 6px rgba(0, 85, 187, 0.12)';
-          
+
         }
         break;
     }
-    
+
     // Применяем CSS переменные через стиль элемент с максимальным приоритетом
     const styleId = 'theme-colors-override';
-    
+
     // Удаляем старый элемент если есть
     const oldStyle = document.getElementById(styleId);
     if (oldStyle) {
       oldStyle.remove();
     }
-    
+
     // Создаём новый элемент и добавляем в самый конец head
     const styleElement = document.createElement('style');
     styleElement.id = styleId;
-    
+
     // Форсируем высокий приоритет
     styleElement.setAttribute('data-priority', 'highest');
-    
+
     // Создаём CSS с переопределением всех переменных и прямым применением стилей
     styleElement.textContent = `
       /* КРИТИЧЕСКИ ВАЖНО: Глобальное правило для полного удаления outline у табов */
@@ -2123,9 +2135,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       
       /* Делаем заголовки категорий более заметными в зависимости от темы */
       .category-title {
-        background: ${theme === 'dark' 
-          ? 'linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.8) 100%)' 
-          : 'linear-gradient(135deg, #000000 0%, rgba(0, 0, 0, 0.9) 100%)'} !important;
+        background: ${theme === 'dark'
+        ? 'linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.8) 100%)'
+        : 'linear-gradient(135deg, #000000 0%, rgba(0, 0, 0, 0.9) 100%)'} !important;
         -webkit-background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
         background-clip: text !important;
@@ -2296,49 +2308,49 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       
       /* USER REVIEWS BLOCK - АДАПТАЦИЯ ПОД ТЕМУ И ЦВЕТОВУЮ СХЕМУ */
       .user-review-modern {
-        background: ${theme === 'light' 
-          ? 'rgba(255, 255, 255, 0.8)' 
-          : `linear-gradient(135deg, rgba(var(--primary-color-rgb, 255, 165, 0), 0.015) 0%, rgba(17, 24, 39, 0.8) 100%)`
-        } !important;
-        border: 1px solid ${theme === 'light' 
-          ? 'rgba(0, 0, 0, 0.1)' 
-          : 'rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)'
-        } !important;
+        background: ${theme === 'light'
+        ? 'rgba(255, 255, 255, 0.8)'
+        : `linear-gradient(135deg, rgba(var(--primary-color-rgb, 255, 165, 0), 0.015) 0%, rgba(17, 24, 39, 0.8) 100%)`
+      } !important;
+        border: 1px solid ${theme === 'light'
+        ? 'rgba(0, 0, 0, 0.1)'
+        : 'rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)'
+      } !important;
         backdrop-filter: blur(10px) !important;
       }
       
       .user-review-modern:hover {
-        background: ${theme === 'light' 
-          ? 'rgba(255, 255, 255, 0.95)' 
-          : `linear-gradient(135deg, rgba(var(--primary-color-rgb, 255, 165, 0), 0.03) 0%, rgba(17, 24, 39, 0.9) 100%)`
-        } !important;
-        border-color: ${theme === 'light' 
-          ? 'rgba(0, 0, 0, 0.2)' 
-          : 'rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)'
-        } !important;
-        box-shadow: ${theme === 'light' 
-          ? '0 8px 25px rgba(0, 0, 0, 0.1)' 
-          : '0 8px 25px rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)'
-        } !important;
+        background: ${theme === 'light'
+        ? 'rgba(255, 255, 255, 0.95)'
+        : `linear-gradient(135deg, rgba(var(--primary-color-rgb, 255, 165, 0), 0.03) 0%, rgba(17, 24, 39, 0.9) 100%)`
+      } !important;
+        border-color: ${theme === 'light'
+        ? 'rgba(0, 0, 0, 0.2)'
+        : 'rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)'
+      } !important;
+        box-shadow: ${theme === 'light'
+        ? '0 8px 25px rgba(0, 0, 0, 0.1)'
+        : '0 8px 25px rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)'
+      } !important;
       }
       
       .review-header-modern .avatar-modern {
         background: ${theme === 'light'
-          ? 'rgba(255, 255, 255, 0.9)'
-          : `radial-gradient(circle, rgba(30, 41, 59, 0.8) 0%, rgba(var(--primary-color-rgb, 255, 165, 0), 0.05) 100%)`
-        } !important;
-        border: 2px solid ${theme === 'light' 
-          ? 'rgba(0, 0, 0, 0.1)' 
-          : 'rgba(var(--primary-color-rgb, 255, 165, 0), 0.12)'
-        } !important;
+        ? 'rgba(255, 255, 255, 0.9)'
+        : `radial-gradient(circle, rgba(30, 41, 59, 0.8) 0%, rgba(var(--primary-color-rgb, 255, 165, 0), 0.05) 100%)`
+      } !important;
+        border: 2px solid ${theme === 'light'
+        ? 'rgba(0, 0, 0, 0.1)'
+        : 'rgba(var(--primary-color-rgb, 255, 165, 0), 0.12)'
+      } !important;
       }
       
       .review-header-modern .avatar-modern:hover {
         border-color: var(--primary-color) !important;
         box-shadow: ${theme === 'light'
-          ? '0 4px 15px rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)'
-          : '0 4px 15px rgba(var(--primary-color-rgb, 255, 165, 0), 0.12)'
-        } !important;
+        ? '0 4px 15px rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)'
+        : '0 4px 15px rgba(var(--primary-color-rgb, 255, 165, 0), 0.12)'
+      } !important;
       }
       
       .review-header-modern .avatar-modern > div {
@@ -2383,20 +2395,20 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         background: ${theme === 'light' ? 'rgba(255, 255, 255, 0.8)' : '#1a1a1a'} !important;
         border: 1px solid ${theme === 'light' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.08)'} !important;
         backdrop-filter: blur(10px) !important;
-        box-shadow: ${theme === 'light' 
-          ? '0 4px 20px rgba(0, 0, 0, 0.08)' 
-          : '0 0 10px rgba(0, 0, 0, 0.3)'
-        } !important;
+        box-shadow: ${theme === 'light'
+        ? '0 4px 20px rgba(0, 0, 0, 0.08)'
+        : '0 0 10px rgba(0, 0, 0, 0.3)'
+      } !important;
       }
       
       .user-reviews-block .review-card:hover,
       .review-card:hover {
         background: ${theme === 'light' ? 'rgba(255, 255, 255, 0.95)' : 'rgba(26, 26, 26, 0.8)'} !important;
         border-color: ${theme === 'light' ? 'rgba(0, 0, 0, 0.15)' : 'var(--primary-color)'} !important;
-        box-shadow: ${theme === 'light' 
-          ? '0 8px 30px rgba(0, 0, 0, 0.12)' 
-          : '0 8px 25px rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)'
-        } !important;
+        box-shadow: ${theme === 'light'
+        ? '0 8px 30px rgba(0, 0, 0, 0.12)'
+        : '0 8px 25px rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)'
+      } !important;
         transform: translateY(-2px) !important;
       }
       
@@ -2711,23 +2723,23 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
       
       .mset-sticky {
-        background: ${theme === 'light' 
-          ? 'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.6) 35%, rgba(255,255,255,0.85) 100%)'
-          : 'linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 35%, rgba(0,0,0,0.85) 100%)'
-        } !important;
+        background: ${theme === 'light'
+        ? 'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.6) 35%, rgba(255,255,255,0.85) 100%)'
+        : 'linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 35%, rgba(0,0,0,0.85) 100%)'
+      } !important;
         border-top: 1px solid ${theme === 'light' ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.08)'} !important;
       }
       
       /* YUMEKO АДМИН САЙДБАР - АДАПТАЦИЯ ПОД ТЕМУ + ЦВЕТОВУЮ СХЕМУ */
       .yumeko-admin-sidebar {
-        background: ${theme === 'light' 
-          ? `linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%)` 
-          : `linear-gradient(180deg, #0d0d0d 0%, #121212 100%)`
-        } !important;
-        border-right: 1px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 175, 82, 222), 0.15)` 
-          : `rgba(var(--primary-color-rgb, 175, 82, 222), 0.15)`
-        } !important;
+        background: ${theme === 'light'
+        ? `linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%)`
+        : `linear-gradient(180deg, #0d0d0d 0%, #121212 100%)`
+      } !important;
+        border-right: 1px solid ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 175, 82, 222), 0.15)`
+        : `rgba(var(--primary-color-rgb, 175, 82, 222), 0.15)`
+      } !important;
       }
 
       /* ВЕСЬ ТЕКСТ В САЙДБАРЕ */
@@ -2739,10 +2751,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       /* ЗАГОЛОВОК YUMEKO САЙДБАРА */
       .yumeko-admin-title {
-        background: ${theme === 'light' 
-          ? 'linear-gradient(135deg, #1f1f1f 0%, #3f3f3f 100%)' 
-          : 'linear-gradient(135deg, #ffffff 0%, #c9c9c9 100%)'
-        } !important;
+        background: ${theme === 'light'
+        ? 'linear-gradient(135deg, #1f1f1f 0%, #3f3f3f 100%)'
+        : 'linear-gradient(135deg, #ffffff 0%, #c9c9c9 100%)'
+      } !important;
         -webkit-background-clip: text !important;
         background-clip: text !important;
       }
@@ -2754,10 +2766,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       /* HOVER КНОПКИ НАВИГАЦИИ */
       .yumeko-admin-nav-item:hover {
-        background: ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 175, 82, 222), 0.08)` 
-          : `rgba(var(--primary-color-rgb, 175, 82, 222), 0.08)`
-        } !important;
+        background: ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 175, 82, 222), 0.08)`
+        : `rgba(var(--primary-color-rgb, 175, 82, 222), 0.08)`
+      } !important;
       }
 
       .yumeko-admin-nav-item:hover span {
@@ -2771,10 +2783,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       /* АКТИВНАЯ КНОПКА НАВИГАЦИИ */
       .yumeko-admin-nav-item.active {
-        background: ${theme === 'light' 
-          ? `linear-gradient(135deg, rgba(var(--primary-color-rgb, 175, 82, 222), 0.12) 0%, rgba(var(--primary-color-rgb, 175, 82, 222), 0.08) 100%)` 
-          : `linear-gradient(135deg, rgba(var(--primary-color-rgb, 175, 82, 222), 0.15) 0%, rgba(var(--primary-color-rgb, 175, 82, 222), 0.1) 100%)`
-        } !important;
+        background: ${theme === 'light'
+        ? `linear-gradient(135deg, rgba(var(--primary-color-rgb, 175, 82, 222), 0.12) 0%, rgba(var(--primary-color-rgb, 175, 82, 222), 0.08) 100%)`
+        : `linear-gradient(135deg, rgba(var(--primary-color-rgb, 175, 82, 222), 0.15) 0%, rgba(var(--primary-color-rgb, 175, 82, 222), 0.1) 100%)`
+      } !important;
       }
       
       .yumeko-admin-nav-item.active span {
@@ -2787,10 +2799,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       
       /* АДМИН КОНТЕНТ - АДАПТАЦИЯ ПОД ТЕМУ + ЦВЕТОВУЮ СХЕМУ */
       .admin-content {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 3%, #f8fafc)` 
-          : `color-mix(in srgb, var(--primary-color) 5%, #0f0f0f)`
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 3%, #f8fafc)`
+        : `color-mix(in srgb, var(--primary-color) 5%, #0f0f0f)`
+      } !important;
         color: ${theme === 'light' ? '#1f2937' : '#e5e7eb'} !important;
       }
 
@@ -2811,14 +2823,14 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       /* АДМИН СЕКЦИЯ - АДАПТАЦИЯ ПОД ТЕМУ + ЦВЕТОВУЮ СХЕМУ */
       .admin-section {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 5%, #ffffff)` 
-          : `color-mix(in srgb, var(--primary-color) 8%, #1a1a1a)`
-        } !important;
-        border: 1px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.25)`
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 5%, #ffffff)`
+        : `color-mix(in srgb, var(--primary-color) 8%, #1a1a1a)`
+      } !important;
+        border: 1px solid ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.25)`
+      } !important;
         color: ${theme === 'light' ? '#1f2937' : '#e5e7eb'} !important;
       }
       
@@ -2834,60 +2846,60 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       /* FILTER SELECT - АДАПТАЦИЯ */
       .filter-select {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 5%, #ffffff)` 
-          : `color-mix(in srgb, var(--primary-color) 10%, #1a1a1a)`
-        } !important;
-        border: 1px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 5%, #ffffff)`
+        : `color-mix(in srgb, var(--primary-color) 10%, #1a1a1a)`
+      } !important;
+        border: 1px solid ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
+      } !important;
         color: ${theme === 'light' ? '#1f2937' : '#e5e7eb'} !important;
       }
 
       /* SEARCH INPUT - АДАПТАЦИЯ */
       .search-input {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 3%, #ffffff)` 
-          : `color-mix(in srgb, var(--primary-color) 8%, #1a1a1a)`
-        } !important;
-        border: 1px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.25)`
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 3%, #ffffff)`
+        : `color-mix(in srgb, var(--primary-color) 8%, #1a1a1a)`
+      } !important;
+        border: 1px solid ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.25)`
+      } !important;
         color: ${theme === 'light' ? '#1f2937' : '#e5e7eb'} !important;
       }
 
       .search-input:focus {
         border-color: var(--primary-color) !important;
-        box-shadow: 0 0 0 3px ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)`
-        } !important;
+        box-shadow: 0 0 0 3px ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)`
+      } !important;
       }
 
       /* TABLE CONTAINER - АДАПТАЦИЯ */
       .table-container {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 2%, #ffffff)` 
-          : `color-mix(in srgb, var(--primary-color) 5%, #1a1a1a)`
-        } !important;
-        border: 1px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)`
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 2%, #ffffff)`
+        : `color-mix(in srgb, var(--primary-color) 5%, #1a1a1a)`
+      } !important;
+        border: 1px solid ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)`
+      } !important;
       }
 
       /* TABLE HEADER - АДАПТАЦИЯ */
       .table-header {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 10%, #f3f4f6)` 
-          : `color-mix(in srgb, var(--primary-color) 15%, #1f1f1f)`
-        } !important;
-        border: 2px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 10%, #f3f4f6)`
+        : `color-mix(in srgb, var(--primary-color) 15%, #1f1f1f)`
+      } !important;
+        border: 2px solid ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
+      } !important;
         color: ${theme === 'light' ? '#111827' : '#f9fafb'} !important;
       }
 
@@ -2900,9 +2912,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       .table-row:hover {
         background: ${theme === 'light'
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.06)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)`
-        } !important;
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.06)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)`
+      } !important;
         border-left: 3px solid var(--primary-color) !important;
         transform: translateX(2px) !important;
       }
@@ -2913,58 +2925,58 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       /* ADD BUTTON - АДАПТАЦИЯ */
       .add-button {
-        background: ${theme === 'light' 
-          ? `linear-gradient(135deg, var(--primary-color) 0%, color-mix(in srgb, var(--primary-color) 80%, #000000) 100%)`
-          : `linear-gradient(135deg, var(--primary-color) 0%, color-mix(in srgb, var(--primary-color) 90%, #000000) 100%)`
-        } !important;
+        background: ${theme === 'light'
+        ? `linear-gradient(135deg, var(--primary-color) 0%, color-mix(in srgb, var(--primary-color) 80%, #000000) 100%)`
+        : `linear-gradient(135deg, var(--primary-color) 0%, color-mix(in srgb, var(--primary-color) 90%, #000000) 100%)`
+      } !important;
         color: #ffffff !important;
         border: none !important;
         box-shadow: ${theme === 'light'
-          ? `0 4px 15px rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
-          : `0 4px 20px rgba(var(--primary-color-rgb, 255, 165, 0), 0.4)`
-        } !important;
+        ? `0 4px 15px rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
+        : `0 4px 20px rgba(var(--primary-color-rgb, 255, 165, 0), 0.4)`
+      } !important;
       }
 
       .add-button:hover {
         transform: translateY(-2px) !important;
         box-shadow: ${theme === 'light'
-          ? `0 6px 20px rgba(var(--primary-color-rgb, 255, 165, 0), 0.4)`
-          : `0 8px 25px rgba(var(--primary-color-rgb, 255, 165, 0), 0.5)`
-        } !important;
+        ? `0 6px 20px rgba(var(--primary-color-rgb, 255, 165, 0), 0.4)`
+        : `0 8px 25px rgba(var(--primary-color-rgb, 255, 165, 0), 0.5)`
+      } !important;
       }
 
       /* PAGINATION ANIME - АДАПТАЦИЯ */
       .pagination-anime {
-        background: ${theme === 'light' 
-          ? `rgba(255, 255, 255, 0.8)` 
-          : `rgba(26, 26, 26, 0.8)`
-        } !important;
+        background: ${theme === 'light'
+        ? `rgba(255, 255, 255, 0.8)`
+        : `rgba(26, 26, 26, 0.8)`
+      } !important;
         padding: 12px !important;
         border-radius: 8px !important;
-        border: 1px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)`
-        } !important;
+        border: 1px solid ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)`
+      } !important;
       }
 
       /* PAGE BUTTON ANIME - АДАПТАЦИЯ */
       .page-button-anime {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 5%, #ffffff)` 
-          : `color-mix(in srgb, var(--primary-color) 10%, #1a1a1a)`
-        } !important;
-        border: 1px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.25)`
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 5%, #ffffff)`
+        : `color-mix(in srgb, var(--primary-color) 10%, #1a1a1a)`
+      } !important;
+        border: 1px solid ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.25)`
+      } !important;
         color: ${theme === 'light' ? '#374151' : '#d1d5db'} !important;
       }
 
       .page-button-anime:hover {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 10%, #ffffff)` 
-          : `color-mix(in srgb, var(--primary-color) 15%, #1a1a1a)`
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 10%, #ffffff)`
+        : `color-mix(in srgb, var(--primary-color) 15%, #1a1a1a)`
+      } !important;
         border-color: var(--primary-color) !important;
         color: ${theme === 'light' ? '#1f2937' : '#e5e7eb'} !important;
       }
@@ -2976,22 +2988,22 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         border-color: var(--primary-color) !important;
         font-weight: 600 !important;
         box-shadow: ${theme === 'light'
-          ? `0 2px 8px rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
-          : `0 3px 12px rgba(var(--primary-color-rgb, 255, 165, 0), 0.4)`
-        } !important;
+        ? `0 2px 8px rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
+        : `0 3px 12px rgba(var(--primary-color-rgb, 255, 165, 0), 0.4)`
+      } !important;
       }
 
       /* ID BADGE - АДАПТАЦИЯ ТОЛЬКО ДЛЯ СВЕТЛОЙ ТЕМЫ */
       .id-badge {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 90%, #000000)` 
-          : '#000000'
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 90%, #000000)`
+        : '#000000'
+      } !important;
         color: #ffffff !important;
-        border: 1px solid ${theme === 'light' 
-          ? 'var(--primary-color)' 
-          : '#333333'
-        } !important;
+        border: 1px solid ${theme === 'light'
+        ? 'var(--primary-color)'
+        : '#333333'
+      } !important;
         padding: 4px 8px !important;
         border-radius: 6px !important;
         font-size: 11px !important;
@@ -3000,19 +3012,19 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       /* ANIME TITLE - АДАПТАЦИЯ ТОЛЬКО ДЛЯ СВЕТЛОЙ ТЕМЫ */
       .anime-title {
-        color: ${theme === 'light' 
-          ? '#111827'
-          : '#ffffff'
-        } !important;
+        color: ${theme === 'light'
+        ? '#111827'
+        : '#ffffff'
+      } !important;
         font-weight: 600 !important;
         transition: color 0.2s ease !important;
       }
 
       .anime-title:hover {
-        color: ${theme === 'light' 
-          ? 'var(--primary-color)' 
-          : '#ffffff'
-        } !important;
+        color: ${theme === 'light'
+        ? 'var(--primary-color)'
+        : '#ffffff'
+      } !important;
         text-decoration: ${theme === 'light' ? 'underline' : 'none'} !important;
       }
 
@@ -3023,15 +3035,15 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       /* CELL - АДАПТАЦИЯ ТОЛЬКО ДЛЯ СВЕТЛОЙ ТЕМЫ */
       .cell {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 3%, #ffffff)` 
-          : 'transparent'
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 3%, #ffffff)`
+        : 'transparent'
+      } !important;
         color: ${theme === 'light' ? '#374151' : '#d1d5db'} !important;
-        border: 1px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.08)` 
-          : 'transparent'
-        } !important;
+        border: 1px solid ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.08)`
+        : 'transparent'
+      } !important;
       }
 
       /* CELL-TYPE - БЕЗ ФОНА */
@@ -3073,15 +3085,15 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       
       /* TYPE TAG - АДАПТАЦИЯ ТОЛЬКО ДЛЯ СВЕТЛОЙ ТЕМЫ */
       .type-tag {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 10%, #f3f4f6)` 
-          : 'rgba(255, 255, 255, 0.1)'
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 10%, #f3f4f6)`
+        : 'rgba(255, 255, 255, 0.1)'
+      } !important;
         color: ${theme === 'light' ? '#1f2937' : '#e5e7eb'} !important;
-        border: 1px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)` 
-          : 'rgba(255, 255, 255, 0.2)'
-        } !important;
+        border: 1px solid ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)`
+        : 'rgba(255, 255, 255, 0.2)'
+      } !important;
         padding: 4px 12px !important;
         border-radius: 20px !important;
         font-size: 12px !important;
@@ -3090,43 +3102,43 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       /* ADMIN ANIME UPDATES TABLE - АДАПТАЦИЯ ТОЛЬКО ДЛЯ СВЕТЛОЙ ТЕМЫ */
       .admin-anime-updates-table {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 2%, #ffffff)` 
-          : 'transparent'
-        } !important;
-        border: 1px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)` 
-          : 'transparent'
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 2%, #ffffff)`
+        : 'transparent'
+      } !important;
+        border: 1px solid ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)`
+        : 'transparent'
+      } !important;
         color: ${theme === 'light' ? '#1f2937' : '#e5e7eb'} !important;
       }
 
       .admin-anime-updates-table th {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 8%, #f9fafb)` 
-          : 'transparent'
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 8%, #f9fafb)`
+        : 'transparent'
+      } !important;
         color: ${theme === 'light' ? '#111827' : '#f3f4f6'} !important;
-        border-bottom: 2px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)` 
-          : 'rgba(255, 255, 255, 0.1)'
-        } !important;
+        border-bottom: 2px solid ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)`
+        : 'rgba(255, 255, 255, 0.1)'
+      } !important;
         font-weight: 600 !important;
       }
 
       .admin-anime-updates-table td {
         color: ${theme === 'light' ? '#374151' : '#d1d5db'} !important;
-        border-bottom: 1px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.05)` 
-          : 'rgba(255, 255, 255, 0.05)'
-        } !important;
+        border-bottom: 1px solid ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.05)`
+        : 'rgba(255, 255, 255, 0.05)'
+      } !important;
       }
 
       .admin-anime-updates-table tr:hover {
-        background: ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.05)` 
-          : 'transparent'
-        } !important;
+        background: ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.05)`
+        : 'transparent'
+      } !important;
       }
 
       .admin-anime-updates-table tr:hover td {
@@ -3135,14 +3147,14 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       /* ADMIN ANIME UPDATES TABLE HEADER - АДАПТАЦИЯ ТОЛЬКО ДЛЯ СВЕТЛОЙ ТЕМЫ */
       .admin-anime-updates-table-header {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 10%, #f3f4f6)` 
-          : 'transparent'
-        } !important;
-        border: 2px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)` 
-          : 'rgba(255, 255, 255, 0.1)'
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 10%, #f3f4f6)`
+        : 'transparent'
+      } !important;
+        border: 2px solid ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)`
+        : 'rgba(255, 255, 255, 0.1)'
+      } !important;
         color: ${theme === 'light' ? '#111827' : '#f9fafb'} !important;
         padding: 16px 20px !important;
         font-weight: 700 !important;
@@ -3158,16 +3170,16 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       /* ADMIN ANIME UPDATES SYNC BTN - АДАПТАЦИЯ ПОД ОБЕ ТЕМЫ */
       .admin-anime-updates-sync-btn {
-        background: ${theme === 'light' 
-          ? `linear-gradient(135deg, var(--primary-color) 0%, color-mix(in srgb, var(--primary-color) 80%, #000000) 100%)`
-          : `linear-gradient(135deg, var(--primary-color) 0%, color-mix(in srgb, var(--primary-color) 70%, #000000) 100%)`
-        } !important;
+        background: ${theme === 'light'
+        ? `linear-gradient(135deg, var(--primary-color) 0%, color-mix(in srgb, var(--primary-color) 80%, #000000) 100%)`
+        : `linear-gradient(135deg, var(--primary-color) 0%, color-mix(in srgb, var(--primary-color) 70%, #000000) 100%)`
+      } !important;
         color: #ffffff !important;
         border: 1px solid var(--primary-color) !important;
         box-shadow: ${theme === 'light'
-          ? `0 2px 10px rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
-          : `0 3px 15px rgba(var(--primary-color-rgb, 255, 165, 0), 0.4)`
-        } !important;
+        ? `0 2px 10px rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
+        : `0 3px 15px rgba(var(--primary-color-rgb, 255, 165, 0), 0.4)`
+      } !important;
         font-weight: 600 !important;
         transition: all 0.3s ease !important;
       }
@@ -3175,9 +3187,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       .admin-anime-updates-sync-btn:hover {
         transform: translateY(-2px) !important;
         box-shadow: ${theme === 'light'
-          ? `0 4px 15px rgba(var(--primary-color-rgb, 255, 165, 0), 0.4)`
-          : `0 6px 20px rgba(var(--primary-color-rgb, 255, 165, 0), 0.5)`
-        } !important;
+        ? `0 4px 15px rgba(var(--primary-color-rgb, 255, 165, 0), 0.4)`
+        : `0 6px 20px rgba(var(--primary-color-rgb, 255, 165, 0), 0.5)`
+      } !important;
       }
 
       .admin-anime-updates-sync-btn.active {
@@ -3192,14 +3204,14 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       /* ADMIN ANIME UPDATES FILTER SELECT - АДАПТАЦИЯ ПОД ОБЕ ТЕМЫ */
       .admin-anime-updates-filter-select {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 5%, #ffffff)` 
-          : `color-mix(in srgb, var(--primary-color) 10%, #1a1a1a)`
-        } !important;
-        border: 1px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 5%, #ffffff)`
+        : `color-mix(in srgb, var(--primary-color) 10%, #1a1a1a)`
+      } !important;
+        border: 1px solid ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
+      } !important;
         color: ${theme === 'light' ? '#1f2937' : '#e5e7eb'} !important;
         font-weight: 500 !important;
         transition: all 0.2s ease !important;
@@ -3207,21 +3219,21 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       .admin-anime-updates-filter-select:hover {
         border-color: ${theme === 'light'
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.4)`
-        } !important;
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 8%, #ffffff)` 
-          : `color-mix(in srgb, var(--primary-color) 15%, #1a1a1a)`
-        } !important;
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.4)`
+      } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 8%, #ffffff)`
+        : `color-mix(in srgb, var(--primary-color) 15%, #1a1a1a)`
+      } !important;
       }
       
       .admin-anime-updates-filter-select:focus {
         border-color: var(--primary-color) !important;
-        box-shadow: 0 0 0 3px ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)`
-        } !important;
+        box-shadow: 0 0 0 3px ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)`
+      } !important;
         outline: none !important;
       }
 
@@ -3233,45 +3245,45 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       /* MODERN ADMIN USERS - АДАПТАЦИЯ ПОД ТЕМУ + ЦВЕТОВУЮ СХЕМУ */
       .modern-admin-users {
         background: ${theme === 'light'
-          ? `color-mix(in srgb, var(--primary-color) 2%, #f8fafc)` 
-          : `color-mix(in srgb, var(--primary-color) 4%, #0f0f0f)`
-        } !important;
+        ? `color-mix(in srgb, var(--primary-color) 2%, #f8fafc)`
+        : `color-mix(in srgb, var(--primary-color) 4%, #0f0f0f)`
+      } !important;
         color: ${theme === 'light' ? '#1f2937' : '#e5e7eb'} !important;
       }
 
       /* ADMIN USERS CONTAINER - АДАПТАЦИЯ */
       .admin-users-container {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 3%, #ffffff)` 
-          : `color-mix(in srgb, var(--primary-color) 6%, #1a1a1a)`
-        } !important;
-        border: 1px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)`
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 3%, #ffffff)`
+        : `color-mix(in srgb, var(--primary-color) 6%, #1a1a1a)`
+      } !important;
+        border: 1px solid ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)`
+      } !important;
         border-radius: 12px !important;
       }
 
       /* SORT BUTTON - АДАПТАЦИЯ */
       .sort-button {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 5%, #ffffff)` 
-          : `color-mix(in srgb, var(--primary-color) 10%, #1a1a1a)`
-        } !important;
-        border: 1px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 5%, #ffffff)`
+        : `color-mix(in srgb, var(--primary-color) 10%, #1a1a1a)`
+      } !important;
+        border: 1px solid ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
+      } !important;
         color: ${theme === 'light' ? '#374151' : '#d1d5db'} !important;
         font-weight: 500 !important;
         transition: all 0.2s ease !important;
       }
 
       .sort-button:hover {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 10%, #ffffff)` 
-          : `color-mix(in srgb, var(--primary-color) 15%, #1a1a1a)`
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 10%, #ffffff)`
+        : `color-mix(in srgb, var(--primary-color) 15%, #1a1a1a)`
+      } !important;
         border-color: var(--primary-color) !important;
         color: ${theme === 'light' ? '#1f2937' : '#e5e7eb'} !important;
       }
@@ -3285,18 +3297,18 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       /* MODERN USER CARD - АДАПТАЦИЯ */
       .modern-user-card {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 3%, #ffffff)` 
-          : `color-mix(in srgb, var(--primary-color) 8%, #1a1a1a)`
-        } !important;
-        border: 1px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.12)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)`
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 3%, #ffffff)`
+        : `color-mix(in srgb, var(--primary-color) 8%, #1a1a1a)`
+      } !important;
+        border: 1px solid ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.12)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)`
+      } !important;
         box-shadow: ${theme === 'light'
-          ? `0 2px 8px rgba(var(--primary-color-rgb, 255, 165, 0), 0.08)`
-          : `0 3px 12px rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)`
-        } !important;
+        ? `0 2px 8px rgba(var(--primary-color-rgb, 255, 165, 0), 0.08)`
+        : `0 3px 12px rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)`
+      } !important;
         border-radius: 12px !important;
         transition: all 0.3s ease !important;
       }
@@ -3304,13 +3316,13 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       .modern-user-card:hover {
         transform: translateY(-4px) !important;
         box-shadow: ${theme === 'light'
-          ? `0 6px 20px rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)`
-          : `0 8px 25px rgba(var(--primary-color-rgb, 255, 165, 0), 0.25)`
-        } !important;
-        border-color: ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.25)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.35)`
-        } !important;
+        ? `0 6px 20px rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)`
+        : `0 8px 25px rgba(var(--primary-color-rgb, 255, 165, 0), 0.25)`
+      } !important;
+        border-color: ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.25)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.35)`
+      } !important;
       }
 
       .modern-user-card h3,
@@ -3327,23 +3339,23 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       /* PAGINATION BTN - АДАПТАЦИЯ */
       .pagination-btn {
         background: ${theme === 'light'
-          ? `color-mix(in srgb, var(--primary-color) 5%, #ffffff)` 
-          : `color-mix(in srgb, var(--primary-color) 10%, #1a1a1a)`
-        } !important;
-        border: 1px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.25)`
-        } !important;
+        ? `color-mix(in srgb, var(--primary-color) 5%, #ffffff)`
+        : `color-mix(in srgb, var(--primary-color) 10%, #1a1a1a)`
+      } !important;
+        border: 1px solid ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.25)`
+      } !important;
         color: ${theme === 'light' ? '#374151' : '#d1d5db'} !important;
         font-weight: 500 !important;
         transition: all 0.2s ease !important;
       }
 
       .pagination-btn:hover:not(:disabled) {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 10%, #ffffff)` 
-          : `color-mix(in srgb, var(--primary-color) 15%, #1a1a1a)`
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 10%, #ffffff)`
+        : `color-mix(in srgb, var(--primary-color) 15%, #1a1a1a)`
+      } !important;
         border-color: var(--primary-color) !important;
         color: ${theme === 'light' ? '#1f2937' : '#e5e7eb'} !important;
         transform: translateY(-1px) !important;
@@ -3355,34 +3367,34 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         border-color: var(--primary-color) !important;
         font-weight: 600 !important;
         box-shadow: ${theme === 'light'
-          ? `0 2px 8px rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
-          : `0 3px 12px rgba(var(--primary-color-rgb, 255, 165, 0), 0.4)`
-        } !important;
+        ? `0 2px 8px rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
+        : `0 3px 12px rgba(var(--primary-color-rgb, 255, 165, 0), 0.4)`
+      } !important;
       }
       
       .pagination-btn:disabled {
-        background: ${theme === 'light' 
-          ? 'rgba(0, 0, 0, 0.05)' 
-          : 'rgba(255, 255, 255, 0.02)'
-        } !important;
+        background: ${theme === 'light'
+        ? 'rgba(0, 0, 0, 0.05)'
+        : 'rgba(255, 255, 255, 0.02)'
+      } !important;
         color: ${theme === 'light' ? '#9ca3af' : '#4b5563'} !important;
-        border-color: ${theme === 'light' 
-          ? 'rgba(0, 0, 0, 0.1)' 
-          : 'rgba(255, 255, 255, 0.08)'
-        } !important;
+        border-color: ${theme === 'light'
+        ? 'rgba(0, 0, 0, 0.1)'
+        : 'rgba(255, 255, 255, 0.08)'
+      } !important;
         cursor: not-allowed !important;
       }
 
       /* PAGE INFO - АДАПТАЦИЯ */
       .page-info {
-        background: ${theme === 'light' 
-          ? `rgba(255, 255, 255, 0.9)` 
-          : `rgba(26, 26, 26, 0.9)`
-        } !important;
-        border: 1px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)`
-        } !important;
+        background: ${theme === 'light'
+        ? `rgba(255, 255, 255, 0.9)`
+        : `rgba(26, 26, 26, 0.9)`
+      } !important;
+        border: 1px solid ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)`
+      } !important;
         color: ${theme === 'light' ? '#374151' : '#d1d5db'} !important;
         padding: 8px 16px !important;
         border-radius: 8px !important;
@@ -3396,19 +3408,19 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       
       /* ADMIN CATEGORY LOADING - АДАПТАЦИЯ */
       .admin-category-loading {
-        background: ${theme === 'light' 
-          ? `rgba(255, 255, 255, 0.95)` 
-          : `rgba(26, 26, 26, 0.95)`
-        } !important;
+        background: ${theme === 'light'
+        ? `rgba(255, 255, 255, 0.95)`
+        : `rgba(26, 26, 26, 0.95)`
+      } !important;
         color: ${theme === 'light' ? '#374151' : '#d1d5db'} !important;
       }
 
       /* LOADING CONTENT - АДАПТАЦИЯ */
       .loading-content {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 3%, #f3f4f6)`
-          : `color-mix(in srgb, var(--primary-color) 8%, #1a1a1a)`
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 3%, #f3f4f6)`
+        : `color-mix(in srgb, var(--primary-color) 8%, #1a1a1a)`
+      } !important;
         position: relative !important;
         overflow: hidden !important;
       }
@@ -3421,9 +3433,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         width: 100% !important;
         height: 100% !important;
         background: ${theme === 'light'
-          ? `linear-gradient(90deg, transparent, rgba(var(--primary-color-rgb, 255, 165, 0), 0.1), transparent)`
-          : `linear-gradient(90deg, transparent, rgba(var(--primary-color-rgb, 255, 165, 0), 0.2), transparent)`
-        } !important;
+        ? `linear-gradient(90deg, transparent, rgba(var(--primary-color-rgb, 255, 165, 0), 0.1), transparent)`
+        : `linear-gradient(90deg, transparent, rgba(var(--primary-color-rgb, 255, 165, 0), 0.2), transparent)`
+      } !important;
         animation: shimmer 1.5s infinite !important;
       }
 
@@ -3434,28 +3446,28 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       /* CATEGORY SELECTOR WRAPPER - АДАПТАЦИЯ */
       .category-selector-wrapper {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 3%, #ffffff)` 
-          : `color-mix(in srgb, var(--primary-color) 6%, #1a1a1a)`
-        } !important;
-        border: 1px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)`
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 3%, #ffffff)`
+        : `color-mix(in srgb, var(--primary-color) 6%, #1a1a1a)`
+      } !important;
+        border: 1px solid ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)`
+      } !important;
         border-radius: 12px !important;
         padding: 12px !important;
       }
 
       /* CATEGORY CHIP - АДАПТАЦИЯ */
       .category-chip {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 5%, #f9fafb)` 
-          : `color-mix(in srgb, var(--primary-color) 10%, #262626)`
-        } !important;
-        border: 1px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.25)`
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 5%, #f9fafb)`
+        : `color-mix(in srgb, var(--primary-color) 10%, #262626)`
+      } !important;
+        border: 1px solid ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.25)`
+      } !important;
         color: ${theme === 'light' ? '#374151' : '#d1d5db'} !important;
         padding: 6px 12px !important;
         border-radius: 20px !important;
@@ -3465,10 +3477,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
 
       .category-chip:hover {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 10%, #f9fafb)` 
-          : `color-mix(in srgb, var(--primary-color) 15%, #262626)`
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 10%, #f9fafb)`
+        : `color-mix(in srgb, var(--primary-color) 15%, #262626)`
+      } !important;
         border-color: var(--primary-color) !important;
         color: ${theme === 'light' ? '#1f2937' : '#e5e7eb'} !important;
       }
@@ -3479,23 +3491,23 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         border-color: var(--primary-color) !important;
         font-weight: 600 !important;
         box-shadow: ${theme === 'light'
-          ? `0 2px 8px rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
-          : `0 3px 12px rgba(var(--primary-color-rgb, 255, 165, 0), 0.4)`
-        } !important;
+        ? `0 2px 8px rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
+        : `0 3px 12px rgba(var(--primary-color-rgb, 255, 165, 0), 0.4)`
+      } !important;
       }
 
       /* SCROLL BTN - АДАПТАЦИЯ */
       .scroll-btn {
-        background: ${theme === 'light' 
-          ? `linear-gradient(135deg, var(--primary-color) 0%, color-mix(in srgb, var(--primary-color) 80%, #000000) 100%)`
-          : `linear-gradient(135deg, var(--primary-color) 0%, color-mix(in srgb, var(--primary-color) 70%, #000000) 100%)`
-        } !important;
+        background: ${theme === 'light'
+        ? `linear-gradient(135deg, var(--primary-color) 0%, color-mix(in srgb, var(--primary-color) 80%, #000000) 100%)`
+        : `linear-gradient(135deg, var(--primary-color) 0%, color-mix(in srgb, var(--primary-color) 70%, #000000) 100%)`
+      } !important;
         color: #ffffff !important;
         border: none !important;
         box-shadow: ${theme === 'light'
-          ? `0 4px 15px rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
-          : `0 6px 20px rgba(var(--primary-color-rgb, 255, 165, 0), 0.4)`
-        } !important;
+        ? `0 4px 15px rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
+        : `0 6px 20px rgba(var(--primary-color-rgb, 255, 165, 0), 0.4)`
+      } !important;
         border-radius: 50% !important;
         transition: all 0.3s ease !important;
       }
@@ -3503,21 +3515,21 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       .scroll-btn:hover {
         transform: scale(1.1) !important;
         box-shadow: ${theme === 'light'
-          ? `0 6px 20px rgba(var(--primary-color-rgb, 255, 165, 0), 0.4)`
-          : `0 8px 25px rgba(var(--primary-color-rgb, 255, 165, 0), 0.5)`
-        } !important;
+        ? `0 6px 20px rgba(var(--primary-color-rgb, 255, 165, 0), 0.4)`
+        : `0 8px 25px rgba(var(--primary-color-rgb, 255, 165, 0), 0.5)`
+      } !important;
       }
 
       /* ADMIN CATEGORY BLOCK - АДАПТАЦИЯ */
       .admin-category-block {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 4%, #ffffff)` 
-          : `color-mix(in srgb, var(--primary-color) 8%, #1a1a1a)`
-        } !important;
-        border: 1px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.12)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)`
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 4%, #ffffff)`
+        : `color-mix(in srgb, var(--primary-color) 8%, #1a1a1a)`
+      } !important;
+        border: 1px solid ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.12)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)`
+      } !important;
         border-radius: 12px !important;
         padding: 16px !important;
         transition: all 0.3s ease !important;
@@ -3525,13 +3537,13 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       .admin-category-block:hover {
         box-shadow: ${theme === 'light'
-          ? `0 4px 15px rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)`
-          : `0 6px 20px rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)`
-        } !important;
-        border-color: ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
-        } !important;
+        ? `0 4px 15px rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)`
+        : `0 6px 20px rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)`
+      } !important;
+        border-color: ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
+      } !important;
       }
 
       .admin-category-block h3 {
@@ -3560,14 +3572,14 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       /* CATEGORY LOCAL SEARCH - АДАПТАЦИЯ */
       .category-local-search {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 3%, #ffffff)` 
-          : `color-mix(in srgb, var(--primary-color) 8%, #1a1a1a)`
-        } !important;
-        border: 1px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.25)`
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 3%, #ffffff)`
+        : `color-mix(in srgb, var(--primary-color) 8%, #1a1a1a)`
+      } !important;
+        border: 1px solid ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.25)`
+      } !important;
         color: ${theme === 'light' ? '#1f2937' : '#e5e7eb'} !important;
         padding: 10px 16px !important;
         border-radius: 8px !important;
@@ -3577,10 +3589,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       
       .category-local-search:focus {
         border-color: var(--primary-color) !important;
-        box-shadow: 0 0 0 3px ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)`
-        } !important;
+        box-shadow: 0 0 0 3px ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)`
+      } !important;
         outline: none !important;
       }
 
@@ -3621,14 +3633,14 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
 
       .profile-anime-progress-button {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 12%, #ffffff)` 
-          : `color-mix(in srgb, var(--primary-color) 15%, #000000)`
-        } !important;
-        border: 1px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.25)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 12%, #ffffff)`
+        : `color-mix(in srgb, var(--primary-color) 15%, #000000)`
+      } !important;
+        border: 1px solid ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.25)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
+      } !important;
         color: var(--primary-color) !important;
         border-radius: 8px !important;
         padding: 6px 10px !important;
@@ -3644,16 +3656,16 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
 
       .profile-anime-progress-button:hover {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 18%, #ffffff)` 
-          : `color-mix(in srgb, var(--primary-color) 25%, #000000)`
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 18%, #ffffff)`
+        : `color-mix(in srgb, var(--primary-color) 25%, #000000)`
+      } !important;
         border-color: var(--primary-color) !important;
         transform: translateY(-1px) !important;
         box-shadow: ${theme === 'light'
-          ? `0 2px 8px rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)`
-          : `0 3px 12px rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)`
-        } !important;
+        ? `0 2px 8px rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)`
+        : `0 3px 12px rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)`
+      } !important;
       }
 
       .profile-anime-progress-button:active {
@@ -3669,15 +3681,15 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
 
       .profile-anime-card-episodes {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 90%, #000000)` 
-          : `rgba(124, 92, 255, 0.8)`
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 90%, #000000)`
+        : `rgba(124, 92, 255, 0.8)`
+      } !important;
         color: #ffffff !important;
-        border: 1px solid ${theme === 'light' 
-          ? 'var(--primary-color)' 
-          : 'rgba(124, 92, 255, 0.3)'
-        } !important;
+        border: 1px solid ${theme === 'light'
+        ? 'var(--primary-color)'
+        : 'rgba(124, 92, 255, 0.3)'
+      } !important;
         font-size: 10px !important;
         font-weight: 600 !important;
         padding: 4px 8px !important;
@@ -3687,28 +3699,28 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       /* PROGRESS MODAL - АДАПТАЦИЯ */
       .progress-modal-backdrop {
-        background: ${theme === 'light' 
-          ? 'rgba(0, 0, 0, 0.5)' 
-          : 'rgba(0, 0, 0, 0.75)'
-        } !important;
+        background: ${theme === 'light'
+        ? 'rgba(0, 0, 0, 0.5)'
+        : 'rgba(0, 0, 0, 0.75)'
+      } !important;
       }
 
       .progress-modal {
-        background: ${theme === 'light' 
-          ? '#ffffff' 
-          : '#1a1a1a'
-        } !important;
-        border: 1px solid ${theme === 'light' 
-          ? 'rgba(0, 0, 0, 0.1)' 
-          : 'rgba(255, 255, 255, 0.1)'
-        } !important;
+        background: ${theme === 'light'
+        ? '#ffffff'
+        : '#1a1a1a'
+      } !important;
+        border: 1px solid ${theme === 'light'
+        ? 'rgba(0, 0, 0, 0.1)'
+        : 'rgba(255, 255, 255, 0.1)'
+      } !important;
       }
 
       .progress-modal-header {
-        border-bottom: 1px solid ${theme === 'light' 
-          ? 'rgba(0, 0, 0, 0.1)' 
-          : 'rgba(255, 255, 255, 0.1)'
-        } !important;
+        border-bottom: 1px solid ${theme === 'light'
+        ? 'rgba(0, 0, 0, 0.1)'
+        : 'rgba(255, 255, 255, 0.1)'
+      } !important;
       }
 
       .progress-modal-title {
@@ -3720,40 +3732,40 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
 
       .progress-modal-close {
-        background: ${theme === 'light' 
-          ? 'rgba(0, 0, 0, 0.05)' 
-          : 'rgba(255, 255, 255, 0.1)'
-        } !important;
+        background: ${theme === 'light'
+        ? 'rgba(0, 0, 0, 0.05)'
+        : 'rgba(255, 255, 255, 0.1)'
+      } !important;
         color: ${theme === 'light' ? '#1a1a1a' : '#ffffff'} !important;
       }
 
       .progress-modal-close:hover {
-        background: ${theme === 'light' 
-          ? 'rgba(0, 0, 0, 0.1)' 
-          : 'rgba(255, 255, 255, 0.2)'
-        } !important;
+        background: ${theme === 'light'
+        ? 'rgba(0, 0, 0, 0.1)'
+        : 'rgba(255, 255, 255, 0.2)'
+      } !important;
       }
 
       .progress-episode-item {
-        background: ${theme === 'light' 
-          ? 'rgba(0, 0, 0, 0.02)' 
-          : 'rgba(255, 255, 255, 0.03)'
-        } !important;
-        border: 1px solid ${theme === 'light' 
-          ? 'rgba(0, 0, 0, 0.08)' 
-          : 'rgba(255, 255, 255, 0.08)'
-        } !important;
+        background: ${theme === 'light'
+        ? 'rgba(0, 0, 0, 0.02)'
+        : 'rgba(255, 255, 255, 0.03)'
+      } !important;
+        border: 1px solid ${theme === 'light'
+        ? 'rgba(0, 0, 0, 0.08)'
+        : 'rgba(255, 255, 255, 0.08)'
+      } !important;
       }
 
       .progress-episode-item:hover {
-        background: ${theme === 'light' 
-          ? 'rgba(0, 0, 0, 0.04)' 
-          : 'rgba(255, 255, 255, 0.05)'
-        } !important;
-        border-color: ${theme === 'light' 
-          ? 'rgba(0, 0, 0, 0.12)' 
-          : 'rgba(255, 255, 255, 0.12)'
-        } !important;
+        background: ${theme === 'light'
+        ? 'rgba(0, 0, 0, 0.04)'
+        : 'rgba(255, 255, 255, 0.05)'
+      } !important;
+        border-color: ${theme === 'light'
+        ? 'rgba(0, 0, 0, 0.12)'
+        : 'rgba(255, 255, 255, 0.12)'
+      } !important;
       }
 
       .progress-episode-number {
@@ -3762,10 +3774,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       .progress-episode-count {
         color: ${theme === 'light' ? '#666666' : 'rgba(255, 255, 255, 0.5)'} !important;
-        background: ${theme === 'light' 
-          ? 'rgba(0, 0, 0, 0.08)' 
-          : 'rgba(255, 255, 255, 0.08)'
-        } !important;
+        background: ${theme === 'light'
+        ? 'rgba(0, 0, 0, 0.08)'
+        : 'rgba(255, 255, 255, 0.08)'
+      } !important;
       }
 
       .progress-voice-name {
@@ -3774,17 +3786,17 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       .progress-voice-source {
         color: ${theme === 'light' ? '#666666' : 'rgba(255, 255, 255, 0.5)'} !important;
-        background: ${theme === 'light' 
-          ? 'rgba(0, 0, 0, 0.08)' 
-          : 'rgba(255, 255, 255, 0.08)'
-        } !important;
+        background: ${theme === 'light'
+        ? 'rgba(0, 0, 0, 0.08)'
+        : 'rgba(255, 255, 255, 0.08)'
+      } !important;
       }
 
       .progress-bar {
-        background: ${theme === 'light' 
-          ? 'rgba(0, 0, 0, 0.1)' 
-          : 'rgba(255, 255, 255, 0.1)'
-        } !important;
+        background: ${theme === 'light'
+        ? 'rgba(0, 0, 0, 0.1)'
+        : 'rgba(255, 255, 255, 0.1)'
+      } !important;
       }
 
       .progress-time {
@@ -3796,23 +3808,23 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
 
       .loading-spinner {
-        border-color: ${theme === 'light' 
-          ? 'rgba(0, 0, 0, 0.1)' 
-          : 'rgba(255, 255, 255, 0.1)'
-        } !important;
+        border-color: ${theme === 'light'
+        ? 'rgba(0, 0, 0, 0.1)'
+        : 'rgba(255, 255, 255, 0.1)'
+      } !important;
         border-top-color: var(--primary-color) !important;
       }
 
       /* ANIME COVER CONTAINER - АДАПТАЦИЯ */
       .anime-cover-container {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 2%, #f9fafb)` 
-          : `color-mix(in srgb, var(--primary-color) 5%, #1a1a1a)`
-        } !important;
-        border: 2px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)`
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 2%, #f9fafb)`
+        : `color-mix(in srgb, var(--primary-color) 5%, #1a1a1a)`
+      } !important;
+        border: 2px solid ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)`
+      } !important;
         border-radius: 12px !important;
         overflow: hidden !important;
         position: relative !important;
@@ -3822,9 +3834,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       .anime-cover-container:hover {
         border-color: var(--primary-color) !important;
         box-shadow: ${theme === 'light'
-          ? `0 8px 25px rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)`
-          : `0 10px 30px rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
-        } !important;
+        ? `0 8px 25px rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)`
+        : `0 10px 30px rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
+      } !important;
         transform: scale(1.02) !important;
       }
 
@@ -3844,42 +3856,42 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       /* ADMIN TABLE - АДАПТАЦИЯ */
       .admin-table {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 2%, #ffffff)` 
-          : `color-mix(in srgb, var(--primary-color) 5%, #1a1a1a)`
-        } !important;
-        border: 1px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)`
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 2%, #ffffff)`
+        : `color-mix(in srgb, var(--primary-color) 5%, #1a1a1a)`
+      } !important;
+        border: 1px solid ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)`
+      } !important;
         border-radius: 12px !important;
         overflow: hidden !important;
       }
 
       .admin-table thead {
-        background: ${theme === 'light' 
-          ? `color-mix(in srgb, var(--primary-color) 5%, #f9fafb)` 
-          : `color-mix(in srgb, var(--primary-color) 10%, #262626)`
-        } !important;
+        background: ${theme === 'light'
+        ? `color-mix(in srgb, var(--primary-color) 5%, #f9fafb)`
+        : `color-mix(in srgb, var(--primary-color) 10%, #262626)`
+      } !important;
       }
 
       .admin-table th {
         background: transparent !important;
         color: ${theme === 'light' ? '#111827' : '#f3f4f6'} !important;
         font-weight: 600 !important;
-        border-bottom: 2px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.25)`
-        } !important;
+        border-bottom: 2px solid ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.25)`
+      } !important;
         padding: 12px 16px !important;
       }
 
       .admin-table td {
         color: ${theme === 'light' ? '#374151' : '#d1d5db'} !important;
-        border-bottom: 1px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.05)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)`
-        } !important;
+        border-bottom: 1px solid ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.05)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)`
+      } !important;
         padding: 12px 16px !important;
       }
 
@@ -3888,35 +3900,35 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
 
       .admin-table tbody tr:hover {
-        background: ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.04)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.08)`
-        } !important;
+        background: ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.04)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.08)`
+      } !important;
       }
 
       /* ADMIN TABLE HEADER - АДАПТАЦИЯ */
       .admin-table-header {
-        background: ${theme === 'light' 
-          ? `linear-gradient(135deg, 
+        background: ${theme === 'light'
+        ? `linear-gradient(135deg, 
               color-mix(in srgb, var(--primary-color) 12%, #f3f4f6) 0%, 
               color-mix(in srgb, var(--primary-color) 6%, #f9fafb) 100%)`
-          : `linear-gradient(135deg, 
+        : `linear-gradient(135deg, 
               color-mix(in srgb, var(--primary-color) 18%, #1f1f1f) 0%, 
               color-mix(in srgb, var(--primary-color) 10%, #262626) 100%)`
-        } !important;
-        border: 2px solid ${theme === 'light' 
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)` 
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
-        } !important;
+      } !important;
+        border: 2px solid ${theme === 'light'
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.2)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
+      } !important;
         color: ${theme === 'light' ? '#111827' : '#f9fafb'} !important;
         padding: 20px 24px !important;
         border-radius: 12px 12px 0 0 !important;
         font-weight: 700 !important;
         font-size: 18px !important;
         box-shadow: ${theme === 'light'
-          ? `0 2px 8px rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)`
-          : `0 3px 12px rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)`
-        } !important;
+        ? `0 2px 8px rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)`
+        : `0 3px 12px rgba(var(--primary-color-rgb, 255, 165, 0), 0.15)`
+      } !important;
       }
 
       .admin-table-header h1,
@@ -3945,16 +3957,16 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         color: ${theme === 'light' ? '#374151' : '#d1d5db'} !important;
         transition: all 0.2s ease !important;
         border-bottom: 1px solid ${theme === 'light'
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.05)`
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.08)`
-        } !important;
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.05)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.08)`
+      } !important;
       }
 
       .admin-table-row:hover {
         background: ${theme === 'light'
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.06)`
-          : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)`
-        } !important;
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.06)`
+        : `rgba(var(--primary-color-rgb, 255, 165, 0), 0.1)`
+      } !important;
         border-left: 3px solid var(--primary-color) !important;
         transform: translateX(2px) !important;
       }
@@ -3965,9 +3977,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       .admin-table-row.active {
         background: ${theme === 'light'
-          ? `color-mix(in srgb, var(--primary-color) 8%, #ffffff)`
-          : `color-mix(in srgb, var(--primary-color) 12%, #1a1a1a)`
-        } !important;
+        ? `color-mix(in srgb, var(--primary-color) 8%, #ffffff)`
+        : `color-mix(in srgb, var(--primary-color) 12%, #1a1a1a)`
+      } !important;
         border-left: 3px solid var(--primary-color) !important;
       }
 
@@ -3992,15 +4004,15 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       /* SIDEBAR TOGGLE - АДАПТАЦИЯ */
       .sidebar-toggle {
         background: ${theme === 'light'
-          ? `linear-gradient(135deg, var(--primary-color) 0%, color-mix(in srgb, var(--primary-color) 85%, #000000) 100%)`
-          : `linear-gradient(135deg, var(--primary-color) 0%, color-mix(in srgb, var(--primary-color) 75%, #000000) 100%)`
-        } !important;
+        ? `linear-gradient(135deg, var(--primary-color) 0%, color-mix(in srgb, var(--primary-color) 85%, #000000) 100%)`
+        : `linear-gradient(135deg, var(--primary-color) 0%, color-mix(in srgb, var(--primary-color) 75%, #000000) 100%)`
+      } !important;
         color: #ffffff !important;
         border: 1px solid var(--primary-color) !important;
         box-shadow: ${theme === 'light'
-          ? `0 2px 10px rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
-          : `0 3px 15px rgba(var(--primary-color-rgb, 255, 165, 0), 0.4)`
-        } !important;
+        ? `0 2px 10px rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
+        : `0 3px 15px rgba(var(--primary-color-rgb, 255, 165, 0), 0.4)`
+      } !important;
         border-radius: 8px !important;
         padding: 10px !important;
         transition: all 0.3s ease !important;
@@ -4010,9 +4022,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       .sidebar-toggle:hover {
         transform: translateX(2px) !important;
         box-shadow: ${theme === 'light'
-          ? `0 4px 15px rgba(var(--primary-color-rgb, 255, 165, 0), 0.4)`
-          : `0 6px 20px rgba(var(--primary-color-rgb, 255, 165, 0), 0.5)`
-        } !important;
+        ? `0 4px 15px rgba(var(--primary-color-rgb, 255, 165, 0), 0.4)`
+        : `0 6px 20px rgba(var(--primary-color-rgb, 255, 165, 0), 0.5)`
+      } !important;
       }
 
       .sidebar-toggle:active {
@@ -4035,9 +4047,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       .sidebar-toggle.collapsed {
         background: ${theme === 'light'
-          ? `color-mix(in srgb, var(--primary-color) 20%, #ffffff)`
-          : `color-mix(in srgb, var(--primary-color) 25%, #1a1a1a)`
-        } !important;
+        ? `color-mix(in srgb, var(--primary-color) 20%, #ffffff)`
+        : `color-mix(in srgb, var(--primary-color) 25%, #1a1a1a)`
+      } !important;
         color: ${theme === 'light' ? 'var(--primary-color)' : '#ffffff'} !important;
       }
 
@@ -4062,49 +4074,49 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       .collection-mobile-section-tabs:hover .collection-mobile-section-tab.active {
         /* Активная кнопка остается активной */
         background: ${theme === 'light'
-          ? `color-mix(in srgb, var(--primary-color) 15%, #f0f0f0)`
-          : `rgba(124, 92, 255, 0.22)`
-        } !important;
+        ? `color-mix(in srgb, var(--primary-color) 15%, #f0f0f0)`
+        : `rgba(124, 92, 255, 0.22)`
+      } !important;
         border-color: ${theme === 'light'
-          ? `var(--primary-color)`
-          : `rgba(124, 92, 255, 0.45)`
-        } !important;
+        ? `var(--primary-color)`
+        : `rgba(124, 92, 255, 0.45)`
+      } !important;
       }
 
       /* Только конкретная кнопка подсвечивается при наведении */
       .collection-mobile-section-tab:hover {
         background: ${theme === 'light'
-          ? `color-mix(in srgb, var(--primary-color) 8%, #ffffff)`
-          : `rgba(255, 255, 255, 0.1)`
-        } !important;
+        ? `color-mix(in srgb, var(--primary-color) 8%, #ffffff)`
+        : `rgba(255, 255, 255, 0.1)`
+      } !important;
         border-color: ${theme === 'light'
-          ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
-          : `rgba(255, 255, 255, 0.2)`
-        } !important;
+        ? `rgba(var(--primary-color-rgb, 255, 165, 0), 0.3)`
+        : `rgba(255, 255, 255, 0.2)`
+      } !important;
       }
 
       .collection-mobile-section-tab {
         background: ${theme === 'light'
-          ? `rgba(0, 0, 0, 0.03)`
-          : `rgba(255, 255, 255, 0.05)`
-        } !important;
+        ? `rgba(0, 0, 0, 0.03)`
+        : `rgba(255, 255, 255, 0.05)`
+      } !important;
         border: 1px solid ${theme === 'light'
-          ? `rgba(0, 0, 0, 0.08)`
-          : `rgba(255, 255, 255, 0.08)`
-        } !important;
+        ? `rgba(0, 0, 0, 0.08)`
+        : `rgba(255, 255, 255, 0.08)`
+      } !important;
         color: ${theme === 'light' ? '#374151' : '#d1d5db'} !important;
         transition: all 0.2s ease !important;
       }
 
       .collection-mobile-section-tab.active {
         background: ${theme === 'light'
-          ? `color-mix(in srgb, var(--primary-color) 15%, #f0f0f0)`
-          : `rgba(124, 92, 255, 0.22)`
-        } !important;
+        ? `color-mix(in srgb, var(--primary-color) 15%, #f0f0f0)`
+        : `rgba(124, 92, 255, 0.22)`
+      } !important;
         border-color: ${theme === 'light'
-          ? `var(--primary-color)`
-          : `rgba(124, 92, 255, 0.45)`
-        } !important;
+        ? `var(--primary-color)`
+        : `rgba(124, 92, 255, 0.45)`
+      } !important;
         color: ${theme === 'light' ? 'var(--primary-color)' : '#ffffff'} !important;
         font-weight: 600 !important;
       }
@@ -4129,11 +4141,11 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
       
     `;
-    
+
     // Добавляем стиль в самый конец head для максимального приоритета
     document.head.appendChild(styleElement);
-    
-    
+
+
     // Сохраняем в localStorage
     localStorage.setItem('theme', theme);
     localStorage.setItem('colorScheme', colorScheme);
@@ -4194,12 +4206,25 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     saveThemeSettings(undefined, newColorScheme);
   };
 
+  // Обёртка для setLayoutMode с сохранением в localStorage
+  const handleSetLayoutMode = (newLayoutMode: LayoutMode) => {
+    setLayoutMode(newLayoutMode);
+    localStorage.setItem('layoutMode', newLayoutMode);
+    // Применяем класс к layout
+    if (typeof window !== 'undefined') {
+      document.body.classList.remove('layout-centered', 'layout-fullscreen');
+      document.body.classList.add(`layout-${newLayoutMode}`);
+    }
+  };
+
   return (
-    <ThemeContext.Provider value={{ 
-      theme, 
-      colorScheme, 
-      setTheme: handleSetTheme, 
+    <ThemeContext.Provider value={{
+      theme,
+      colorScheme,
+      layoutMode,
+      setTheme: handleSetTheme,
       setColorScheme: handleSetColorScheme,
+      setLayoutMode: handleSetLayoutMode,
       loadUserThemeSettings,
       resetToDefaultTheme
     }}>

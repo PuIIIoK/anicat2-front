@@ -78,7 +78,7 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
     // Состояние для выбранного рейтинга
     const [selectedRating, setSelectedRating] = useState<number>(0);
     const [hoverRating, setHoverRating] = useState<number>(0);
-    
+
     // Состояние для описания
     const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
 
@@ -134,7 +134,7 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                 .catch(console.error)
                 .finally(() => setEpisodesLoading(false));
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeTab, animeId, yumekoVoices.length]);
 
     // Загрузка эпизодов при смене озвучки (без полной перезагрузки блока)
@@ -197,7 +197,7 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
             document.title = 'Yumeko';
             return;
         }
-        const seasonText = anime.season 
+        const seasonText = anime.season
             ? (anime.season.toLowerCase().includes('сезон') ? ` ${anime.season}` : ` ${anime.season}`)
             : (anime.mouthSeason ? ` ${anime.mouthSeason}` : '');
         document.title = `${anime.title}${seasonText} | Yumeko`;
@@ -206,7 +206,7 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
     if (isLoading) return <AnimePageCrunchSkeleton />;
     if (error || !anime) {
         return (
-            <ServerErrorPage 
+            <ServerErrorPage
                 title="Внутренняя ошибка сервера!"
                 message={error || "Не удалось загрузить страницу аниме.\nПожалуйста, попробуйте позже"}
                 onRetry={() => window.location.reload()}
@@ -228,12 +228,6 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                     )}
                 </div>
 
-                {/* Переключатель вида */}
-                <div className="cr-view-switcher">
-                    <span className="cr-view-label">Вид:</span>
-                    <button className="cr-view-btn active">Новый</button>
-                    <Link href={`/anime-page/${animeId}`} className="cr-view-btn" onClick={() => localStorage.setItem('animePageView', 'old')}>Старый</Link>
-                </div>
 
                 <div className="cr-hero-content">
                     {/* Постер слева */}
@@ -277,10 +271,10 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                             {anime.status !== 'Анонс' && (
                                 <div className="cr-quick-item">
                                     <PlayCircle size={16} />
-                                    <span>{anime.status === 'Завершен' || anime.status === 'Завершён' 
+                                    <span>{anime.status === 'Завершен' || anime.status === 'Завершён'
                                         ? `${anime.episodeAll || '?'} эп.`
-                                        : anime.currentEpisode 
-                                            ? `${anime.currentEpisode} / ${anime.episodeAll || '?'} эп.` 
+                                        : anime.currentEpisode
+                                            ? `${anime.currentEpisode} / ${anime.episodeAll || '?'} эп.`
                                             : `${anime.episodeAll || '—'} эп.`
                                     }</span>
                                 </div>
@@ -302,8 +296,8 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                             <div className="cr-rating-row">
                                 <div className="cr-stars">
                                     {Array.from({ length: 5 }, (_, i) => i + 1).map((starIndex) => (
-                                        <Star 
-                                            key={starIndex} 
+                                        <Star
+                                            key={starIndex}
                                             size={18}
                                             className={starIndex <= Math.round(averageRating) ? 'star-filled' : 'star-empty'}
                                         />
@@ -317,7 +311,7 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
 
                         {/* 4. Кнопки: Смотреть, Избранное, Коллекции */}
                         <div className="cr-actions">
-                            <button 
+                            <button
                                 className="cr-btn-watch"
                                 onClick={handleWatchClick}
                                 disabled={!anime.opened || isAccessible === false}
@@ -326,7 +320,7 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                 {anime.opened ? 'СМОТРЕТЬ' : (anime.anons || 'СКОРО')}
                             </button>
 
-                            <button 
+                            <button
                                 className={`cr-btn-icon ${favorites ? 'active' : ''}`}
                                 onClick={toggleFavorite}
                                 title={favorites ? 'Убрать из избранного' : 'В избранное'}
@@ -335,7 +329,7 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                             </button>
 
                             <div className="crunch-dropdown">
-                                <button 
+                                <button
                                     className={`cr-btn-status ${selectedStatus ? `status-${selectedStatus}` : ''}`}
                                     onClick={handleToggleStatusDropdown}
                                     disabled={isSavingStatus}
@@ -348,8 +342,8 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                 {showStatusDropdown && (
                                     <div className="dropdown-menu">
                                         {statusOptions.map(option => (
-                                            <div 
-                                                key={option.value} 
+                                            <div
+                                                key={option.value}
                                                 className={`dropdown-item item-${option.value} ${selectedStatus === option.value ? 'active' : ''}`}
                                                 onClick={() => handleStatusSelect(option.value)}
                                             >
@@ -427,7 +421,7 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                     {anime.description}
                                 </p>
                                 {anime.description.length > 200 && (
-                                    <button 
+                                    <button
                                         className="cr-description-toggle"
                                         onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
                                     >
@@ -444,7 +438,7 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
             <div className="crunch-tabs-section">
                 <div className="crunch-container">
                     <div className="crunch-tabs">
-                        <button 
+                        <button
                             className={`crunch-tab ${activeTab === 'episodes' ? 'active' : ''}`}
                             onClick={() => handleTabChange('episodes')}
                             disabled={anime.status === 'Анонс'}
@@ -452,14 +446,14 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                             <PlayCircle size={18} />
                             Эпизоды
                         </button>
-                        <button 
+                        <button
                             className={`crunch-tab ${activeTab === 'screenshots' ? 'active' : ''}`}
                             onClick={() => handleTabChange('screenshots')}
                         >
                             <Camera size={18} />
                             Скриншоты {anime.screenshotsCount > 0 && `(${anime.screenshotsCount})`}
                         </button>
-                        <button 
+                        <button
                             className={`crunch-tab ${activeTab === 'reviews' ? 'active' : ''}`}
                             onClick={() => handleTabChange('reviews')}
                             disabled={anime.status === 'Скоро' || anime.status === 'Анонс'}
@@ -467,7 +461,7 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                             <Star size={18} />
                             Отзывы {totalReviews > 0 && `(${totalReviews})`}
                         </button>
-                        <button 
+                        <button
                             className={`crunch-tab ${activeTab === 'comments' ? 'active' : ''}`}
                             onClick={() => handleTabChange('comments')}
                         >
@@ -503,7 +497,7 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                                 </div>
                                             </div>
                                         )}
-                                        
+
                                         {/* Сетка эпизодов */}
                                         <div className={`episodes-grid ${voiceChanging ? 'loading' : ''}`}>
                                             {voiceChanging && (
@@ -537,8 +531,8 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                                             {/* Прогресс-бар */}
                                                             {progress && progress.ratio > 0 && (
                                                                 <div className="episode-progress-bar">
-                                                                    <div 
-                                                                        className="episode-progress-fill" 
+                                                                    <div
+                                                                        className="episode-progress-fill"
                                                                         style={{ width: `${progress.ratio * 100}%` }}
                                                                     />
                                                                 </div>
@@ -552,8 +546,8 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                                                 )}
                                                             </div>
                                                             <span className="episode-duration">
-                                                                {episode.durationSeconds > 0 
-                                                                    ? `${Math.floor(episode.durationSeconds / 60)} мин` 
+                                                                {episode.durationSeconds > 0
+                                                                    ? `${Math.floor(episode.durationSeconds / 60)} мин`
                                                                     : episode.title || ''}
                                                             </span>
                                                         </div>
@@ -585,10 +579,10 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                 ) : screenshotUrls.length > 0 ? (
                                     <div className="screenshots-grid">
                                         {screenshotUrls.map((screenshot, index) => (
-                                            <ScreenshotItem 
-                                                key={screenshot.id || index} 
-                                                screenshot={screenshot} 
-                                                index={index} 
+                                            <ScreenshotItem
+                                                key={screenshot.id || index}
+                                                screenshot={screenshot}
+                                                index={index}
                                             />
                                         ))}
                                     </div>
@@ -627,28 +621,28 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                     <div style={{ marginBottom: '24px', paddingBottom: '20px', borderBottom: '1px solid var(--border-color)' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
                                             <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: '22px' }}>{isEditingReview ? 'Изменить оценку:' : 'Ваша оценка:'}</span>
-                                            <div 
-                                                style={{ display: 'flex', gap: '4px', alignItems: 'center', height: '22px', marginTop: '5px' }} 
+                                            <div
+                                                style={{ display: 'flex', gap: '4px', alignItems: 'center', height: '22px', marginTop: '5px' }}
                                                 className="cr-stars-select"
                                                 onMouseLeave={() => setHoverRating(0)}
                                             >
                                                 {[1, 2, 3, 4, 5].map((rating) => {
                                                     const isActive = rating <= (hoverRating || selectedRating);
                                                     return (
-                                                        <div 
-                                                            key={rating} 
+                                                        <div
+                                                            key={rating}
                                                             style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px' }}
                                                             onMouseEnter={() => setHoverRating(rating)}
                                                             onClick={() => setSelectedRating(rating)}
                                                         >
-                                                            <Star 
-                                                                size={22} 
-                                                                style={{ 
-                                                                    display: 'block', 
+                                                            <Star
+                                                                size={22}
+                                                                style={{
+                                                                    display: 'block',
                                                                     transition: 'all 0.15s',
                                                                     color: isActive ? '#f5a623' : 'var(--text-muted)',
                                                                     fill: isActive ? '#f5a623' : 'transparent'
-                                                                }} 
+                                                                }}
                                                             />
                                                         </div>
                                                     );
@@ -659,7 +653,7 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                             )}
                                         </div>
                                         <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-end' }}>
-                                            <textarea 
+                                            <textarea
                                                 placeholder={isEditingReview ? 'Измените ваш отзыв...' : 'Напишите ваш отзыв... (Enter — отправить)'}
                                                 defaultValue={isEditingReview ? (userReview?.content || '') : ''}
                                                 style={{ flex: 1, padding: '12px 16px', background: 'transparent', border: '1px solid var(--border-color)', borderRadius: '10px', color: 'var(--text-primary)', fontSize: '0.9rem', fontFamily: 'inherit', resize: 'none', minHeight: '44px', maxHeight: '200px', overflow: 'hidden' }}
@@ -682,8 +676,8 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                                     }
                                                 }}
                                             />
-                                            <button 
-                                                type="button" 
+                                            <button
+                                                type="button"
                                                 style={{ width: '44px', height: '44px', minWidth: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--primary-color)', border: 'none', borderRadius: '10px', color: '#fff', cursor: 'pointer' }}
                                                 onClick={() => {
                                                     const textarea = document.querySelector('.crunch-reviews textarea') as HTMLTextAreaElement;
@@ -735,7 +729,7 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                                 {review.content && <p className="review-text">{review.content}</p>}
                                             </div>
                                         ))}
-                                        
+
                                         {reviews.length > 5 && handleToggleShowAllReviews && (
                                             <button className="show-more-btn" onClick={handleToggleShowAllReviews}>
                                                 {showAllReviews ? 'Скрыть' : `Показать ещё (${reviews.length - 3})`}
@@ -758,7 +752,7 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                 {/* Форма комментария */}
                                 <div style={{ marginBottom: '24px', paddingBottom: '20px', borderBottom: '1px solid var(--border-color)' }}>
                                     <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-end' }}>
-                                        <textarea 
+                                        <textarea
                                             placeholder="Напишите комментарий... (Enter — отправить)"
                                             style={{ flex: 1, padding: '12px 16px', background: 'transparent', border: '1px solid var(--border-color)', borderRadius: '10px', color: 'var(--text-primary)', fontSize: '0.9rem', fontFamily: 'inherit', resize: 'none', minHeight: '44px', maxHeight: '150px', overflow: 'hidden' }}
                                             onInput={(e) => {
@@ -778,8 +772,8 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                                 }
                                             }}
                                         />
-                                        <button 
-                                            type="button" 
+                                        <button
+                                            type="button"
                                             style={{ width: '44px', height: '44px', minWidth: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--primary-color)', border: 'none', borderRadius: '10px', color: '#fff', cursor: 'pointer' }}
                                             onClick={() => {
                                                 const textarea = document.querySelector('.crunch-comments textarea') as HTMLTextAreaElement;
@@ -820,11 +814,11 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                                         {getRoleIcon(comment.role || '', comment.verified)}
                                                     </Link>
                                                 </div>
-                                                
+
                                                 {/* Режим редактирования */}
                                                 {editingCommentId === comment.id ? (
                                                     <div style={{ marginTop: '8px' }}>
-                                                        <textarea 
+                                                        <textarea
                                                             value={editText}
                                                             onChange={(e) => setEditText(e.target.value)}
                                                             style={{ width: '100%', padding: '10px 12px', background: 'transparent', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'var(--text-primary)', fontSize: '0.9rem', fontFamily: 'inherit', resize: 'none', minHeight: '60px' }}
@@ -837,16 +831,16 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                                 ) : (
                                                     <p className="comment-text">{comment.text}</p>
                                                 )}
-                                                
+
                                                 <div className="comment-actions">
-                                                    <button 
+                                                    <button
                                                         className={`action-btn ${comment.isLiked ? 'active' : ''}`}
                                                         onClick={() => handleLikeComment(comment.id)}
                                                     >
                                                         <Heart size={16} fill={comment.isLiked ? '#e50914' : 'none'} />
                                                         {comment.likes || 0}
                                                     </button>
-                                                    <button 
+                                                    <button
                                                         className={`action-btn ${comment.isDisliked ? 'active' : ''}`}
                                                         onClick={() => handleDislikeComment(comment.id)}
                                                         style={{ color: comment.isDisliked ? '#3b82f6' : undefined }}
@@ -854,30 +848,30 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                                         <Heart size={16} fill={comment.isDisliked ? '#3b82f6' : 'none'} style={{ transform: 'rotate(180deg)' }} />
                                                         {comment.dislikes || 0}
                                                     </button>
-                                                    <button 
+                                                    <button
                                                         className={`action-btn ${expandedComments.has(comment.id) ? 'active' : ''}`}
                                                         onClick={() => handleToggleReplies(comment.id)}
                                                     >
                                                         <MessageCircle size={16} />
                                                         {comment.replies?.length || 0}
                                                     </button>
-                                                    <button 
+                                                    <button
                                                         className="action-btn"
                                                         onClick={() => replyingTo === comment.id ? handleCancelReply() : handleStartReply(comment.id)}
                                                     >
                                                         Ответить
                                                     </button>
-                                                    
+
                                                     {/* Редактировать/Удалить только для своих комментов */}
                                                     {isCommentOwner(comment) && editingCommentId !== comment.id && (
                                                         <>
-                                                            <button 
+                                                            <button
                                                                 className="action-btn"
                                                                 onClick={() => handleEditComment(comment.id, comment.text)}
                                                             >
                                                                 Изменить
                                                             </button>
-                                                            <button 
+                                                            <button
                                                                 className="action-btn"
                                                                 onClick={() => handleDeleteComment(comment.id, comment.text)}
                                                                 style={{ color: '#ef4444' }}
@@ -891,7 +885,7 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                                 {/* Форма ответа */}
                                                 {replyingTo === comment.id && (
                                                     <div style={{ marginTop: '12px', display: 'flex', gap: '8px', alignItems: 'flex-end' }}>
-                                                        <textarea 
+                                                        <textarea
                                                             placeholder={`Ответить ${comment.nickname || comment.username}...`}
                                                             value={replyText}
                                                             onChange={(e) => handleReplyTextChange(e.target.value)}
@@ -903,7 +897,7 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                                                 }
                                                             }}
                                                         />
-                                                        <button 
+                                                        <button
                                                             onClick={() => handleSubmitReply(comment.id)}
                                                             style={{ width: '38px', height: '38px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--primary-color)', border: 'none', borderRadius: '8px', color: '#fff', cursor: 'pointer' }}
                                                         >
@@ -919,7 +913,7 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                                             <div key={reply.id} style={{ marginBottom: '16px', position: 'relative', paddingLeft: '20px' }}>
                                                                 {/* Изогнутая линия ответа */}
                                                                 <svg style={{ position: 'absolute', left: '-2px', top: '-2px', width: '16px', height: '28px' }} viewBox="0 0 20 28">
-                                                                    <path d="M4 0 L4 18 Q4 24, 12 24 L20 24" fill="none" stroke="var(--border-color)" strokeWidth="1.5" strokeLinecap="round"/>
+                                                                    <path d="M4 0 L4 18 Q4 24, 12 24 L20 24" fill="none" stroke="var(--border-color)" strokeWidth="1.5" strokeLinecap="round" />
                                                                 </svg>
                                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
                                                                     <div style={{ width: '24px', height: '24px', borderRadius: '50%', overflow: 'hidden', position: 'relative', background: 'var(--bg-secondary)' }}>
@@ -937,7 +931,7 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                                                 {/* Режим редактирования ответа */}
                                                                 {editingReplyId === reply.id ? (
                                                                     <div style={{ margin: '8px 0' }}>
-                                                                        <textarea 
+                                                                        <textarea
                                                                             value={editText}
                                                                             onChange={(e) => setEditText(e.target.value)}
                                                                             style={{ width: '100%', padding: '8px 10px', background: 'transparent', border: '1px solid var(--border-color)', borderRadius: '6px', color: 'var(--text-primary)', fontSize: '0.85rem', fontFamily: 'inherit', resize: 'none', minHeight: '50px' }}
@@ -949,7 +943,7 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                                                     </div>
                                                                 ) : (
                                                                     <p style={{ margin: '0 0 8px 0', color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.5 }}>
-                                                                        {reply.text.split(/(@\S+(?:\s*\[[^\]]+\])?)/g).map((part, i) => 
+                                                                        {reply.text.split(/(@\S+(?:\s*\[[^\]]+\])?)/g).map((part, i) =>
                                                                             part.startsWith('@') ? (
                                                                                 <span key={i} style={{ color: 'var(--primary-color)', fontWeight: 500 }}>{part}</span>
                                                                             ) : part
@@ -957,14 +951,14 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                                                     </p>
                                                                 )}
                                                                 <div className="comment-actions" style={{ marginTop: '4px' }}>
-                                                                    <button 
+                                                                    <button
                                                                         className={`action-btn ${reply.isLiked ? 'active' : ''}`}
                                                                         onClick={() => handleLikeReply(reply.id)}
                                                                     >
                                                                         <Heart size={14} fill={reply.isLiked ? '#e50914' : 'none'} />
                                                                         {reply.likes || 0}
                                                                     </button>
-                                                                    <button 
+                                                                    <button
                                                                         className={`action-btn ${reply.isDisliked ? 'active' : ''}`}
                                                                         onClick={() => handleDislikeReply(reply.id)}
                                                                         style={{ color: reply.isDisliked ? '#3b82f6' : undefined }}
@@ -972,7 +966,7 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                                                         <Heart size={14} fill={reply.isDisliked ? '#3b82f6' : 'none'} style={{ transform: 'rotate(180deg)' }} />
                                                                         {reply.dislikes || 0}
                                                                     </button>
-                                                                    <button 
+                                                                    <button
                                                                         className="action-btn"
                                                                         onClick={() => {
                                                                             handleStartReply(comment.id);
@@ -982,17 +976,17 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                                                         <MessageCircle size={14} />
                                                                         Ответить
                                                                     </button>
-                                                                    
+
                                                                     {/* Редактировать/Удалить только для своих ответов */}
                                                                     {isCommentOwner(reply) && editingReplyId !== reply.id && (
                                                                         <>
-                                                                            <button 
+                                                                            <button
                                                                                 className="action-btn"
                                                                                 onClick={() => handleEditReply(reply.id, reply.text)}
                                                                             >
                                                                                 Изменить
                                                                             </button>
-                                                                            <button 
+                                                                            <button
                                                                                 className="action-btn"
                                                                                 onClick={() => handleDeleteReply(reply.id, reply.text)}
                                                                                 style={{ color: '#ef4444' }}
@@ -1009,7 +1003,7 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
 
                                             </div>
                                         ))}
-                                        
+
                                         {comments.length > 5 && (
                                             <button className="show-more-btn" onClick={handleToggleShowAllComments}>
                                                 {showAllComments ? 'Скрыть' : `Показать ещё (${comments.length - 5})`}
@@ -1037,20 +1031,20 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
             </div>
 
             {/* Модальные окна */}
-            <CommentsModal 
-                show={showCommentsModal} 
-                onClose={() => setShowCommentsModal(false)} 
-                isModern={true} 
-                animeTitle={anime.title} 
-                comments={comments} 
-                onSubmitComment={handleSubmitComment} 
-                onLikeComment={handleLikeComment} 
+            <CommentsModal
+                show={showCommentsModal}
+                onClose={() => setShowCommentsModal(false)}
+                isModern={true}
+                animeTitle={anime.title}
+                comments={comments}
+                onSubmitComment={handleSubmitComment}
+                onLikeComment={handleLikeComment}
                 onReplyComment={handleReplyComment}
                 onOpen={loadComments}
                 loading={commentsLoading}
             />
             <AuthPromptModal show={showAuthPrompt} onClose={() => setShowAuthPrompt(false)} />
-            
+
             <DeleteCommentModal
                 isOpen={showDeleteModal}
                 onClose={closeDeleteModal}

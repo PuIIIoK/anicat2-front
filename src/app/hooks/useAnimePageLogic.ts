@@ -28,6 +28,7 @@ interface AnimeData {
     officialRating?: number;
     studio?: string;
     genres?: string;
+    source?: string;
     year?: string;
     season?: string;
     mouthSeason?: string;
@@ -44,6 +45,8 @@ interface AnimeData {
     blockedCountries?: string;
     note?: string;
     blocked_note?: string;
+    videoSourceType?: string;
+    episodes?: any[]; // Using any[] for now as Episode type isn't fully defined here
 }
 
 interface Comment {
@@ -96,10 +99,10 @@ export const useAnimePageLogic = (animeId: string) => {
     // Состояние для дизайна
 
     // UI состояния
-    const [activeTab, setActiveTab] = useState<'screenshots' | 'details' | 'reviews' | 'comments' | 'episodes'>(() => {
-        const tabFromUrl = searchParams.get('tab') as 'screenshots' | 'details' | 'reviews' | 'comments' | 'episodes' | null;
-        return tabFromUrl && ['screenshots', 'details', 'reviews', 'comments', 'episodes'].includes(tabFromUrl) 
-            ? tabFromUrl 
+    const [activeTab, setActiveTab] = useState<'screenshots' | 'details' | 'reviews' | 'comments' | 'episodes' | 'related'>(() => {
+        const tabFromUrl = searchParams.get('tab') as 'screenshots' | 'details' | 'reviews' | 'comments' | 'episodes' | 'related' | null;
+        return tabFromUrl && ['screenshots', 'details', 'reviews', 'comments', 'episodes', 'related'].includes(tabFromUrl)
+            ? tabFromUrl
             : 'screenshots';
     });
     const [showStatusDropdown, setShowStatusDropdown] = useState(false);
@@ -137,23 +140,23 @@ export const useAnimePageLogic = (animeId: string) => {
     const [expandedComments, setExpandedComments] = useState<Set<number>>(new Set());
     const [replyingTo, setReplyingTo] = useState<number | null>(null);
     const [replyText, setReplyText] = useState<string>('');
-    
+
     // Состояния для редактирования
     const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
     const [editingReplyId, setEditingReplyId] = useState<number | null>(null);
     const [editText, setEditText] = useState<string>('');
-    const [currentUserProfile, setCurrentUserProfile] = useState<{username: string, nickname?: string, role?: string, verified?: boolean, avatarUrl?: string} | null>(null);
-    
+    const [currentUserProfile, setCurrentUserProfile] = useState<{ username: string, nickname?: string, role?: string, verified?: boolean, avatarUrl?: string } | null>(null);
+
     // Состояния для защиты от спама кликов
     const [likingComments, setLikingComments] = useState<Set<number>>(new Set());
     const [likingReplies, setLikingReplies] = useState<Set<number>>(new Set());
-    
+
     // Состояния для модалки удаления
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [deleteTarget, setDeleteTarget] = useState<{type: 'comment' | 'reply', id: number, text: string} | null>(null);
+    const [deleteTarget, setDeleteTarget] = useState<{ type: 'comment' | 'reply', id: number, text: string } | null>(null);
 
     // Скриншоты
-    const [screenshotUrls, setScreenshotUrls] = useState<{id: number, url: string, name: string}[]>([]);
+    const [screenshotUrls, setScreenshotUrls] = useState<{ id: number, url: string, name: string }[]>([]);
     const [screenshotsLoaded, setScreenshotsLoaded] = useState(false);
     const [screenshotsLoading, setScreenshotsLoading] = useState(false);
 
@@ -217,7 +220,7 @@ export const useAnimePageLogic = (animeId: string) => {
                 if (hasToken()) {
                     headers['Authorization'] = `Bearer ${getAuthToken()}`;
                 }
-                
+
                 Promise.all([
                     fetch(`${API_SERVER}/api/anime/ratings/${animeId}/all`).then(r => r.ok ? r.json() : { userRatings: [] }),
                     fetch(`${API_SERVER}/api/comments/all/${animeId}`, { headers }).then(r => r.ok ? r.json() : [])
@@ -318,13 +321,13 @@ export const useAnimePageLogic = (animeId: string) => {
         }
 
         setScreenshotsLoading(true);
-        
+
         try {
             const res = await fetch(`${API_SERVER}/api/anime/optimized/get-anime/${animeId}/screenshots-urls`);
-            
+
             if (res.ok) {
                 const data = await res.json();
-                
+
                 let screenshots = [];
                 if (Array.isArray(data)) {
                     screenshots = data;
@@ -333,7 +336,7 @@ export const useAnimePageLogic = (animeId: string) => {
                 } else if (data.data && Array.isArray(data.data)) {
                     screenshots = data.data;
                 }
-                
+
                 setScreenshotUrls(screenshots);
                 setScreenshotsLoaded(true);
             }
@@ -353,7 +356,7 @@ export const useAnimePageLogic = (animeId: string) => {
         } else if (activeTab === 'comments' && anime) {
             loadComments();
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeTab, loadScreenshots, anime, screenshotUrls.length, screenshotsLoaded, screenshotsLoading]);
 
 
@@ -370,7 +373,7 @@ export const useAnimePageLogic = (animeId: string) => {
                     });
                     if (response.ok) {
                         const profileData = await response.json();
-                        
+
                         // Загружаем аватарку
                         let avatarUrl = '';
                         if (profileData.username) {
@@ -423,7 +426,7 @@ export const useAnimePageLogic = (animeId: string) => {
             });
 
             if (!res.ok) throw new Error('Ошибка при изменении избранного');
-            
+
             if (newFavorite) {
                 showCollectionNotification(`"${anime?.title}" добавлено в избранное`);
             } else {
@@ -495,7 +498,7 @@ export const useAnimePageLogic = (animeId: string) => {
     // Переход к просмотру
     const handleWatchClick = () => {
         if (!anime?.opened) return;
-        
+
         // Открываем модальное окно выбора источника
         setShowSourceModal(true);
     };
@@ -507,7 +510,7 @@ export const useAnimePageLogic = (animeId: string) => {
 
 
     // Функция для обновления URL с табом
-    const updateUrlWithTab = (tab: 'screenshots' | 'details' | 'reviews' | 'comments' | 'episodes') => {
+    const updateUrlWithTab = (tab: 'screenshots' | 'details' | 'reviews' | 'comments' | 'episodes' | 'related') => {
         const currentUrl = new URL(window.location.href);
         if (tab === 'screenshots') {
             // Убираем параметр tab если это вкладка по умолчанию
@@ -515,7 +518,7 @@ export const useAnimePageLogic = (animeId: string) => {
         } else {
             currentUrl.searchParams.set('tab', tab);
         }
-        
+
         // Обновляем URL без перезагрузки страницы
         window.history.replaceState({}, '', currentUrl.toString());
     };
@@ -524,15 +527,15 @@ export const useAnimePageLogic = (animeId: string) => {
     const scrollToTabs = () => {
         const tabsContainer = document.querySelector('.anime-page-container-tabs');
         if (tabsContainer) {
-            tabsContainer.scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'start' 
+            tabsContainer.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
             });
         }
     };
 
     // Обработчики для UI
-    const handleTabChange = (tab: 'screenshots' | 'details' | 'reviews' | 'comments' | 'episodes') => {
+    const handleTabChange = (tab: 'screenshots' | 'details' | 'reviews' | 'comments' | 'episodes' | 'related') => {
         setActiveTab(tab);
         updateUrlWithTab(tab);
     };
@@ -558,21 +561,21 @@ export const useAnimePageLogic = (animeId: string) => {
     // Загрузка комментариев
     const loadComments = useCallback(async () => {
         if (commentsLoading) return;
-        
+
         setCommentsLoading(true);
         try {
-                            // Добавляем заголовок авторизации если пользователь авторизован
-                            const headers: Record<string, string> = {};
-                            if (hasToken()) {
-                                headers['Authorization'] = `Bearer ${getAuthToken()}`;
-                            }
-                            
-                            const response = await fetch(`${API_SERVER}/api/comments/all/${animeId}`, {
-                                headers
-                            });
+            // Добавляем заголовок авторизации если пользователь авторизован
+            const headers: Record<string, string> = {};
+            if (hasToken()) {
+                headers['Authorization'] = `Bearer ${getAuthToken()}`;
+            }
+
+            const response = await fetch(`${API_SERVER}/api/comments/all/${animeId}`, {
+                headers
+            });
             if (response.ok) {
                 const data = await response.json();
-                
+
                 const processedComments = (data || []).map((comment: Record<string, unknown>, index: number) => ({
                     id: comment.id || `comment-${index}-${Date.now()}`,
                     username: comment.userUsername || 'Аноним',
@@ -603,11 +606,11 @@ export const useAnimePageLogic = (animeId: string) => {
                         avatarUrl: reply.avatarUrl || '',
                     }))
                 }));
-                
-                const sortedComments = processedComments.sort((a: Comment, b: Comment) => 
+
+                const sortedComments = processedComments.sort((a: Comment, b: Comment) =>
                     new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
                 );
-                
+
                 setComments(sortedComments);
             }
         } catch (error) {
@@ -622,13 +625,13 @@ export const useAnimePageLogic = (animeId: string) => {
     // Загрузка отзывов (используем рейтинги с комментариями)
     const loadReviews = useCallback(async () => {
         if (reviewsLoading) return;
-        
+
         setReviewsLoading(true);
         try {
             const response = await fetch(`${API_SERVER}/api/anime/ratings/${animeId}/all`);
             if (response.ok) {
                 const data = await response.json();
-                
+
                 const reviewsData = await Promise.all(
                     (data.userRatings || []).map(async (rating: Record<string, unknown>, index: number) => {
                         let avatarUrl = '';
@@ -669,19 +672,19 @@ export const useAnimePageLogic = (animeId: string) => {
                         };
                     })
                 );
-                
+
                 const filteredReviewsData = reviewsData;
-                
+
                 // Найдем отзыв текущего пользователя
                 const currentUser = getCurrentUser();
                 let currentUserReview = null;
-                
+
                 if (data.myRating && data.myComment) {
                     // Создаем отзыв из myRating/myComment если его нет в списке
-                    const existingUserReview = filteredReviewsData.find((review: Record<string, unknown>) => 
+                    const existingUserReview = filteredReviewsData.find((review: Record<string, unknown>) =>
                         currentUser && (review.userId === currentUser.id || review.username === currentUser.username)
                     );
-                    
+
                     if (!existingUserReview) {
                         currentUserReview = {
                             id: 0,
@@ -703,7 +706,7 @@ export const useAnimePageLogic = (animeId: string) => {
                         filteredReviewsData.unshift(currentUserReview);
                     }
                 }
-                
+
                 // Помечаем собственный отзыв в списке
                 if (currentUser) {
                     filteredReviewsData.forEach((review: Record<string, unknown>) => {
@@ -713,9 +716,9 @@ export const useAnimePageLogic = (animeId: string) => {
                         }
                     });
                 }
-                
+
                 setUserReview(currentUserReview);
-                
+
                 // Сортируем отзывы по id - новые сверху (больший id = новее)
                 const sortedReviews = filteredReviewsData.sort((a, b) => {
                     // Собственный отзыв всегда первый
@@ -726,7 +729,7 @@ export const useAnimePageLogic = (animeId: string) => {
                     const idB = typeof b.id === 'number' ? b.id : 0;
                     return idB - idA;
                 });
-                
+
                 setReviews(sortedReviews);
                 setTotalReviews(sortedReviews.length);
             }
@@ -747,7 +750,7 @@ export const useAnimePageLogic = (animeId: string) => {
 
         const currentUser = getCurrentUser();
         const tempId = Date.now(); // Временный ID для оптимистичного обновления
-        
+
         // Создаем оптимистичный комментарий с данными из профиля
         const optimisticComment: Comment = {
             id: tempId,
@@ -778,8 +781,8 @@ export const useAnimePageLogic = (animeId: string) => {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ 
-                    text, 
+                body: JSON.stringify({
+                    text,
                     animeId: parseInt(animeId || '0'),
                     username: getCurrentUser()?.username || 'user'
                 }),
@@ -787,33 +790,33 @@ export const useAnimePageLogic = (animeId: string) => {
 
             if (response.ok) {
                 const newComment = await response.json();
-                
+
                 // Заменяем временный комментарий на реальный
-                setComments(prevComments => 
-                    prevComments.map(comment => 
-                        comment.id === tempId 
+                setComments(prevComments =>
+                    prevComments.map(comment =>
+                        comment.id === tempId
                             ? {
                                 ...optimisticComment,
                                 id: newComment.id || newComment.commentId || tempId,
                                 timestamp: newComment.createdAt || optimisticComment.timestamp,
                                 isPending: false
-                              }
+                            }
                             : comment
                     )
                 );
-                
+
                 return newComment;
             } else {
                 throw new Error('Ошибка отправки комментария');
             }
         } catch (error) {
             console.error('Ошибка отправки комментария:', error);
-            
+
             // Убираем неудачный комментарий из списка
-            setComments(prevComments => 
+            setComments(prevComments =>
                 prevComments.filter(comment => comment.id !== tempId)
             );
-            
+
             throw error;
         }
     };
@@ -840,9 +843,9 @@ export const useAnimePageLogic = (animeId: string) => {
         setLikingComments(prev => new Set([...prev, commentId]));
 
         // Оптимистично обновляем UI согласно серверной логике
-        setComments(prevComments => 
-            prevComments.map(comment => 
-                comment.id === commentId 
+        setComments(prevComments =>
+            prevComments.map(comment =>
+                comment.id === commentId
                     ? {
                         ...comment,
                         isLiked: !wasLiked, // Toggle лайк
@@ -867,32 +870,32 @@ export const useAnimePageLogic = (animeId: string) => {
             if (!response.ok) {
                 const errorData = await response.json().catch(() => null);
                 const errorMessage = errorData?.message || 'Ошибка при обработке лайка';
-                
-            // Откатываем изменения при ошибке
-            setComments(prevComments => 
-                prevComments.map(comment => 
-                    comment.id === commentId 
-                        ? {
-                            ...comment,
-                            isLiked: wasLiked,
-                            isDisliked: wasDisliked,
-                            likes: wasLiked ? comment.likes + 1 : comment.likes - 1,
-                            dislikes: !wasLiked && wasDisliked ? (comment.dislikes || 0) + 1 : (comment.dislikes || 0)
-                          }
-                        : comment
-                )
-            );
+
+                // Откатываем изменения при ошибке
+                setComments(prevComments =>
+                    prevComments.map(comment =>
+                        comment.id === commentId
+                            ? {
+                                ...comment,
+                                isLiked: wasLiked,
+                                isDisliked: wasDisliked,
+                                likes: wasLiked ? comment.likes + 1 : comment.likes - 1,
+                                dislikes: !wasLiked && wasDisliked ? (comment.dislikes || 0) + 1 : (comment.dislikes || 0)
+                            }
+                            : comment
+                    )
+                );
 
                 // Показываем уведомление об ошибке
                 if (typeof window !== 'undefined' && window.notificationManager) {
                     window.notificationManager.show(errorMessage, 'error');
                 }
-                
+
                 throw new Error(errorMessage);
             }
 
             await response.json().catch(() => null);
-            
+
             // Показываем успешное уведомление
             if (typeof window !== 'undefined' && window.notificationManager) {
                 const message = wasLiked ? 'Лайк убран' : 'Лайк поставлен';
@@ -933,9 +936,9 @@ export const useAnimePageLogic = (animeId: string) => {
         setLikingComments(prev => new Set([...prev, commentId]));
 
         // Оптимистично обновляем UI согласно серверной логике
-        setComments(prevComments => 
-            prevComments.map(comment => 
-                comment.id === commentId 
+        setComments(prevComments =>
+            prevComments.map(comment =>
+                comment.id === commentId
                     ? {
                         ...comment,
                         isDisliked: !wasDisliked, // Toggle дизлайк
@@ -960,11 +963,11 @@ export const useAnimePageLogic = (animeId: string) => {
             if (!response.ok) {
                 const errorData = await response.json().catch(() => null);
                 const errorMessage = errorData?.message || 'Ошибка при обработке дизлайка';
-                
+
                 // Откатываем изменения при ошибке
-                setComments(prevComments => 
-                    prevComments.map(comment => 
-                        comment.id === commentId 
+                setComments(prevComments =>
+                    prevComments.map(comment =>
+                        comment.id === commentId
                             ? {
                                 ...comment,
                                 isDisliked: wasDisliked,
@@ -980,12 +983,12 @@ export const useAnimePageLogic = (animeId: string) => {
                 if (typeof window !== 'undefined' && window.notificationManager) {
                     window.notificationManager.show(errorMessage, 'error');
                 }
-                
+
                 throw new Error(errorMessage);
             }
 
             await response.json().catch(() => null);
-            
+
             // Показываем успешное уведомление
             if (typeof window !== 'undefined' && window.notificationManager) {
                 const message = wasDisliked ? 'Дизлайк убран' : 'Дизлайк поставлен';
@@ -1053,10 +1056,10 @@ export const useAnimePageLogic = (animeId: string) => {
 
     const handleSubmitReply = async (commentId: number) => {
         if (!replyText.trim()) return;
-        
+
         const currentUser = getCurrentUser();
         const tempId = Date.now();
-        
+
         // Создаем оптимистичный ответ с данными из профиля
         const optimisticReply = {
             id: tempId,
@@ -1076,9 +1079,9 @@ export const useAnimePageLogic = (animeId: string) => {
         };
 
         // Добавляем ответ к соответствующему комментарию
-        setComments(prevComments => 
-            prevComments.map(comment => 
-                comment.id === commentId 
+        setComments(prevComments =>
+            prevComments.map(comment =>
+                comment.id === commentId
                     ? {
                         ...comment,
                         replies: [...(comment.replies || []), optimisticReply]
@@ -1089,11 +1092,11 @@ export const useAnimePageLogic = (animeId: string) => {
 
         try {
             await handleReplyComment(commentId, replyText);
-            
+
             // Убираем флаг pending с ответа (реальный ID будет получен при следующей загрузке)
-            setComments(prevComments => 
-                prevComments.map(comment => 
-                    comment.id === commentId 
+            setComments(prevComments =>
+                prevComments.map(comment =>
+                    comment.id === commentId
                         ? {
                             ...comment,
                             replies: comment.replies?.map(reply =>
@@ -1114,9 +1117,9 @@ export const useAnimePageLogic = (animeId: string) => {
         } catch (error) {
             console.error('Ошибка отправки ответа:', error);
             // Удаляем неудачный ответ из UI
-            setComments(prevComments => 
-                prevComments.map(comment => 
-                    comment.id === commentId 
+            setComments(prevComments =>
+                prevComments.map(comment =>
+                    comment.id === commentId
                         ? {
                             ...comment,
                             replies: comment.replies?.filter(reply => reply.id !== tempId)
@@ -1157,13 +1160,13 @@ export const useAnimePageLogic = (animeId: string) => {
         setLikingReplies(prev => new Set([...prev, replyId]));
 
         // Оптимистично обновляем UI
-        setComments(prevComments => 
+        setComments(prevComments =>
             prevComments.map(comment => ({
                 ...comment,
-                replies: comment.replies?.map(reply => 
-                    reply.id === replyId 
-                        ? { 
-                            ...reply, 
+                replies: comment.replies?.map(reply =>
+                    reply.id === replyId
+                        ? {
+                            ...reply,
                             isLiked: !wasLiked, // Toggle лайк
                             isDisliked: !wasLiked && wasDisliked ? false : wasDisliked, // Если ставим лайк и есть дизлайк, убираем дизлайк
                             likes: wasLiked ? reply.likes - 1 : reply.likes + 1,
@@ -1186,15 +1189,15 @@ export const useAnimePageLogic = (animeId: string) => {
             if (!response.ok) {
                 const errorData = await response.json().catch(() => null);
                 const errorMessage = errorData?.message || 'Ошибка при обработке лайка ответа';
-                
+
                 // Откатываем изменения при ошибке
-                setComments(prevComments => 
+                setComments(prevComments =>
                     prevComments.map(comment => ({
                         ...comment,
-                        replies: comment.replies?.map(reply => 
-                            reply.id === replyId 
-                                ? { 
-                                    ...reply, 
+                        replies: comment.replies?.map(reply =>
+                            reply.id === replyId
+                                ? {
+                                    ...reply,
                                     isLiked: wasLiked,
                                     isDisliked: wasDisliked,
                                     likes: wasLiked ? reply.likes + 1 : reply.likes - 1,
@@ -1209,12 +1212,12 @@ export const useAnimePageLogic = (animeId: string) => {
                 if (typeof window !== 'undefined' && window.notificationManager) {
                     window.notificationManager.show(errorMessage, 'error');
                 }
-                
+
                 throw new Error(errorMessage);
             }
 
             await response.json().catch(() => null);
-            
+
             // Показываем успешное уведомление
             if (typeof window !== 'undefined' && window.notificationManager) {
                 const message = wasLiked ? 'Лайк убран' : 'Лайк поставлен';
@@ -1263,13 +1266,13 @@ export const useAnimePageLogic = (animeId: string) => {
         setLikingReplies(prev => new Set([...prev, replyId]));
 
         // Оптимистично обновляем UI согласно серверной логике
-        setComments(prevComments => 
+        setComments(prevComments =>
             prevComments.map(comment => ({
                 ...comment,
-                replies: comment.replies?.map(reply => 
-                    reply.id === replyId 
-                        ? { 
-                            ...reply, 
+                replies: comment.replies?.map(reply =>
+                    reply.id === replyId
+                        ? {
+                            ...reply,
                             isDisliked: !wasDisliked, // Toggle дизлайк
                             isLiked: !wasDisliked && wasLiked ? false : wasLiked, // Если ставим дизлайк и есть лайк, убираем лайк
                             dislikes: wasDisliked ? (reply.dislikes || 1) - 1 : (reply.dislikes || 0) + 1,
@@ -1292,15 +1295,15 @@ export const useAnimePageLogic = (animeId: string) => {
             if (!response.ok) {
                 const errorData = await response.json().catch(() => null);
                 const errorMessage = errorData?.message || 'Ошибка при обработке дизлайка ответа';
-                
+
                 // Откатываем изменения при ошибке
-                setComments(prevComments => 
+                setComments(prevComments =>
                     prevComments.map(comment => ({
                         ...comment,
-                        replies: comment.replies?.map(reply => 
-                            reply.id === replyId 
-                                ? { 
-                                    ...reply, 
+                        replies: comment.replies?.map(reply =>
+                            reply.id === replyId
+                                ? {
+                                    ...reply,
                                     isDisliked: wasDisliked,
                                     isLiked: wasLiked,
                                     dislikes: wasDisliked ? (reply.dislikes || 0) + 1 : (reply.dislikes || 1) - 1,
@@ -1315,12 +1318,12 @@ export const useAnimePageLogic = (animeId: string) => {
                 if (typeof window !== 'undefined' && window.notificationManager) {
                     window.notificationManager.show(errorMessage, 'error');
                 }
-                
+
                 throw new Error(errorMessage);
             }
 
             await response.json().catch(() => null);
-            
+
             // Показываем успешное уведомление
             if (typeof window !== 'undefined' && window.notificationManager) {
                 const message = wasDisliked ? 'Дизлайк убран' : 'Дизлайк поставлен';
@@ -1372,9 +1375,9 @@ export const useAnimePageLogic = (animeId: string) => {
 
             if (response.ok) {
                 const updatedComment = await response.json();
-                setComments(prevComments => 
-                    prevComments.map(comment => 
-                        comment.id === editingCommentId 
+                setComments(prevComments =>
+                    prevComments.map(comment =>
+                        comment.id === editingCommentId
                             ? { ...comment, text: updatedComment.text }
                             : comment
                     )
@@ -1406,11 +1409,11 @@ export const useAnimePageLogic = (animeId: string) => {
 
             if (response.ok) {
                 const updatedReply = await response.json();
-                setComments(prevComments => 
+                setComments(prevComments =>
                     prevComments.map(comment => ({
                         ...comment,
                         replies: comment.replies?.map(reply =>
-                            reply.id === editingReplyId 
+                            reply.id === editingReplyId
                                 ? { ...reply, text: updatedReply.text }
                                 : reply
                         )
@@ -1442,7 +1445,7 @@ export const useAnimePageLogic = (animeId: string) => {
             });
 
             if (response.ok) {
-                setComments(prevComments => 
+                setComments(prevComments =>
                     prevComments.filter(comment => comment.id !== deleteTarget.id)
                 );
             } else {
@@ -1473,7 +1476,7 @@ export const useAnimePageLogic = (animeId: string) => {
             );
 
             if (response.ok) {
-                setComments(prevComments => 
+                setComments(prevComments =>
                     prevComments.map(comment => ({
                         ...comment,
                         replies: comment.replies?.filter(reply => reply.id !== deleteTarget.id)
@@ -1544,16 +1547,16 @@ export const useAnimePageLogic = (animeId: string) => {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ 
-                    score: rating, 
-                    comment: content 
+                body: JSON.stringify({
+                    score: rating,
+                    comment: content
                 }),
             });
 
             if (response.ok) {
                 setIsEditingReview(false);
                 loadReviews();
-                
+
                 // Обновляем средний рейтинг после отправки отзыва
                 try {
                     const ratingResponse = await fetch(`${API_SERVER}/api/anime/ratings/${animeId}/rating`);
@@ -1589,7 +1592,7 @@ export const useAnimePageLogic = (animeId: string) => {
                 setUserReview(null);
                 setIsEditingReview(false);
                 loadReviews();
-                
+
                 // Обновляем средний рейтинг после удаления отзыва
                 try {
                     const ratingResponse = await fetch(`${API_SERVER}/api/anime/ratings/${animeId}/rating`);
@@ -1623,7 +1626,7 @@ export const useAnimePageLogic = (animeId: string) => {
         error,
         animeId,
         usernameFromToken,
-        
+
         // UI состояния
         activeTab,
         showStatusDropdown,
@@ -1636,7 +1639,7 @@ export const useAnimePageLogic = (animeId: string) => {
         officialRating,
         screenshotUrls,
         screenshotsLoading,
-        
+
         // Комментарии и отзывы
         comments,
         reviews,
@@ -1647,7 +1650,7 @@ export const useAnimePageLogic = (animeId: string) => {
         isEditingReview,
         loadComments,
         loadReviews,
-        
+
         // Обработчики
         handleTabChange,
         toggleFavorite,
@@ -1678,7 +1681,7 @@ export const useAnimePageLogic = (animeId: string) => {
         handleLikeReply,
         handleDislikeReply,
         handleReplyComment,
-        
+
         // Редактирование и удаление
         editingCommentId,
         editingReplyId,
@@ -1708,7 +1711,7 @@ export const useAnimePageLogic = (animeId: string) => {
         likingComments,
         likingReplies,
         handleCancelEditReview,
-        
+
         // Утилиты
         hasToken,
         liveUpdatesEnabled,

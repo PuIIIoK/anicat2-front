@@ -2,9 +2,10 @@
 
 import React, { useEffect, useState, Suspense } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import AnimePagePC from '../../../component/anime-page-new/AnimePagePC';
+import AnimePageModern from '../../../component/anime-page-new/AnimePageModern';
 import AnimePageMobile from '../../../component/anime-page-new/AnimePageMobile';
 import AnimePageSkeleton from '../../../component/anime-page-new/AnimePageSkeleton';
+import { useTheme } from '../../../context/ThemeContext';
 
 function useIsMobile(breakpoint = 900) {
     const [isMobile, setIsMobile] = useState<boolean | null>(null);
@@ -22,18 +23,18 @@ function useIsMobile(breakpoint = 900) {
 const AnimePageContent: React.FC<{ animeId: string }> = ({ animeId }) => {
     const isMobile = useIsMobile();
     const router = useRouter();
+    const { layoutMode } = useTheme();
     const [viewChecked, setViewChecked] = useState(false);
 
-    // Проверяем сохранённый вид в localStorage
+    // Проверяем режим вида из контекста
     useEffect(() => {
-        const savedView = localStorage.getItem('animePageView');
-        // По умолчанию — новый вид (anime-page-cl), редиректим если не выбран старый
-        if (savedView !== 'old') {
+        // Если режим полноэкранный - редирект на anime-page-cl
+        if (layoutMode === 'fullscreen') {
             router.replace(`/anime-page-cl/${animeId}`);
         } else {
             setViewChecked(true);
         }
-    }, [animeId, router]);
+    }, [animeId, router, layoutMode]);
 
     // Показываем skeleton пока не проверим вид или пока не определим мобильность
     if (!viewChecked || isMobile === null) {
@@ -41,8 +42,8 @@ const AnimePageContent: React.FC<{ animeId: string }> = ({ animeId }) => {
     }
 
     return isMobile
-        ? <AnimePageMobile animeId={animeId}/>
-        : <AnimePagePC animeId={animeId}/>;
+        ? <AnimePageMobile animeId={animeId} />
+        : <AnimePageModern animeId={animeId} />;
 };
 
 const AnimePageWrapper: React.FC = () => {
@@ -62,3 +63,4 @@ const AnimePageWrapper: React.FC = () => {
 };
 
 export default AnimePageWrapper;
+

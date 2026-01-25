@@ -45,7 +45,7 @@ const SimilarAnimeSection: React.FC<SimilarAnimeSectionProps> = ({ animeId, genr
             }
 
             const response = await fetch(
-                `${API_SERVER}/api/anime/similar-by-genres?genres=${encodeURIComponent(genres)}&excludeAnimeId=${animeId}&limit=8`
+                `${API_SERVER}/api/anime/similar-by-genres?genres=${encodeURIComponent(genres)}&excludeAnimeId=${animeId}&limit=6`
             );
 
             if (response.ok) {

@@ -69,7 +69,7 @@ export default function AdminCategory() {
 
                 // Загружаем аниме через bulk API
                 const animesMap = new Map<number, Anime>();
-                
+
                 try {
                     const token = getAuthToken();
                     const headers: Record<string, string> = { 'Content-Type': 'application/json' };
@@ -100,7 +100,7 @@ export default function AdminCategory() {
                 const categoriesWithAnime: Category[] = rawCategories.map(rawCat => ({
                     id: rawCat.id,
                     name: rawCat.name,
-                    animes: rawCat.animeIds.map(id => 
+                    animes: rawCat.animeIds.map(id =>
                         animesMap.get(Number(id)) || { id: Number(id), title: 'Не найдено', coverLoading: false }
                     )
                 }));
@@ -115,17 +115,35 @@ export default function AdminCategory() {
                 for (let i = 0; i < allAnimes.length; i += 10) {
                     const batch = allAnimes.slice(i, i + 10);
                     await Promise.all(batch.map(async (anime) => {
-                        const coverUrl = `${API_SERVER}/api/stream/${anime.id}/cover`;
-                        setCategories(prev => prev.map(cat => ({
-                            ...cat,
-                            animes: cat.animes.map(a => 
-                                a.id === anime.id ? { ...a, coverUrl, coverLoading: false } : a
-                            )
-                        })));
+                        try {
+                            const res = await fetch(`${API_SERVER}/api/anime/optimized/get-anime/${anime.id}/basic`);
+                            if (res.ok) {
+                                const data = await res.json();
+                                let coverUrl = data.coverUrl;
+
+                                // Обработка относительных путей
+                                if (coverUrl && coverUrl.startsWith('/')) {
+                                    coverUrl = `${API_SERVER}${coverUrl}`;
+                                }
+
+                                // Если API не вернул обложку, используем старый метод как фоллбэк
+                                if (!coverUrl || coverUrl.includes('placeholder')) {
+                                    coverUrl = `${API_SERVER}/api/stream/${anime.id}/cover`;
+                                }
+
+                                setCategories(prev => prev.map(cat => ({
+                                    ...cat,
+                                    animes: cat.animes.map(a =>
+                                        a.id === anime.id ? { ...a, coverUrl, coverLoading: false } : a
+                                    )
+                                })));
+                            }
+                        } catch (e) {
+                            console.error(`Failed to load optimized cover for ${anime.id}`, e);
+                        }
                     }));
                     await new Promise(r => setTimeout(r, 50));
                 }
-
             } catch (error) {
                 console.error('Error loading data:', error);
                 toast.error('Ошибка загрузки данных');
@@ -173,7 +191,7 @@ export default function AdminCategory() {
         }
 
         toast.success('Аниме добавлено');
-        setCategories(prev => prev.map(cat => 
+        setCategories(prev => prev.map(cat =>
             cat.id !== editingCategoryId ? cat : { ...cat, animes: [...cat.animes, anime] }
         ));
         setSearchResults(results => results.filter(a => a.id !== anime.id));
@@ -236,20 +254,20 @@ export default function AdminCategory() {
     };
 
     const currentCategory = categories.find(cat => cat.id === selectedCategoryId);
-    
+
     const filteredAnimes = (currentCategory?.animes || []).filter(anime => {
         const type = (anime.type || '').toLowerCase();
         const status = (anime.status || '').toLowerCase();
-        
-        const matchesFilter = 
+
+        const matchesFilter =
             filterType === 'all' ? true :
-            filterType === 'tv' ? type === 'tv' :
-            filterType === 'movie' ? type === 'фильм' :
-            filterType === 'status' ? status === 'онгоинг' :
-            true;
+                filterType === 'tv' ? type === 'tv' :
+                    filterType === 'movie' ? type === 'фильм' :
+                        filterType === 'status' ? status === 'онгоинг' :
+                            true;
 
         const search = categorySearchQuery.trim().toLowerCase();
-        const matchesSearch = !search || 
+        const matchesSearch = !search ||
             (anime.title || '').toLowerCase().includes(search) ||
             anime.id.toString().includes(search);
 
@@ -294,7 +312,7 @@ export default function AdminCategory() {
     return (
         <section className="yumeko-admin-section yumeko-admin-category">
             <Toaster position="bottom-right" toastOptions={{ duration: 3000 }} />
-            
+
             {/* Табы категорий */}
             <div className="yumeko-admin-category-tabs-wrapper">
                 <button onClick={scrollLeft} className="yumeko-admin-category-scroll-btn">
@@ -334,7 +352,7 @@ export default function AdminCategory() {
                         <h2 className="yumeko-admin-category-title">{currentCategory.name}</h2>
                         <div className="yumeko-admin-category-actions">
                             {editingCategoryId !== currentCategory.id ? (
-                                <button 
+                                <button
                                     className="yumeko-admin-category-btn edit"
                                     onClick={() => setEditingCategoryId(currentCategory.id)}
                                 >
@@ -361,14 +379,14 @@ export default function AdminCategory() {
                         <div className="yumeko-admin-category-edit-panel">
                             <div className="yumeko-admin-category-filters">
                                 <label className="yumeko-admin-category-checkbox">
-                                    <input 
-                                        type="checkbox" 
+                                    <input
+                                        type="checkbox"
                                         checked={sortDescending}
                                         onChange={() => setSortDescending(p => !p)}
                                     />
                                     <span>Сначала новые</span>
                                 </label>
-                                <select 
+                                <select
                                     className="yumeko-admin-category-select"
                                     value={filterType}
                                     onChange={e => setFilterType(e.target.value)}
@@ -381,8 +399,8 @@ export default function AdminCategory() {
                                     <option value="recent">Недавние</option>
                                 </select>
                                 <label className="yumeko-admin-category-checkbox">
-                                    <input 
-                                        type="checkbox" 
+                                    <input
+                                        type="checkbox"
                                         checked={preserveFilter}
                                         onChange={() => setPreserveFilter(p => !p)}
                                     />
@@ -399,7 +417,7 @@ export default function AdminCategory() {
                                     className="yumeko-admin-category-search-input"
                                 />
                                 {searchLoading && <Loader2 size={18} className="animate-spin" />}
-                                
+
                                 {searchResults.length > 0 && (
                                     <div className="yumeko-admin-category-search-results">
                                         {searchResults.map(anime => (
@@ -452,7 +470,7 @@ export default function AdminCategory() {
                                         <span className="yumeko-admin-category-card-title">{anime.title}</span>
                                     </div>
                                     {editingCategoryId === currentCategory.id && (
-                                        <button 
+                                        <button
                                             className="yumeko-admin-category-card-delete"
                                             onClick={() => handleRemoveAnime(anime.id)}
                                         >
