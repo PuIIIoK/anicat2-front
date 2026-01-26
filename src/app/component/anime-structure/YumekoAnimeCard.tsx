@@ -126,6 +126,15 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
     useEffect(() => {
         const coverCache = getCoverCache();
 
+        // Проверка что URL не является дефолтным/placeholder
+        const isValidCoverUrl = (url: string | undefined | null): boolean => {
+            if (!url || !url.trim()) return false;
+            const lower = url.toLowerCase();
+            return !lower.includes('placeholder') &&
+                !lower.includes('default') &&
+                !lower.includes('anime-cover-default');
+        };
+
         const fetchCover = async () => {
             try {
                 setIsLoading(true);
@@ -140,7 +149,7 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
                 }
 
                 // 2. Check coverUrl from props (новый формат с бэкенда)
-                if (anime.coverUrl && anime.coverUrl.trim() && !anime.coverUrl.includes('placeholder')) {
+                if (isValidCoverUrl(anime.coverUrl)) {
                     let url = anime.coverUrl;
                     if (url.startsWith('/')) {
                         url = `${API_SERVER}${url}`;
@@ -152,7 +161,7 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
                 }
 
                 // 3. Check image_url (old format)
-                if ('image_url' in anime && anime.image_url?.url && anime.image_url.url.trim()) {
+                if ('image_url' in anime && isValidCoverUrl(anime.image_url?.url)) {
                     let url = anime.image_url.url;
                     if (url.startsWith('/')) {
                         url = `${API_SERVER}${url}`;
@@ -168,7 +177,7 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
                     const response = await fetch(`${API_SERVER}/api/anime/optimized/get-anime/${anime.id}/basic`);
                     if (response.ok) {
                         const data = await response.json();
-                        if (data.coverUrl && data.coverUrl.trim() && !data.coverUrl.includes('placeholder')) {
+                        if (isValidCoverUrl(data.coverUrl)) {
                             let url = data.coverUrl;
                             if (url.startsWith('/')) {
                                 url = `${API_SERVER}${url}`;
@@ -310,11 +319,34 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
     }, [anime, showCollectionStatus, propsCollectionType, dataPreloaded]);
 
     // Image handlers
-    const handleImageError = () => {
-        if (!imageError) {
-            setImageError(true);
-            setCoverUrl('/anime-placeholder.svg');
+    const handleImageError = async () => {
+        if (imageError) {
+            setIsLoading(false);
+            return;
         }
+
+        // Попробуем fallback - запросить обложку напрямую
+        try {
+            const response = await fetch(`${API_SERVER}/api/anime/optimized/get-anime/${anime.id}/basic`);
+            if (response.ok) {
+                const data = await response.json();
+                if (data.coverUrl &&
+                    !data.coverUrl.toLowerCase().includes('default') &&
+                    !data.coverUrl.toLowerCase().includes('placeholder') &&
+                    data.coverUrl !== coverUrl) {
+
+                    let url = data.coverUrl;
+                    if (url.startsWith('/')) {
+                        url = `${API_SERVER}${url}`;
+                    }
+                    setCoverUrl(url);
+                    getCoverCache().set(anime.id, url);
+                    return;
+                }
+            }
+        } catch { }
+
+        setImageError(true);
         setIsLoading(false);
     };
 
