@@ -60,7 +60,7 @@ function isHardReload(): boolean {
             // @ts-ignore
             return performance.navigation.type === 1; // TYPE_RELOAD
         }
-    } catch {}
+    } catch { }
     return false;
 }
 
@@ -76,7 +76,7 @@ export function useCollections() {
 
     useEffect(() => {
         if (isHardReload()) {
-            try { cache.clear(); } catch {}
+            try { cache.clear(); } catch { }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -90,18 +90,18 @@ export function useCollections() {
         isAnimatingRef.current = true;
         const seen = new Set<number>(base.map(i => i.collectionId));
         const merged: AnimeCollectionItem[] = [...base];
-        
+
         for (const it of incoming) {
             // Проверяем, не была ли отменена анимация
             if (!isAnimatingRef.current) {
                 return merged;
             }
-            
+
             if (!seen.has(it.collectionId)) {
                 seen.add(it.collectionId);
                 merged.push(it);
                 onStep([...merged]);
-                
+
                 // eslint-disable-next-line no-await-in-loop
                 await new Promise(r => {
                     const timer = window.setTimeout(r, stepDelay);
@@ -109,7 +109,7 @@ export function useCollections() {
                 });
             }
         }
-        
+
         isAnimatingRef.current = false;
         return merged;
     }, []);
@@ -119,14 +119,14 @@ export function useCollections() {
         if (abortRef.current) {
             abortRef.current.abort();
         }
-        
+
         // Останавливаем анимацию
         isAnimatingRef.current = false;
-        
+
         // Очищаем все таймеры анимации
         animationTimersRef.current.forEach(timer => window.clearTimeout(timer));
         animationTimersRef.current = [];
-        
+
         const controller = new AbortController();
         abortRef.current = controller;
 
@@ -152,17 +152,16 @@ export function useCollections() {
 
             const cached = cache.get(type);
             if (cached && cached.items.length > 0) {
-                // Доп. защита: база тоже фильтруется по типу
+                // Есть кэш - анимируем добавление новых элементов
                 const base = (cached.items || []).filter((it) => it.collectionType === type);
                 await mergeAndAnimate(base, filtered, (next) => {
                     setCollections(next);
                     cache.set(type, { items: next, lastUpdated: Date.now(), fullyLoaded: false });
-                }, 60);
+                }, 30); // Быстрее анимация
             } else {
-                await mergeAndAnimate([], filtered, (next) => {
-                    setCollections(next);
-                    cache.set(type, { items: next, lastUpdated: Date.now(), fullyLoaded: false });
-                }, 60);
+                // Нет кэша - показываем всё сразу БЕЗ анимации для максимальной скорости
+                setCollections(filtered);
+                cache.set(type, { items: filtered, lastUpdated: Date.now(), fullyLoaded: true });
             }
 
             const currentItems = cache.get(type)?.items || filtered;
@@ -190,10 +189,10 @@ export function useCollections() {
         isAnimatingRef.current = false;
         animationTimersRef.current.forEach(timer => window.clearTimeout(timer));
         animationTimersRef.current = [];
-        
+
         const type = tabMap[activeTab];
         const cached = cache.get(type);
-        
+
         if (cached && cached.items.length > 0) {
             // Есть кэш - показываем его сразу БЕЗ индикации загрузки и БЕЗ перезагрузки
             const safeItems = (cached.items || []).filter((it) => it.collectionType === type);
@@ -203,9 +202,10 @@ export function useCollections() {
             // НЕ загружаем повторно - кэш живет до перезагрузки страницы
         } else {
             // Нет кэша - загружаем первый раз с индикацией
-            setCollections([]);
+            // ВАЖНО: сначала устанавливаем loading=true, чтобы не мигало "пусто"
             setLoading(true);
-            setHasCache(false); // Данные загружаются впервые
+            setHasCache(false);
+            // НЕ очищаем коллекции - спиннер покажется благодаря loading=true
             fetchCollection(type);
         }
 
@@ -214,10 +214,10 @@ export function useCollections() {
             if (abortRef.current) {
                 abortRef.current.abort();
             }
-            
+
             // Останавливаем анимацию
             isAnimatingRef.current = false;
-            
+
             // Очищаем все таймеры
             animationTimersRef.current.forEach(timer => window.clearTimeout(timer));
             animationTimersRef.current = [];
@@ -226,10 +226,10 @@ export function useCollections() {
 
     const reloadCurrentTab = useCallback(() => {
         const type = tabMap[activeTab];
-        
+
         // Очищаем кэш текущей вкладки
         cache.delete(type);
-        
+
         // Останавливаем текущую анимацию
         if (abortRef.current) {
             abortRef.current.abort();
@@ -237,7 +237,7 @@ export function useCollections() {
         isAnimatingRef.current = false;
         animationTimersRef.current.forEach(timer => window.clearTimeout(timer));
         animationTimersRef.current = [];
-        
+
         // Очищаем коллекции и начинаем загрузку заново
         setCollections([]);
         setLoading(true);

@@ -1,5 +1,5 @@
-export const API_SERVER = 'https://server.yumeko.ru';
-//export const API_SERVER = 'http://localhost:8080';
+//export const API_SERVER = 'https://server.yumeko.ru';
+export const API_SERVER = 'http://localhost:8080';
 export const FRONTEND_URL = 'http://localhost:3000';
 export const CDN_URL = 'https://storage.yandexcloud.net/anicat2';
 export const S3_ENDPOINT = 'https://storage.yandexcloud.net/anicat2';

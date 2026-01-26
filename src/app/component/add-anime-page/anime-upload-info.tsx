@@ -2,11 +2,11 @@
 
 import React, { useState, useMemo } from 'react';
 import ReactDOM from 'react-dom';
-import { 
+import {
     Globe, AlertTriangle, Settings, ChevronRight,
     Film, Languages, Star, Hash, Play, Tag, Tags,
     Calendar, CalendarDays, CalendarCheck, Building, FileText,
-    Tv, Clapperboard, Disc3, Sparkles, Snowflake, Sun, 
+    Tv, Clapperboard, Disc3, Sparkles, Snowflake, Sun,
     Flower2, Leaf, ChevronDown, Video
 } from 'lucide-react';
 import StatusFAQ from './StatusFAQ';
@@ -68,16 +68,16 @@ interface Props {
 }
 
 const AnimeMainInfo: React.FC<Props> = ({
-                                            title, alttitle, rating, alias, kodik, episodeAll, currentEpisode,
-                                            type, status, genres, realesedFor, mouthSeason,
-                                            season, year, studio, description, animeId,
-                                            opened, anons, countries, zametka_blocked, onValidateBlocking,
-                                            setTitle, setAlttitle, setRating, setEpisodeAll, setCurrentEpisode,
-                                            setType, setStatus, setGenres, setRealesedFor, setMouthSeason,
-                                            setSeason, setYear, setStudio, setDescription, setAlias, setKodik,
-                                            setOpened, setAnons, setCountries, setZametka_blocked, zametka, setZametka
-                                        }) => {
-    
+    title, alttitle, rating, alias, kodik, episodeAll, currentEpisode,
+    type, status, genres, realesedFor, mouthSeason,
+    season, year, studio, description, animeId,
+    opened, anons, countries, zametka_blocked, onValidateBlocking,
+    setTitle, setAlttitle, setRating, setEpisodeAll, setCurrentEpisode,
+    setType, setStatus, setGenres, setRealesedFor, setMouthSeason,
+    setSeason, setYear, setStudio, setDescription, setAlias, setKodik,
+    setOpened, setAnons, setCountries, setZametka_blocked, zametka, setZametka
+}) => {
+
     // const [showBlockedSection, setShowBlockedSection] = useState(false);
     // const [isManuallyBlocked, setIsManuallyBlocked] = useState(false);
     const [showBlockingModal, setShowBlockingModal] = useState(false);
@@ -88,7 +88,7 @@ const AnimeMainInfo: React.FC<Props> = ({
     const [seasonDropdownPosition, setSeasonDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
     const typeButtonRef = React.useRef<HTMLButtonElement>(null);
     const seasonButtonRef = React.useRef<HTMLButtonElement>(null);
-    
+
     // Новое состояние для выбора источника видео
     const [videoSource, setVideoSource] = useState<'external' | 'yumeko'>('external');
     const [showYumekoModal, setShowYumekoModal] = useState(false);
@@ -113,12 +113,12 @@ const AnimeMainInfo: React.FC<Props> = ({
     // Обработчик изменения статуса
     const handleStatusChange = (newStatus: 'ongoing' | 'completed' | 'announce') => {
         setAnimeStatus(newStatus);
-        
+
         // Обновляем значение status для отправки на сервер
         if (newStatus === 'ongoing') setStatus('Онгоинг');
         else if (newStatus === 'completed') setStatus('Завершён');
         else if (newStatus === 'announce') setStatus('Анонс');
-        
+
         // opened автоматически установится через useEffect выше
     };
 
@@ -131,7 +131,7 @@ const AnimeMainInfo: React.FC<Props> = ({
 
     // Определяем заблокировано ли аниме (есть ли выбранные страны)
     const hasCountries = selectedCountries.length > 0;
-    
+
     // Обработчик закрытия модального окна
     const handleCloseBlockingModal = () => {
         setShowBlockingModal(false);
@@ -294,35 +294,21 @@ const AnimeMainInfo: React.FC<Props> = ({
 
                 {/* Кликабельный статус блокировки */}
                 <div className="blocking-status">
-                    <button 
-                        type="button" 
-                        className={`blocking-status-button ${hasCountries ? 'has-restrictions' : 'no-restrictions'}`}
+                    <button
+                        type="button"
+                        className={`blocking-status-btn ${hasCountries ? 'restricted' : ''}`}
                         onClick={() => setShowBlockingModal(true)}
-                        title="Нажмите, чтобы настроить географические ограничения"
                     >
-                        <div className="status-left">
-                            <span className="status-icon">
-                                {hasCountries ? <AlertTriangle size={20} /> : <Globe size={20} />}
-                            </span>
-                            <div className="status-content">
-                                <span className="status-text">
-                                    {hasCountries 
-                                        ? 'Имеются ограничения для просмотра' 
-                                        : 'Доступно для просмотра во всех регионах'
-                                    }
-                                </span>
-                                <span className="status-subtitle">
-                                    {hasCountries 
-                                        ? `Заблокировано в ${selectedCountries.length} ${selectedCountries.length === 1 ? 'стране' : 'странах'}. Нажмите для изменения`
-                                        : 'Нажмите для настройки ограничений по странам'
-                                    }
-                                </span>
-                            </div>
-                        </div>
-                        <div className="status-right">
-                            <Settings size={16} className="settings-icon" />
-                            <ChevronRight size={18} className="arrow-icon" />
-                        </div>
+                        <span className="blocking-icon">
+                            {hasCountries ? <AlertTriangle size={16} /> : <Globe size={16} />}
+                        </span>
+                        <span className="blocking-text">
+                            {hasCountries
+                                ? `Ограничено в ${selectedCountries.length} ${selectedCountries.length === 1 ? 'стране' : 'странах'}`
+                                : 'Доступно везде'
+                            }
+                        </span>
+                        <ChevronRight size={16} className="blocking-arrow" />
                     </button>
                     {hasCountries && (
                         <div className="selected-countries-preview">
@@ -369,7 +355,7 @@ const AnimeMainInfo: React.FC<Props> = ({
                             </span>
                         )}
                     </h4>
-                    
+
                     {/* Выбор источника видео */}
                     <div className="video-source-selector">
                         <label className="source-label">Источник видео</label>
@@ -469,15 +455,15 @@ const AnimeMainInfo: React.FC<Props> = ({
                             <div className="blocking-modal" onClick={(e) => e.stopPropagation()}>
                                 <div className="modal-header">
                                     <h3>Настройка географических ограничений</h3>
-                                    <button 
-                                        type="button" 
+                                    <button
+                                        type="button"
                                         className="modal-close-btn"
                                         onClick={handleCloseBlockingModal}
                                     >
                                         ×
                                     </button>
                                 </div>
-                                
+
                                 <div className="modal-content">
                                     <div className="form-field">
                                         <label>Заблокированные страны</label>
@@ -492,9 +478,9 @@ const AnimeMainInfo: React.FC<Props> = ({
 
                                     <div className="form-field">
                                         <label>Примечание к блокировке</label>
-                    <textarea
-                        value={zametka_blocked}
-                        onChange={(e) => setZametka_blocked(e.target.value)}
+                                        <textarea
+                                            value={zametka_blocked}
+                                            onChange={(e) => setZametka_blocked(e.target.value)}
                                             placeholder="Укажите причины блокировки (например: лицензионные ограничения, возрастные рейтинги, цензура и т.д.)"
                                             rows={4}
                                             className="modal-textarea"
@@ -503,8 +489,8 @@ const AnimeMainInfo: React.FC<Props> = ({
                                 </div>
 
                                 <div className="modal-footer">
-                                    <button 
-                                        type="button" 
+                                    <button
+                                        type="button"
                                         className="btn-secondary"
                                         onClick={() => {
                                             setCountries('');
@@ -514,8 +500,8 @@ const AnimeMainInfo: React.FC<Props> = ({
                                     >
                                         Очистить все
                                     </button>
-                                    <button 
-                                        type="button" 
+                                    <button
+                                        type="button"
                                         className="btn-primary"
                                         onClick={handleCloseBlockingModal}
                                     >
@@ -533,9 +519,9 @@ const AnimeMainInfo: React.FC<Props> = ({
                     <div className="form-grid">
                         <div className="form-field" style={{ gridColumn: '1 / -1' }}>
                             <label>Заметка к тайтлу</label>
-                    <textarea
-                        value={zametka}
-                        onChange={(e) => setZametka(e.target.value)}
+                            <textarea
+                                value={zametka}
+                                onChange={(e) => setZametka(e.target.value)}
                                 placeholder="Важная информация или новости про аниме..."
                                 rows={3}
                             />
@@ -551,7 +537,7 @@ const AnimeMainInfo: React.FC<Props> = ({
                     Основная информация
                     <span className="section-subtitle">Заполните основные данные об аниме</span>
                 </div>
-                
+
                 <div className="form-grid-enhanced">
                     {/* Основные названия */}
                     <div className="form-group-section">
@@ -605,13 +591,13 @@ const AnimeMainInfo: React.FC<Props> = ({
                                     <Star size={16} />
                                     <label>Возрастной рейтинг</label>
                                     <span className="field-hint">Минимальный возраст зрителей</span>
-            </div>
+                                </div>
                                 <input
                                     value={rating}
                                     onChange={(e) => setRating(e.target.value)}
                                     placeholder="16+, 18+, PG-13"
                                 />
-            </div>
+                            </div>
 
                             <div className="form-field-with-icon">
                                 <div className="field-label">
@@ -620,7 +606,7 @@ const AnimeMainInfo: React.FC<Props> = ({
                                     <span className="field-hint">Формат выпуска</span>
                                 </div>
                                 <div className="custom-select">
-                                    <button 
+                                    <button
                                         ref={typeButtonRef}
                                         type="button"
                                         className="select-trigger"
@@ -653,7 +639,7 @@ const AnimeMainInfo: React.FC<Props> = ({
                                     })();
 
                                     return ReactDOM.createPortal(
-                                        <div 
+                                        <div
                                             className="select-dropdown"
                                             style={{
                                                 top: `${typeDropdownPosition.top}px`,
@@ -661,28 +647,28 @@ const AnimeMainInfo: React.FC<Props> = ({
                                                 width: `${typeDropdownPosition.width}px`
                                             }}
                                         >
-                                            <div 
+                                            <div
                                                 className="select-option"
                                                 onClick={() => { setType('TV'); setShowTypeDropdown(false); }}
                                             >
                                                 <Tv size={16} />
                                                 <span>TV Сериал</span>
                                             </div>
-                                            <div 
+                                            <div
                                                 className="select-option"
                                                 onClick={() => { setType('Фильм'); setShowTypeDropdown(false); }}
                                             >
                                                 <Clapperboard size={16} />
                                                 <span>Фильм</span>
                                             </div>
-                                            <div 
+                                            <div
                                                 className="select-option"
                                                 onClick={() => { setType('OVA'); setShowTypeDropdown(false); }}
                                             >
                                                 <Disc3 size={16} />
                                                 <span>OVA</span>
                                             </div>
-                                            <div 
+                                            <div
                                                 className="select-option"
                                                 onClick={() => { setType('Спин-офф'); setShowTypeDropdown(false); }}
                                             >
@@ -764,8 +750,8 @@ const AnimeMainInfo: React.FC<Props> = ({
                                     <Calendar size={16} />
                                     <label>{type === 'Фильм' ? 'Часть (номер)' : 'Сезон (номер)'}</label>
                                     <span className="field-hint">
-                                        {type === 'Фильм' 
-                                            ? 'Какая по счету часть фильма' 
+                                        {type === 'Фильм'
+                                            ? 'Какая по счету часть фильма'
                                             : 'Какой по счету сезон'}
                                     </span>
                                 </div>
@@ -785,7 +771,7 @@ const AnimeMainInfo: React.FC<Props> = ({
                                     <span className="field-hint">Время года показа</span>
                                 </div>
                                 <div className="custom-select">
-                                    <button 
+                                    <button
                                         ref={seasonButtonRef}
                                         type="button"
                                         className="select-trigger"
@@ -818,7 +804,7 @@ const AnimeMainInfo: React.FC<Props> = ({
                                     })();
 
                                     return ReactDOM.createPortal(
-                                        <div 
+                                        <div
                                             className="select-dropdown"
                                             style={{
                                                 top: `${seasonDropdownPosition.top}px`,
@@ -826,28 +812,28 @@ const AnimeMainInfo: React.FC<Props> = ({
                                                 width: `${seasonDropdownPosition.width}px`
                                             }}
                                         >
-                                            <div 
+                                            <div
                                                 className="select-option"
                                                 onClick={() => { setMouthSeason('Зима'); setShowSeasonDropdown(false); }}
                                             >
                                                 <Snowflake size={16} />
                                                 <span>Зима</span>
                                             </div>
-                                            <div 
+                                            <div
                                                 className="select-option"
                                                 onClick={() => { setMouthSeason('Весна'); setShowSeasonDropdown(false); }}
                                             >
                                                 <Flower2 size={16} />
                                                 <span>Весна</span>
                                             </div>
-                                            <div 
+                                            <div
                                                 className="select-option"
                                                 onClick={() => { setMouthSeason('Лето'); setShowSeasonDropdown(false); }}
                                             >
                                                 <Sun size={16} />
                                                 <span>Лето</span>
                                             </div>
-                                            <div 
+                                            <div
                                                 className="select-option"
                                                 onClick={() => { setMouthSeason('Осень'); setShowSeasonDropdown(false); }}
                                             >
@@ -916,7 +902,7 @@ const AnimeMainInfo: React.FC<Props> = ({
                                 className="tags-input"
                             />
                         </div>
-            </div>
+                    </div>
 
                     {/* Описание */}
                     <div className="form-group-section full-width">
@@ -939,8 +925,8 @@ const AnimeMainInfo: React.FC<Props> = ({
                             />
                         </div>
                     </div>
+                </div>
             </div>
-        </div>
         </>
     );
 };

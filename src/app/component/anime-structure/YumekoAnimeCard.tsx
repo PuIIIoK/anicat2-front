@@ -7,6 +7,19 @@ import { AnimeInfo } from './anime-data-info';
 import { AnimeBasicInfo } from './anime-basic-info';
 import { API_SERVER } from '@/hosts/constants';
 
+// Глобальный кэш обложек - сохраняется между переключениями вкладок
+declare global {
+    // eslint-disable-next-line no-var
+    var __coverUrlCache: Map<number, string> | undefined;
+}
+
+function getCoverCache(): Map<number, string> {
+    if (!globalThis.__coverUrlCache) {
+        globalThis.__coverUrlCache = new Map<number, string>();
+    }
+    return globalThis.__coverUrlCache;
+}
+
 interface YumekoAnimeCardProps {
     anime: AnimeInfo | AnimeBasicInfo;
     collectionType?: string;
@@ -111,34 +124,46 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
 
     // Fetch cover
     useEffect(() => {
+        const coverCache = getCoverCache();
+
         const fetchCover = async () => {
             try {
                 setIsLoading(true);
                 setImageError(false);
 
-                // Check coverUrl from props
+                // 1. Сначала проверяем кэш
+                const cachedUrl = coverCache.get(anime.id);
+                if (cachedUrl) {
+                    setCoverUrl(cachedUrl);
+                    setIsLoading(false);
+                    return;
+                }
+
+                // 2. Check coverUrl from props (новый формат с бэкенда)
                 if (anime.coverUrl && anime.coverUrl.trim() && !anime.coverUrl.includes('placeholder')) {
                     let url = anime.coverUrl;
                     if (url.startsWith('/')) {
                         url = `${API_SERVER}${url}`;
                     }
                     setCoverUrl(url);
+                    coverCache.set(anime.id, url); // Сохраняем в кэш
                     setIsLoading(false);
                     return;
                 }
 
-                // Check image_url (old format)
+                // 3. Check image_url (old format)
                 if ('image_url' in anime && anime.image_url?.url && anime.image_url.url.trim()) {
                     let url = anime.image_url.url;
                     if (url.startsWith('/')) {
                         url = `${API_SERVER}${url}`;
                     }
                     setCoverUrl(url);
+                    coverCache.set(anime.id, url); // Сохраняем в кэш
                     setIsLoading(false);
                     return;
                 }
 
-                // Try optimized endpoint
+                // 4. Try optimized endpoint (fallback)
                 try {
                     const response = await fetch(`${API_SERVER}/api/anime/optimized/get-anime/${anime.id}/basic`);
                     if (response.ok) {
@@ -149,6 +174,7 @@ const YumekoAnimeCard: React.FC<YumekoAnimeCardProps> = ({
                                 url = `${API_SERVER}${url}`;
                             }
                             setCoverUrl(url);
+                            coverCache.set(anime.id, url); // Сохраняем в кэш
                             setIsLoading(false);
                             return;
                         }

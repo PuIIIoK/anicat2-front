@@ -43,9 +43,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   });
 
   const [layoutMode, setLayoutMode] = useState<LayoutMode>(() => {
-    if (typeof window === 'undefined') return 'fullscreen';
+    if (typeof window === 'undefined') return 'centered';
     const saved = localStorage.getItem('layoutMode') as LayoutMode;
-    return saved && ['centered', 'fullscreen'].includes(saved) ? saved : 'fullscreen';
+    return saved && ['centered', 'fullscreen'].includes(saved) ? saved : 'centered';
   });
 
   // Функция для загрузки настроек темы пользователя с сервера

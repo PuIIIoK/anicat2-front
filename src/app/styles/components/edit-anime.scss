@@ -65,7 +65,7 @@
     margin-bottom: 2rem;
     padding-bottom: 1.5rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    
+
     .page-title {
       font-size: 1.75rem;
       font-weight: 600;
@@ -119,26 +119,26 @@
     max-height: calc(100vh - 120px);
     overflow-y: auto;
     overflow-x: hidden;
-    
+
     // Оранжевый скролл для редактирования
     &::-webkit-scrollbar {
       width: 6px;
     }
-    
+
     &::-webkit-scrollbar-track {
       background: rgba(255, 149, 0, 0.1);
       border-radius: 3px;
     }
-    
+
     &::-webkit-scrollbar-thumb {
       background: rgba(255, 149, 0, 0.5);
       border-radius: 3px;
-      
+
       &:hover {
         background: rgba(255, 149, 0, 0.7);
       }
     }
-    
+
     @media (max-width: 968px) {
       position: static;
       max-height: none;
@@ -162,26 +162,26 @@
     max-height: calc(100vh - 120px);
     overflow-y: auto;
     overflow-x: hidden;
-    
+
     // Оранжевый скролл для редактирования
     &::-webkit-scrollbar {
       width: 6px;
     }
-    
+
     &::-webkit-scrollbar-track {
       background: rgba(255, 149, 0, 0.1);
       border-radius: 3px;
     }
-    
+
     &::-webkit-scrollbar-thumb {
       background: rgba(255, 149, 0, 0.5);
       border-radius: 3px;
-      
+
       &:hover {
         background: rgba(255, 149, 0, 0.7);
       }
     }
-    
+
     @media (max-width: 1200px) {
       display: none; // Скрываем третью колонку на средних экранах
     }
@@ -227,7 +227,7 @@
     border-radius: 12px;
     backdrop-filter: blur(20px);
     animation: slideInRight 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 
+    box-shadow:
       0 10px 25px rgba(0, 0, 0, 0.2),
       0 20px 48px rgba(0, 0, 0, 0.1),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -286,7 +286,7 @@
     &.success {
       background: linear-gradient(135deg, #10b981 0%, #065f46 100%);
       color: #ffffff;
-      
+
       .toast-content .toast-icon {
         background: rgba(255, 255, 255, 0.2);
       }
@@ -295,7 +295,7 @@
     &.error {
       background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%);
       color: #ffffff;
-      
+
       .toast-content .toast-icon {
         background: rgba(255, 255, 255, 0.2);
       }
@@ -304,7 +304,7 @@
     &.info {
       background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
       color: #ffffff;
-      
+
       .toast-content .toast-icon {
         background: rgba(255, 255, 255, 0.2);
       }
@@ -313,7 +313,7 @@
     &.warning {
       background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
       color: #ffffff;
-      
+
       .toast-content .toast-icon {
         background: rgba(255, 255, 255, 0.2);
       }
@@ -322,7 +322,7 @@
     // Hover эффект
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 
+      box-shadow:
         0 15px 35px rgba(0, 0, 0, 0.3),
         0 25px 60px rgba(0, 0, 0, 0.15),
         inset 0 1px 0 rgba(255, 255, 255, 0.15);
@@ -404,7 +404,7 @@
   transition: all 0.3s ease;
   max-height: 300px;
   min-width: 200px;
-  
+
   // Делаем навигацию более видимой с оранжевым цветом
   &::before {
     content: '';
@@ -422,25 +422,26 @@
     .navigation-content {
       display: none;
     }
+
     min-width: 38px;
-    
+
     // Убеждаемся что кнопка остается кликабельной
     .navigation-header {
       display: flex !important;
       visibility: visible !important;
       pointer-events: auto !important;
-      
+
       .toggle-nav {
         display: flex !important;
         visibility: visible !important;
         pointer-events: auto !important;
         cursor: pointer !important;
         opacity: 1 !important;
-        
+
         // В закрытом состоянии делаем кнопку более заметной с оранжевым
         background: rgba(255, 149, 0, 0.3) !important;
         border-color: rgba(255, 149, 0, 0.7) !important;
-        
+
         // Пульсирующий эффект для привлечения внимания
         animation: pulse-edit 2s infinite;
 
@@ -450,12 +451,12 @@
           transform: scale(1.1) !important;
           box-shadow: 0 4px 12px rgba(255, 149, 0, 0.6) !important;
         }
-        
+
         &:active {
           transform: scale(0.9) !important;
         }
       }
-      
+
       .nav-title {
         display: none;
       }
@@ -483,9 +484,12 @@
       flex-shrink: 0;
       min-width: 26px;
       min-height: 26px;
-      
+
       // Принудительно устанавливаем pointer cursor
-      &, &:hover, &:active, &:focus {
+      &,
+      &:hover,
+      &:active,
+      &:focus {
         cursor: pointer !important;
       }
 
@@ -546,7 +550,7 @@
     &:hover {
       background: rgba(255, 149, 0, 0.15); // Оранжевый для edit
       color: white;
-      
+
       .nav-item-icon {
         color: var(--primary-color); // Оранжевый для edit
       }
@@ -557,11 +561,11 @@
       color: white;
       border-left: 4px solid var(--primary-color); // Оранжевый для edit
       box-shadow: 0 2px 8px rgba(255, 149, 0, 0.3); // Оранжевый для edit
-      
+
       .nav-item-icon {
         color: var(--primary-color); // Оранжевый для edit
       }
-      
+
       .nav-item-label {
         font-weight: 600;
       }
@@ -586,7 +590,7 @@
   // Убеждаемся что навигация всегда видна
   display: block !important;
   visibility: visible !important;
-  
+
   @media (max-width: 1024px) {
     display: none;
   }
@@ -703,9 +707,20 @@
   flex-direction: column;
   gap: 1.5rem;
 
-  .cover-section,
+  .cover-section {
+    flex: 1;
+
+    .edit-upload-card {
+      min-height: 280px;
+    }
+  }
+
   .screenshots-section {
     flex: 1;
+
+    .edit-upload-card {
+      min-height: 200px;
+    }
   }
 }
 
@@ -717,6 +732,11 @@
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 
   &.has-file {
     border-style: solid;
@@ -742,8 +762,6 @@
   &:hover {
     border-color: rgba(255, 149, 0, 0.6);
     background: rgba(17, 24, 39, 0.95);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(255, 149, 0, 0.1);
   }
 
   .deleted-indicator {
@@ -1065,12 +1083,12 @@
   padding: 1.5rem;
   transition: all 0.3s ease;
   overflow: visible;
-  
+
   &:hover {
     border-color: rgba(255, 149, 0, 0.3);
     background: rgba(255, 255, 255, 0.04);
   }
-  
+
   &.full-width {
     grid-column: 1 / -1;
   }
@@ -1084,7 +1102,7 @@
   color: rgba(255, 255, 255, 0.9);
   font-size: 1rem;
   font-weight: 600;
-  
+
   svg {
     color: var(--primary-color);
   }
@@ -1095,7 +1113,7 @@
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
   overflow: visible;
-  
+
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
     gap: 1rem;
@@ -1114,13 +1132,13 @@
   align-items: flex-start;
   gap: 0.5rem;
   flex-direction: column;
-  
+
   svg {
     color: rgba(255, 255, 255, 0.7);
     margin-top: 0.2rem;
     flex-shrink: 0;
   }
-  
+
   label {
     color: rgba(255, 255, 255, 0.9);
     font-weight: 500;
@@ -1130,7 +1148,7 @@
     align-items: center;
     gap: 0.5rem;
   }
-  
+
   .field-hint {
     font-size: 0.75rem;
     color: rgba(255, 255, 255, 0.6);
@@ -1150,18 +1168,18 @@
   color: rgba(255, 255, 255, 0.9);
   font-size: 0.9rem;
   transition: all 0.3s ease;
-  
+
   &:focus {
     outline: none;
     border-color: var(--primary-color);
     background: rgba(255, 255, 255, 0.08);
     box-shadow: 0 0 0 2px rgba(255, 149, 0, 0.2);
   }
-  
+
   &:hover {
     border-color: rgba(255, 149, 0, 0.4);
   }
-  
+
   &::placeholder {
     color: rgba(255, 255, 255, 0.5);
   }
@@ -1189,43 +1207,43 @@
   justify-content: space-between;
   text-align: left;
   font-family: inherit;
-  
+
   &:hover {
     border-color: rgba(255, 149, 0, 0.4);
     background: rgba(255, 255, 255, 0.08);
   }
-  
+
   &:focus {
     outline: none;
     border-color: var(--primary-color);
     background: rgba(255, 255, 255, 0.08);
     box-shadow: 0 0 0 2px rgba(255, 149, 0, 0.2);
   }
-  
+
   .select-value {
     flex: 1;
-    
+
     .selected-option {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      
+
       svg {
         color: var(--primary-color);
         flex-shrink: 0;
       }
     }
-    
+
     .placeholder {
       color: rgba(255, 255, 255, 0.5);
     }
   }
-  
+
   .chevron {
     color: rgba(255, 255, 255, 0.6);
     transition: transform 0.3s ease;
     flex-shrink: 0;
-    
+
     &.open {
       transform: rotate(180deg);
     }
@@ -1243,7 +1261,7 @@
   animation: slideDown 0.2s ease-out;
   backdrop-filter: blur(20px);
   min-width: 200px;
-  
+
   .select-option {
     display: flex;
     align-items: center;
@@ -1253,32 +1271,32 @@
     cursor: pointer;
     transition: all 0.2s ease;
     font-size: 0.9rem;
-    
+
     &:hover {
       background: rgba(255, 149, 0, 0.15);
       color: var(--primary-color);
-      
+
       svg {
         color: var(--primary-color);
         transform: scale(1.1);
       }
     }
-    
+
     &:active {
       background: rgba(255, 149, 0, 0.25);
       transform: scale(0.98);
     }
-    
+
     svg {
       color: rgba(255, 255, 255, 0.7);
       flex-shrink: 0;
       transition: all 0.2s ease;
     }
-    
+
     span {
       flex: 1;
     }
-    
+
     &:not(:last-child) {
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
@@ -1293,6 +1311,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -1303,6 +1322,7 @@
     opacity: 0;
     transform: translateX(20px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -1313,18 +1333,23 @@
   0% {
     opacity: 0.3;
   }
+
   50% {
     opacity: 0.8;
   }
+
   100% {
     opacity: 0.3;
   }
 }
 
 @keyframes pulse-edit {
-  0%, 100% {
+
+  0%,
+  100% {
     box-shadow: 0 0 0 0 rgba(255, 149, 0, 0.4);
   }
+
   50% {
     box-shadow: 0 0 0 8px rgba(255, 149, 0, 0);
   }
@@ -1335,6 +1360,7 @@
     opacity: 0;
     transform: translateY(-8px) scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -1834,7 +1860,7 @@
       border-bottom: 1px solid #333;
       background: #2a2a2a;
       border-radius: 8px;
-      
+
       .page-title {
         font-size: 1.3rem;
         background: none;
@@ -1887,7 +1913,7 @@
       .section-title {
         font-size: 1.1rem;
         margin-bottom: 1rem;
-        
+
         .icon {
           width: 20px;
           height: 20px;
@@ -2104,7 +2130,7 @@
       border-radius: 12px;
       backdrop-filter: blur(20px);
       animation: slideInTop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      box-shadow: 
+      box-shadow:
         0 10px 25px rgba(0, 0, 0, 0.2),
         0 20px 48px rgba(0, 0, 0, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -2163,7 +2189,7 @@
       &.success {
         background: linear-gradient(135deg, #10b981 0%, #065f46 100%);
         color: #ffffff;
-        
+
         .toast-content .toast-icon {
           background: rgba(255, 255, 255, 0.2);
         }
@@ -2172,7 +2198,7 @@
       &.error {
         background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%);
         color: #ffffff;
-        
+
         .toast-content .toast-icon {
           background: rgba(255, 255, 255, 0.2);
         }
@@ -2181,7 +2207,7 @@
       &.info {
         background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
         color: #ffffff;
-        
+
         .toast-content .toast-icon {
           background: rgba(255, 255, 255, 0.2);
         }
@@ -2190,7 +2216,7 @@
       &.warning {
         background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
         color: #ffffff;
-        
+
         .toast-content .toast-icon {
           background: rgba(255, 255, 255, 0.2);
         }
@@ -2199,7 +2225,7 @@
       // Hover эффект
       &:hover {
         transform: translateX(-50%) translateY(-2px);
-        box-shadow: 
+        box-shadow:
           0 15px 35px rgba(0, 0, 0, 0.3),
           0 25px 60px rgba(0, 0, 0, 0.15),
           inset 0 1px 0 rgba(255, 255, 255, 0.15);
@@ -2217,6 +2243,7 @@
         opacity: 0;
         transform: translateX(-50%) translateY(-100px);
       }
+
       to {
         opacity: 1;
         transform: translateX(-50%) translateY(0);
@@ -2227,9 +2254,11 @@
       0% {
         opacity: 0.3;
       }
+
       50% {
         opacity: 0.8;
       }
+
       100% {
         opacity: 0.3;
       }

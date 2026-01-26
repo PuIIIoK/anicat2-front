@@ -3,6 +3,7 @@
 // ================================================
 
 .yumeko-admin-anime {
+
   // === ПОДТАБЫ ===
   &-subtabs {
     display: flex;
@@ -10,7 +11,7 @@
     margin-bottom: 1.5rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid #1f1f1f;
-    
+
     @media (max-width: 768px) {
       gap: 6px;
       margin-bottom: 1rem;
@@ -19,7 +20,7 @@
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
       -ms-overflow-style: none;
-      
+
       &::-webkit-scrollbar {
         display: none;
       }
@@ -67,7 +68,7 @@
     svg {
       width: 18px;
       height: 18px;
-      
+
       @media (max-width: 768px) {
         width: 16px;
         height: 16px;
@@ -139,7 +140,7 @@
 
   &-search {
     position: relative;
-    
+
     input {
       background: #141414;
       border: 1px solid #2a2a2a;
@@ -266,7 +267,7 @@
 
   &-table-header {
     display: grid;
-    grid-template-columns: 80px 1fr 100px 80px 140px 200px;
+    grid-template-columns: 80px 1fr 100px 120px 140px 200px;
     gap: 1rem;
     padding: 14px 20px;
     background: #161616;
@@ -274,7 +275,7 @@
     margin-bottom: 8px;
 
     @media (max-width: 1200px) {
-      grid-template-columns: 60px 1fr 80px 70px 120px 160px;
+      grid-template-columns: 60px 1fr 80px 100px 120px 160px;
     }
 
     span {
@@ -294,7 +295,7 @@
 
   &-table-row {
     display: grid;
-    grid-template-columns: 80px 1fr 100px 80px 140px 200px;
+    grid-template-columns: 80px 1fr 100px 120px 140px 200px;
     gap: 1rem;
     padding: 16px 20px;
     background: transparent;
@@ -304,7 +305,7 @@
     transition: all 0.15s ease;
 
     @media (max-width: 1200px) {
-      grid-template-columns: 60px 1fr 80px 70px 120px 160px;
+      grid-template-columns: 60px 1fr 80px 100px 120px 160px;
     }
 
     &:hover {
@@ -360,6 +361,10 @@
     &.year {
       color: #a1a1aa;
       font-weight: 500;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     &.status {
@@ -763,13 +768,13 @@
             border-color: rgba(34, 197, 94, 0.25);
             color: #4ade80;
           }
-          
+
           &.completed {
             background: rgba(59, 130, 246, 0.1);
             border-color: rgba(59, 130, 246, 0.25);
             color: #60a5fa;
           }
-          
+
           &.coming-soon {
             background: rgba(251, 191, 36, 0.1);
             border-color: rgba(251, 191, 36, 0.25);
@@ -783,12 +788,13 @@
         grid-template-columns: 1fr 1fr 1fr;
         gap: 8px;
         width: 100%;
-        
+
         @media (max-width: 420px) {
           grid-template-columns: 1fr;
         }
 
-        button, a {
+        button,
+        a {
           padding: 12px 10px;
           border-radius: 10px;
           font-size: 0.8rem;
@@ -866,7 +872,7 @@
         }
       }
     }
-    
+
     &-list {
       display: flex;
       flex-direction: column;
@@ -915,21 +921,21 @@
 // Мобильная пагинация (вне вложенности)
 .mobile-pagination-top {
   margin-bottom: 1rem;
-  
+
   .mobile-pagination-card {
     background: #111;
     border: 1px solid #1f1f1f;
     border-radius: 12px;
     padding: 12px;
   }
-  
+
   .mobile-pagination-controls {
     display: flex;
     justify-content: center;
     gap: 4px;
     flex-wrap: wrap;
   }
-  
+
   .mobile-page-btn {
     min-width: 36px;
     height: 36px;
@@ -942,16 +948,16 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.15s ease;
-    
+
     &:active {
       transform: scale(0.95);
     }
-    
+
     &:disabled {
       opacity: 0.4;
       cursor: not-allowed;
     }
-    
+
     &.active {
       background: linear-gradient(135deg, #af52de 0%, #8b3fc4 100%);
       border-color: transparent;
@@ -981,8 +987,13 @@
 
 
 @keyframes progress-slide {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(400%); }
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(400%);
+  }
 }
 
 // ================================================
@@ -1130,7 +1141,7 @@
           }
         }
 
-        input:checked ~ .checkmark {
+        input:checked~.checkmark {
           background: #af52de;
           border-color: #af52de;
 
@@ -1162,7 +1173,7 @@
         color: #71717a;
       }
 
-      > div {
+      >div {
         display: flex;
         justify-content: center;
       }
@@ -1303,6 +1314,7 @@
     opacity: 0;
     transform: scale(0.95) translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: scale(1) translateY(0);

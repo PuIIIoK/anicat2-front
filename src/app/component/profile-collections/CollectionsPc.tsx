@@ -13,45 +13,45 @@ const TabIcon = ({ type }: { type: string }) => {
         case 'Избранное':
             return (
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                 </svg>
             );
         case 'Смотрю':
             return (
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="12" cy="12" r="10"/>
-                    <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"/>
+                    <circle cx="12" cy="12" r="10" />
+                    <polygon points="10 8 16 12 10 16 10 8" fill="currentColor" />
                 </svg>
             );
         case 'В планах':
             return (
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                    <line x1="16" y1="2" x2="16" y2="6"/>
-                    <line x1="8" y1="2" x2="8" y2="6"/>
-                    <line x1="3" y1="10" x2="21" y2="10"/>
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
                 </svg>
             );
         case 'Просмотрено':
             return (
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                    <polyline points="22 4 12 14.01 9 11.01"/>
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                    <polyline points="22 4 12 14.01 9 11.01" />
                 </svg>
             );
         case 'Отложено':
             return (
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect x="6" y="4" width="4" height="16" rx="1"/>
-                    <rect x="14" y="4" width="4" height="16" rx="1"/>
+                    <rect x="6" y="4" width="4" height="16" rx="1" />
+                    <rect x="14" y="4" width="4" height="16" rx="1" />
                 </svg>
             );
         case 'Брошено':
             return (
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="12" cy="12" r="10"/>
-                    <line x1="15" y1="9" x2="9" y2="15"/>
-                    <line x1="9" y1="9" x2="15" y2="15"/>
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="15" y1="9" x2="9" y2="15" />
+                    <line x1="9" y1="9" x2="15" y2="15" />
                 </svg>
             );
         default:
@@ -65,7 +65,8 @@ const CollectionsPc: React.FC = () => {
     const [localCollections, setLocalCollections] = useState(collections);
     const [username, setUsername] = useState<string>('');
     const [isSticky, setIsSticky] = useState<boolean>(false);
-    
+    const [isFirstLoad, setIsFirstLoad] = useState<boolean>(true);
+
     // Получаем username из токена
     useEffect(() => {
         const user = getCurrentUser();
@@ -73,13 +74,13 @@ const CollectionsPc: React.FC = () => {
             setUsername(user.username);
         }
     }, []);
-    
+
     // Отслеживаем скролл для sticky эффекта и убираем блюр основного хедера
     useEffect(() => {
         const handleScroll = () => {
             const scrollTop = window.scrollY || document.documentElement.scrollTop;
             setIsSticky(scrollTop > 10);
-            
+
             // Убираем блюр основного хедера при скролле на странице коллекций
             if (scrollTop > 10) {
                 document.body.classList.add('collection-page-scrolled');
@@ -87,21 +88,26 @@ const CollectionsPc: React.FC = () => {
                 document.body.classList.remove('collection-page-scrolled');
             }
         };
-        
+
         window.addEventListener('scroll', handleScroll);
         return () => {
             window.removeEventListener('scroll', handleScroll);
             document.body.classList.remove('collection-page-scrolled');
         };
     }, []);
-    
+
+
     useEffect(() => {
         setLocalCollections(collections);
-    }, [collections]);
-    
-    // Показывать спиннер только если идёт загрузка И нет кэша
-    const showLoading = loading && !hasCache;
-    
+        // Первая загрузка завершена когда пришли данные или loading стал false
+        if (!loading) {
+            setIsFirstLoad(false);
+        }
+    }, [collections, loading]);
+
+    // Показывать спиннер если: идёт загрузка ИЛИ это первая загрузка и коллекций ещё нет
+    const showLoading = loading || (isFirstLoad && localCollections.length === 0);
+
     const filteredCollections = useMemo(() => {
         const q = searchQuery.trim().toLowerCase();
         if (!q) return localCollections;
@@ -112,7 +118,7 @@ const CollectionsPc: React.FC = () => {
             return title.includes(q) || alt.includes(q);
         });
     }, [localCollections, searchQuery]);
-    
+
     const tabs = Object.keys(tabMap);
 
     return (
@@ -132,19 +138,19 @@ const CollectionsPc: React.FC = () => {
                 <div className="yumeko-collection-service-header">
                     <div className="yumeko-collection-service-title">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
                         </svg>
                         Мои коллекции
                     </div>
-                    
+
                     <div className="yumeko-collection-service-tools">
                         <div className="yumeko-collection-service-count">
                             {localCollections.length} аниме
                         </div>
                         <div className="yumeko-collection-service-search">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <circle cx="11" cy="11" r="8"/>
-                                <path d="m21 21-4.35-4.35"/>
+                                <circle cx="11" cy="11" r="8" />
+                                <path d="m21 21-4.35-4.35" />
                             </svg>
                             <input
                                 type="text"
@@ -170,14 +176,14 @@ const CollectionsPc: React.FC = () => {
                             </button>
                         ))}
                     </div>
-                    <button 
+                    <button
                         className="yumeko-collection-service-reload-btn"
                         onClick={reloadCurrentTab}
                         disabled={loading}
                         title="Перезагрузить текущую коллекцию"
                     >
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+                            <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" />
                         </svg>
                         <span>Перезагрузить &laquo;{activeTab}&raquo;</span>
                     </button>
@@ -193,11 +199,11 @@ const CollectionsPc: React.FC = () => {
                     </div>
                 ) : localCollections.length === 0 ? (
                     <div className="yumeko-collection-service-empty">
-                        <Image 
-                            src="/kusti.png" 
-                            alt="Пусто" 
-                            width={120} 
-                            height={120} 
+                        <Image
+                            src="/kusti.png"
+                            alt="Пусто"
+                            width={120}
+                            height={120}
                             className="empty-icon"
                         />
                         <div className="empty-title">Коллекция пуста</div>
@@ -213,7 +219,7 @@ const CollectionsPc: React.FC = () => {
                         </div>
                     </div>
                 ) : (
-                    filteredCollections.map((item) => (
+                    filteredCollections.map((item, index) => (
                         <YumekoAnimeCard
                             key={item.collectionId}
                             anime={item.anime}
@@ -221,6 +227,8 @@ const CollectionsPc: React.FC = () => {
                             showCollectionStatus={true}
                             showRating={true}
                             showType={true}
+                            dataPreloaded={true}
+                            priority={index < 8}
                         />
                     ))
                 )}
