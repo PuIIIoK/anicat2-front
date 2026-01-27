@@ -4,10 +4,38 @@
     width: 100%;
     min-height: calc(100vh - 80px);
     padding: 24px;
-    
+
+    // Центрирование контента как на главной странице
+    max-width: 1600px;
+    margin-left: auto;
+    margin-right: auto;
+
     @media (max-width: 768px) {
         padding: 16px;
         min-height: calc(100vh - 56px);
+    }
+}
+
+// Поддержка режима layout-centered
+body.layout-centered {
+    .yumeko-category-page {
+        max-width: 1600px;
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: 24px;
+        padding-right: 24px;
+
+        @media (max-width: 1024px) {
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+    }
+}
+
+// Для fullscreen режима - полная ширина
+body.layout-fullscreen {
+    .yumeko-category-page {
+        max-width: 100%;
     }
 }
 
@@ -19,7 +47,7 @@
     margin-bottom: 20px;
     font-size: 20px;
     font-weight: 500;
-    
+
     @media (max-width: 768px) {
         font-size: 18px;
         margin-bottom: 16px;
@@ -31,7 +59,7 @@
     color: var(--text-muted);
     text-decoration: none;
     transition: color 0.2s ease;
-    
+
     &:hover {
         color: var(--primary-color);
     }
@@ -55,7 +83,7 @@
     padding: 4px 10px;
     border-radius: 12px;
     margin-left: auto;
-    
+
     @media (max-width: 768px) {
         font-size: 12px;
         padding: 3px 8px;
@@ -77,22 +105,22 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 20px;
-    
+
     @media (max-width: 1200px) {
         grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
         gap: 16px;
     }
-    
+
     @media (max-width: 768px) {
         grid-template-columns: repeat(3, 1fr);
         gap: 12px;
     }
-    
+
     @media (max-width: 480px) {
         grid-template-columns: repeat(3, 1fr);
         gap: 10px;
     }
-    
+
     @media (max-width: 360px) {
         gap: 8px;
     }
@@ -103,32 +131,32 @@
     opacity: 0;
     transform: translateY(20px);
     animation: yumekoCategoryCardFadeIn 0.4s ease forwards;
-    
+
     &.visible {
         opacity: 1;
         transform: translateY(0);
     }
-    
+
     // Mobile card overrides
     @media (max-width: 768px) {
         .yumeko-anime-card-cover {
             border-radius: 8px !important;
         }
-        
+
         .yumeko-anime-card-title {
             font-size: 11px !important;
             -webkit-line-clamp: 2;
         }
-        
+
         .yumeko-anime-card-episodes {
             font-size: 9px !important;
         }
-        
+
         .yumeko-anime-card-rating {
             padding: 2px 4px !important;
             font-size: 9px !important;
         }
-        
+
         .yumeko-anime-card-status {
             padding: 2px 4px !important;
             font-size: 7px !important;
@@ -141,6 +169,7 @@
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -157,7 +186,7 @@
     gap: 16px;
     color: var(--text-muted);
     font-size: 14px;
-    
+
     @media (max-width: 768px) {
         min-height: 300px;
     }
@@ -170,7 +199,7 @@
     border-top-color: var(--primary-color);
     border-radius: 50%;
     animation: yumekoCategorySpin 0.8s linear infinite;
-    
+
     @media (max-width: 768px) {
         width: 40px;
         height: 40px;
@@ -193,36 +222,36 @@
     gap: 12px;
     text-align: center;
     padding: 20px;
-    
+
     @media (max-width: 768px) {
         min-height: 300px;
     }
-    
+
     .yumeko-category-error-icon {
         font-size: 48px;
-        
+
         @media (max-width: 768px) {
             font-size: 40px;
         }
     }
-    
+
     h3 {
         font-size: 18px;
         font-weight: 600;
         color: var(--text-primary);
         margin: 0;
-        
+
         @media (max-width: 768px) {
             font-size: 16px;
         }
     }
-    
+
     p {
         font-size: 14px;
         color: var(--text-muted);
         margin: 0;
         max-width: 400px;
-        
+
         @media (max-width: 768px) {
             font-size: 13px;
         }
@@ -240,12 +269,12 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    
+
     &:hover {
         opacity: 0.9;
         transform: translateY(-1px);
     }
-    
+
     &:active {
         transform: scale(0.98);
     }
@@ -261,37 +290,37 @@
     gap: 12px;
     text-align: center;
     padding: 20px;
-    
+
     @media (max-width: 768px) {
         min-height: 300px;
     }
-    
+
     .yumeko-category-empty-icon {
         font-size: 56px;
         opacity: 0.5;
-        
+
         @media (max-width: 768px) {
             font-size: 48px;
         }
     }
-    
+
     h3 {
         font-size: 18px;
         font-weight: 600;
         color: var(--text-primary);
         margin: 0;
-        
+
         @media (max-width: 768px) {
             font-size: 16px;
         }
     }
-    
+
     p {
         font-size: 14px;
         color: var(--text-muted);
         margin: 0;
         max-width: 400px;
-        
+
         @media (max-width: 768px) {
             font-size: 13px;
         }
