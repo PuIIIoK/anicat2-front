@@ -95,6 +95,12 @@ const AnimePageModern: React.FC<AnimePageModernProps> = ({ animeId }) => {
     const [isYumekoAvailable, setIsYumekoAvailable] = useState(false);
     const [hasFranchise, setHasFranchise] = useState(false);
 
+    // State for replying to a nested reply (shows form under specific reply)
+    const [activeReplyId, setActiveReplyId] = useState<number | string | null>(null);
+
+    // Initial load tracking
+    const [isInitialLoad, setIsInitialLoad] = useState(true);
+
     const loadEpisodeProgress = (episodes: YumekoEpisode[], voiceName: string) => {
         const progressMap: Record<number, { time: number; ratio: number }> = {};
         episodes.forEach(ep => {
@@ -781,31 +787,233 @@ const AnimePageModern: React.FC<AnimePageModernProps> = ({ animeId }) => {
                                                 </Link>
                                                 {getRoleIcon(comment.role || '', comment.verified)}
                                             </div>
-                                            <p className="comment-text">{comment.text}</p>
+                                            {/* Comment Text or Edit Form */}
+                                            {editingCommentId === comment.id ? (
+                                                <div className="comment-edit-form">
+                                                    <textarea
+                                                        value={editText}
+                                                        onChange={(e) => setEditText(e.target.value)}
+                                                        autoFocus
+                                                    />
+                                                    <div className="edit-actions">
+                                                        <button onClick={handleSaveEditComment}>Сохранить</button>
+                                                        <button onClick={handleCancelEdit}>Отмена</button>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <p className="comment-text">{comment.text}</p>
+                                            )}
                                             <div className="comment-actions">
                                                 <button
-                                                    className={likingComments?.has?.(comment.id) ? 'active' : ''}
+                                                    className={`action-btn ${comment.isLiked ? 'active' : ''}`}
                                                     onClick={() => handleLikeComment(comment.id)}
+                                                    disabled={likingComments?.has?.(comment.id)}
                                                 >
-                                                    <ThumbsUp size={14} /> {comment.likes || 0}
+                                                    <Heart size={16} fill={comment.isLiked ? '#e50914' : 'none'} />
+                                                    {comment.likes || 0}
                                                 </button>
-                                                <button onClick={() => handleDislikeComment(comment.id)}>
-                                                    <ThumbsDown size={14} /> {comment.dislikes || 0}
+                                                <button
+                                                    className={`action-btn ${comment.isDisliked ? 'active' : ''}`}
+                                                    onClick={() => handleDislikeComment(comment.id)}
+                                                    disabled={likingComments?.has?.(comment.id)}
+                                                    style={{ color: comment.isDisliked ? '#3b82f6' : undefined }}
+                                                >
+                                                    <Heart size={16} fill={comment.isDisliked ? '#3b82f6' : 'none'} style={{ transform: 'rotate(180deg)' }} />
+                                                    {comment.dislikes || 0}
                                                 </button>
-                                                <button onClick={() => handleStartReply(comment.id)}>
-                                                    <MessageCircle size={14} /> Ответить
+                                                <button onClick={() => handleToggleReplies(comment.id)} className={`action-btn ${expandedComments.has(comment.id) ? 'active' : ''}`}>
+                                                    <MessageCircle size={16} /> {comment.replies?.length || 0}
                                                 </button>
-                                                {isCommentOwner(comment) && (
+                                                <button className="action-btn text-btn" onClick={() => {
+                                                    handleStartReply(comment.id);
+                                                    setActiveReplyId(comment.id);
+                                                }}>
+                                                    Ответить
+                                                </button>
+                                                {isCommentOwner(comment) && editingCommentId !== comment.id && (
                                                     <>
-                                                        <button onClick={() => handleEditComment(comment.id, comment.text)}>
-                                                            <Edit size={14} />
+                                                        <button className="action-btn text-btn" onClick={() => handleEditComment(comment.id, comment.text)}>
+                                                            Изменить
                                                         </button>
-                                                        <button onClick={() => handleDeleteComment(comment.id, comment.text)}>
-                                                            <Trash2 size={14} />
+                                                        <button className="action-btn text-btn delete" onClick={() => handleDeleteComment(comment.id, comment.text)}>
+                                                            Удалить
                                                         </button>
                                                     </>
                                                 )}
                                             </div>
+
+                                            {/* Reply Form */}
+                                            {/* Inline Reply Form for Main Comment */}
+                                            {activeReplyId === comment.id && (
+                                                <div className="anime-modern-compact-reply-form">
+                                                    <textarea
+                                                        placeholder={`Ответ пользователю ${comment.nickname || comment.username}...`}
+                                                        value={replyText}
+                                                        onChange={(e) => handleReplyTextChange(e.target.value)}
+                                                        autoFocus
+                                                        onFocus={(e) => {
+                                                            const val = e.target.value;
+                                                            e.target.setSelectionRange(val.length, val.length);
+                                                        }}
+                                                        onKeyDown={(e) => {
+                                                            if (e.key === 'Enter' && !e.shiftKey) {
+                                                                e.preventDefault();
+                                                                handleSubmitReply(comment.id);
+                                                                setActiveReplyId(null);
+                                                            }
+                                                        }}
+                                                    />
+                                                    <div className="compact-actions">
+                                                        <button className="send-btn" onClick={() => {
+                                                            handleSubmitReply(comment.id);
+                                                            setActiveReplyId(null);
+                                                        }}>
+                                                            <Send size={14} /> Отправить
+                                                        </button>
+                                                        <button className="cancel-btn" onClick={() => {
+                                                            handleCancelReply();
+                                                            setActiveReplyId(null);
+                                                        }}>
+                                                            Отмена
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* Show replies if exists */}
+                                            {comment.replies && comment.replies.length > 0 && expandedComments.has(comment.id) && (
+                                                <div className="comment-replies">
+                                                    <div className="replies-list">
+                                                        {comment.replies.map((reply, replyIndex) => {
+                                                            const replyId = reply.id || (reply as any).replyId || `reply-${replyIndex}`;
+                                                            const isReplyOwner = currentUserProfile?.username?.toLowerCase() === String(reply.realUsername || reply.username).toLowerCase();
+
+                                                            return (
+                                                                <div key={replyId} className="reply-card" style={{ position: 'relative', paddingLeft: '20px' }}>
+
+                                                                    {/* Изогнутая линия ответа */}
+                                                                    <svg style={{ position: 'absolute', left: '-2px', top: '-2px', width: '16px', height: '28px' }} viewBox="0 0 20 28">
+                                                                        <path d="M4 0 L4 18 Q4 24, 12 24 L20 24" fill="none" stroke="var(--border-color)" strokeWidth="1.5" strokeLinecap="round" />
+                                                                    </svg>
+
+                                                                    <div className="reply-header">
+                                                                        <div className="reply-avatar">
+                                                                            {reply.avatarUrl ? (
+                                                                                <AnimatedMedia src={reply.avatarUrl} alt={reply.username || 'A'} fill objectFit="cover" />
+                                                                            ) : (
+                                                                                <span>{(reply.username || 'A').charAt(0).toUpperCase()}</span>
+                                                                            )}
+                                                                        </div>
+                                                                        <Link href={`/profile/${reply.realUsername || reply.username}`} className="reply-author" style={{ color: getRoleColor(reply.role || '') }}>
+                                                                            {reply.nickname || reply.username || 'Аноним'}
+                                                                        </Link>
+                                                                        {getRoleIcon(reply.role || '', reply.verified)}
+                                                                    </div>
+
+                                                                    {/* Reply text or edit form */}
+                                                                    {editingReplyId === replyId ? (
+                                                                        <div className="reply-edit-form">
+                                                                            <textarea
+                                                                                value={editText}
+                                                                                onChange={(e) => setEditText(e.target.value)}
+                                                                                autoFocus
+                                                                            />
+                                                                            <div className="edit-actions">
+                                                                                <button onClick={handleSaveEditReply}>Сохранить</button>
+                                                                                <button onClick={handleCancelEdit}>Отмена</button>
+                                                                            </div>
+                                                                        </div>
+                                                                    ) : (
+                                                                        <p className="reply-text">
+                                                                            {reply.text.split(/(@\S+(?:\s*\[[^\]]+\])?)/g).map((part, i) =>
+                                                                                part.startsWith('@') ? (
+                                                                                    <span key={i} style={{ color: 'var(--primary-color)', fontWeight: 500 }}>{part}</span>
+                                                                                ) : part
+                                                                            )}
+                                                                        </p>
+                                                                    )}
+
+                                                                    <div className="reply-actions">
+                                                                        <button
+                                                                            className={`action-btn ${reply.isLiked ? 'active' : ''}`}
+                                                                            onClick={() => typeof replyId === 'number' && handleLikeReply(replyId)}
+                                                                            disabled={typeof replyId !== 'number'}
+                                                                        >
+                                                                            <Heart size={14} fill={reply.isLiked ? '#e50914' : 'none'} />
+                                                                            {reply.likes || 0}
+                                                                        </button>
+                                                                        <button
+                                                                            className={`action-btn ${reply.isDisliked ? 'active' : ''}`}
+                                                                            onClick={() => typeof replyId === 'number' && handleDislikeReply(replyId)}
+                                                                            disabled={typeof replyId !== 'number'}
+                                                                            style={{ color: reply.isDisliked ? '#3b82f6' : undefined }}
+                                                                        >
+                                                                            <Heart size={14} fill={reply.isDisliked ? '#3b82f6' : 'none'} style={{ transform: 'rotate(180deg)' }} />
+                                                                            {reply.dislikes || 0}
+                                                                        </button>
+                                                                        <button className="action-btn text-btn" onClick={() => {
+                                                                            handleStartReply(comment.id);
+                                                                            handleReplyTextChange(`@${reply.nickname || reply.username} `);
+                                                                            setActiveReplyId(replyId);
+                                                                        }}>
+                                                                            Ответить
+                                                                        </button>
+                                                                        {isReplyOwner && editingReplyId !== replyId && (
+                                                                            <>
+                                                                                <button className="action-btn text-btn" onClick={() => handleEditReply(replyId as number, reply.text)}>
+                                                                                    Изменить
+                                                                                </button>
+                                                                                <button className="action-btn text-btn delete" onClick={() => handleDeleteReply(replyId as number, reply.text)}>
+                                                                                    Удалить
+                                                                                </button>
+                                                                            </>
+                                                                        )}
+                                                                    </div>
+                                                                    <div className="reply-actions">
+                                                                        {/* ... action buttons ... */}
+                                                                    </div>
+
+                                                                    {/* Inline Reply Form for Nested Reply */}
+                                                                    {activeReplyId === replyId && (
+                                                                        <div className="anime-modern-compact-reply-form" style={{ marginTop: '8px' }}>
+                                                                            <textarea
+                                                                                value={replyText}
+                                                                                onChange={(e) => handleReplyTextChange(e.target.value)}
+                                                                                autoFocus
+                                                                                onFocus={(e) => {
+                                                                                    const val = e.target.value;
+                                                                                    e.target.setSelectionRange(val.length, val.length);
+                                                                                }}
+                                                                                onKeyDown={(e) => {
+                                                                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                                                                        e.preventDefault();
+                                                                                        handleSubmitReply(comment.id);
+                                                                                        setActiveReplyId(null);
+                                                                                    }
+                                                                                }}
+                                                                            />
+                                                                            <div className="compact-actions">
+                                                                                <button className="send-btn" onClick={() => {
+                                                                                    handleSubmitReply(comment.id);
+                                                                                    setActiveReplyId(null);
+                                                                                }}>
+                                                                                    <Send size={14} /> Отправить
+                                                                                </button>
+                                                                                <button className="cancel-btn" onClick={() => {
+                                                                                    handleCancelReply();
+                                                                                    setActiveReplyId(null);
+                                                                                }}>
+                                                                                    Отмена
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     ))}
                                     {comments.length > 10 && handleToggleShowAllComments && (
@@ -869,25 +1077,27 @@ const AnimePageModern: React.FC<AnimePageModernProps> = ({ animeId }) => {
             />
 
             {/* Yumeko Source Warning Modal */}
-            {isSourceWarningOpen && (
-                <div className="anime-modern-modal-overlay" onClick={() => setIsSourceWarningOpen(false)}>
-                    <div className="anime-modern-modal" onClick={e => e.stopPropagation()}>
-                        <div className="modal-header">
-                            <h3>Источник недоступен</h3>
-                            <button className="modal-close" onClick={() => setIsSourceWarningOpen(false)}>
-                                <X size={20} />
-                            </button>
-                        </div>
-                        <div className="modal-content">
-                            <p>В данном аниме нет серий в источнике Yumeko. Воспользуйтесь внешними источниками при нажатии на кнопку "Смотреть".</p>
-                        </div>
-                        <div className="modal-footer">
-                            <button className="modal-btn-primary" onClick={() => setIsSourceWarningOpen(false)}>Понятно</button>
+            {
+                isSourceWarningOpen && (
+                    <div className="anime-modern-modal-overlay" onClick={() => setIsSourceWarningOpen(false)}>
+                        <div className="anime-modern-modal" onClick={e => e.stopPropagation()}>
+                            <div className="modal-header">
+                                <h3>Источник недоступен</h3>
+                                <button className="modal-close" onClick={() => setIsSourceWarningOpen(false)}>
+                                    <X size={20} />
+                                </button>
+                            </div>
+                            <div className="modal-content">
+                                <p>В данном аниме нет серий в источнике Yumeko. Воспользуйтесь внешними источниками при нажатии на кнопку "Смотреть".</p>
+                            </div>
+                            <div className="modal-footer">
+                                <button className="modal-btn-primary" onClick={() => setIsSourceWarningOpen(false)}>Понятно</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 };
 

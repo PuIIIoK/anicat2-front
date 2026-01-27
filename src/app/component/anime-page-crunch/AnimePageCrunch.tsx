@@ -90,6 +90,9 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
     const [voiceChanging, setVoiceChanging] = useState(false); // Для переключения озвучки
     const [episodeProgress, setEpisodeProgress] = useState<Record<number, { time: number; ratio: number }>>({});
 
+    // State for replying to a nested reply (shows form under specific reply)
+    const [activeReplyId, setActiveReplyId] = useState<number | string | null>(null);
+
     // Функция загрузки прогресса для эпизодов
     const loadEpisodeProgress = (episodes: YumekoEpisode[], voiceName: string) => {
         const progressMap: Record<number, { time: number; ratio: number }> = {};
@@ -857,7 +860,15 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                                     </button>
                                                     <button
                                                         className="action-btn"
-                                                        onClick={() => replyingTo === comment.id ? handleCancelReply() : handleStartReply(comment.id)}
+                                                        onClick={() => {
+                                                            if (activeReplyId === comment.id) {
+                                                                setActiveReplyId(null);
+                                                                handleCancelReply();
+                                                            } else {
+                                                                handleStartReply(comment.id);
+                                                                setActiveReplyId(comment.id);
+                                                            }
+                                                        }}
                                                     >
                                                         Ответить
                                                     </button>
@@ -883,26 +894,48 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                                 </div>
 
                                                 {/* Форма ответа */}
-                                                {replyingTo === comment.id && (
-                                                    <div style={{ marginTop: '12px', display: 'flex', gap: '8px', alignItems: 'flex-end' }}>
+                                                {activeReplyId === comment.id && (
+                                                    <div style={{ marginTop: '12px' }}>
                                                         <textarea
                                                             placeholder={`Ответить ${comment.nickname || comment.username}...`}
                                                             value={replyText}
                                                             onChange={(e) => handleReplyTextChange(e.target.value)}
-                                                            style={{ flex: 1, padding: '10px 12px', background: 'transparent', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'var(--text-primary)', fontSize: '0.85rem', fontFamily: 'inherit', resize: 'none', minHeight: '38px' }}
+                                                            style={{ width: '100%', padding: '10px 12px', background: 'transparent', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'var(--text-primary)', fontSize: '0.85rem', fontFamily: 'inherit', resize: 'none', minHeight: '60px' }}
                                                             onKeyDown={(e) => {
                                                                 if (e.key === 'Enter' && !e.shiftKey) {
                                                                     e.preventDefault();
-                                                                    if (replyText.trim()) handleSubmitReply(comment.id);
+                                                                    if (replyText.trim()) {
+                                                                        handleSubmitReply(comment.id);
+                                                                        setActiveReplyId(null);
+                                                                    }
                                                                 }
                                                             }}
+                                                            autoFocus
+                                                            onFocus={(e) => {
+                                                                const val = e.target.value;
+                                                                e.target.setSelectionRange(val.length, val.length);
+                                                            }}
                                                         />
-                                                        <button
-                                                            onClick={() => handleSubmitReply(comment.id)}
-                                                            style={{ width: '38px', height: '38px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--primary-color)', border: 'none', borderRadius: '8px', color: '#fff', cursor: 'pointer' }}
-                                                        >
-                                                            <Send size={16} />
-                                                        </button>
+                                                        <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+                                                            <button
+                                                                onClick={() => {
+                                                                    setActiveReplyId(null);
+                                                                    handleCancelReply();
+                                                                }}
+                                                                style={{ padding: '6px 14px', background: 'transparent', border: '1px solid var(--border-color)', borderRadius: '6px', color: 'var(--text-muted)', fontSize: '0.85rem', cursor: 'pointer' }}
+                                                            >
+                                                                Отмена
+                                                            </button>
+                                                            <button
+                                                                onClick={() => {
+                                                                    handleSubmitReply(comment.id);
+                                                                    setActiveReplyId(null);
+                                                                }}
+                                                                style={{ padding: '6px 14px', display: 'flex', alignItems: 'center', gap: '6px', background: 'var(--primary-color)', border: 'none', borderRadius: '6px', color: '#fff', cursor: 'pointer', fontSize: '0.85rem' }}
+                                                            >
+                                                                <Send size={14} /> Отправить
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 )}
 
@@ -971,6 +1004,7 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                                                         onClick={() => {
                                                                             handleStartReply(comment.id);
                                                                             handleReplyTextChange(`@${reply.nickname || reply.username} `);
+                                                                            setActiveReplyId(reply.id);
                                                                         }}
                                                                     >
                                                                         <MessageCircle size={14} />
@@ -996,6 +1030,51 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                                                         </>
                                                                     )}
                                                                 </div>
+
+                                                                {/* Inline Reply Form for Nested Reply using activeReplyId */}
+                                                                {activeReplyId === reply.id && (
+                                                                    <div style={{ marginTop: '12px', paddingLeft: '20px' }}>
+                                                                        <textarea
+                                                                            value={replyText}
+                                                                            onChange={(e) => handleReplyTextChange(e.target.value)}
+                                                                            style={{ width: '100%', padding: '10px 12px', background: 'transparent', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'var(--text-primary)', fontSize: '0.85rem', fontFamily: 'inherit', resize: 'none', minHeight: '60px' }}
+                                                                            onKeyDown={(e) => {
+                                                                                if (e.key === 'Enter' && !e.shiftKey) {
+                                                                                    e.preventDefault();
+                                                                                    if (replyText.trim()) {
+                                                                                        handleSubmitReply(comment.id);
+                                                                                        setActiveReplyId(null);
+                                                                                    }
+                                                                                }
+                                                                            }}
+                                                                            autoFocus
+                                                                            onFocus={(e) => {
+                                                                                const val = e.target.value;
+                                                                                e.target.setSelectionRange(val.length, val.length);
+                                                                            }}
+                                                                        />
+                                                                        <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+                                                                            <button
+                                                                                onClick={() => {
+                                                                                    setActiveReplyId(null);
+                                                                                    handleCancelReply();
+                                                                                }}
+                                                                                style={{ padding: '6px 14px', background: 'transparent', border: '1px solid var(--border-color)', borderRadius: '6px', color: 'var(--text-muted)', fontSize: '0.85rem', cursor: 'pointer' }}
+                                                                            >
+                                                                                Отмена
+                                                                            </button>
+                                                                            <button
+                                                                                onClick={() => {
+                                                                                    handleSubmitReply(comment.id);
+                                                                                    setActiveReplyId(null);
+                                                                                }}
+                                                                                style={{ padding: '6px 14px', display: 'flex', alignItems: 'center', gap: '6px', background: 'var(--primary-color)', border: 'none', borderRadius: '6px', color: '#fff', cursor: 'pointer', fontSize: '0.85rem' }}
+                                                                            >
+                                                                                <Send size={14} /> Отправить
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                )}
                                                             </div>
                                                         ))}
                                                     </div>

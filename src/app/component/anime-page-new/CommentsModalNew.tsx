@@ -2,7 +2,7 @@
 
 import React, { FC } from 'react';
 import Link from 'next/link';
-import {ArrowBigUp, ArrowBigDown, ArrowLeft} from 'lucide-react';
+import { ArrowBigUp, ArrowBigDown, ArrowLeft } from 'lucide-react';
 import useCommentsModal, { Comment, Reply } from './comments/useCommentsModal';
 import VerifiedIcon from './comments/VerifiedIcon';
 import Avatar from './comments/Avatar';
@@ -20,7 +20,7 @@ const CommentsModalNew: FC<CommentsModalProps> = ({ show, onClose, myUsername, a
     const handleClose = () => {
         onClose();
     };
-    
+
     const ctx = useCommentsModal({ show, animeId, myUsername, onRequireAuth: () => onRequireAuth?.() });
     const {
         comments, avatars, newComment, replyInputs, showReplies,
@@ -90,7 +90,7 @@ const CommentsModalNew: FC<CommentsModalProps> = ({ show, onClose, myUsername, a
                         {comments.map((comment: Comment) => (
                             <div key={comment.commentId} className="mobile-comment-item">
                                 <Link href={`/profile/${comment.username}`} className="mobile-comment-avatar" style={{ textDecoration: 'none' }}>
-                                    <Avatar username={comment.username} url={avatars[comment.username]}/>
+                                    <Avatar username={comment.username} url={avatars[comment.username]} />
                                 </Link>
                                 <div className="mobile-comment-content">
                                     <Link href={`/profile/${comment.username}`} className="mobile-comment-username" style={{ textDecoration: 'none', color: 'inherit' }}>
@@ -130,7 +130,7 @@ const CommentsModalNew: FC<CommentsModalProps> = ({ show, onClose, myUsername, a
                     {loading && (
                         <div className={isModernDesign ? "loader-modern" : "loader"}>Загрузка...</div>
                     )}
-                    
+
                     {!loading && comments.length === 0 && (
                         <div className={isModernDesign ? "no-comments-modern" : "no-comments"}>
                             К данному аниме пока ещё нет комментариев.
@@ -143,7 +143,7 @@ const CommentsModalNew: FC<CommentsModalProps> = ({ show, onClose, myUsername, a
                             <div key={comment.commentId} className={modalClasses.item}>
                                 {/* Аватар */}
                                 <Link href={`/profile/${comment.username}`} className={modalClasses.avatar} style={{ textDecoration: 'none' }}>
-                                    <Avatar username={comment.username} url={avatars[comment.username]}/>
+                                    <Avatar username={comment.username} url={avatars[comment.username]} />
                                 </Link>
 
                                 {/* Контент комментария */}
@@ -157,8 +157,8 @@ const CommentsModalNew: FC<CommentsModalProps> = ({ show, onClose, myUsername, a
                                                 textDecoration: 'none',
                                                 color: comment.roles.includes('ADMIN') ? '#dc2626'
                                                     : comment.roles.includes('MODERATOR') ? '#3b82f6'
-                                                    : comment.roles.includes('PREMIUM') ? '#fbbf24'
-                                                    : '#cccccc'
+                                                        : comment.roles.includes('PREMIUM') ? '#fbbf24'
+                                                            : '#cccccc'
                                             }}
                                         >
                                             {comment.nickname || comment.username}
@@ -227,6 +227,16 @@ const CommentsModalNew: FC<CommentsModalProps> = ({ show, onClose, myUsername, a
                                             </>
                                         )}
 
+                                        {/* Кнопка "Ответить" - всегда видна когда не в режиме фокуса */}
+                                        {focusedCommentId === null && (
+                                            <button
+                                                className={modalClasses.replyBtn}
+                                                onClick={() => handleReplyClick(comment.commentId)}
+                                            >
+                                                Ответить
+                                            </button>
+                                        )}
+
                                         {focusedCommentId === null && comment.replies.length > 0 && (
                                             <button
                                                 className={modalClasses.replyBtn}
@@ -244,7 +254,7 @@ const CommentsModalNew: FC<CommentsModalProps> = ({ show, onClose, myUsername, a
                                             {comment.replies.map((reply: Reply) => (
                                                 <div key={reply.replyId} className={modalClasses.replyItem}>
                                                     <Link href={`/profile/${reply.username}`} className={modalClasses.avatar} style={{ textDecoration: 'none' }}>
-                                                        <Avatar username={reply.username} url={avatars[reply.username]}/>
+                                                        <Avatar username={reply.username} url={avatars[reply.username]} />
                                                     </Link>
                                                     <div className="reply-content">
                                                         <div className="reply-header">
@@ -255,8 +265,8 @@ const CommentsModalNew: FC<CommentsModalProps> = ({ show, onClose, myUsername, a
                                                                     textDecoration: 'none',
                                                                     color: reply.roles.includes('ADMIN') ? '#dc2626'
                                                                         : reply.roles.includes('MODERATOR') ? '#3b82f6'
-                                                                        : reply.roles.includes('PREMIUM') ? '#fbbf24'
-                                                                        : '#cccccc'
+                                                                            : reply.roles.includes('PREMIUM') ? '#fbbf24'
+                                                                                : '#cccccc'
                                                                 }}
                                                             >
                                                                 {reply.nickname || reply.username}
@@ -278,7 +288,7 @@ const CommentsModalNew: FC<CommentsModalProps> = ({ show, onClose, myUsername, a
                                                                 {renderRatingBadge(reply.likes, reply.dislikes, 'likes-count')}
                                                             </div>
                                                         </div>
-                                                        
+
                                                         {editingReplyId === reply.replyId ? (
                                                             <div className="edit-form">
                                                                 <textarea
@@ -329,7 +339,7 @@ const CommentsModalNew: FC<CommentsModalProps> = ({ show, onClose, myUsername, a
                                                     </div>
                                                 </div>
                                             ))}
-                                            
+
                                         </div>
                                     )}
 

@@ -774,9 +774,17 @@
     min-width: 60px;
 
     .rank-icon {
-      &.gold { color: #ffd700; }
-      &.silver { color: #c0c0c0; }
-      &.bronze { color: #cd7f32; }
+      &.gold {
+        color: #ffd700;
+      }
+
+      &.silver {
+        color: #c0c0c0;
+      }
+
+      &.bronze {
+        color: #cd7f32;
+      }
     }
 
     .rank-number {
@@ -786,9 +794,15 @@
     }
 
     .trend-icon {
-      &.trend-up { color: #22c55e; }
-      &.trend-down { color: #ef4444; }
-      &.trend-stable { 
+      &.trend-up {
+        color: #22c55e;
+      }
+
+      &.trend-down {
+        color: #ef4444;
+      }
+
+      &.trend-stable {
         width: 8px;
         height: 8px;
         background: var(--text-muted);
@@ -922,6 +936,28 @@
   }
 }
 
+// ===== Rating buttons for comments =====
+.rating-up,
+.rating-down {
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: var(--text-primary);
+  }
+}
+
+.rating-up.active {
+  color: #22c55e;
+  fill: #22c55e;
+}
+
+.rating-down.active {
+  color: #ef4444;
+  fill: #ef4444;
+}
+
 // ===== Современный стиль =====
 .comments-modal-overlay.modern,
 .reviews-modal-overlay.modern,
@@ -958,7 +994,7 @@
   .write-review-button {
     background: linear-gradient(135deg, var(--primary-color), rgba(124, 92, 255, 0.8));
     color: white;
-    
+
     &:hover:not(:disabled) {
       transform: translateY(-2px);
       box-shadow: 0 8px 24px rgba(124, 92, 255, 0.4);
@@ -971,6 +1007,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -981,6 +1018,7 @@
     opacity: 0;
     transform: translateY(40px) scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -989,6 +1027,7 @@
 
 // ===== Адаптивность =====
 @media (max-width: 768px) {
+
   .comments-modal-overlay,
   .reviews-modal-overlay,
   .top-comments-modal-overlay {

@@ -960,9 +960,10 @@
 
 .anime-modern-comment-card {
     padding: 16px;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 12px;
+    padding: 16px 16px 0 16px; // Adjusted padding since border is gone
+    background: transparent;
+    border: none;
+    border-radius: 0;
 
     .comment-header {
         display: flex;
@@ -1017,17 +1018,344 @@
         gap: 16px;
         margin-top: 12px;
 
-        button {
+        .action-btn {
             display: flex;
             align-items: center;
             gap: 6px;
-            padding: 4px 8px;
+            padding: 0;
             background: none;
             border: none;
             color: var(--text-muted);
-            font-size: 12px;
+            font-size: 13px;
             cursor: pointer;
-            transition: color 0.15s ease;
+            transition: all 0.2s ease;
+
+            svg {
+                width: 16px;
+                height: 16px;
+            }
+
+            &:hover:not(:disabled) {
+                color: var(--text-primary);
+            }
+
+            &.active {
+                color: #e50914; // Red for likes
+            }
+
+            // Dislike button specificity
+            &:nth-child(2).active {
+                color: #3b82f6; // Blue for dislikes
+            }
+
+            &:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+
+            &.text-btn {
+                font-weight: 500;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+
+                &.delete {
+                    color: #ef4444;
+
+                    &:hover {
+                        color: #dc2626;
+                    }
+                }
+            }
+        }
+    }
+
+    // Edit form
+    .comment-edit-form {
+        margin: 10px 0;
+
+        textarea {
+            width: 100%;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 60px;
+
+            &:focus {
+                outline: none;
+                border-color: var(--primary-color);
+            }
+        }
+
+        .edit-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            justify-content: flex-start;
+
+            button {
+                padding: 6px 12px;
+                border-radius: 6px;
+                font-size: 13px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+
+                &:first-child {
+                    background: var(--primary-color);
+                    border: none;
+                    color: white;
+
+                    &:hover {
+                        opacity: 0.9;
+                    }
+                }
+
+                &:last-child {
+                    background: transparent;
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    color: var(--text-secondary);
+
+                    &:hover {
+                        background: rgba(255, 255, 255, 0.05);
+                    }
+                }
+            }
+        }
+    }
+
+    // Replies section
+    .comment-replies {
+        margin-top: 12px;
+        padding-top: 0; // Removed top padding
+        border-top: none; // Removed border top
+
+        .toggle-replies-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 13px;
+            cursor: pointer;
+            padding: 0;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+
+        .replies-list {
+            margin-top: 12px;
+            padding-left: 20px;
+            border-left: none; // Removed border left as we use SVG now
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .reply-card {
+            padding: 10px 0 10px 10px;
+            // Removed background and border to match Crunch minimal style
+            background: transparent;
+            border-radius: 0;
+
+            .reply-header {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 6px;
+            }
+
+            .reply-avatar {
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                overflow: hidden;
+                background: rgba(255, 255, 255, 0.05);
+                position: relative;
+
+                span {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 100%;
+                    height: 100%;
+                    font-size: 10px;
+                    font-weight: 600;
+                    color: var(--text-secondary);
+                }
+            }
+
+            .reply-author {
+                font-size: 13px;
+                font-weight: 600;
+                text-decoration: none;
+            }
+
+            .reply-text {
+                font-size: 13px;
+                line-height: 1.5;
+                color: var(--text-secondary);
+                margin: 0;
+            }
+
+            .reply-actions {
+                display: flex;
+                gap: 12px;
+                margin-top: 8px;
+
+                .action-btn {
+                    display: flex;
+                    align-items: center;
+                    gap: 4px;
+                    background: none;
+                    border: none;
+                    color: var(--text-muted);
+                    font-size: 12px;
+                    cursor: pointer;
+                    padding: 0;
+
+                    svg {
+                        width: 14px;
+                        height: 14px;
+                    }
+
+                    &:hover {
+                        color: var(--text-primary);
+                    }
+
+                    &.active {
+                        color: #e50914;
+                    }
+
+                    &:nth-child(2).active {
+                        color: #3b82f6;
+                    }
+
+                    &.text-btn {
+                        font-weight: 500;
+
+                        &:hover {
+                            text-decoration: underline;
+                        }
+
+                        &.delete {
+                            color: #ef4444;
+                        }
+                    }
+                }
+            }
+
+            // Reply edit form inside reply card
+            .reply-edit-form {
+                margin: 8px 0;
+
+                textarea {
+                    width: 100%;
+                    padding: 8px 10px;
+                    background: rgba(255, 255, 255, 0.03);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    border-radius: 6px;
+                    color: var(--text-primary);
+                    font-size: 13px;
+                    font-family: inherit;
+                    resize: vertical;
+                    min-height: 50px;
+
+                    &:focus {
+                        outline: none;
+                        border-color: var(--primary-color);
+                    }
+                }
+
+                .edit-actions {
+                    display: flex;
+                    gap: 6px;
+                    margin-top: 6px;
+                    justify-content: flex-start;
+
+                    button {
+                        padding: 5px 10px;
+                        border-radius: 5px;
+                        font-size: 12px;
+                        cursor: pointer;
+
+                        &:first-child {
+                            background: var(--primary-color);
+                            border: none;
+                            color: white;
+
+                            &:hover {
+                                opacity: 0.9;
+                            }
+                        }
+
+                        &:last-child {
+                            background: transparent;
+                            border: 1px solid rgba(255, 255, 255, 0.1);
+                            color: var(--text-secondary);
+
+                            &:hover {
+                                background: rgba(255, 255, 255, 0.05);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Reply form
+// Compact Reply Form
+.anime-modern-compact-reply-form {
+    background: #0f0f11; // Very dark background to contrast
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 10px;
+    animation: fadeIn 0.2s ease;
+
+    textarea {
+        width: 100%;
+        background: transparent;
+        border: none;
+        color: var(--text-primary);
+        font-size: 13px;
+        line-height: 1.5;
+        resize: none;
+        min-height: 20px;
+        outline: none;
+        padding: 0;
+        margin-bottom: 0;
+
+        &::placeholder {
+            color: var(--text-muted);
+        }
+    }
+
+    .compact-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+
+        .send-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: #a855f7; // Purple color from reference
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
 
             svg {
                 width: 14px;
@@ -1035,11 +1363,97 @@
             }
 
             &:hover {
+                opacity: 0.9;
+            }
+        }
+
+        .cancel-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.05);
                 color: var(--text-primary);
             }
+        }
+    }
+}
 
-            &.active {
-                color: var(--primary-color);
+// Standard Reply form (legacy/main)
+.anime-modern-reply-form {
+    margin-top: 12px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+
+    textarea {
+        width: 100%;
+        padding: 10px 12px;
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        color: var(--text-primary);
+        font-size: 13px;
+        font-family: inherit;
+        resize: none;
+        min-height: 60px;
+
+        &::placeholder {
+            color: var(--text-muted);
+        }
+
+        &:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+    }
+
+    .reply-form-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+        justify-content: flex-start;
+
+        button {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+
+            &:first-child {
+                background: var(--primary-color);
+                border: none;
+                color: white;
+
+                &:hover:not(:disabled) {
+                    opacity: 0.9;
+                }
+
+                &:disabled {
+                    opacity: 0.5;
+                    cursor: not-allowed;
+                }
+            }
+
+            &:last-child {
+                background: transparent;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                color: var(--text-secondary);
+
+                &:hover {
+                    background: rgba(255, 255, 255, 0.05);
+                }
             }
         }
     }
