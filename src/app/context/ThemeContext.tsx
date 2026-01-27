@@ -253,23 +253,26 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    console.log('Applying theme:', theme, 'and color scheme:', colorScheme);
+    console.log('Applying theme:', theme, 'color scheme:', colorScheme, 'layout:', layoutMode);
 
     // Удаляем старые классы с body
     document.body.classList.remove(
       'theme-dark', 'theme-light',
-      'color-orange', 'color-purple', 'color-red', 'color-blue'
+      'color-orange', 'color-purple', 'color-red', 'color-blue',
+      'layout-centered', 'layout-fullscreen'
     );
 
     // Добавляем новые классы к body
     document.body.classList.add(
       `theme-${theme}`,
-      `color-${colorScheme}`
+      `color-${colorScheme}`,
+      `layout-${layoutMode}`
     );
 
     // Также добавляем атрибуты для дополнительной специфичности
     document.documentElement.setAttribute('data-theme', theme);
     document.documentElement.setAttribute('data-color', colorScheme);
+    document.documentElement.setAttribute('data-layout', layoutMode);
 
     // Определяем цвета в зависимости от темы и схемы
     const isDark = theme === 'dark';
@@ -4149,7 +4152,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     // Сохраняем в localStorage
     localStorage.setItem('theme', theme);
     localStorage.setItem('colorScheme', colorScheme);
-  }, [theme, colorScheme]);
+    localStorage.setItem('layoutMode', layoutMode);
+  }, [theme, colorScheme, layoutMode]);
 
   // Функция для сохранения настроек темы на сервер
   const saveThemeSettings = async (newTheme?: Theme, newColorScheme?: ColorScheme) => {
