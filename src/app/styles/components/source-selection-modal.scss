@@ -18,13 +18,25 @@
 }
 
 @keyframes sourceModalFadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 @keyframes sourceModalSlideUp {
-    from { opacity: 0; transform: translateY(20px) scale(0.98); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 .source-selection-modal {
@@ -142,12 +154,12 @@
     &:hover {
         background: var(--bg-hover, rgba(255, 255, 255, 0.05));
         border-color: var(--primary-color);
-        
+
         .source-option-icon {
             color: var(--primary-color);
             border-color: var(--primary-color);
         }
-        
+
         .source-option-title {
             color: var(--primary-color);
         }
@@ -156,16 +168,16 @@
     &.disabled {
         opacity: 0.4;
         cursor: not-allowed;
-        
+
         &:hover {
             background: var(--bg-secondary);
             border-color: var(--border-color);
-            
+
             .source-option-icon {
                 color: var(--text-muted);
                 border-color: var(--border-color);
             }
-            
+
             .source-option-title {
                 color: var(--text-primary);
             }
@@ -332,7 +344,7 @@
     &:hover {
         background: var(--bg-hover);
         border-color: var(--primary-color);
-        
+
         .yumeko-voice-name {
             color: var(--primary-color);
         }
@@ -398,7 +410,7 @@
 
     &:hover {
         border-color: var(--primary-color);
-        
+
         .yumeko-episode-title {
             color: var(--primary-color);
         }
@@ -427,11 +439,9 @@
         left: 0;
         right: 0;
         bottom: 5px;
-        background: linear-gradient(
-            180deg,
-            rgba(0, 0, 0, 0.3) 0%,
-            rgba(0, 0, 0, 0.7) 100%
-        );
+        background: linear-gradient(180deg,
+                rgba(0, 0, 0, 0.3) 0%,
+                rgba(0, 0, 0, 0.7) 100%);
         z-index: 1;
         pointer-events: none;
     }
@@ -477,18 +487,18 @@
     bottom: 0;
     left: 0;
     right: 0;
-    height: 6px;
-    background: rgba(0, 0, 0, 0.8);
-    z-index: 3;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.3);
+    z-index: 5;
     overflow: hidden;
-    border-top: 1px solid rgba(0, 0, 0, 0.5);
+    border-top: none;
 }
 
 .yumeko-episode-progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #9333ea 0%, #a855f7 100%);
+    background: var(--primary-color);
     transition: width 0.3s ease;
-    box-shadow: 0 0 16px rgba(147, 51, 234, 1);
+    box-shadow: 0 0 8px var(--primary-color);
 }
 
 .yumeko-episode-info {
@@ -553,7 +563,7 @@
 .yumeko-empty {
     text-align: center;
     padding: 40px 20px;
-    
+
     p {
         font-size: 0.9rem;
         color: var(--text-muted);
@@ -613,11 +623,11 @@
     .source-selection-breadcrumb {
         flex-wrap: wrap;
         gap: 6px;
-        
+
         .breadcrumb-text {
             font-size: 13px;
         }
-        
+
         .breadcrumb-current {
             font-size: 13px;
             padding: 3px 8px;
@@ -651,22 +661,22 @@
                 font-size: 12px;
                 padding: 10px 12px;
                 grid-column: 1 / -1;
-                
+
                 &::before {
                     display: none;
                 }
             }
-            
+
             // Меняем layout на grid для правильного размещения тултипа
             display: grid;
             grid-template-columns: auto 1fr;
             grid-template-rows: auto auto;
-            
+
             .source-option-icon {
                 grid-row: 1;
                 grid-column: 1;
             }
-            
+
             .source-option-content {
                 grid-row: 1;
                 grid-column: 2;
@@ -676,7 +686,7 @@
 
     .source-option-icon {
         padding: 10px;
-        
+
         svg {
             width: 24px;
             height: 24px;
@@ -705,11 +715,11 @@
 
     .yumeko-voice-item {
         padding: 12px 16px;
-        
+
         .yumeko-voice-name {
             font-size: 14px;
         }
-        
+
         .yumeko-voice-meta {
             font-size: 12px;
         }
@@ -750,7 +760,7 @@
 
     .yumeko-empty {
         padding: 40px 16px;
-        
+
         p {
             font-size: 14px;
         }
@@ -774,7 +784,7 @@
 
     .source-option-icon {
         padding: 8px;
-        
+
         svg {
             width: 20px;
             height: 20px;
@@ -813,8 +823,13 @@
 }
 
 @keyframes warningFadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 .source-warning-modal {
@@ -830,13 +845,14 @@
 }
 
 @keyframes warningSlideUp {
-    from { 
-        opacity: 0; 
-        transform: translateY(20px) scale(0.98); 
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
     }
-    to { 
-        opacity: 1; 
-        transform: translateY(0) scale(1); 
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
     }
 }
 
@@ -859,8 +875,17 @@
 }
 
 @keyframes warningPulse {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.1); opacity: 0.8; }
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
 }
 
 .source-warning-title {
@@ -883,14 +908,14 @@
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    
+
     &:hover {
         background: rgba(255, 255, 255, 0.1);
         border-color: rgba(255, 255, 255, 0.15);
         color: rgba(255, 255, 255, 0.9);
         transform: rotate(90deg);
     }
-    
+
     &:active {
         transform: rotate(90deg) scale(0.95);
     }
@@ -909,29 +934,29 @@
     padding: 16px;
     border: 1px solid rgba(255, 255, 255, 0.05);
     transition: all 0.2s ease;
-    
+
     &:hover {
         background: rgba(255, 255, 255, 0.03);
         border-color: rgba(255, 255, 255, 0.08);
     }
-    
+
     &.kodik-section {
         .source-warning-section-icon {
             background: rgba(255, 107, 107, 0.15);
             color: #ff6b6b;
         }
-        
+
         .source-warning-subtitle {
             color: #ff6b6b;
         }
     }
-    
+
     &.libria-section {
         .source-warning-section-icon {
             background: rgba(81, 207, 102, 0.15);
             color: #51cf66;
         }
-        
+
         .source-warning-subtitle {
             color: #51cf66;
         }
@@ -970,11 +995,11 @@
     line-height: 1.6;
     font-size: 14px;
     margin-bottom: 8px;
-    
+
     &:last-child {
         margin-bottom: 0;
     }
-    
+
     strong {
         color: var(--text-primary, rgba(255, 255, 255, 0.95));
         font-weight: 600;
@@ -987,7 +1012,7 @@
     background: rgba(255, 107, 107, 0.1);
     border-left: 3px solid #ff6b6b;
     border-radius: 6px;
-    
+
     strong {
         color: #ff6b6b;
         font-size: 13px;
@@ -1012,33 +1037,33 @@
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     border: none;
-    
+
     &.accept {
         background: linear-gradient(135deg, var(--primary-color, #667eea) 0%, var(--secondary-color, #764ba2) 100%);
         color: #fff;
         box-shadow: 0 4px 12px rgba(var(--primary-color-rgb, 102, 126, 234), 0.3);
-        
+
         &:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(var(--primary-color-rgb, 102, 126, 234), 0.4);
         }
-        
+
         &:active {
             transform: translateY(0);
         }
     }
-    
+
     &.close {
         background: rgba(255, 255, 255, 0.05);
         border: 1px solid rgba(255, 255, 255, 0.1);
         color: var(--text-secondary, rgba(255, 255, 255, 0.7));
-        
+
         &:hover {
             background: rgba(255, 255, 255, 0.08);
             border-color: rgba(255, 255, 255, 0.15);
             color: var(--text-primary, rgba(255, 255, 255, 0.9));
         }
-        
+
         &:active {
             transform: scale(0.98);
         }
@@ -1050,7 +1075,7 @@
     .source-warning-modal {
         max-width: 90%;
     }
-    
+
     .source-warning-section-body {
         padding-left: 0;
         margin-top: 8px;
@@ -1062,42 +1087,42 @@
     .source-warning-header {
         padding: 20px;
     }
-    
+
     .source-warning-title {
         font-size: 18px;
     }
-    
+
     .source-warning-content {
         padding: 16px 20px;
     }
-    
+
     .source-warning-section {
         padding: 14px;
     }
-    
+
     .source-warning-section-icon {
         width: 36px;
         height: 36px;
-        
+
         svg {
             width: 20px;
             height: 20px;
         }
     }
-    
+
     .source-warning-subtitle {
         font-size: 15px;
     }
-    
+
     .source-warning-text {
         font-size: 13px;
     }
-    
+
     .source-warning-actions {
         padding: 16px 20px;
         flex-direction: column;
     }
-    
+
     .source-warning-btn {
         width: 100%;
     }

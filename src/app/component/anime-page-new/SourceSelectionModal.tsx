@@ -373,12 +373,14 @@ export default function SourceSelectionModal({
                                                     <div className="yumeko-episode-quality-badge">
                                                         {episode.maxQuality}
                                                     </div>
-                                                    <div className="yumeko-episode-progress-bar">
-                                                        <div
-                                                            className="yumeko-episode-progress-fill"
-                                                            style={{ width: `${episodeProgress[episode.episodeNumber]?.ratio ? episodeProgress[episode.episodeNumber].ratio * 100 : 0}%` }}
-                                                        />
-                                                    </div>
+                                                    {episodeProgress[episode.episodeNumber]?.ratio > 0 && (
+                                                        <div className="yumeko-episode-progress-bar">
+                                                            <div
+                                                                className="yumeko-episode-progress-fill"
+                                                                style={{ width: `${episodeProgress[episode.episodeNumber].ratio * 100}%` }}
+                                                            />
+                                                        </div>
+                                                    )}
                                                     <div className="yumeko-episode-info">
                                                         <div className="yumeko-episode-title-row">
                                                             <div className="yumeko-episode-title">

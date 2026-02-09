@@ -7,6 +7,7 @@ import { Heart, Play, Star, Camera, MessageCircle, X, CheckCircle, PlayCircle, P
 import '@/styles/components/anime-page-crunch.scss';
 import { API_SERVER } from '@/hosts/constants';
 import { getEpisodeProgress } from '@/utils/player/progressCache';
+import { fetchProgressForAnime } from '@/app/(player)/test-new-player/playerApi';
 import ScreenshotItem from '../anime-page-new/ScreenshotItem';
 import { useAnimePageLogic } from '../../hooks/useAnimePageLogic';
 import AnimePageCrunchSkeleton from './AnimePageCrunchSkeleton';
@@ -114,11 +115,12 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
     const [episodeSource, setEpisodeSource] = useState<'libria' | 'yumeko'>('libria');
     const [libriaAlias, setLibriaAlias] = useState<string>('');
     const [isYumekoAvailable, setIsYumekoAvailable] = useState(false);
+    const [libriaProgress, setLibriaProgress] = useState<Record<number, { time: number; ratio: number }>>({});
 
     // Franchise State
     const [hasFranchise, setHasFranchise] = useState(false);
 
-    // Функция загрузки прогресса для эпизодов
+    // Функция загрузки прогресса для эпизодов Yumeko
     const loadEpisodeProgress = (episodes: YumekoEpisode[], voiceName: string) => {
         const progressMap: Record<number, { time: number; ratio: number }> = {};
         episodes.forEach(ep => {
@@ -134,6 +136,30 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
             }
         });
         setEpisodeProgress(progressMap);
+    };
+
+    // Функция загрузки прогресса для эпизодов Libria с сервера
+    const loadLibriaProgress = async (episodes: LibriaEpisode[]) => {
+        try {
+            const serverProgress = await fetchProgressForAnime(animeId);
+            const progressMap: Record<number, { time: number; ratio: number }> = {};
+
+            episodes.forEach(ep => {
+                // Ищем прогресс для этого эпизода из источника libria
+                const prog = serverProgress.find(
+                    p => p.source === 'libria' && p.episodeId === ep.ordinal
+                );
+                if (prog && prog.duration && prog.duration > 0) {
+                    const time = prog.time || 0;
+                    const ratio = Math.max(0, Math.min(1, time / prog.duration));
+                    progressMap[ep.ordinal] = { time, ratio };
+                }
+            });
+
+            setLibriaProgress(progressMap);
+        } catch (err) {
+            console.error('Ошибка загрузки прогресса Libria:', err);
+        }
     };
 
     // Загрузка озвучек при переключении на вкладку эпизодов
@@ -181,6 +207,7 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                 setLibriaEpisodes(libriaData.episodes);
                                 setIsLibriaAvailable(true);
                                 setEpisodeSource('libria');
+                                loadLibriaProgress(libriaData.episodes);
                             }
                         }
                     })
@@ -593,40 +620,57 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                         {/* Libria Episodes */}
                                         {((episodeSource === 'libria' && isLibriaAvailable) || (!isYumekoAvailable && isLibriaAvailable)) && (
                                             <div className="episodes-grid">
-                                                {libriaEpisodes.map(episode => (
-                                                    <Link
-                                                        key={episode.id}
-                                                        href={`/watch/anime/${animeId}?source=libria&alias=${encodeURIComponent(libriaAlias)}&episode=${episode.ordinal}&title=${encodeURIComponent(anime.title || '')}&cover=${anime.coverUrl || ''}`}
-                                                        className="episode-card"
-                                                    >
-                                                        <div className="episode-thumbnail">
-                                                            {episode.preview?.src ? (
-                                                                <Image
-                                                                    src={`https://aniliberty.top${episode.preview.src}`}
-                                                                    alt={`Эпизод ${episode.ordinal}`}
-                                                                    fill
-                                                                    style={{ objectFit: 'cover' }}
-                                                                    unoptimized
-                                                                />
-                                                            ) : (
-                                                                <div className="episode-placeholder">
-                                                                    <PlayCircle size={32} />
+                                                {libriaEpisodes.map(episode => {
+                                                    const progress = libriaProgress[episode.ordinal];
+                                                    const watchedMin = progress ? Math.floor(progress.time / 60) : 0;
+                                                    return (
+                                                        <Link
+                                                            key={episode.id}
+                                                            href={`/watch/anime/${animeId}?source=libria&alias=${encodeURIComponent(libriaAlias)}&episode=${episode.ordinal}&title=${encodeURIComponent(anime.title || '')}&cover=${anime.coverUrl || ''}`}
+                                                            className="episode-card"
+                                                        >
+                                                            <div className="episode-thumbnail">
+                                                                {episode.preview?.src ? (
+                                                                    <Image
+                                                                        src={`https://aniliberty.top${episode.preview.src}`}
+                                                                        alt={`Эпизод ${episode.ordinal}`}
+                                                                        fill
+                                                                        style={{ objectFit: 'cover' }}
+                                                                        unoptimized
+                                                                    />
+                                                                ) : (
+                                                                    <div className="episode-placeholder">
+                                                                        <PlayCircle size={32} />
+                                                                    </div>
+                                                                )}
+                                                                {/* Duration badge */}
+                                                                {episode.duration && (
+                                                                    <div className="episode-duration-badge">
+                                                                        {Math.floor(episode.duration / 60)}:{String(episode.duration % 60).padStart(2, '0')}
+                                                                    </div>
+                                                                )}
+                                                                {/* Progress bar - показываем только если есть прогресс */}
+                                                                {progress && progress.ratio > 0 && (
+                                                                    <div className="episode-progress-bar">
+                                                                        <div
+                                                                            className="episode-progress-fill"
+                                                                            style={{ width: `${progress.ratio * 100}%` }}
+                                                                        />
+                                                                    </div>
+                                                                )}
+                                                                {/* Info overlay */}
+                                                                <div className="episode-info-overlay">
+                                                                    {progress && progress.time > 0 ? (
+                                                                        <span className="episode-name">{watchedMin} мин просмотрено</span>
+                                                                    ) : (
+                                                                        episode.name && <span className="episode-name">{episode.name}</span>
+                                                                    )}
+                                                                    <span className="episode-number">{episode.ordinal} эпизод</span>
                                                                 </div>
-                                                            )}
-                                                            {/* Duration badge */}
-                                                            {episode.duration && (
-                                                                <div className="episode-duration-badge">
-                                                                    {Math.floor(episode.duration / 60)}:{String(episode.duration % 60).padStart(2, '0')}
-                                                                </div>
-                                                            )}
-                                                            {/* Info overlay */}
-                                                            <div className="episode-info-overlay">
-                                                                {episode.name && <span className="episode-name">{episode.name}</span>}
-                                                                <span className="episode-number">{episode.ordinal} эпизод</span>
                                                             </div>
-                                                        </div>
-                                                    </Link>
-                                                ))}
+                                                        </Link>
+                                                    );
+                                                })}
                                             </div>
                                         )}
 
