@@ -74,12 +74,6 @@ const SimilarAnimeSection: React.FC<SimilarAnimeSectionProps> = ({ animeId, genr
     if (loading) {
         return (
             <div className={`similar-section ${className}`}>
-                <div className="similar-section-header">
-                    <h2>
-                        Похожее
-                        <Sparkles className="section-icon" size={20} />
-                    </h2>
-                </div>
                 <div className="similar-loading">
                     <div className="similar-spinner"></div>
                     <span>Поиск похожих аниме...</span>
@@ -91,12 +85,6 @@ const SimilarAnimeSection: React.FC<SimilarAnimeSectionProps> = ({ animeId, genr
     if (error) {
         return (
             <div className={`similar-section ${className}`}>
-                <div className="similar-section-header">
-                    <h2>
-                        Похожее
-                        <Sparkles className="section-icon" size={20} />
-                    </h2>
-                </div>
                 <div className="similar-error">
                     <p>{error}</p>
                 </div>
@@ -107,12 +95,6 @@ const SimilarAnimeSection: React.FC<SimilarAnimeSectionProps> = ({ animeId, genr
     if (similarAnimes.length === 0) {
         return (
             <div className={`similar-section ${className}`}>
-                <div className="similar-section-header">
-                    <h2>
-                        Похожее
-                        <Sparkles className="section-icon" size={20} />
-                    </h2>
-                </div>
                 <div className="similar-empty">
                     <p>Похожие аниме не найдены</p>
                 </div>
@@ -122,13 +104,6 @@ const SimilarAnimeSection: React.FC<SimilarAnimeSectionProps> = ({ animeId, genr
 
     return (
         <div className={`similar-section ${className}`}>
-            <div className="similar-section-header">
-                <h2>
-                    <Sparkles className="section-icon" size={24} />
-                    Похожее
-                </h2>
-            </div>
-
             <div className="similar-list">
                 {similarAnimes.map((anime) => {
                     // Исключаем rating (возрастной рейтинг) чтобы YumekoAnimeCard загрузил звёздный рейтинг

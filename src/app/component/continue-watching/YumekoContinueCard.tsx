@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { API_SERVER } from '@/hosts/constants';
 import type { WatchingItem } from '../profile-page-old/types';
+import SourceSelectionModal from './SourceSelectionModal';
 
 interface YumekoContinueCardProps {
     item: WatchingItem;
@@ -15,6 +16,7 @@ interface YumekoContinueCardProps {
 const YumekoContinueCard: React.FC<YumekoContinueCardProps> = ({ item, priority = false, animeData }) => {
     const [imageError, setImageError] = useState(false);
     const [finalCoverUrl, setFinalCoverUrl] = useState<string>(item.coverUrl || '');
+    const [showModal, setShowModal] = useState(false);
 
     // Load optimized cover
     React.useEffect(() => {
@@ -145,14 +147,26 @@ const YumekoContinueCard: React.FC<YumekoContinueCardProps> = ({ item, priority 
                 )}
 
                 {lastWatched && (
-                    <Link href={getContinueUrl()} className="yumeko-continue-card-btn">
+                    <button
+                        className="yumeko-continue-card-btn"
+                        onClick={() => setShowModal(true)}
+                    >
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M5 3l14 9-14 9V3z" />
                         </svg>
                         Смотреть
-                    </Link>
+                    </button>
                 )}
             </div>
+
+            {showModal && (
+                <SourceSelectionModal
+                    item={item}
+                    animeData={animeData}
+                    coverUrl={finalCoverUrl || item.coverUrl}
+                    onClose={() => setShowModal(false)}
+                />
+            )}
         </div>
     );
 };

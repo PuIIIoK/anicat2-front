@@ -5,20 +5,20 @@
 body:has(.anime-page-container) {
   background: transparent !important;
   overflow-x: hidden;
-  
+
   // Темный скроллбар для страницы аниме
   &::-webkit-scrollbar {
     width: 8px;
   }
-  
+
   &::-webkit-scrollbar-track {
     background: #0a0a0a;
   }
-  
+
   &::-webkit-scrollbar-thumb {
     background: #333;
     border-radius: 4px;
-    
+
     &:hover {
       background: #444;
     }
@@ -338,7 +338,7 @@ body:has(.anime-page-container) {
         &.saving {
           cursor: not-allowed;
           opacity: 0.8;
-          
+
           &:hover {
             transform: none;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -352,7 +352,7 @@ body:has(.anime-page-container) {
         &:disabled {
           cursor: not-allowed;
           opacity: 0.8;
-          
+
           &:hover {
             transform: none;
             border-color: var(--border-color);
@@ -365,6 +365,7 @@ body:has(.anime-page-container) {
           from {
             transform: rotate(0deg);
           }
+
           to {
             transform: rotate(360deg);
           }
@@ -390,6 +391,7 @@ body:has(.anime-page-container) {
             opacity: 0;
             transform: translateY(8px) scale(0.95);
           }
+
           to {
             opacity: 1;
             transform: translateY(0) scale(1);
@@ -427,7 +429,7 @@ body:has(.anime-page-container) {
 
           &:hover {
             background: linear-gradient(135deg, var(--hover-bg) 0%, rgba(124, 92, 255, 0.05) 100%);
-            
+
             .dropdown-item-icon {
               color: var(--primary-color);
             }
@@ -658,7 +660,7 @@ body:has(.anime-page-container) {
         cursor: pointer;
         outline: none;
         position: relative;
-        
+
         span {
           transition: all 0.2s ease;
         }
@@ -674,7 +676,7 @@ body:has(.anime-page-container) {
           color: var(--primary-color);
           border: 1px solid rgba(var(--primary-color-rgb), 0.3);
           outline: 2px solid var(--primary-color);
-          
+
           &::before {
             content: '';
             position: absolute;
@@ -697,7 +699,7 @@ body:has(.anime-page-container) {
       .anime-page-container-tab-screenshots {
         .anime-screenshots-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+          grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
           gap: 35px;
           margin: 24px 0;
           padding: 0;
@@ -794,7 +796,7 @@ body:has(.anime-page-container) {
               border-color: var(--primary-color);
               transform: translateY(-2px);
               box-shadow: 0 12px 32px rgba(124, 92, 255, 0.25);
-              
+
               .screenshot-image {
                 opacity: 0.95;
                 transform: scale(1.02);
@@ -842,7 +844,7 @@ body:has(.anime-page-container) {
           position: relative;
           overflow: hidden;
           transition: all 0.3s ease;
-          
+
           &::before {
             content: '';
             position: absolute;
@@ -853,7 +855,7 @@ body:has(.anime-page-container) {
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.01) 0%, transparent 50%);
             pointer-events: none;
           }
-          
+
           &:hover {
             background: rgba(255, 255, 255, 0.03);
             border-color: rgba(255, 255, 255, 0.12);
@@ -865,18 +867,21 @@ body:has(.anime-page-container) {
             display: flex;
             justify-content: center;
             opacity: 0.7;
-            
+
             svg {
               color: var(--text-secondary);
               transition: all 0.3s ease;
             }
           }
-          
+
           @keyframes float {
-            0%, 100% { 
+
+            0%,
+            100% {
               transform: translateY(0px);
             }
-            50% { 
+
+            50% {
               transform: translateY(-8px);
             }
           }
@@ -911,26 +916,26 @@ body:has(.anime-page-container) {
             display: inline-block;
             font-weight: 500;
           }
-          
+
           @media (max-width: 768px) {
             padding: 50px 30px;
             margin: 20px 0;
-            
+
             .anime-page-container-tab-empty-icon {
               font-size: 3rem;
               margin-bottom: 20px;
             }
-            
+
             h3 {
               font-size: 1.2rem;
               margin-bottom: 12px;
             }
-            
+
             p {
               font-size: 1rem;
               margin-bottom: 16px;
             }
-            
+
             small {
               font-size: 0.9rem;
               padding: 6px 12px;
@@ -966,7 +971,7 @@ body:has(.anime-page-container) {
             border: 1px solid rgba(var(--border-color-rgb), 0.3);
             transition: all 0.3s ease;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            
+
             span {
               white-space: pre-wrap;
               word-wrap: break-word;
@@ -991,7 +996,7 @@ body:has(.anime-page-container) {
                 display: flex;
                 align-items: center;
                 gap: 8px;
-                
+
                 &:before {
                   content: '';
                   width: 4px;
@@ -1006,7 +1011,7 @@ body:has(.anime-page-container) {
                 color: var(--text-primary);
                 font-weight: 500;
                 line-height: 1.6;
-                
+
                 .genre-tag {
                   display: inline-block;
                   margin: 3px 6px 3px 0;
@@ -1018,7 +1023,7 @@ body:has(.anime-page-container) {
                   font-size: 0.9rem;
                   font-weight: 600;
                   transition: all 0.2s ease;
-                  
+
                   &:hover {
                     transform: scale(1.05);
                     background: var(--primary-color);
@@ -1031,7 +1036,7 @@ body:has(.anime-page-container) {
 
           .description-item {
             grid-column: 1 / -1;
-            
+
             .anime-page-container-detail-content {
               .anime-page-container-detail-value {
                 line-height: 1.8;
@@ -1056,14 +1061,13 @@ body:has(.anime-page-container) {
         .user-review-display {
           margin-bottom: 32px;
           padding: 28px;
-          background: linear-gradient(145deg, 
-            rgba(var(--primary-color-rgb), 0.08), 
-            rgba(var(--bg-primary-rgb), 0.95),
-            rgba(var(--primary-color-rgb), 0.04)
-          );
+          background: linear-gradient(145deg,
+              rgba(var(--primary-color-rgb), 0.08),
+              rgba(var(--bg-primary-rgb), 0.95),
+              rgba(var(--primary-color-rgb), 0.04));
           border-radius: 20px;
           border: 1px solid rgba(var(--primary-color-rgb), 0.15);
-          box-shadow: 
+          box-shadow:
             0 8px 32px rgba(var(--primary-color-rgb), 0.08),
             0 2px 8px rgba(0, 0, 0, 0.04),
             inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -1078,11 +1082,10 @@ body:has(.anime-page-container) {
             left: 0;
             right: 0;
             height: 3px;
-            background: linear-gradient(90deg, 
-              var(--primary-color),
-              var(--primary-bg),
-              var(--primary-color)
-            );
+            background: linear-gradient(90deg,
+                var(--primary-color),
+                var(--primary-bg),
+                var(--primary-color));
           }
 
           // Декоративный элемент справа
@@ -1093,10 +1096,9 @@ body:has(.anime-page-container) {
             right: 20px;
             width: 60px;
             height: 60px;
-            background: radial-gradient(circle, 
-              rgba(var(--primary-color-rgb), 0.1) 0%, 
-              transparent 70%
-            );
+            background: radial-gradient(circle,
+                rgba(var(--primary-color-rgb), 0.1) 0%,
+                transparent 70%);
             border-radius: 50%;
             pointer-events: none;
           }
@@ -1154,11 +1156,10 @@ body:has(.anime-page-container) {
                   left: -100%;
                   width: 100%;
                   height: 100%;
-                  background: linear-gradient(90deg, 
-                    transparent, 
-                    rgba(var(--primary-color-rgb), 0.1), 
-                    transparent
-                  );
+                  background: linear-gradient(90deg,
+                      transparent,
+                      rgba(var(--primary-color-rgb), 0.1),
+                      transparent);
                   transition: left 0.5s ease;
                 }
 
@@ -1189,10 +1190,9 @@ body:has(.anime-page-container) {
             align-items: center;
             gap: 14px;
             padding: 16px 20px;
-            background: linear-gradient(135deg, 
-              rgba(var(--primary-color-rgb), 0.12),
-              rgba(var(--primary-color-rgb), 0.08)
-            );
+            background: linear-gradient(135deg,
+                rgba(var(--primary-color-rgb), 0.12),
+                rgba(var(--primary-color-rgb), 0.08));
             border: 1px solid rgba(var(--primary-color-rgb), 0.2);
             border-radius: 16px;
             margin-bottom: 24px;
@@ -1291,10 +1291,9 @@ body:has(.anime-page-container) {
                 font-size: 1.05rem;
                 line-height: 1.7;
                 color: var(--text-secondary);
-                background: linear-gradient(135deg, 
-                  rgba(var(--bg-primary-rgb), 0.4),
-                  rgba(var(--bg-primary-rgb), 0.6)
-                );
+                background: linear-gradient(135deg,
+                    rgba(var(--bg-primary-rgb), 0.4),
+                    rgba(var(--bg-primary-rgb), 0.6));
                 padding: 20px;
                 border-radius: 16px;
                 border: 1px solid rgba(var(--border-color-rgb), 0.25);
@@ -1400,33 +1399,33 @@ body:has(.anime-page-container) {
                     }
                   }
 
-                  input[type="radio"]:checked ~ svg {
+                  input[type="radio"]:checked~svg {
                     fill: var(--primary-color);
                     color: var(--primary-color);
                   }
                 }
 
                 // При обратном порядке звезд (5,4,3,2,1) - заливаем все последующие элементы
-                .star-label:hover ~ .star-label svg,
+                .star-label:hover~.star-label svg,
                 .star-label:hover svg {
                   fill: var(--primary-color);
                   color: var(--primary-color);
                 }
 
                 // При выборе звезды - заливаем выбранную и все последующие
-                .star-label:has(input:checked) ~ .star-label svg,
+                .star-label:has(input:checked)~.star-label svg,
                 .star-label:has(input:checked) svg {
                   fill: var(--primary-color);
                   color: var(--primary-color);
                 }
 
                 // Fallback для браузеров без :has()
-                .star-label input[type="radio"]:checked ~ svg {
+                .star-label input[type="radio"]:checked~svg {
                   fill: var(--primary-color);
                   color: var(--primary-color);
                 }
-                
-                .star-label:has(input:checked) ~ .star-label input[type="radio"] ~ svg {
+
+                .star-label:has(input:checked)~.star-label input[type="radio"]~svg {
                   fill: var(--primary-color);
                   color: var(--primary-color);
                 }
@@ -1552,43 +1551,51 @@ body:has(.anime-page-container) {
                     }
 
                     .verification-icon {
-                       color: #ff4444;
-                       filter: drop-shadow(0 0 6px rgba(255, 68, 68, 0.4));
+                      color: #ff4444;
+                      filter: drop-shadow(0 0 6px rgba(255, 68, 68, 0.4));
                     }
 
                     .role-icon {
-                      &.admin { color: #ff4444; }
-                      &.moderator { color: #ffa500; }
-                      &.premium { color: #ffd700; }
+                      &.admin {
+                        color: #ff4444;
+                      }
+
+                      &.moderator {
+                        color: #ffa500;
+                      }
+
+                      &.premium {
+                        color: #ffd700;
+                      }
                     }
                   }
                 }
               }
 
-               .review-content {
-                 font-size: 1rem;
-                 line-height: 1.6;
-                 color: var(--text-secondary);
-                 margin-bottom: 16px;
-                 padding: 16px;
-                 background: rgba(var(--bg-primary-rgb), 0.3);
-                 border-radius: 12px;
-                 border-left: 3px solid rgba(var(--primary-color-rgb), 0.3);
-                 white-space: pre-wrap;
-                 word-wrap: break-word;
-               }
+              .review-content {
+                font-size: 1rem;
+                line-height: 1.6;
+                color: var(--text-secondary);
+                margin-bottom: 16px;
+                padding: 16px;
+                background: rgba(var(--bg-primary-rgb), 0.3);
+                border-radius: 12px;
+                border-left: 3px solid rgba(var(--primary-color-rgb), 0.3);
+                white-space: pre-wrap;
+                word-wrap: break-word;
+              }
 
-               .review-no-content {
-                 font-size: 0.9rem;
-                 line-height: 1.6;
-                 color: var(--text-tertiary);
-                 margin-bottom: 16px;
-                 padding: 12px 16px;
-                 background: rgba(var(--bg-primary-rgb), 0.15);
-                 border-radius: 20px;
-                 border-left: 2px solid rgba(var(--border-color-rgb), 0.2);
-                 font-style: italic;
-               }
+              .review-no-content {
+                font-size: 0.9rem;
+                line-height: 1.6;
+                color: var(--text-tertiary);
+                margin-bottom: 16px;
+                padding: 12px 16px;
+                background: rgba(var(--bg-primary-rgb), 0.15);
+                border-radius: 20px;
+                border-left: 2px solid rgba(var(--border-color-rgb), 0.2);
+                font-style: italic;
+              }
 
               .review-rating {
                 display: flex;
@@ -1753,8 +1760,13 @@ body:has(.anime-page-container) {
                   }
 
                   @keyframes spin {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
+                    0% {
+                      transform: rotate(0deg);
+                    }
+
+                    100% {
+                      transform: rotate(360deg);
+                    }
                   }
 
                   &:hover {
@@ -1768,16 +1780,16 @@ body:has(.anime-page-container) {
                   gap: 20px;
                   margin-bottom: 20px;
 
-                 .comment-avatar {
-                   width: 52px;
-                   height: 52px;
-                   border-radius: 50%;
-                   background: var(--primary-color);
-                   display: flex;
-                   align-items: center;
-                   justify-content: center;
-                   overflow: hidden;
-                   position: relative;
+                  .comment-avatar {
+                    width: 52px;
+                    height: 52px;
+                    border-radius: 50%;
+                    background: var(--primary-color);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    overflow: hidden;
+                    position: relative;
 
                     img {
                       width: 100%;
@@ -1809,14 +1821,22 @@ body:has(.anime-page-container) {
                       }
 
                       .verification-icon {
-                       color: #ff4444;
-                       filter: drop-shadow(0 0 6px rgba(255, 68, 68, 0.4));
+                        color: #ff4444;
+                        filter: drop-shadow(0 0 6px rgba(255, 68, 68, 0.4));
                       }
 
                       .role-icon {
-                        &.admin { color: #ff4444; }
-                        &.moderator { color: #ffa500; }
-                        &.premium { color: #ffd700; }
+                        &.admin {
+                          color: #ff4444;
+                        }
+
+                        &.moderator {
+                          color: #ffa500;
+                        }
+
+                        &.premium {
+                          color: #ffd700;
+                        }
                       }
                     }
 
@@ -1891,7 +1911,7 @@ body:has(.anime-page-container) {
 
                   .comment-edit-form {
                     margin-top: 16px;
-                    
+
                     .comment-edit-textarea {
                       width: 100%;
                       min-height: 100px;
@@ -2140,11 +2160,10 @@ body:has(.anime-page-container) {
                     top: 0;
                     bottom: 80px; // Не доходит до формы ответа
                     width: 2px;
-                    background: linear-gradient(to bottom, 
-                      var(--primary-color) 0%,
-                      rgba(var(--primary-color-rgb), 0.6) 50%,
-                      rgba(var(--primary-color-rgb), 0.2) 100%
-                    );
+                    background: linear-gradient(to bottom,
+                        var(--primary-color) 0%,
+                        rgba(var(--primary-color-rgb), 0.6) 50%,
+                        rgba(var(--primary-color-rgb), 0.2) 100%);
                     border-radius: 1px;
                   }
 
@@ -2189,33 +2208,33 @@ body:has(.anime-page-container) {
                     margin: 0;
                     padding: 0;
 
-                      .comment-reply-item {
-                        padding: 16px 0 16px 40px;
-                        margin: 8px 0;
-                        position: relative;
-                        background: rgba(var(--bg-primary-rgb), 0.3);
-                        border-radius: 12px;
-                        border: 1px solid rgba(var(--border-color-rgb), 0.2);
+                    .comment-reply-item {
+                      padding: 16px 0 16px 40px;
+                      margin: 8px 0;
+                      position: relative;
+                      background: rgba(var(--bg-primary-rgb), 0.3);
+                      border-radius: 12px;
+                      border: 1px solid rgba(var(--border-color-rgb), 0.2);
 
-                        // Состояние загрузки для ответов
-                        &.pending {
-                          opacity: 0.6;
-                          background: rgba(var(--primary-color-rgb), 0.08);
-                          border-color: rgba(var(--primary-color-rgb), 0.25);
+                      // Состояние загрузки для ответов
+                      &.pending {
+                        opacity: 0.6;
+                        background: rgba(var(--primary-color-rgb), 0.08);
+                        border-color: rgba(var(--primary-color-rgb), 0.25);
 
-                          &::after {
-                            content: '';
-                            position: absolute;
-                            top: 8px;
-                            right: 12px;
-                            width: 8px;
-                            height: 8px;
-                            border: 1px solid rgba(var(--primary-color-rgb), 0.3);
-                            border-top: 1px solid var(--primary-color);
-                            border-radius: 50%;
-                            animation: spin 1s linear infinite;
-                          }
+                        &::after {
+                          content: '';
+                          position: absolute;
+                          top: 8px;
+                          right: 12px;
+                          width: 8px;
+                          height: 8px;
+                          border: 1px solid rgba(var(--primary-color-rgb), 0.3);
+                          border-top: 1px solid var(--primary-color);
+                          border-radius: 50%;
+                          animation: spin 1s linear infinite;
                         }
+                      }
 
                       // Горизонтальная соединительная линия
                       &::before {
@@ -2340,7 +2359,7 @@ body:has(.anime-page-container) {
 
                         .reply-edit-form {
                           margin-top: 12px;
-                          
+
                           .reply-edit-textarea {
                             width: 100%;
                             min-height: 80px;
@@ -2640,7 +2659,7 @@ body:has(.anime-page-container) {
           // Добавляем subtle эффект при наведении без анимации
           &:hover {
             border-color: var(--primary-color);
-            
+
             .screenshot-image {
               opacity: 0.9;
             }
@@ -2767,124 +2786,124 @@ body:has(.anime-page-container) {
 
 // Заметка аниме
 .anime-note {
-    margin: 12px 0;
-    
-    .note-content {
-        background: rgba(59, 130, 246, 0.1);
-        border: 1px solid rgba(59, 130, 246, 0.3);
-        color: #3b82f6;
-        padding: 12px 16px;
-        border-radius: 20px;
-        font-size: 14px;
-        line-height: 1.5;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-    }
+  margin: 12px 0;
+
+  .note-content {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #3b82f6;
+    padding: 12px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
 }
 
 // Заметка о блокировке
 .anime-blocked-note {
-    margin: 12px 0;
-    
-    .blocked-note-content {
-        background: rgba(239, 68, 68, 0.1);
-        border: 1px solid rgba(239, 68, 68, 0.3);
-        color: #ef4444;
-        padding: 12px 16px;
-        border-radius: 20px;
-        font-size: 14px;
-        line-height: 1.5;
-        font-weight: 500;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-    }
+  margin: 12px 0;
+
+  .blocked-note-content {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    padding: 12px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 500;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
 }
 
 // Отключенный таб отзывов 
 .anime-page-container-tab-button.disabled {
+  background: rgba(120, 120, 120, 0.1) !important;
+  color: rgba(120, 120, 120, 0.5) !important;
+  cursor: not-allowed;
+  opacity: 0.5;
+
+  &:hover {
     background: rgba(120, 120, 120, 0.1) !important;
     color: rgba(120, 120, 120, 0.5) !important;
-    cursor: not-allowed;
-    opacity: 0.5;
-
-    &:hover {
-        background: rgba(120, 120, 120, 0.1) !important;
-        color: rgba(120, 120, 120, 0.5) !important;
-    }
+  }
 }
 
 // ===== Стиль для отсутствующего описания =====
 .no-description {
-    color: rgba(255, 255, 255, 0.6) !important;
-    font-style: italic;
-    font-size: 14px;
-    opacity: 0.8;
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-style: italic;
+  font-size: 14px;
+  opacity: 0.8;
 }
 
 // ===== Возрастные рейтинги =====
 .age-rating {
-    padding: 4px 8px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    border: 1px solid;
-    
-    @media (max-width: 768px) {
-        font-size: 11px;
-        padding: 3px 6px;
-        gap: 3px;
-    }
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid;
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+    padding: 3px 6px;
+    gap: 3px;
+  }
 }
 
 // 6+ - зеленый
 .age-rating-6 {
-    background: rgba(34, 197, 94, 0.1);
-    color: #22c55e !important;
-    border-color: rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e !important;
+  border-color: rgba(34, 197, 94, 0.3);
 }
 
 // 12+ - желтый
 .age-rating-12 {
-    background: rgba(234, 179, 8, 0.1);
-    color: #eab308 !important;
-    border-color: rgba(234, 179, 8, 0.3);
+  background: rgba(234, 179, 8, 0.1);
+  color: #eab308 !important;
+  border-color: rgba(234, 179, 8, 0.3);
 }
 
 // 16+ - оранжевый
 .age-rating-16 {
-    background: rgba(249, 115, 22, 0.1);
-    color: #f97316 !important;
-    border-color: rgba(249, 115, 22, 0.3);
+  background: rgba(249, 115, 22, 0.1);
+  color: #f97316 !important;
+  border-color: rgba(249, 115, 22, 0.3);
 }
 
 // 18+ - красный
 .age-rating-18 {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444 !important;
-    border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444 !important;
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 // ===== Бейдж блокировки =====
 .blocked-badge {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444 !important;
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    padding: 4px 8px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    
-    @media (max-width: 768px) {
-        font-size: 11px;
-        padding: 3px 6px;
-        gap: 3px;
-    }
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444 !important;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+    padding: 3px 6px;
+    gap: 3px;
+  }
 }
 
 
@@ -2894,6 +2913,7 @@ body:has(.anime-page-container) {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -2904,124 +2924,124 @@ body:has(.anime-page-container) {
 
 // Заметка аниме
 .anime-note {
-    margin: 12px 0;
-    
-    .note-content {
-        background: rgba(59, 130, 246, 0.1);
-        border: 1px solid rgba(59, 130, 246, 0.3);
-        color: #3b82f6;
-        padding: 12px 16px;
-        border-radius: 20px;
-        font-size: 14px;
-        line-height: 1.5;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-    }
+  margin: 12px 0;
+
+  .note-content {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #3b82f6;
+    padding: 12px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
 }
 
 // Заметка о блокировке
 .anime-blocked-note {
-    margin: 12px 0;
-    
-    .blocked-note-content {
-        background: rgba(239, 68, 68, 0.1);
-        border: 1px solid rgba(239, 68, 68, 0.3);
-        color: #ef4444;
-        padding: 12px 16px;
-        border-radius: 20px;
-        font-size: 14px;
-        line-height: 1.5;
-        font-weight: 500;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-    }
+  margin: 12px 0;
+
+  .blocked-note-content {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    padding: 12px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 500;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
 }
 
 // Отключенный таб отзывов 
 .anime-page-container-tab-button.disabled {
+  background: rgba(120, 120, 120, 0.1) !important;
+  color: rgba(120, 120, 120, 0.5) !important;
+  cursor: not-allowed;
+  opacity: 0.5;
+
+  &:hover {
     background: rgba(120, 120, 120, 0.1) !important;
     color: rgba(120, 120, 120, 0.5) !important;
-    cursor: not-allowed;
-    opacity: 0.5;
-
-    &:hover {
-        background: rgba(120, 120, 120, 0.1) !important;
-        color: rgba(120, 120, 120, 0.5) !important;
-    }
+  }
 }
 
 // ===== Стиль для отсутствующего описания =====
 .no-description {
-    color: rgba(255, 255, 255, 0.6) !important;
-    font-style: italic;
-    font-size: 14px;
-    opacity: 0.8;
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-style: italic;
+  font-size: 14px;
+  opacity: 0.8;
 }
 
 // ===== Возрастные рейтинги =====
 .age-rating {
-    padding: 4px 8px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    border: 1px solid;
-    
-    @media (max-width: 768px) {
-        font-size: 11px;
-        padding: 3px 6px;
-        gap: 3px;
-    }
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid;
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+    padding: 3px 6px;
+    gap: 3px;
+  }
 }
 
 // 6+ - зеленый
 .age-rating-6 {
-    background: rgba(34, 197, 94, 0.1);
-    color: #22c55e !important;
-    border-color: rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e !important;
+  border-color: rgba(34, 197, 94, 0.3);
 }
 
 // 12+ - желтый
 .age-rating-12 {
-    background: rgba(234, 179, 8, 0.1);
-    color: #eab308 !important;
-    border-color: rgba(234, 179, 8, 0.3);
+  background: rgba(234, 179, 8, 0.1);
+  color: #eab308 !important;
+  border-color: rgba(234, 179, 8, 0.3);
 }
 
 // 16+ - оранжевый
 .age-rating-16 {
-    background: rgba(249, 115, 22, 0.1);
-    color: #f97316 !important;
-    border-color: rgba(249, 115, 22, 0.3);
+  background: rgba(249, 115, 22, 0.1);
+  color: #f97316 !important;
+  border-color: rgba(249, 115, 22, 0.3);
 }
 
 // 18+ - красный
 .age-rating-18 {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444 !important;
-    border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444 !important;
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 // ===== Бейдж блокировки =====
 .blocked-badge {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444 !important;
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    padding: 4px 8px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    
-    @media (max-width: 768px) {
-        font-size: 11px;
-        padding: 3px 6px;
-        gap: 3px;
-    }
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444 !important;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+    padding: 3px 6px;
+    gap: 3px;
+  }
 }
 
 
@@ -3030,6 +3050,7 @@ body:has(.anime-page-container) {
     opacity: 0;
     transform: translateY(20px) scale(0.98);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -3040,124 +3061,124 @@ body:has(.anime-page-container) {
 
 // Заметка аниме
 .anime-note {
-    margin: 12px 0;
-    
-    .note-content {
-        background: rgba(59, 130, 246, 0.1);
-        border: 1px solid rgba(59, 130, 246, 0.3);
-        color: #3b82f6;
-        padding: 12px 16px;
-        border-radius: 20px;
-        font-size: 14px;
-        line-height: 1.5;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-    }
+  margin: 12px 0;
+
+  .note-content {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #3b82f6;
+    padding: 12px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
 }
 
 // Заметка о блокировке
 .anime-blocked-note {
-    margin: 12px 0;
-    
-    .blocked-note-content {
-        background: rgba(239, 68, 68, 0.1);
-        border: 1px solid rgba(239, 68, 68, 0.3);
-        color: #ef4444;
-        padding: 12px 16px;
-        border-radius: 20px;
-        font-size: 14px;
-        line-height: 1.5;
-        font-weight: 500;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-    }
+  margin: 12px 0;
+
+  .blocked-note-content {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    padding: 12px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 500;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
 }
 
 // Отключенный таб отзывов 
 .anime-page-container-tab-button.disabled {
+  background: rgba(120, 120, 120, 0.1) !important;
+  color: rgba(120, 120, 120, 0.5) !important;
+  cursor: not-allowed;
+  opacity: 0.5;
+
+  &:hover {
     background: rgba(120, 120, 120, 0.1) !important;
     color: rgba(120, 120, 120, 0.5) !important;
-    cursor: not-allowed;
-    opacity: 0.5;
-
-    &:hover {
-        background: rgba(120, 120, 120, 0.1) !important;
-        color: rgba(120, 120, 120, 0.5) !important;
-    }
+  }
 }
 
 // ===== Стиль для отсутствующего описания =====
 .no-description {
-    color: rgba(255, 255, 255, 0.6) !important;
-    font-style: italic;
-    font-size: 14px;
-    opacity: 0.8;
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-style: italic;
+  font-size: 14px;
+  opacity: 0.8;
 }
 
 // ===== Возрастные рейтинги =====
 .age-rating {
-    padding: 4px 8px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    border: 1px solid;
-    
-    @media (max-width: 768px) {
-        font-size: 11px;
-        padding: 3px 6px;
-        gap: 3px;
-    }
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid;
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+    padding: 3px 6px;
+    gap: 3px;
+  }
 }
 
 // 6+ - зеленый
 .age-rating-6 {
-    background: rgba(34, 197, 94, 0.1);
-    color: #22c55e !important;
-    border-color: rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e !important;
+  border-color: rgba(34, 197, 94, 0.3);
 }
 
 // 12+ - желтый
 .age-rating-12 {
-    background: rgba(234, 179, 8, 0.1);
-    color: #eab308 !important;
-    border-color: rgba(234, 179, 8, 0.3);
+  background: rgba(234, 179, 8, 0.1);
+  color: #eab308 !important;
+  border-color: rgba(234, 179, 8, 0.3);
 }
 
 // 16+ - оранжевый
 .age-rating-16 {
-    background: rgba(249, 115, 22, 0.1);
-    color: #f97316 !important;
-    border-color: rgba(249, 115, 22, 0.3);
+  background: rgba(249, 115, 22, 0.1);
+  color: #f97316 !important;
+  border-color: rgba(249, 115, 22, 0.3);
 }
 
 // 18+ - красный
 .age-rating-18 {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444 !important;
-    border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444 !important;
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 // ===== Бейдж блокировки =====
 .blocked-badge {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444 !important;
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    padding: 4px 8px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    
-    @media (max-width: 768px) {
-        font-size: 11px;
-        padding: 3px 6px;
-        gap: 3px;
-    }
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444 !important;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+    padding: 3px 6px;
+    gap: 3px;
+  }
 }
 
 
@@ -3167,7 +3188,7 @@ body:has(.anime-page-container) {
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   .spinner {
     width: 50px;
     height: 50px;
@@ -3182,124 +3203,124 @@ body:has(.anime-page-container) {
 
 // Заметка аниме
 .anime-note {
-    margin: 12px 0;
-    
-    .note-content {
-        background: rgba(59, 130, 246, 0.1);
-        border: 1px solid rgba(59, 130, 246, 0.3);
-        color: #3b82f6;
-        padding: 12px 16px;
-        border-radius: 20px;
-        font-size: 14px;
-        line-height: 1.5;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-    }
+  margin: 12px 0;
+
+  .note-content {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #3b82f6;
+    padding: 12px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
 }
 
 // Заметка о блокировке
 .anime-blocked-note {
-    margin: 12px 0;
-    
-    .blocked-note-content {
-        background: rgba(239, 68, 68, 0.1);
-        border: 1px solid rgba(239, 68, 68, 0.3);
-        color: #ef4444;
-        padding: 12px 16px;
-        border-radius: 20px;
-        font-size: 14px;
-        line-height: 1.5;
-        font-weight: 500;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-    }
+  margin: 12px 0;
+
+  .blocked-note-content {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    padding: 12px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 500;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
 }
 
 // Отключенный таб отзывов 
 .anime-page-container-tab-button.disabled {
+  background: rgba(120, 120, 120, 0.1) !important;
+  color: rgba(120, 120, 120, 0.5) !important;
+  cursor: not-allowed;
+  opacity: 0.5;
+
+  &:hover {
     background: rgba(120, 120, 120, 0.1) !important;
     color: rgba(120, 120, 120, 0.5) !important;
-    cursor: not-allowed;
-    opacity: 0.5;
-
-    &:hover {
-        background: rgba(120, 120, 120, 0.1) !important;
-        color: rgba(120, 120, 120, 0.5) !important;
-    }
+  }
 }
 
 // ===== Стиль для отсутствующего описания =====
 .no-description {
-    color: rgba(255, 255, 255, 0.6) !important;
-    font-style: italic;
-    font-size: 14px;
-    opacity: 0.8;
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-style: italic;
+  font-size: 14px;
+  opacity: 0.8;
 }
 
 // ===== Возрастные рейтинги =====
 .age-rating {
-    padding: 4px 8px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    border: 1px solid;
-    
-    @media (max-width: 768px) {
-        font-size: 11px;
-        padding: 3px 6px;
-        gap: 3px;
-    }
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid;
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+    padding: 3px 6px;
+    gap: 3px;
+  }
 }
 
 // 6+ - зеленый
 .age-rating-6 {
-    background: rgba(34, 197, 94, 0.1);
-    color: #22c55e !important;
-    border-color: rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e !important;
+  border-color: rgba(34, 197, 94, 0.3);
 }
 
 // 12+ - желтый
 .age-rating-12 {
-    background: rgba(234, 179, 8, 0.1);
-    color: #eab308 !important;
-    border-color: rgba(234, 179, 8, 0.3);
+  background: rgba(234, 179, 8, 0.1);
+  color: #eab308 !important;
+  border-color: rgba(234, 179, 8, 0.3);
 }
 
 // 16+ - оранжевый
 .age-rating-16 {
-    background: rgba(249, 115, 22, 0.1);
-    color: #f97316 !important;
-    border-color: rgba(249, 115, 22, 0.3);
+  background: rgba(249, 115, 22, 0.1);
+  color: #f97316 !important;
+  border-color: rgba(249, 115, 22, 0.3);
 }
 
 // 18+ - красный
 .age-rating-18 {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444 !important;
-    border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444 !important;
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 // ===== Бейдж блокировки =====
 .blocked-badge {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444 !important;
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    padding: 4px 8px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    
-    @media (max-width: 768px) {
-        font-size: 11px;
-        padding: 3px 6px;
-        gap: 3px;
-    }
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444 !important;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+    padding: 3px 6px;
+    gap: 3px;
+  }
 }
 
 
@@ -3313,124 +3334,124 @@ body:has(.anime-page-container) {
 
 // Заметка аниме
 .anime-note {
-    margin: 12px 0;
-    
-    .note-content {
-        background: rgba(59, 130, 246, 0.1);
-        border: 1px solid rgba(59, 130, 246, 0.3);
-        color: #3b82f6;
-        padding: 12px 16px;
-        border-radius: 20px;
-        font-size: 14px;
-        line-height: 1.5;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-    }
+  margin: 12px 0;
+
+  .note-content {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #3b82f6;
+    padding: 12px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
 }
 
 // Заметка о блокировке
 .anime-blocked-note {
-    margin: 12px 0;
-    
-    .blocked-note-content {
-        background: rgba(239, 68, 68, 0.1);
-        border: 1px solid rgba(239, 68, 68, 0.3);
-        color: #ef4444;
-        padding: 12px 16px;
-        border-radius: 20px;
-        font-size: 14px;
-        line-height: 1.5;
-        font-weight: 500;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-    }
+  margin: 12px 0;
+
+  .blocked-note-content {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    padding: 12px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 500;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
 }
 
 // Отключенный таб отзывов 
 .anime-page-container-tab-button.disabled {
+  background: rgba(120, 120, 120, 0.1) !important;
+  color: rgba(120, 120, 120, 0.5) !important;
+  cursor: not-allowed;
+  opacity: 0.5;
+
+  &:hover {
     background: rgba(120, 120, 120, 0.1) !important;
     color: rgba(120, 120, 120, 0.5) !important;
-    cursor: not-allowed;
-    opacity: 0.5;
-
-    &:hover {
-        background: rgba(120, 120, 120, 0.1) !important;
-        color: rgba(120, 120, 120, 0.5) !important;
-    }
+  }
 }
 
 // ===== Стиль для отсутствующего описания =====
 .no-description {
-    color: rgba(255, 255, 255, 0.6) !important;
-    font-style: italic;
-    font-size: 14px;
-    opacity: 0.8;
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-style: italic;
+  font-size: 14px;
+  opacity: 0.8;
 }
 
 // ===== Возрастные рейтинги =====
 .age-rating {
-    padding: 4px 8px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    border: 1px solid;
-    
-    @media (max-width: 768px) {
-        font-size: 11px;
-        padding: 3px 6px;
-        gap: 3px;
-    }
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid;
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+    padding: 3px 6px;
+    gap: 3px;
+  }
 }
 
 // 6+ - зеленый
 .age-rating-6 {
-    background: rgba(34, 197, 94, 0.1);
-    color: #22c55e !important;
-    border-color: rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e !important;
+  border-color: rgba(34, 197, 94, 0.3);
 }
 
 // 12+ - желтый
 .age-rating-12 {
-    background: rgba(234, 179, 8, 0.1);
-    color: #eab308 !important;
-    border-color: rgba(234, 179, 8, 0.3);
+  background: rgba(234, 179, 8, 0.1);
+  color: #eab308 !important;
+  border-color: rgba(234, 179, 8, 0.3);
 }
 
 // 16+ - оранжевый
 .age-rating-16 {
-    background: rgba(249, 115, 22, 0.1);
-    color: #f97316 !important;
-    border-color: rgba(249, 115, 22, 0.3);
+  background: rgba(249, 115, 22, 0.1);
+  color: #f97316 !important;
+  border-color: rgba(249, 115, 22, 0.3);
 }
 
 // 18+ - красный
 .age-rating-18 {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444 !important;
-    border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444 !important;
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 // ===== Бейдж блокировки =====
 .blocked-badge {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444 !important;
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    padding: 4px 8px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    
-    @media (max-width: 768px) {
-        font-size: 11px;
-        padding: 3px 6px;
-        gap: 3px;
-    }
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444 !important;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+    padding: 3px 6px;
+    gap: 3px;
+  }
 }
 
 
@@ -3451,8 +3472,13 @@ body:has(.anime-page-container) {
   animation: fadeIn 0.3s ease;
 
   @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
   }
 }
 
@@ -3460,124 +3486,124 @@ body:has(.anime-page-container) {
 
 // Заметка аниме
 .anime-note {
-    margin: 12px 0;
-    
-    .note-content {
-        background: rgba(59, 130, 246, 0.1);
-        border: 1px solid rgba(59, 130, 246, 0.3);
-        color: #3b82f6;
-        padding: 12px 16px;
-        border-radius: 20px;
-        font-size: 14px;
-        line-height: 1.5;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-    }
+  margin: 12px 0;
+
+  .note-content {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #3b82f6;
+    padding: 12px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
 }
 
 // Заметка о блокировке
 .anime-blocked-note {
-    margin: 12px 0;
-    
-    .blocked-note-content {
-        background: rgba(239, 68, 68, 0.1);
-        border: 1px solid rgba(239, 68, 68, 0.3);
-        color: #ef4444;
-        padding: 12px 16px;
-        border-radius: 20px;
-        font-size: 14px;
-        line-height: 1.5;
-        font-weight: 500;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-    }
+  margin: 12px 0;
+
+  .blocked-note-content {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    padding: 12px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 500;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
 }
 
 // Отключенный таб отзывов 
 .anime-page-container-tab-button.disabled {
+  background: rgba(120, 120, 120, 0.1) !important;
+  color: rgba(120, 120, 120, 0.5) !important;
+  cursor: not-allowed;
+  opacity: 0.5;
+
+  &:hover {
     background: rgba(120, 120, 120, 0.1) !important;
     color: rgba(120, 120, 120, 0.5) !important;
-    cursor: not-allowed;
-    opacity: 0.5;
-
-    &:hover {
-        background: rgba(120, 120, 120, 0.1) !important;
-        color: rgba(120, 120, 120, 0.5) !important;
-    }
+  }
 }
 
 // ===== Стиль для отсутствующего описания =====
 .no-description {
-    color: rgba(255, 255, 255, 0.6) !important;
-    font-style: italic;
-    font-size: 14px;
-    opacity: 0.8;
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-style: italic;
+  font-size: 14px;
+  opacity: 0.8;
 }
 
 // ===== Возрастные рейтинги =====
 .age-rating {
-    padding: 4px 8px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    border: 1px solid;
-    
-    @media (max-width: 768px) {
-        font-size: 11px;
-        padding: 3px 6px;
-        gap: 3px;
-    }
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid;
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+    padding: 3px 6px;
+    gap: 3px;
+  }
 }
 
 // 6+ - зеленый
 .age-rating-6 {
-    background: rgba(34, 197, 94, 0.1);
-    color: #22c55e !important;
-    border-color: rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e !important;
+  border-color: rgba(34, 197, 94, 0.3);
 }
 
 // 12+ - желтый
 .age-rating-12 {
-    background: rgba(234, 179, 8, 0.1);
-    color: #eab308 !important;
-    border-color: rgba(234, 179, 8, 0.3);
+  background: rgba(234, 179, 8, 0.1);
+  color: #eab308 !important;
+  border-color: rgba(234, 179, 8, 0.3);
 }
 
 // 16+ - оранжевый
 .age-rating-16 {
-    background: rgba(249, 115, 22, 0.1);
-    color: #f97316 !important;
-    border-color: rgba(249, 115, 22, 0.3);
+  background: rgba(249, 115, 22, 0.1);
+  color: #f97316 !important;
+  border-color: rgba(249, 115, 22, 0.3);
 }
 
 // 18+ - красный
 .age-rating-18 {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444 !important;
-    border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444 !important;
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 // ===== Бейдж блокировки =====
 .blocked-badge {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444 !important;
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    padding: 4px 8px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    
-    @media (max-width: 768px) {
-        font-size: 11px;
-        padding: 3px 6px;
-        gap: 3px;
-    }
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444 !important;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+    padding: 3px 6px;
+    gap: 3px;
+  }
 }
 
 
@@ -3590,7 +3616,7 @@ body:has(.anime-page-container) {
   max-height: 90vh;
   overflow: hidden;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4),
-              0 0 0 1px rgba(var(--primary-color-rgb), 0.1);
+    0 0 0 1px rgba(var(--primary-color-rgb), 0.1);
   animation: slideIn 0.3s ease;
   position: relative;
 
@@ -3605,13 +3631,14 @@ body:has(.anime-page-container) {
   }
 
   @keyframes slideIn {
-    from { 
-      opacity: 0; 
-      transform: translateY(-20px) scale(0.95); 
+    from {
+      opacity: 0;
+      transform: translateY(-20px) scale(0.95);
     }
-    to { 
-      opacity: 1; 
-      transform: translateY(0) scale(1); 
+
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
     }
   }
 }
@@ -3620,124 +3647,124 @@ body:has(.anime-page-container) {
 
 // Заметка аниме
 .anime-note {
-    margin: 12px 0;
-    
-    .note-content {
-        background: rgba(59, 130, 246, 0.1);
-        border: 1px solid rgba(59, 130, 246, 0.3);
-        color: #3b82f6;
-        padding: 12px 16px;
-        border-radius: 20px;
-        font-size: 14px;
-        line-height: 1.5;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-    }
+  margin: 12px 0;
+
+  .note-content {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #3b82f6;
+    padding: 12px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
 }
 
 // Заметка о блокировке
 .anime-blocked-note {
-    margin: 12px 0;
-    
-    .blocked-note-content {
-        background: rgba(239, 68, 68, 0.1);
-        border: 1px solid rgba(239, 68, 68, 0.3);
-        color: #ef4444;
-        padding: 12px 16px;
-        border-radius: 20px;
-        font-size: 14px;
-        line-height: 1.5;
-        font-weight: 500;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-    }
+  margin: 12px 0;
+
+  .blocked-note-content {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    padding: 12px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 500;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
 }
 
 // Отключенный таб отзывов 
 .anime-page-container-tab-button.disabled {
+  background: rgba(120, 120, 120, 0.1) !important;
+  color: rgba(120, 120, 120, 0.5) !important;
+  cursor: not-allowed;
+  opacity: 0.5;
+
+  &:hover {
     background: rgba(120, 120, 120, 0.1) !important;
     color: rgba(120, 120, 120, 0.5) !important;
-    cursor: not-allowed;
-    opacity: 0.5;
-
-    &:hover {
-        background: rgba(120, 120, 120, 0.1) !important;
-        color: rgba(120, 120, 120, 0.5) !important;
-    }
+  }
 }
 
 // ===== Стиль для отсутствующего описания =====
 .no-description {
-    color: rgba(255, 255, 255, 0.6) !important;
-    font-style: italic;
-    font-size: 14px;
-    opacity: 0.8;
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-style: italic;
+  font-size: 14px;
+  opacity: 0.8;
 }
 
 // ===== Возрастные рейтинги =====
 .age-rating {
-    padding: 4px 8px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    border: 1px solid;
-    
-    @media (max-width: 768px) {
-        font-size: 11px;
-        padding: 3px 6px;
-        gap: 3px;
-    }
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid;
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+    padding: 3px 6px;
+    gap: 3px;
+  }
 }
 
 // 6+ - зеленый
 .age-rating-6 {
-    background: rgba(34, 197, 94, 0.1);
-    color: #22c55e !important;
-    border-color: rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e !important;
+  border-color: rgba(34, 197, 94, 0.3);
 }
 
 // 12+ - желтый
 .age-rating-12 {
-    background: rgba(234, 179, 8, 0.1);
-    color: #eab308 !important;
-    border-color: rgba(234, 179, 8, 0.3);
+  background: rgba(234, 179, 8, 0.1);
+  color: #eab308 !important;
+  border-color: rgba(234, 179, 8, 0.3);
 }
 
 // 16+ - оранжевый
 .age-rating-16 {
-    background: rgba(249, 115, 22, 0.1);
-    color: #f97316 !important;
-    border-color: rgba(249, 115, 22, 0.3);
+  background: rgba(249, 115, 22, 0.1);
+  color: #f97316 !important;
+  border-color: rgba(249, 115, 22, 0.3);
 }
 
 // 18+ - красный
 .age-rating-18 {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444 !important;
-    border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444 !important;
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 // ===== Бейдж блокировки =====
 .blocked-badge {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444 !important;
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    padding: 4px 8px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    
-    @media (max-width: 768px) {
-        font-size: 11px;
-        padding: 3px 6px;
-        gap: 3px;
-    }
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444 !important;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+    padding: 3px 6px;
+    gap: 3px;
+  }
 }
 
 
@@ -3782,124 +3809,124 @@ body:has(.anime-page-container) {
 
 // Заметка аниме
 .anime-note {
-    margin: 12px 0;
-    
-    .note-content {
-        background: rgba(59, 130, 246, 0.1);
-        border: 1px solid rgba(59, 130, 246, 0.3);
-        color: #3b82f6;
-        padding: 12px 16px;
-        border-radius: 20px;
-        font-size: 14px;
-        line-height: 1.5;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-    }
+  margin: 12px 0;
+
+  .note-content {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #3b82f6;
+    padding: 12px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
 }
 
 // Заметка о блокировке
 .anime-blocked-note {
-    margin: 12px 0;
-    
-    .blocked-note-content {
-        background: rgba(239, 68, 68, 0.1);
-        border: 1px solid rgba(239, 68, 68, 0.3);
-        color: #ef4444;
-        padding: 12px 16px;
-        border-radius: 20px;
-        font-size: 14px;
-        line-height: 1.5;
-        font-weight: 500;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-    }
+  margin: 12px 0;
+
+  .blocked-note-content {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    padding: 12px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 500;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
 }
 
 // Отключенный таб отзывов 
 .anime-page-container-tab-button.disabled {
+  background: rgba(120, 120, 120, 0.1) !important;
+  color: rgba(120, 120, 120, 0.5) !important;
+  cursor: not-allowed;
+  opacity: 0.5;
+
+  &:hover {
     background: rgba(120, 120, 120, 0.1) !important;
     color: rgba(120, 120, 120, 0.5) !important;
-    cursor: not-allowed;
-    opacity: 0.5;
-
-    &:hover {
-        background: rgba(120, 120, 120, 0.1) !important;
-        color: rgba(120, 120, 120, 0.5) !important;
-    }
+  }
 }
 
 // ===== Стиль для отсутствующего описания =====
 .no-description {
-    color: rgba(255, 255, 255, 0.6) !important;
-    font-style: italic;
-    font-size: 14px;
-    opacity: 0.8;
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-style: italic;
+  font-size: 14px;
+  opacity: 0.8;
 }
 
 // ===== Возрастные рейтинги =====
 .age-rating {
-    padding: 4px 8px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    border: 1px solid;
-    
-    @media (max-width: 768px) {
-        font-size: 11px;
-        padding: 3px 6px;
-        gap: 3px;
-    }
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid;
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+    padding: 3px 6px;
+    gap: 3px;
+  }
 }
 
 // 6+ - зеленый
 .age-rating-6 {
-    background: rgba(34, 197, 94, 0.1);
-    color: #22c55e !important;
-    border-color: rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e !important;
+  border-color: rgba(34, 197, 94, 0.3);
 }
 
 // 12+ - желтый
 .age-rating-12 {
-    background: rgba(234, 179, 8, 0.1);
-    color: #eab308 !important;
-    border-color: rgba(234, 179, 8, 0.3);
+  background: rgba(234, 179, 8, 0.1);
+  color: #eab308 !important;
+  border-color: rgba(234, 179, 8, 0.3);
 }
 
 // 16+ - оранжевый
 .age-rating-16 {
-    background: rgba(249, 115, 22, 0.1);
-    color: #f97316 !important;
-    border-color: rgba(249, 115, 22, 0.3);
+  background: rgba(249, 115, 22, 0.1);
+  color: #f97316 !important;
+  border-color: rgba(249, 115, 22, 0.3);
 }
 
 // 18+ - красный
 .age-rating-18 {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444 !important;
-    border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444 !important;
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 // ===== Бейдж блокировки =====
 .blocked-badge {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444 !important;
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    padding: 4px 8px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    
-    @media (max-width: 768px) {
-        font-size: 11px;
-        padding: 3px 6px;
-        gap: 3px;
-    }
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444 !important;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+    padding: 3px 6px;
+    gap: 3px;
+  }
 }
 
 
@@ -3960,124 +3987,124 @@ body:has(.anime-page-container) {
 
 // Заметка аниме
 .anime-note {
-    margin: 12px 0;
-    
-    .note-content {
-        background: rgba(59, 130, 246, 0.1);
-        border: 1px solid rgba(59, 130, 246, 0.3);
-        color: #3b82f6;
-        padding: 12px 16px;
-        border-radius: 20px;
-        font-size: 14px;
-        line-height: 1.5;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-    }
+  margin: 12px 0;
+
+  .note-content {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #3b82f6;
+    padding: 12px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
 }
 
 // Заметка о блокировке
 .anime-blocked-note {
-    margin: 12px 0;
-    
-    .blocked-note-content {
-        background: rgba(239, 68, 68, 0.1);
-        border: 1px solid rgba(239, 68, 68, 0.3);
-        color: #ef4444;
-        padding: 12px 16px;
-        border-radius: 20px;
-        font-size: 14px;
-        line-height: 1.5;
-        font-weight: 500;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-    }
+  margin: 12px 0;
+
+  .blocked-note-content {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    padding: 12px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 500;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
 }
 
 // Отключенный таб отзывов 
 .anime-page-container-tab-button.disabled {
+  background: rgba(120, 120, 120, 0.1) !important;
+  color: rgba(120, 120, 120, 0.5) !important;
+  cursor: not-allowed;
+  opacity: 0.5;
+
+  &:hover {
     background: rgba(120, 120, 120, 0.1) !important;
     color: rgba(120, 120, 120, 0.5) !important;
-    cursor: not-allowed;
-    opacity: 0.5;
-
-    &:hover {
-        background: rgba(120, 120, 120, 0.1) !important;
-        color: rgba(120, 120, 120, 0.5) !important;
-    }
+  }
 }
 
 // ===== Стиль для отсутствующего описания =====
 .no-description {
-    color: rgba(255, 255, 255, 0.6) !important;
-    font-style: italic;
-    font-size: 14px;
-    opacity: 0.8;
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-style: italic;
+  font-size: 14px;
+  opacity: 0.8;
 }
 
 // ===== Возрастные рейтинги =====
 .age-rating {
-    padding: 4px 8px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    border: 1px solid;
-    
-    @media (max-width: 768px) {
-        font-size: 11px;
-        padding: 3px 6px;
-        gap: 3px;
-    }
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid;
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+    padding: 3px 6px;
+    gap: 3px;
+  }
 }
 
 // 6+ - зеленый
 .age-rating-6 {
-    background: rgba(34, 197, 94, 0.1);
-    color: #22c55e !important;
-    border-color: rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e !important;
+  border-color: rgba(34, 197, 94, 0.3);
 }
 
 // 12+ - желтый
 .age-rating-12 {
-    background: rgba(234, 179, 8, 0.1);
-    color: #eab308 !important;
-    border-color: rgba(234, 179, 8, 0.3);
+  background: rgba(234, 179, 8, 0.1);
+  color: #eab308 !important;
+  border-color: rgba(234, 179, 8, 0.3);
 }
 
 // 16+ - оранжевый
 .age-rating-16 {
-    background: rgba(249, 115, 22, 0.1);
-    color: #f97316 !important;
-    border-color: rgba(249, 115, 22, 0.3);
+  background: rgba(249, 115, 22, 0.1);
+  color: #f97316 !important;
+  border-color: rgba(249, 115, 22, 0.3);
 }
 
 // 18+ - красный
 .age-rating-18 {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444 !important;
-    border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444 !important;
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 // ===== Бейдж блокировки =====
 .blocked-badge {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444 !important;
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    padding: 4px 8px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    
-    @media (max-width: 768px) {
-        font-size: 11px;
-        padding: 3px 6px;
-        gap: 3px;
-    }
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444 !important;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+    padding: 3px 6px;
+    gap: 3px;
+  }
 }
 
 
@@ -4155,9 +4182,19 @@ body:has(.anime-page-container) {
   }
 
   @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-4px); }
-    75% { transform: translateX(4px); }
+
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+
+    25% {
+      transform: translateX(-4px);
+    }
+
+    75% {
+      transform: translateX(4px);
+    }
   }
 }
 
@@ -4165,124 +4202,124 @@ body:has(.anime-page-container) {
 
 // Заметка аниме
 .anime-note {
-    margin: 12px 0;
-    
-    .note-content {
-        background: rgba(59, 130, 246, 0.1);
-        border: 1px solid rgba(59, 130, 246, 0.3);
-        color: #3b82f6;
-        padding: 12px 16px;
-        border-radius: 20px;
-        font-size: 14px;
-        line-height: 1.5;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-    }
+  margin: 12px 0;
+
+  .note-content {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #3b82f6;
+    padding: 12px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
 }
 
 // Заметка о блокировке
 .anime-blocked-note {
-    margin: 12px 0;
-    
-    .blocked-note-content {
-        background: rgba(239, 68, 68, 0.1);
-        border: 1px solid rgba(239, 68, 68, 0.3);
-        color: #ef4444;
-        padding: 12px 16px;
-        border-radius: 20px;
-        font-size: 14px;
-        line-height: 1.5;
-        font-weight: 500;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-    }
+  margin: 12px 0;
+
+  .blocked-note-content {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    padding: 12px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 500;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
 }
 
 // Отключенный таб отзывов 
 .anime-page-container-tab-button.disabled {
+  background: rgba(120, 120, 120, 0.1) !important;
+  color: rgba(120, 120, 120, 0.5) !important;
+  cursor: not-allowed;
+  opacity: 0.5;
+
+  &:hover {
     background: rgba(120, 120, 120, 0.1) !important;
     color: rgba(120, 120, 120, 0.5) !important;
-    cursor: not-allowed;
-    opacity: 0.5;
-
-    &:hover {
-        background: rgba(120, 120, 120, 0.1) !important;
-        color: rgba(120, 120, 120, 0.5) !important;
-    }
+  }
 }
 
 // ===== Стиль для отсутствующего описания =====
 .no-description {
-    color: rgba(255, 255, 255, 0.6) !important;
-    font-style: italic;
-    font-size: 14px;
-    opacity: 0.8;
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-style: italic;
+  font-size: 14px;
+  opacity: 0.8;
 }
 
 // ===== Возрастные рейтинги =====
 .age-rating {
-    padding: 4px 8px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    border: 1px solid;
-    
-    @media (max-width: 768px) {
-        font-size: 11px;
-        padding: 3px 6px;
-        gap: 3px;
-    }
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid;
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+    padding: 3px 6px;
+    gap: 3px;
+  }
 }
 
 // 6+ - зеленый
 .age-rating-6 {
-    background: rgba(34, 197, 94, 0.1);
-    color: #22c55e !important;
-    border-color: rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e !important;
+  border-color: rgba(34, 197, 94, 0.3);
 }
 
 // 12+ - желтый
 .age-rating-12 {
-    background: rgba(234, 179, 8, 0.1);
-    color: #eab308 !important;
-    border-color: rgba(234, 179, 8, 0.3);
+  background: rgba(234, 179, 8, 0.1);
+  color: #eab308 !important;
+  border-color: rgba(234, 179, 8, 0.3);
 }
 
 // 16+ - оранжевый
 .age-rating-16 {
-    background: rgba(249, 115, 22, 0.1);
-    color: #f97316 !important;
-    border-color: rgba(249, 115, 22, 0.3);
+  background: rgba(249, 115, 22, 0.1);
+  color: #f97316 !important;
+  border-color: rgba(249, 115, 22, 0.3);
 }
 
 // 18+ - красный
 .age-rating-18 {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444 !important;
-    border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444 !important;
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 // ===== Бейдж блокировки =====
 .blocked-badge {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444 !important;
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    padding: 4px 8px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    
-    @media (max-width: 768px) {
-        font-size: 11px;
-        padding: 3px 6px;
-        gap: 3px;
-    }
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444 !important;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+    padding: 3px 6px;
+    gap: 3px;
+  }
 }
 
 
@@ -4353,124 +4390,124 @@ body:has(.anime-page-container) {
 
 // Заметка аниме
 .anime-note {
-    margin: 12px 0;
-    
-    .note-content {
-        background: rgba(59, 130, 246, 0.1);
-        border: 1px solid rgba(59, 130, 246, 0.3);
-        color: #3b82f6;
-        padding: 12px 16px;
-        border-radius: 20px;
-        font-size: 14px;
-        line-height: 1.5;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-    }
+  margin: 12px 0;
+
+  .note-content {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #3b82f6;
+    padding: 12px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
 }
 
 // Заметка о блокировке
 .anime-blocked-note {
-    margin: 12px 0;
-    
-    .blocked-note-content {
-        background: rgba(239, 68, 68, 0.1);
-        border: 1px solid rgba(239, 68, 68, 0.3);
-        color: #ef4444;
-        padding: 12px 16px;
-        border-radius: 20px;
-        font-size: 14px;
-        line-height: 1.5;
-        font-weight: 500;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-    }
+  margin: 12px 0;
+
+  .blocked-note-content {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    padding: 12px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 500;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
 }
 
 // Отключенный таб отзывов 
 .anime-page-container-tab-button.disabled {
+  background: rgba(120, 120, 120, 0.1) !important;
+  color: rgba(120, 120, 120, 0.5) !important;
+  cursor: not-allowed;
+  opacity: 0.5;
+
+  &:hover {
     background: rgba(120, 120, 120, 0.1) !important;
     color: rgba(120, 120, 120, 0.5) !important;
-    cursor: not-allowed;
-    opacity: 0.5;
-
-    &:hover {
-        background: rgba(120, 120, 120, 0.1) !important;
-        color: rgba(120, 120, 120, 0.5) !important;
-    }
+  }
 }
 
 // ===== Стиль для отсутствующего описания =====
 .no-description {
-    color: rgba(255, 255, 255, 0.6) !important;
-    font-style: italic;
-    font-size: 14px;
-    opacity: 0.8;
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-style: italic;
+  font-size: 14px;
+  opacity: 0.8;
 }
 
 // ===== Возрастные рейтинги =====
 .age-rating {
-    padding: 4px 8px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    border: 1px solid;
-    
-    @media (max-width: 768px) {
-        font-size: 11px;
-        padding: 3px 6px;
-        gap: 3px;
-    }
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid;
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+    padding: 3px 6px;
+    gap: 3px;
+  }
 }
 
 // 6+ - зеленый
 .age-rating-6 {
-    background: rgba(34, 197, 94, 0.1);
-    color: #22c55e !important;
-    border-color: rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e !important;
+  border-color: rgba(34, 197, 94, 0.3);
 }
 
 // 12+ - желтый
 .age-rating-12 {
-    background: rgba(234, 179, 8, 0.1);
-    color: #eab308 !important;
-    border-color: rgba(234, 179, 8, 0.3);
+  background: rgba(234, 179, 8, 0.1);
+  color: #eab308 !important;
+  border-color: rgba(234, 179, 8, 0.3);
 }
 
 // 16+ - оранжевый
 .age-rating-16 {
-    background: rgba(249, 115, 22, 0.1);
-    color: #f97316 !important;
-    border-color: rgba(249, 115, 22, 0.3);
+  background: rgba(249, 115, 22, 0.1);
+  color: #f97316 !important;
+  border-color: rgba(249, 115, 22, 0.3);
 }
 
 // 18+ - красный
 .age-rating-18 {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444 !important;
-    border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444 !important;
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 // ===== Бейдж блокировки =====
 .blocked-badge {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444 !important;
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    padding: 4px 8px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    
-    @media (max-width: 768px) {
-        font-size: 11px;
-        padding: 3px 6px;
-        gap: 3px;
-    }
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444 !important;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+    padding: 3px 6px;
+    gap: 3px;
+  }
 }
 
 
@@ -4522,123 +4559,122 @@ body:has(.anime-page-container) {
 
 // Заметка аниме
 .anime-note {
-    margin: 12px 0;
-    
-    .note-content {
-        background: rgba(59, 130, 246, 0.1);
-        border: 1px solid rgba(59, 130, 246, 0.3);
-        color: #3b82f6;
-        padding: 12px 16px;
-        border-radius: 20px;
-        font-size: 14px;
-        line-height: 1.5;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-    }
+  margin: 12px 0;
+
+  .note-content {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #3b82f6;
+    padding: 12px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
 }
 
 // Заметка о блокировке
 .anime-blocked-note {
-    margin: 12px 0;
-    
-    .blocked-note-content {
-        background: rgba(239, 68, 68, 0.1);
-        border: 1px solid rgba(239, 68, 68, 0.3);
-        color: #ef4444;
-        padding: 12px 16px;
-        border-radius: 20px;
-        font-size: 14px;
-        line-height: 1.5;
-        font-weight: 500;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-    }
+  margin: 12px 0;
+
+  .blocked-note-content {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    padding: 12px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 500;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
 }
 
 // Отключенный таб отзывов 
 .anime-page-container-tab-button.disabled {
+  background: rgba(120, 120, 120, 0.1) !important;
+  color: rgba(120, 120, 120, 0.5) !important;
+  cursor: not-allowed;
+  opacity: 0.5;
+
+  &:hover {
     background: rgba(120, 120, 120, 0.1) !important;
     color: rgba(120, 120, 120, 0.5) !important;
-    cursor: not-allowed;
-    opacity: 0.5;
-
-    &:hover {
-        background: rgba(120, 120, 120, 0.1) !important;
-        color: rgba(120, 120, 120, 0.5) !important;
-    }
+  }
 }
 
 // ===== Стиль для отсутствующего описания =====
 .no-description {
-    color: rgba(255, 255, 255, 0.6) !important;
-    font-style: italic;
-    font-size: 14px;
-    opacity: 0.8;
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-style: italic;
+  font-size: 14px;
+  opacity: 0.8;
 }
 
 // ===== Возрастные рейтинги =====
 .age-rating {
-    padding: 4px 8px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    border: 1px solid;
-    
-    @media (max-width: 768px) {
-        font-size: 11px;
-        padding: 3px 6px;
-        gap: 3px;
-    }
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid;
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+    padding: 3px 6px;
+    gap: 3px;
+  }
 }
 
 // 6+ - зеленый
 .age-rating-6 {
-    background: rgba(34, 197, 94, 0.1);
-    color: #22c55e !important;
-    border-color: rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e !important;
+  border-color: rgba(34, 197, 94, 0.3);
 }
 
 // 12+ - желтый
 .age-rating-12 {
-    background: rgba(234, 179, 8, 0.1);
-    color: #eab308 !important;
-    border-color: rgba(234, 179, 8, 0.3);
+  background: rgba(234, 179, 8, 0.1);
+  color: #eab308 !important;
+  border-color: rgba(234, 179, 8, 0.3);
 }
 
 // 16+ - оранжевый
 .age-rating-16 {
-    background: rgba(249, 115, 22, 0.1);
-    color: #f97316 !important;
-    border-color: rgba(249, 115, 22, 0.3);
+  background: rgba(249, 115, 22, 0.1);
+  color: #f97316 !important;
+  border-color: rgba(249, 115, 22, 0.3);
 }
 
 // 18+ - красный
 .age-rating-18 {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444 !important;
-    border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444 !important;
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 // ===== Бейдж блокировки =====
 .blocked-badge {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444 !important;
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    padding: 4px 8px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    
-    @media (max-width: 768px) {
-        font-size: 11px;
-        padding: 3px 6px;
-        gap: 3px;
-    }
-}
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444 !important;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 
+  @media (max-width: 768px) {
+    font-size: 11px;
+    padding: 3px 6px;
+    gap: 3px;
+  }
+}

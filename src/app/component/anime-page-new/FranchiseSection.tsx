@@ -39,7 +39,7 @@ const FranchiseSection: React.FC<FranchiseSectionProps> = ({ animeId, className 
             setError(null);
 
             const response = await fetch(`${API_SERVER}/api/anime/franchise-chain/anime/${animeId}`);
-            
+
             if (!response.ok) {
                 if (response.status === 404) {
                     setFranchiseAnimes([]);
@@ -50,7 +50,7 @@ const FranchiseSection: React.FC<FranchiseSectionProps> = ({ animeId, className 
             }
 
             const relatedAnime: AnimeInFranchise[] = await response.json();
-            
+
             if (Array.isArray(relatedAnime)) {
                 // Сортируем по полю position
                 const sortedAnime = [...relatedAnime].sort((a, b) => {
@@ -61,7 +61,7 @@ const FranchiseSection: React.FC<FranchiseSectionProps> = ({ animeId, className 
                     if (b.position !== undefined) return 1;
                     return 0;
                 });
-                
+
                 setFranchiseAnimes(sortedAnime);
             } else {
                 console.error('API returned non-array response:', relatedAnime);
@@ -83,12 +83,6 @@ const FranchiseSection: React.FC<FranchiseSectionProps> = ({ animeId, className 
     if (loading) {
         return (
             <div className={`franchise-section ${className}`}>
-                <div className="franchise-section-header">
-                    <h2>
-                        <Network className="section-icon" size={24} />
-                        Франшиза
-                    </h2>
-                </div>
                 <div className="franchise-loading">
                     <Loader2 size={24} className="spinning" />
                     <span>Загрузка...</span>
@@ -100,12 +94,6 @@ const FranchiseSection: React.FC<FranchiseSectionProps> = ({ animeId, className 
     if (error) {
         return (
             <div className={`franchise-section ${className}`}>
-                <div className="franchise-section-header">
-                    <h2>
-                        <Network className="section-icon" size={24} />
-                        Франшиза
-                    </h2>
-                </div>
                 <div className="franchise-error">
                     <p>{error}</p>
                 </div>
@@ -119,19 +107,13 @@ const FranchiseSection: React.FC<FranchiseSectionProps> = ({ animeId, className 
 
     return (
         <div className={`franchise-section ${className}`}>
-            <div className="franchise-section-header">
-                <h2>
-                    <Network className="section-icon" size={24} />
-                    Франшиза
-                </h2>
-            </div>
 
             <div className="franchise-list">
                 {franchiseAnimes.map((anime) => {
                     const isCurrentAnime = anime.id === animeId;
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     const { rating, ...animeWithoutRating } = anime;
-                    
+
                     return (
                         <div key={anime.id} className={`franchise-card-wrapper ${isCurrentAnime ? 'current' : ''}`}>
                             {isCurrentAnime && (

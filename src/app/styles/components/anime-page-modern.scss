@@ -570,10 +570,206 @@
     min-height: 200px;
 }
 
+// Source sub-tabs for episodes
+.source-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    padding: 4px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    width: fit-content;
+}
+
+.source-tab {
+    padding: 8px 16px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+        color: var(--text-secondary);
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    &.active {
+        background: rgba(var(--primary-color-rgb), 0.2);
+        color: var(--primary-color);
+    }
+}
+
+.source-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    opacity: 0.7;
+}
+
+// Episode controls row - horizontal layout for source + seasons + collection
+.episode-controls-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+
+    .source-tabs {
+        margin-bottom: 0;
+    }
+
+    .source-label {
+        margin-bottom: 0;
+    }
+}
+
+// Season selector tabs
+.season-selector {
+    display: flex;
+    gap: 6px;
+    padding: 4px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    flex-wrap: wrap;
+}
+
+.season-tab {
+    padding: 6px 12px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+
+    &:hover {
+        color: var(--text-secondary);
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    &.active {
+        background: rgba(var(--primary-color-rgb), 0.2);
+        color: var(--primary-color);
+    }
+}
+
+// Collection quick add dropdown
+.collection-quick-add {
+    position: relative;
+    margin-left: auto;
+}
+
+.collection-dropdown-trigger {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.15);
+        color: var(--text-primary);
+    }
+
+    .rotated {
+        transform: rotate(180deg);
+    }
+}
+
+.collection-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 180px;
+    background: var(--bg-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 6px;
+    z-index: 100;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    animation: dropdownFadeIn 0.15s ease;
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.collection-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 12px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-align: left;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--text-primary);
+    }
+
+    &.favorite {
+        color: #ff6b8a;
+
+        &:hover {
+            background: rgba(255, 107, 138, 0.15);
+        }
+
+        &.active {
+            background: rgba(255, 107, 138, 0.2);
+        }
+    }
+
+    &.active {
+        background: rgba(var(--primary-color-rgb), 0.15);
+        color: var(--primary-color);
+
+        &:hover {
+            background: rgba(var(--primary-color-rgb), 0.2);
+        }
+    }
+
+    svg {
+        flex-shrink: 0;
+    }
+}
+
+.collection-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.08);
+    margin: 6px 0;
+}
+
 // Screenshots grid - simple design
 .anime-modern-screenshots-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     gap: 12px;
 
     @media (max-width: 768px) {
@@ -1964,8 +2160,8 @@
 .anime-modern-episodes-grid {
     .episodes-list {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 16px;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
     }
 
     .episode-card {
@@ -1984,7 +2180,7 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
             img {
-                transition: transform 0.5s ease;
+                transition: filter 0.25s ease;
             }
 
             // Quality Badge
@@ -2048,6 +2244,45 @@
                 filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
                 pointer-events: none;
             }
+
+            // Duration badge (top right)
+            .episode-duration-badge {
+                position: absolute;
+                top: 8px;
+                right: 8px;
+                background: rgba(0, 0, 0, 0.75);
+                padding: 4px 8px;
+                border-radius: 4px;
+                font-size: 11px;
+                font-weight: 500;
+                color: #fff;
+                z-index: 3;
+            }
+
+            // Info overlay (bottom)
+            .episode-info-overlay {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                padding: 30px 12px 10px;
+                background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, transparent 100%);
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+                z-index: 3;
+
+                .episode-name {
+                    font-size: 11px;
+                    color: rgba(255, 255, 255, 0.7);
+                }
+
+                .episode-number {
+                    font-size: 13px;
+                    font-weight: 600;
+                    color: #fff;
+                }
+            }
         }
 
         .episode-info {
@@ -2070,27 +2305,17 @@
 
         &:hover {
             .episode-thumbnail-wrapper {
-                transform: scale(1.02);
-                border-color: rgba(var(--primary-color-rgb), 0.5);
                 box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.5);
                 z-index: 10;
 
                 img {
-                    transform: scale(1.05);
-                }
-
-                &::after {
-                    opacity: 1;
+                    filter: brightness(1.15);
                 }
 
                 .play-icon {
                     opacity: 1;
                     transform: translate(-50%, -50%) scale(1);
                 }
-            }
-
-            .episode-title {
-                color: var(--primary-color);
             }
         }
     }

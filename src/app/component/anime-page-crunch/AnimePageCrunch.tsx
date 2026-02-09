@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Heart, Play, Star, Camera, MessageCircle, X, CheckCircle, PlayCircle, Pause, ChevronDown, Clock, ChevronUp, Shield, Crown, Verified, Send, Loader2, Bookmark, Calendar, BookOpen } from 'lucide-react';
+import { Heart, Play, Star, Camera, MessageCircle, X, CheckCircle, PlayCircle, Pause, ChevronDown, Clock, ChevronUp, Shield, Crown, Verified, Send, Loader2, Bookmark, Calendar, BookOpen, Link2 } from 'lucide-react';
 import '@/styles/components/anime-page-crunch.scss';
 import { API_SERVER } from '@/hosts/constants';
 import { getEpisodeProgress } from '@/utils/player/progressCache';
@@ -46,6 +46,20 @@ interface YumekoEpisode {
     maxQuality: string;
     screenshotPath: string | null;
     durationSeconds: number;
+}
+
+interface LibriaEpisode {
+    id: string;
+    name: string | null;
+    ordinal: number;
+    duration: number;
+    hls_480?: string;
+    hls_720?: string;
+    hls_1080?: string;
+    preview?: {
+        src: string;
+        thumbnail: string;
+    };
 }
 
 const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
@@ -93,6 +107,17 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
     // State for replying to a nested reply (shows form under specific reply)
     const [activeReplyId, setActiveReplyId] = useState<number | string | null>(null);
 
+    // Libria Episodes State
+    const [libriaEpisodes, setLibriaEpisodes] = useState<LibriaEpisode[]>([]);
+    const [isLibriaAvailable, setIsLibriaAvailable] = useState(false);
+    const [libriaLoading, setLibriaLoading] = useState(false);
+    const [episodeSource, setEpisodeSource] = useState<'libria' | 'yumeko'>('libria');
+    const [libriaAlias, setLibriaAlias] = useState<string>('');
+    const [isYumekoAvailable, setIsYumekoAvailable] = useState(false);
+
+    // Franchise State
+    const [hasFranchise, setHasFranchise] = useState(false);
+
     // Функция загрузки прогресса для эпизодов
     const loadEpisodeProgress = (episodes: YumekoEpisode[], voiceName: string) => {
         const progressMap: Record<number, { time: number; ratio: number }> = {};
@@ -113,32 +138,72 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
 
     // Загрузка озвучек при переключении на вкладку эпизодов
     useEffect(() => {
-        if (activeTab === 'episodes' && yumekoVoices.length === 0) {
-            setEpisodesLoading(true);
-            let voiceName = '';
-            fetch(`${API_SERVER}/api/yumeko/anime/${animeId}/voices`)
-                .then(res => res.ok ? res.json() : [])
-                .then((voices: YumekoVoice[]) => {
-                    setYumekoVoices(voices);
-                    if (voices.length > 0) {
-                        setSelectedVoice(voices[0]);
-                        voiceName = voices[0].name;
-                        return fetch(`${API_SERVER}/api/yumeko/voices/${voices[0].id}/episodes`);
-                    }
-                    return null;
-                })
-                .then(res => res?.ok ? res.json() : [])
-                .then((episodes: YumekoEpisode[]) => {
-                    if (episodes) {
-                        setYumekoEpisodes(episodes);
-                        loadEpisodeProgress(episodes, voiceName);
-                    }
-                })
-                .catch(console.error)
-                .finally(() => setEpisodesLoading(false));
+        if (activeTab === 'episodes') {
+            // Загрузка Yumeko
+            if (yumekoVoices.length === 0) {
+                setEpisodesLoading(true);
+                let voiceName = '';
+                fetch(`${API_SERVER}/api/yumeko/anime/${animeId}/voices`)
+                    .then(res => res.ok ? res.json() : [])
+                    .then((voices: YumekoVoice[]) => {
+                        setYumekoVoices(voices);
+                        if (voices.length > 0) {
+                            setIsYumekoAvailable(true);
+                            setSelectedVoice(voices[0]);
+                            voiceName = voices[0].name;
+                            return fetch(`${API_SERVER}/api/yumeko/voices/${voices[0].id}/episodes`);
+                        }
+                        setIsYumekoAvailable(false);
+                        return null;
+                    })
+                    .then(res => res?.ok ? res.json() : [])
+                    .then((episodes: YumekoEpisode[]) => {
+                        if (episodes) {
+                            setYumekoEpisodes(episodes);
+                            loadEpisodeProgress(episodes, voiceName);
+                        }
+                    })
+                    .catch(console.error)
+                    .finally(() => setEpisodesLoading(false));
+            }
+
+            // Загрузка Libria
+            if (libriaEpisodes.length === 0) {
+                setLibriaLoading(true);
+                fetch(`${API_SERVER}/api/libria/episodes/${animeId}`)
+                    .then(res => res.ok ? res.json() : null)
+                    .then(async (data) => {
+                        if (data?.apiUrl && data?.alias) {
+                            setLibriaAlias(data.alias);
+                            const libriaRes = await fetch(data.apiUrl);
+                            const libriaData = await libriaRes.json();
+                            if (libriaData.episodes && Array.isArray(libriaData.episodes)) {
+                                setLibriaEpisodes(libriaData.episodes);
+                                setIsLibriaAvailable(true);
+                                setEpisodeSource('libria');
+                            }
+                        }
+                    })
+                    .catch(() => setIsLibriaAvailable(false))
+                    .finally(() => setLibriaLoading(false));
+            }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeTab, animeId, yumekoVoices.length]);
+    }, [activeTab, animeId, yumekoVoices.length, libriaEpisodes.length]);
+
+    // Check franchise availability on mount
+    useEffect(() => {
+        fetch(`${API_SERVER}/api/anime/franchise-chain/anime/${animeId}`)
+            .then(res => res.ok ? res.json() : [])
+            .then((data) => {
+                if (Array.isArray(data) && data.length > 0) {
+                    setHasFranchise(true);
+                } else {
+                    setHasFranchise(false);
+                }
+            })
+            .catch(() => setHasFranchise(false));
+    }, [animeId]);
 
     // Загрузка эпизодов при смене озвучки (без полной перезагрузки блока)
     const handleVoiceChange = async (voice: YumekoVoice) => {
@@ -471,101 +536,181 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                             <MessageCircle size={18} />
                             Комментарии {comments.length > 0 && `(${comments.length})`}
                         </button>
+                        {hasFranchise && (
+                            <button
+                                className={`crunch-tab ${activeTab === 'related' ? 'active' : ''}`}
+                                onClick={() => handleTabChange('related')}
+                            >
+                                <Link2 size={18} />
+                                Связанное
+                            </button>
+                        )}
+                        <button
+                            className={`crunch-tab ${activeTab === 'similar' ? 'active' : ''}`}
+                            onClick={() => handleTabChange('similar')}
+                        >
+                            <Heart size={18} />
+                            Похожее
+                        </button>
                     </div>
 
                     <div className="crunch-tab-content">
                         {activeTab === 'episodes' && (
                             <div className="crunch-episodes">
-                                {episodesLoading ? (
+                                {(libriaLoading || episodesLoading) ? (
                                     <div className="loading-state">
                                         <Loader2 size={32} className="spinning" />
                                         <span>Загрузка эпизодов...</span>
                                     </div>
-                                ) : yumekoVoices.length > 0 && yumekoEpisodes.length > 0 ? (
+                                ) : (isLibriaAvailable || isYumekoAvailable) ? (
                                     <div className="episodes-content">
-                                        {/* Выбор озвучки */}
-                                        {yumekoVoices.length > 1 && (
-                                            <div className="voice-selector">
-                                                <span className="voice-label">Озвучка:</span>
-                                                <div className="voice-buttons">
-                                                    {yumekoVoices.map(voice => (
-                                                        <button
-                                                            key={voice.id}
-                                                            className={`voice-btn ${selectedVoice?.id === voice.id ? 'active' : ''}`}
-                                                            onClick={() => handleVoiceChange(voice)}
-                                                        >
-                                                            {voice.name}
-                                                        </button>
-                                                    ))}
-                                                </div>
+                                        {/* Source Sub-tabs */}
+                                        {isLibriaAvailable && isYumekoAvailable && (
+                                            <div className="source-tabs">
+                                                <button
+                                                    className={`source-tab ${episodeSource === 'libria' ? 'active' : ''}`}
+                                                    onClick={() => setEpisodeSource('libria')}
+                                                >
+                                                    Libria
+                                                </button>
+                                                <button
+                                                    className={`source-tab ${episodeSource === 'yumeko' ? 'active' : ''}`}
+                                                    onClick={() => setEpisodeSource('yumeko')}
+                                                >
+                                                    Yumeko
+                                                </button>
                                             </div>
                                         )}
 
-                                        {/* Сетка эпизодов */}
-                                        <div className={`episodes-grid ${voiceChanging ? 'loading' : ''}`}>
-                                            {voiceChanging && (
-                                                <div className="episodes-loading-overlay">
-                                                    <Loader2 size={24} className="spinning" />
-                                                </div>
-                                            )}
-                                            {yumekoEpisodes.map(episode => {
-                                                const progress = episodeProgress[episode.episodeNumber];
-                                                const watchedMin = progress ? Math.floor(progress.time / 60) : 0;
-                                                return (
+                                        {/* Source label if only one source */}
+                                        {isLibriaAvailable && !isYumekoAvailable && (
+                                            <div className="source-label">источник Libria</div>
+                                        )}
+                                        {!isLibriaAvailable && isYumekoAvailable && (
+                                            <div className="source-label">источник Yumeko</div>
+                                        )}
+
+                                        {/* Libria Episodes */}
+                                        {((episodeSource === 'libria' && isLibriaAvailable) || (!isYumekoAvailable && isLibriaAvailable)) && (
+                                            <div className="episodes-grid">
+                                                {libriaEpisodes.map(episode => (
                                                     <Link
                                                         key={episode.id}
-                                                        href={`/watch/anime/${animeId}?source=yumeko&voiceId=${selectedVoice?.id}&voiceName=${encodeURIComponent(selectedVoice?.name || '')}&episodeId=${episode.id}&episodeNumber=${episode.episodeNumber}&title=${encodeURIComponent(anime.title || '')}&cover=${anime.coverUrl || ''}`}
+                                                        href={`/watch/anime/${animeId}?source=libria&alias=${encodeURIComponent(libriaAlias)}&episode=${episode.ordinal}&title=${encodeURIComponent(anime.title || '')}&cover=${anime.coverUrl || ''}`}
                                                         className="episode-card"
                                                     >
                                                         <div className="episode-thumbnail">
-                                                            {episode.screenshotPath ? (
+                                                            {episode.preview?.src ? (
                                                                 <Image
-                                                                    src={`${API_SERVER}/api/video/screenshot/${episode.screenshotPath}`}
-                                                                    alt={`Эпизод ${episode.episodeNumber}`}
+                                                                    src={`https://aniliberty.top${episode.preview.src}`}
+                                                                    alt={`Эпизод ${episode.ordinal}`}
                                                                     fill
                                                                     style={{ objectFit: 'cover' }}
+                                                                    unoptimized
                                                                 />
                                                             ) : (
                                                                 <div className="episode-placeholder">
                                                                     <PlayCircle size={32} />
                                                                 </div>
                                                             )}
-                                                            <div className="episode-quality">{episode.maxQuality}</div>
-                                                            {/* Прогресс-бар */}
-                                                            {progress && progress.ratio > 0 && (
-                                                                <div className="episode-progress-bar">
-                                                                    <div
-                                                                        className="episode-progress-fill"
-                                                                        style={{ width: `${progress.ratio * 100}%` }}
-                                                                    />
+                                                            {/* Duration badge */}
+                                                            {episode.duration && (
+                                                                <div className="episode-duration-badge">
+                                                                    {Math.floor(episode.duration / 60)}:{String(episode.duration % 60).padStart(2, '0')}
                                                                 </div>
                                                             )}
-                                                        </div>
-                                                        <div className="episode-info">
-                                                            <div className="episode-info-row">
-                                                                <span className="episode-number">Эпизод {episode.episodeNumber}</span>
-                                                                {progress && progress.time > 0 && (
-                                                                    <span className="episode-watched">{watchedMin} мин</span>
-                                                                )}
+                                                            {/* Info overlay */}
+                                                            <div className="episode-info-overlay">
+                                                                {episode.name && <span className="episode-name">{episode.name}</span>}
+                                                                <span className="episode-number">{episode.ordinal} эпизод</span>
                                                             </div>
-                                                            <span className="episode-duration">
-                                                                {episode.durationSeconds > 0
-                                                                    ? `${Math.floor(episode.durationSeconds / 60)} мин`
-                                                                    : episode.title || ''}
-                                                            </span>
                                                         </div>
                                                     </Link>
-                                                );
-                                            })}
-                                        </div>
+                                                ))}
+                                            </div>
+                                        )}
+
+                                        {/* Yumeko Episodes */}
+                                        {((episodeSource === 'yumeko' && isYumekoAvailable) || (!isLibriaAvailable && isYumekoAvailable)) && (
+                                            <>
+                                                {/* Voice selector */}
+                                                {yumekoVoices.length > 1 && (
+                                                    <div className="voice-selector">
+                                                        <span className="voice-label">Озвучка:</span>
+                                                        <div className="voice-buttons">
+                                                            {yumekoVoices.map(voice => (
+                                                                <button
+                                                                    key={voice.id}
+                                                                    className={`voice-btn ${selectedVoice?.id === voice.id ? 'active' : ''}`}
+                                                                    onClick={() => handleVoiceChange(voice)}
+                                                                >
+                                                                    {voice.name}
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                {/* Episodes Grid */}
+                                                <div className={`episodes-grid ${voiceChanging ? 'loading' : ''}`}>
+                                                    {voiceChanging && (
+                                                        <div className="episodes-loading-overlay">
+                                                            <Loader2 size={24} className="spinning" />
+                                                        </div>
+                                                    )}
+                                                    {yumekoEpisodes.map(episode => {
+                                                        const progress = episodeProgress[episode.episodeNumber];
+                                                        const watchedMin = progress ? Math.floor(progress.time / 60) : 0;
+                                                        return (
+                                                            <Link
+                                                                key={episode.id}
+                                                                href={`/watch/anime/${animeId}?source=yumeko&voiceId=${selectedVoice?.id}&voiceName=${encodeURIComponent(selectedVoice?.name || '')}&episodeId=${episode.id}&episodeNumber=${episode.episodeNumber}&title=${encodeURIComponent(anime.title || '')}&cover=${anime.coverUrl || ''}`}
+                                                                className="episode-card"
+                                                            >
+                                                                <div className="episode-thumbnail">
+                                                                    {episode.screenshotPath ? (
+                                                                        <Image
+                                                                            src={`${API_SERVER}/api/video/screenshot/${episode.screenshotPath}`}
+                                                                            alt={`Эпизод ${episode.episodeNumber}`}
+                                                                            fill
+                                                                            style={{ objectFit: 'cover' }}
+                                                                        />
+                                                                    ) : (
+                                                                        <div className="episode-placeholder">
+                                                                            <PlayCircle size={32} />
+                                                                        </div>
+                                                                    )}
+                                                                    <div className="episode-quality">{episode.maxQuality}</div>
+                                                                    {progress && progress.ratio > 0 && (
+                                                                        <div className="episode-progress-bar">
+                                                                            <div
+                                                                                className="episode-progress-fill"
+                                                                                style={{ width: `${progress.ratio * 100}%` }}
+                                                                            />
+                                                                        </div>
+                                                                    )}
+                                                                    {/* Info overlay */}
+                                                                    <div className="episode-info-overlay">
+                                                                        {progress && progress.time > 0 && (
+                                                                            <span className="episode-name">{watchedMin} мин просмотрено</span>
+                                                                        )}
+                                                                        <span className="episode-number">{episode.episodeNumber} эпизод</span>
+                                                                    </div>
+                                                                </div>
+                                                            </Link>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </>
+                                        )}
                                     </div>
                                 ) : (
                                     <div className="empty-state">
                                         <PlayCircle size={48} strokeWidth={1.5} />
-                                        <h3>Эпизоды отсутствуют</h3>
-                                        <p>Ещё нету серий в нашем источнике, но скоро обязательно появятся.</p>
+                                        <h3>Эпизоды недоступны</h3>
+                                        <p>Для этого аниме пока нет эпизодов.</p>
                                         <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '8px' }}>
-                                            А пока воспользуйтесь внешними источниками при нажатии на кнопку «Смотреть»
+                                            Воспользуйтесь внешними источниками при нажатии на кнопку «Смотреть»
                                         </p>
                                     </div>
                                 )}
@@ -1099,15 +1244,25 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                 )}
                             </div>
                         )}
+
+                        {/* Related Tab (Franchise) */}
+                        {activeTab === 'related' && (
+                            <div className="crunch-related">
+                                <FranchiseSection animeId={Number(animeId)} />
+                            </div>
+                        )}
+
+                        {/* Similar Tab */}
+                        {activeTab === 'similar' && (
+                            <div className="crunch-similar">
+                                <SimilarAnimeSection animeId={Number(animeId)} genres={anime.genres || ''} />
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
 
-            {/* Франшиза и похожее */}
-            <div className="crunch-related-sections">
-                <FranchiseSection animeId={Number(animeId)} />
-                <SimilarAnimeSection animeId={Number(animeId)} genres={anime.genres || ''} />
-            </div>
+
 
             {/* Модальные окна */}
             <CommentsModal

@@ -63,10 +63,17 @@ export const usePlayerData = (
         if (currentPlayer === 'anicat') {
             const fetchLibria = async () => {
                 try {
-                    const res = await fetch(`${API_SERVER}/api/libria/episodes/${animeId}`);
-                    if (!res.ok) return;
+                    // Шаг 1: Получаем alias и apiUrl от бэкенда
+                    const backendRes = await fetch(`${API_SERVER}/api/libria/episodes/${animeId}`);
+                    if (!backendRes.ok) return;
+                    const { apiUrl } = await backendRes.json();
 
-                    const data: LibriaEpisode[] = await res.json();
+                    // Шаг 2: Используем apiUrl для получения эпизодов напрямую
+                    const libraRes = await fetch(apiUrl);
+                    if (!libraRes.ok) return;
+                    const libraData = await libraRes.json();
+                    const data: LibriaEpisode[] = libraData.episodes || [];
+
                     if (!data || data.length === 0) return;
 
                     // Логируем полученные эпизоды и ссылки на видео

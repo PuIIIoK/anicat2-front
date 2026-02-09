@@ -77,7 +77,7 @@
       object-fit: cover;
       object-position: center center;
     }
-    
+
     .cr-hero-dark {
       position: absolute;
       inset: 0;
@@ -89,13 +89,11 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(
-        90deg,
-        var(--bg-primary) 0%,
-        rgba(var(--bg-primary-rgb, 17, 17, 17), 0.9) 30%,
-        rgba(var(--bg-primary-rgb, 17, 17, 17), 0.5) 55%,
-        transparent 100%
-      );
+      background: linear-gradient(90deg,
+          var(--bg-primary) 0%,
+          rgba(var(--bg-primary-rgb, 17, 17, 17), 0.9) 30%,
+          rgba(var(--bg-primary-rgb, 17, 17, 17), 0.5) 55%,
+          transparent 100%);
     }
 
     // Градиент снизу
@@ -252,7 +250,7 @@
       padding: 6px 16px;
       background: var(--primary-color);
       border-radius: 20px;
-      
+
       svg {
         color: #fff;
       }
@@ -265,20 +263,38 @@
 
       &.ongoing {
         background: rgba(34, 197, 94, 0.2);
-        span { color: #4ade80; }
-        svg { color: #4ade80; }
+
+        span {
+          color: #4ade80;
+        }
+
+        svg {
+          color: #4ade80;
+        }
       }
 
       &.announced {
         background: rgba(234, 179, 8, 0.2);
-        span { color: #facc15; }
-        svg { color: #facc15; }
+
+        span {
+          color: #facc15;
+        }
+
+        svg {
+          color: #facc15;
+        }
       }
 
       &.completed {
         background: rgba(249, 115, 22, 0.2);
-        span { color: #fb923c; }
-        svg { color: #fb923c; }
+
+        span {
+          color: #fb923c;
+        }
+
+        svg {
+          color: #fb923c;
+        }
       }
     }
   }
@@ -379,7 +395,7 @@
     &.active {
       background: var(--primary-bg);
       border-color: var(--primary-color);
-      
+
       svg {
         color: var(--primary-color);
       }
@@ -415,28 +431,28 @@
       opacity: 0.6;
       cursor: not-allowed;
     }
-    
+
     // Цветные обводки по статусу
     &.status-completed {
       border-color: #3b82f6;
       box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.3);
     }
-    
+
     &.status-watching {
       border-color: #22c55e;
       box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.3);
     }
-    
+
     &.status-planned {
       border-color: var(--primary-color);
       box-shadow: 0 0 0 1px rgba(var(--primary-rgb), 0.3);
     }
-    
+
     &.status-paused {
       border-color: #eab308;
       box-shadow: 0 0 0 1px rgba(234, 179, 8, 0.3);
     }
-    
+
     &.status-dropped {
       border-color: #ef4444;
       box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.3);
@@ -459,7 +475,7 @@
   line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  
+
   &.expanded {
     display: block;
     -webkit-line-clamp: unset;
@@ -476,7 +492,7 @@
   cursor: pointer;
   padding: 0;
   transition: opacity 0.2s;
-  
+
   &:hover {
     opacity: 0.8;
   }
@@ -489,7 +505,7 @@
   gap: 8px;
   margin-bottom: 16px;
   max-width: 450px;
-  
+
   .cr-notice {
     display: flex;
     align-items: flex-start;
@@ -498,29 +514,29 @@
     border-radius: 10px;
     font-size: 0.9rem;
     line-height: 1.4;
-    
+
     svg {
       flex-shrink: 0;
       margin-top: 2px;
     }
-    
+
     span {
       color: var(--text-primary);
     }
-    
+
     &.info {
       background: rgba(234, 179, 8, 0.15);
       border: 1px solid rgba(234, 179, 8, 0.3);
-      
+
       svg {
         color: #facc15;
       }
     }
-    
+
     &.blocked {
       background: rgba(239, 68, 68, 0.15);
       border: 1px solid rgba(239, 68, 68, 0.3);
-      
+
       svg {
         color: #ef4444;
       }
@@ -727,7 +743,7 @@
 
     .hero-bg-image {
       object-fit: cover;
-      
+
       &.blur {
         filter: blur(20px);
         transform: scale(1.1);
@@ -737,12 +753,10 @@
     .hero-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 0.3) 0%,
-        rgba(0, 0, 0, 0.5) 50%,
-        var(--bg-primary) 100%
-      );
+      background: linear-gradient(to bottom,
+          rgba(0, 0, 0, 0.3) 0%,
+          rgba(0, 0, 0, 0.5) 50%,
+          var(--bg-primary) 100%);
     }
   }
 
@@ -1075,38 +1089,48 @@
         background: var(--primary-bg);
         color: var(--primary-color);
       }
-      
+
       // Цветные обводки при hover и active
       &.item-completed {
-        &:hover, &.active {
+
+        &:hover,
+        &.active {
           border-color: #3b82f6;
           background: rgba(59, 130, 246, 0.1);
         }
       }
-      
+
       &.item-watching {
-        &:hover, &.active {
+
+        &:hover,
+        &.active {
           border-color: #22c55e;
           background: rgba(34, 197, 94, 0.1);
         }
       }
-      
+
       &.item-planned {
-        &:hover, &.active {
+
+        &:hover,
+        &.active {
           border-color: var(--primary-color);
           background: rgba(var(--primary-rgb), 0.1);
         }
       }
-      
+
       &.item-paused {
-        &:hover, &.active {
+
+        &:hover,
+        &.active {
           border-color: #eab308;
           background: rgba(234, 179, 8, 0.1);
         }
       }
-      
+
       &.item-dropped {
-        &:hover, &.active {
+
+        &:hover,
+        &.active {
           border-color: #ef4444;
           background: rgba(239, 68, 68, 0.1);
         }
@@ -1171,7 +1195,7 @@
 .crunch-tabs-section {
   padding: 30px 40px 60px;
   padding-left: 275px; // 40px + 200px (poster) + 35px (gap)
-  
+
   .crunch-container {
     max-width: none;
     margin: 0;
@@ -1213,7 +1237,7 @@
   &.active {
     color: var(--primary-color);
     border-bottom-color: var(--primary-color);
-    
+
     svg {
       color: var(--primary-color);
     }
@@ -1229,6 +1253,46 @@
   min-height: 300px;
 }
 
+// Source sub-tabs for episodes (shared with modern page)
+.source-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 4px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  width: fit-content;
+}
+
+.source-tab {
+  padding: 8px 16px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  &.active {
+    background: rgba(var(--primary-color-rgb), 0.2);
+    color: var(--primary-color);
+  }
+}
+
+.source-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  opacity: 0.7;
+}
+
 // ===== Screenshots =====
 .crunch-screenshots {
   .screenshots-grid {
@@ -1237,7 +1301,7 @@
     gap: 12px;
 
     // Стилизация карточек скриншотов
-    > div {
+    >div {
       aspect-ratio: 16 / 9;
       border-radius: 10px;
       overflow: hidden;
@@ -1280,7 +1344,7 @@
 .cr-page .crunch-tabs-section .crunch-reviews,
 .cr-page .crunch-tabs-section .crunch-comments {
   max-width: 700px;
-  
+
   .reviews-list,
   .comments-list {
     display: flex;
@@ -1314,7 +1378,7 @@
   }
 
   // Звёзды ПОСЛЕ наведённой - обратно серые
-  .cr-star-label:hover ~ .cr-star-label svg {
+  .cr-star-label:hover~.cr-star-label svg {
     color: var(--text-muted) !important;
     fill: transparent !important;
   }
@@ -1371,13 +1435,13 @@
         }
 
         &:hover svg,
-        &:hover ~ .cr-star-label svg {
+        &:hover~.cr-star-label svg {
           color: #f5a623 !important;
           fill: #f5a623 !important;
         }
 
         &:has(input:checked) svg,
-        &:has(input:checked) ~ .cr-star-label svg {
+        &:has(input:checked)~.cr-star-label svg {
           color: #f5a623 !important;
           fill: #f5a623 !important;
         }
@@ -1495,8 +1559,8 @@
       }
 
       &:hover svg,
-      &:hover ~ .star-label svg,
-      input:checked ~ svg {
+      &:hover~.star-label svg,
+      input:checked~svg {
         color: #f5a623;
         fill: #f5a623;
       }
@@ -1525,6 +1589,7 @@
 }
 
 .cr-page {
+
   .review-card,
   .comment-card,
   .review-item,
@@ -1604,6 +1669,7 @@
       line-height: 1.6;
       font-size: 0.95rem;
     }
+
     .comment-actions {
       display: flex;
       gap: 12px;
@@ -1695,8 +1761,13 @@
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 // ===== Responsive =====
@@ -1761,7 +1832,7 @@
 
   .crunch-tabs {
     overflow-x: auto;
-    
+
     .crunch-tab {
       padding: 12px 16px;
       white-space: nowrap;
@@ -1866,39 +1937,40 @@
 
 // ===== Секции Похожее и Франшиза для crunch страницы =====
 .cr-page {
+
   .similar-section,
   .franchise-section {
     max-width: none;
     margin: 0;
-    
+
     // Убраны все медиа-запросы, так как карточки все равно по 1 штуке
-    
+
     .similar-section-header,
     .franchise-section-header {
       margin-bottom: 20px;
       padding: 0 0 12px 0;
-      
+
       &::after {
         width: 80px;
       }
-      
+
       h2 {
         font-size: 1.3rem;
         font-weight: 700;
         gap: 10px;
-        
+
         &::after {
           display: none;
         }
       }
-      
+
       .section-icon {
         animation: none;
         filter: none;
         color: var(--primary-color);
       }
     }
-    
+
     .similar-list,
     .franchise-list {
       display: flex !important;
@@ -1906,19 +1978,19 @@
       flex-wrap: wrap !important;
       gap: 20px !important;
       max-width: none;
-      
+
       // Переопределяем стили yumeko-anime-card
       .yumeko-anime-card {
         width: 180px !important;
         flex-shrink: 0 !important;
         margin: 0 !important;
-        
+
         .yumeko-anime-card-cover {
           width: 180px !important;
           height: 255px !important;
         }
       }
-      
+
       // Убран медиа-запрос, так как карточки все равно по 1 штуке
     }
   }
@@ -1932,24 +2004,24 @@
     flex-direction: column;
     gap: 20px;
   }
-  
+
   .voice-selector {
     display: flex;
     align-items: center;
     gap: 12px;
     flex-wrap: wrap;
-    
+
     .voice-label {
       font-size: 0.9rem;
       color: var(--text-muted);
     }
-    
+
     .voice-buttons {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
     }
-    
+
     .voice-btn {
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
@@ -1959,11 +2031,11 @@
       color: var(--text-primary);
       cursor: pointer;
       transition: all 0.2s ease;
-      
+
       &:hover {
         border-color: var(--primary-color);
       }
-      
+
       &.active {
         background: var(--primary-color);
         border-color: var(--primary-color);
@@ -1971,19 +2043,19 @@
       }
     }
   }
-  
+
   .episodes-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
     position: relative;
     transition: opacity 0.2s ease;
-    
+
     &.loading {
       opacity: 0.5;
       pointer-events: none;
     }
-    
+
     .episodes-loading-overlay {
       position: absolute;
       top: 50%;
@@ -1993,7 +2065,7 @@
       color: var(--primary-color);
     }
   }
-  
+
   .episode-card {
     position: relative;
     border-radius: 12px;
@@ -2001,27 +2073,25 @@
     text-decoration: none;
     color: inherit;
     transition: all 0.2s ease;
-    
+
     &:hover {
-      transform: translateY(-4px);
-      
       .episode-thumbnail img {
-        transform: scale(1.08);
+        filter: brightness(1.15);
       }
     }
   }
-  
+
   .episode-thumbnail {
     position: relative;
     aspect-ratio: 16 / 9;
     background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
     overflow: hidden;
     border-radius: 12px;
-    
+
     img {
-      transition: transform 0.3s ease;
+      transition: filter 0.25s ease;
     }
-    
+
     // Градиент снизу для текста
     &::after {
       content: '';
@@ -2033,7 +2103,7 @@
       background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, transparent 100%);
       pointer-events: none;
     }
-    
+
     .episode-placeholder {
       display: flex;
       align-items: center;
@@ -2042,7 +2112,7 @@
       height: 100%;
       color: var(--text-muted);
     }
-    
+
     .episode-quality {
       position: absolute;
       top: 10px;
@@ -2057,7 +2127,7 @@
       letter-spacing: 0.5px;
       z-index: 2;
     }
-    
+
     .episode-progress-bar {
       position: absolute;
       bottom: 0;
@@ -2066,15 +2136,54 @@
       height: 4px;
       background: rgba(255, 255, 255, 0.2);
       z-index: 3;
-      
+
       .episode-progress-fill {
         height: 100%;
         background: var(--primary-color);
         transition: width 0.3s ease;
       }
     }
+
+    // Duration badge (top right)
+    .episode-duration-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(0, 0, 0, 0.75);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+      color: #fff;
+      z-index: 3;
+    }
+
+    // Info overlay (bottom)
+    .episode-info-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 30px 12px 10px;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, transparent 100%);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      z-index: 3;
+
+      .episode-name {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      .episode-number {
+        font-size: 13px;
+        font-weight: 600;
+        color: #fff;
+      }
+    }
   }
-  
+
   .episode-info {
     position: absolute;
     bottom: 0;
@@ -2085,20 +2194,20 @@
     display: flex;
     flex-direction: column;
     gap: 2px;
-    
+
     .episode-info-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
     }
-    
+
     .episode-number {
       font-size: 0.95rem;
       font-weight: 600;
       color: #fff;
     }
-    
+
     .episode-watched {
       font-size: 0.75rem;
       font-weight: 500;
@@ -2107,31 +2216,31 @@
       padding: 2px 8px;
       border-radius: 4px;
     }
-    
+
     .episode-duration {
       font-size: 0.8rem;
       color: rgba(255, 255, 255, 0.6);
     }
   }
-  
+
   @media (max-width: 768px) {
     .episodes-grid {
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
       gap: 12px;
     }
-    
+
     .episode-info {
       padding: 10px 12px;
-      
+
       .episode-number {
         font-size: 0.85rem;
       }
-      
+
       .episode-duration {
         font-size: 0.7rem;
       }
     }
-    
+
     .episode-thumbnail .episode-quality {
       padding: 3px 8px;
       font-size: 0.65rem;
@@ -2146,108 +2255,111 @@
     animation: pulse 1.5s ease-in-out infinite;
     border-radius: 8px;
   }
-  
+
   @keyframes pulse {
-    0%, 100% { 
+
+    0%,
+    100% {
       opacity: 1;
       background: rgba(255, 255, 255, 0.08);
     }
-    50% { 
+
+    50% {
       opacity: 0.5;
       background: rgba(255, 255, 255, 0.04);
     }
   }
-  
+
   .cr-poster {
     width: 100%;
     min-height: 350px;
     border-radius: 16px;
   }
-  
+
   .skeleton-tag {
     height: 28px;
     border-radius: 14px;
     display: inline-block;
   }
-  
+
   .skeleton-title {
     border-radius: 8px;
   }
-  
+
   .skeleton-subtitle {
     border-radius: 6px;
   }
-  
+
   .skeleton-badge {
     border-radius: 20px;
   }
-  
+
   .skeleton-rating {
     border-radius: 6px;
   }
-  
+
   .skeleton-btn {
     border-radius: 10px;
   }
-  
+
   .skeleton-info-item {
     height: 60px;
     border-radius: 12px;
   }
-  
+
   .skeleton-description {
     display: flex;
     flex-direction: column;
     gap: 8px;
     margin-top: 16px;
-    
+
     .skeleton-line {
       height: 16px;
       border-radius: 4px;
     }
   }
-  
+
   .skeleton-tab {
     height: 44px;
     border-radius: 10px;
   }
-  
+
   .skeleton-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 16px;
-    
+
     .skeleton-card {
       aspect-ratio: 16/9;
       border-radius: 12px;
     }
   }
-  
+
   .cr-tags {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
     margin-bottom: 16px;
   }
-  
+
   .cr-quick-info {
     display: flex;
     gap: 12px;
     margin-bottom: 16px;
   }
-  
+
   .cr-actions {
     display: flex;
     gap: 10px;
     margin-bottom: 16px;
   }
-  
+
   .cr-info-card {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 8px;
   }
-  
+
   .crunch-tabs {
     display: flex;
     gap: 8px;

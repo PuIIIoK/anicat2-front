@@ -85,15 +85,15 @@ export default function SourceSelectionModal({
             if (response.ok) {
                 const data: YumekoEpisode[] = await response.json();
                 setEpisodes(data);
-                
+
                 // Загрузка прогресса для каждого эпизода
                 const progressMap: Record<number, { time: number; ratio: number }> = {};
                 data.forEach(ep => {
-                    const prog = getEpisodeProgress({ 
-                        animeId, 
-                        source: 'yumeko', 
-                        voice: voiceName, 
-                        episodeId: ep.episodeNumber 
+                    const prog = getEpisodeProgress({
+                        animeId,
+                        source: 'yumeko',
+                        voice: voiceName,
+                        episodeId: ep.episodeNumber
                     });
                     if (prog && prog.duration > 0) {
                         const ratio = Math.max(0, Math.min(1, prog.time / prog.duration));
@@ -112,7 +112,7 @@ export default function SourceSelectionModal({
     const handleKodikSelect = () => {
         // Проверяем, показывали ли предупреждение раньше
         const warningShown = localStorage.getItem('externalSourceWarningShown');
-        
+
         if (warningShown === 'true') {
             // Если уже показывали, сразу переходим
             proceedToExternalSource();
@@ -121,7 +121,7 @@ export default function SourceSelectionModal({
             setShowExternalWarning(true);
         }
     };
-    
+
     const proceedToExternalSource = () => {
         // Переход на страницу выбора стороннего источника (Kodik/Анилибрия)
         const baseParams = new URLSearchParams({
@@ -132,14 +132,24 @@ export default function SourceSelectionModal({
         onSourceSelect(`/watch-another-source/${animeId}?${baseParams.toString()}`);
         onClose();
     };
-    
+
+    const handleLibriaSelect = () => {
+        // Переход напрямую на плеер с источником Libria (без Kodik)
+        const baseParams = new URLSearchParams({
+            title: animeTitle || '',
+            forceSource: 'libria'
+        });
+        onSourceSelect(`/watch-another-source/${animeId}?${baseParams.toString()}`);
+        onClose();
+    };
+
     const handleAcceptWarning = () => {
         // Сохраняем что пользователь принял предупреждение
         localStorage.setItem('externalSourceWarningShown', 'true');
         setShowExternalWarning(false);
         proceedToExternalSource();
     };
-    
+
     const handleCloseWarning = () => {
         setShowExternalWarning(false);
     };
@@ -161,7 +171,7 @@ export default function SourceSelectionModal({
 
     const handleEpisodeSelect = (episode: YumekoEpisode) => {
         if (!selectedVoice) return;
-        
+
         // Переход на плеер с Yumeko (наш источник)
         const params = new URLSearchParams({
             source: 'yumeko',
@@ -203,20 +213,34 @@ export default function SourceSelectionModal({
                         </div>
 
                         <div className="source-selection-content">
-                            {/* Сторонний источник (Со сторонними плеерами) */}
+                            {/* Источник Libria (с синхронизацией) */}
+                            <div className="source-option libria" onClick={handleLibriaSelect}>
+                                <div className="source-option-icon libria">
+                                    <Tv size={32} strokeWidth={2} />
+                                </div>
+                                <div className="source-option-content">
+                                    <h3 className="source-option-title">Libria (Анилибрия)</h3>
+                                    <p className="source-option-description">
+                                        С синхронизацией, 1080p качество, озвучка от Анилибрии
+                                    </p>
+                                    <p className="source-option-sync-info">
+                                        <span className="sync-success">✓ СИНХРОНИЗАЦИЯ РАБОТАЕТ!</span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Сторонний источник Kodik (без синхронизации) */}
                             <div className="source-option" onClick={handleKodikSelect}>
                                 <div className="source-option-icon">
                                     <ExternalLink size={32} strokeWidth={2} />
                                 </div>
                                 <div className="source-option-content">
-                                    <h3 className="source-option-title">Внешние источники</h3>
+                                    <h3 className="source-option-title">Kodik (много озвучек)</h3>
                                     <p className="source-option-description">
-                                        Со сторонними плеерами, без наших плюшек
+                                        Сторонний плеер, много озвучек, до 720p
                                     </p>
                                     <p className="source-option-sync-info">
-                                        <span className="sync-warning">Для источника Kodik - СИНХРОНИЗАЦИЯ НЕ РАБОТАЕТ</span>
-                                        {' | '}
-                                        <span className="sync-success">Для источника Libria - СИНХРОНИЗАЦИЯ РАБОТАЕТ!</span>
+                                        <span className="sync-warning">⚠ СИНХРОНИЗАЦИЯ НЕ РАБОТАЕТ</span>
                                     </p>
                                 </div>
                             </div>
@@ -350,8 +374,8 @@ export default function SourceSelectionModal({
                                                         {episode.maxQuality}
                                                     </div>
                                                     <div className="yumeko-episode-progress-bar">
-                                                        <div 
-                                                            className="yumeko-episode-progress-fill" 
+                                                        <div
+                                                            className="yumeko-episode-progress-fill"
                                                             style={{ width: `${episodeProgress[episode.episodeNumber]?.ratio ? episodeProgress[episode.episodeNumber].ratio * 100 : 0}%` }}
                                                         />
                                                     </div>
@@ -401,7 +425,7 @@ export default function SourceSelectionModal({
                                 <X size={20} strokeWidth={2} />
                             </button>
                         </div>
-                        
+
                         <div className="source-warning-content">
                             <div className="source-warning-section kodik-section">
                                 <div className="source-warning-section-header">
@@ -419,7 +443,7 @@ export default function SourceSelectionModal({
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div className="source-warning-section libria-section">
                                 <div className="source-warning-section-header">
                                     <div className="source-warning-section-icon">
@@ -429,7 +453,7 @@ export default function SourceSelectionModal({
                                 </div>
                                 <div className="source-warning-section-body">
                                     <p className="source-warning-text">
-                                        Источник Libria может иногда <strong>подвисать и грузить дольше</strong>. 
+                                        Источник Libria может иногда <strong>подвисать и грузить дольше</strong>.
                                         Если у вас есть с ним проблемы - пожалуйста, <strong>не паникуйте</strong>, подождите 5 минут.
                                     </p>
                                     <p className="source-warning-text">
@@ -438,7 +462,7 @@ export default function SourceSelectionModal({
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div className="source-warning-actions">
                             <button className="source-warning-btn accept" onClick={handleAcceptWarning}>
                                 Принять

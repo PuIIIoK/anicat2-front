@@ -5,14 +5,14 @@ export interface AnimeMeta {
     // Для внешних источников (Kodik)
     kodik?: string;
     alias?: string;
-    
+
     // Для источника Yumeko
     source?: 'kodik' | 'yumeko' | 'libria';
     voiceId?: number;
     voiceName?: string;
     episodeId?: number;
     episodeNumber?: number;
-    
+
     // Общие поля
     title?: string;
     name?: string;
@@ -65,6 +65,25 @@ export interface LibriaEpisode {
     number?: number | string;
     name?: string;
     duration?: number | string;
+    hls_480?: string;
+    hls_720?: string;
+    hls_1080?: string;
+    preview?: {
+        src?: string;
+        thumbnail?: string;
+        optimized?: {
+            src?: string;
+            thumbnail?: string;
+        };
+    };
+    opening?: {
+        start?: number | null;
+        stop?: number | null;
+    };
+    ending?: {
+        start?: number | null;
+        stop?: number | null;
+    };
     [key: string]: unknown;
 }
 
@@ -87,7 +106,7 @@ export async function fetchPlayerHls(animeId: string, source: 'kodik' | 'libria'
     if (source === 'yumeko') {
         return null;
     }
-    
+
     try {
         const res = await fetch(`${API_SERVER}/api/player/${source}/${animeId}`);
         if (!res.ok) {
@@ -151,20 +170,50 @@ export async function fetchKodikStream(anime: string, translation: string, episo
     }
 }
 
+// Response from our server's libria endpoint
+interface LibriaApiResponse {
+    apiUrl?: string;
+    alias?: string;
+}
+
+// Full response from Libria API
+interface LibriaFullResponse {
+    episodes?: LibriaEpisode[];
+    alias?: string;
+    [key: string]: unknown;
+}
+
 export async function fetchLibriaEpisodes(animeId: string): Promise<LibriaEpisode[] | null> {
     try {
-        // NOTE: endpoint expects an identifier. We now send animeId (DB id) instead of alias.
+        // Step 1: Get apiUrl from our server
         const res = await fetch(`${API_SERVER}/api/libria/episodes/${encodeURIComponent(animeId)}`);
         if (!res.ok) return null;
-        return await res.json() as LibriaEpisode[];
+
+        const data = await res.json() as LibriaApiResponse;
+
+        if (!data.apiUrl) {
+            console.error('fetchLibriaEpisodes: no apiUrl in response');
+            return null;
+        }
+
+        // Step 2: Fetch full data from Libria API
+        const libriaRes = await fetch(data.apiUrl);
+        if (!libriaRes.ok) return null;
+
+        const libriaData = await libriaRes.json() as LibriaFullResponse;
+
+        if (libriaData.episodes && Array.isArray(libriaData.episodes)) {
+            return libriaData.episodes;
+        }
+
+        return null;
     } catch (err) {
         console.error('fetchLibriaEpisodes error', err);
         return null;
     }
 }
 
-export async function fetchKodikEpisodesFromSearch(searchResponse: unknown): Promise<KodikSearchItem[]>
-{
+export async function fetchKodikEpisodesFromSearch(searchResponse: unknown): Promise<KodikSearchItem[]> {
     // Try to extract episodes list from common Kodik search result shapes
     if (!searchResponse) return [];
     if (Array.isArray(searchResponse)) return searchResponse as KodikSearchItem[];
@@ -196,7 +245,7 @@ function getLocalToken() {
 export async function fetchProgressForAnime(animeId: string): Promise<ProgressEntryDto[]> {
     try {
         const token = getLocalToken();
-        const headers: Record<string,string> = {};
+        const headers: Record<string, string> = {};
         if (token) headers['Authorization'] = `Bearer ${token}`;
         const res = await fetch(`${API_SERVER}/api/player/progress?animeId=${encodeURIComponent(animeId)}`, {
             method: 'GET',
@@ -216,14 +265,14 @@ export async function fetchLastWatchedProgress(animeId: string): Promise<Progres
     try {
         const allProgress = await fetchProgressForAnime(animeId);
         if (allProgress.length === 0) return null;
-        
+
         // Находим запись с самым поздним updatedAt
         const sorted = allProgress.sort((a, b) => {
             const timeA = a.updatedAt || 0;
             const timeB = b.updatedAt || 0;
             return timeB - timeA;
         });
-        
+
         return sorted[0];
     } catch (err) {
         console.error('fetchLastWatchedProgress error', err);
@@ -234,7 +283,7 @@ export async function fetchLastWatchedProgress(animeId: string): Promise<Progres
 export async function upsertProgressEntry(entry: Partial<ProgressEntryDto>): Promise<ProgressEntryDto | null> {
     try {
         const token = getLocalToken();
-        const headers: Record<string,string> = { 'Content-Type': 'application/json' };
+        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
         if (token) headers['Authorization'] = `Bearer ${token}`;
         const res = await fetch(`${API_SERVER}/api/player/progress/upsert`, {
             method: 'POST',
@@ -253,7 +302,7 @@ export async function upsertProgressEntry(entry: Partial<ProgressEntryDto>): Pro
 export async function upsertProgressBulk(entries: Array<Partial<ProgressEntryDto>>): Promise<ProgressEntryDto[] | null> {
     try {
         const token = getLocalToken();
-        const headers: Record<string,string> = { 'Content-Type': 'application/json' };
+        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
         if (token) headers['Authorization'] = `Bearer ${token}`;
         const res = await fetch(`${API_SERVER}/api/player/progress/bulk`, {
             method: 'POST',

@@ -15,7 +15,7 @@ import {
     Maximize,
     X
 } from 'lucide-react';
-import {API_SERVER} from '@/hosts/constants';
+import { API_SERVER } from '@/hosts/constants';
 
 
 
@@ -103,10 +103,18 @@ const AnimePlayer: React.FC<AnimePlayerProps> = ({ animeId }) => {
         }
     }, []);
     useEffect(() => {
+        // Шаг 1: Получаем alias от бэкенда
         fetch(`${API_SERVER}/api/libria/episodes/${animeId}`)
             .then((res) => res.json())
-            .then((data) => {
-                setEpisodes(data);
+            .then(async ({ apiUrl }) => {
+                // Шаг 2: Используем apiUrl для получения эпизодов напрямую от AniLibria
+                const libraResponse = await fetch(apiUrl);
+                if (!libraResponse.ok) {
+                    throw new Error("Ошибка загрузки эпизодов из AniLibria");
+                }
+                const libraData = await libraResponse.json();
+                const episodes = libraData.episodes || [];
+                setEpisodes(episodes);
 
                 const cookies = document.cookie.split(';').reduce((acc: Record<string, string>, cookie) => {
                     const [key, value] = cookie.trim().split('=');
@@ -116,9 +124,10 @@ const AnimePlayer: React.FC<AnimePlayerProps> = ({ animeId }) => {
 
                 const savedEpisodeId = cookies[`lastEpisodeId_${animeId}`];
 
-                const episodeToSet = data.find((ep: EpisodeApiResponse) => ep.id === savedEpisodeId) || data[0];
+                const episodeToSet = episodes.find((ep: EpisodeApiResponse) => ep.id === savedEpisodeId) || episodes[0];
                 setCurrentEpisodeId(episodeToSet.id);
-            });
+            })
+            .catch(err => console.error("Ошибка загрузки эпизодов:", err));
     }, [animeId]);
 
     useEffect(() => {
@@ -133,7 +142,7 @@ const AnimePlayer: React.FC<AnimePlayerProps> = ({ animeId }) => {
         hls.attachMedia(video);
 
         hls.on(Hls.Events.MANIFEST_PARSED, () => {
-            video.play().catch(() => {});
+            video.play().catch(() => { });
             setLoading(false);
         });
 
@@ -450,7 +459,7 @@ const AnimePlayer: React.FC<AnimePlayerProps> = ({ animeId }) => {
         };
     }, []);
 
-// форматирование времени
+    // форматирование времени
     const formatTime = (time: number) => {
         const minutes = Math.floor(time / 60)
             .toString()
@@ -485,7 +494,7 @@ const AnimePlayer: React.FC<AnimePlayerProps> = ({ animeId }) => {
     return (
         <div className="anime-player">
             <div className="player-wrapper">
-                {(loading || buffering) && <div className="buffer-spinner"/>}
+                {(loading || buffering) && <div className="buffer-spinner" />}
                 <video
                     ref={videoRef}
                     className="video"
@@ -545,8 +554,8 @@ const AnimePlayer: React.FC<AnimePlayerProps> = ({ animeId }) => {
                             <div className="playlist-header">
                                 Выбор эпизода
                                 <span className="playlist-close" onClick={() => setShowPlaylist(false)}>
-          <X size={20}/>
-        </span>
+                                    <X size={20} />
+                                </span>
                             </div>
                         </div>
                         <div className="playlist-scroll">
@@ -578,41 +587,41 @@ const AnimePlayer: React.FC<AnimePlayerProps> = ({ animeId }) => {
                             {settingsScreen === 'main' && 'Настройки'}
                             {settingsScreen === 'quality' && (
                                 <>
-                                    <span style={{cursor: 'pointer'}}
-                                          onClick={() => setSettingsScreen('main')}>←&nbsp;</span>Настройки
+                                    <span style={{ cursor: 'pointer' }}
+                                        onClick={() => setSettingsScreen('main')}>←&nbsp;</span>Настройки
                                     /&nbsp;Качество
                                 </>
                             )}
                             {settingsScreen === 'speed' && (
                                 <>
-                                    <span style={{cursor: 'pointer'}}
-                                          onClick={() => setSettingsScreen('main')}>←&nbsp;</span>Настройки
+                                    <span style={{ cursor: 'pointer' }}
+                                        onClick={() => setSettingsScreen('main')}>←&nbsp;</span>Настройки
                                     /&nbsp;Скорость
                                 </>
                             )}
                             {settingsScreen === 'scale' && (
                                 <>
-                                    <span style={{cursor: 'pointer'}}
-                                          onClick={() => setSettingsScreen('main')}>←&nbsp;</span>Настройки
+                                    <span style={{ cursor: 'pointer' }}
+                                        onClick={() => setSettingsScreen('main')}>←&nbsp;</span>Настройки
                                     /&nbsp;Масштаб
                                 </>
                             )}
                             {settingsScreen === 'skip' && (
                                 <>
-                                    <span style={{cursor: 'pointer'}}
-                                          onClick={() => setSettingsScreen('main')}>←&nbsp;</span>Настройки
+                                    <span style={{ cursor: 'pointer' }}
+                                        onClick={() => setSettingsScreen('main')}>←&nbsp;</span>Настройки
                                     - &nbsp;Опенинг/Эндинг
                                 </>
                             )}
                             {settingsScreen === 'quick_keydown' && (
                                 <>
-                                    <span style={{cursor: 'pointer'}}
-                                          onClick={() => setSettingsScreen('main')}>←&nbsp;</span>Горячие клавиши
+                                    <span style={{ cursor: 'pointer' }}
+                                        onClick={() => setSettingsScreen('main')}>←&nbsp;</span>Горячие клавиши
                                 </>
                             )}
                             <span className="settings-close" onClick={() => setShowSettings(false)}>
-        <X size={20}/>
-      </span>
+                                <X size={20} />
+                            </span>
                         </div>
 
                         {settingsScreen === 'main' && (
@@ -684,7 +693,7 @@ const AnimePlayer: React.FC<AnimePlayerProps> = ({ animeId }) => {
                                 <div className="hotkey-row"><span>O</span> Переключить на 480p</div>
                                 <div className="hotkey-row"><span>L</span> Переключить на 1080p</div>
                                 <div className="hotkey-row"><span>P</span> Открыть / закрыть плейлист</div>
-                                <div className="hotkey-note">Удержание пробела — временная перемотка с ускорением 2x <br/>А так-же, горячие клавиши работают только с англ. расскладкой</div>
+                                <div className="hotkey-note">Удержание пробела — временная перемотка с ускорением 2x <br />А так-же, горячие клавиши работают только с англ. расскладкой</div>
                             </div>
                         )}
 
@@ -729,18 +738,18 @@ const AnimePlayer: React.FC<AnimePlayerProps> = ({ animeId }) => {
 
                             <div
                                 className="buffered-bar"
-                                style={{'--buffered': `${buffered}%`} as React.CSSProperties}
+                                style={{ '--buffered': `${buffered}%` } as React.CSSProperties}
                             />
                             <div
                                 className="progress-bar"
-                                style={{'--progress': `${progress}%`} as React.CSSProperties}
+                                style={{ '--progress': `${progress}%` } as React.CSSProperties}
                             />
                         </div>
                         {/* Тултип при наведении */}
                         {showTooltip && (
                             <div
                                 className="progress-tooltip"
-                                style={{left: `${hoverX}px`}}
+                                style={{ left: `${hoverX}px` }}
                             >
                                 {formatTime(hoverTime)}
                             </div>
@@ -751,18 +760,18 @@ const AnimePlayer: React.FC<AnimePlayerProps> = ({ animeId }) => {
                     <div className="bottom-controls">
                         <div className="left">
                             <div className="control-icon" onClick={() => setShowPlaylist(!showPlaylist)}>
-                                <Menu size={20}/>
+                                <Menu size={20} />
                             </div>
                         </div>
                         <div className="center">
                             <div className="control-icon" onClick={goToPreviousEpisode}>
-                                <SkipBack size={20}/>
+                                <SkipBack size={20} />
                             </div>
                             <div className="control-icon" onClick={togglePlay}>
-                                {playing ? <Pause size={20}/> : <Play size={20}/>}
+                                {playing ? <Pause size={20} /> : <Play size={20} />}
                             </div>
                             <div className="control-icon" onClick={goToNextEpisode}>
-                                <SkipForward size={20}/>
+                                <SkipForward size={20} />
                             </div>
 
                         </div>
@@ -777,10 +786,10 @@ const AnimePlayer: React.FC<AnimePlayerProps> = ({ animeId }) => {
                                 className="volume-slider"
                             />
                             <div className="control-icon" onClick={() => setShowSettings(!showSettings)}>
-                                <Settings size={20}/>
+                                <Settings size={20} />
                             </div>
                             <div className="control-icon" onClick={toggleFullscreen}>
-                            <Maximize size={20}/>
+                                <Maximize size={20} />
                             </div>
 
                         </div>

@@ -99,9 +99,9 @@ export const useAnimePageLogic = (animeId: string) => {
     // Состояние для дизайна
 
     // UI состояния
-    const [activeTab, setActiveTab] = useState<'screenshots' | 'details' | 'reviews' | 'comments' | 'episodes' | 'related'>(() => {
-        const tabFromUrl = searchParams.get('tab') as 'screenshots' | 'details' | 'reviews' | 'comments' | 'episodes' | 'related' | null;
-        return tabFromUrl && ['screenshots', 'details', 'reviews', 'comments', 'episodes', 'related'].includes(tabFromUrl)
+    const [activeTab, setActiveTab] = useState<'screenshots' | 'details' | 'reviews' | 'comments' | 'episodes' | 'related' | 'similar'>(() => {
+        const tabFromUrl = searchParams.get('tab') as 'screenshots' | 'details' | 'reviews' | 'comments' | 'episodes' | 'related' | 'similar' | null;
+        return tabFromUrl && ['screenshots', 'details', 'reviews', 'comments', 'episodes', 'related', 'similar'].includes(tabFromUrl)
             ? tabFromUrl
             : 'screenshots';
     });
@@ -510,7 +510,7 @@ export const useAnimePageLogic = (animeId: string) => {
 
 
     // Функция для обновления URL с табом
-    const updateUrlWithTab = (tab: 'screenshots' | 'details' | 'reviews' | 'comments' | 'episodes' | 'related') => {
+    const updateUrlWithTab = (tab: 'screenshots' | 'details' | 'reviews' | 'comments' | 'episodes' | 'related' | 'similar') => {
         const currentUrl = new URL(window.location.href);
         if (tab === 'screenshots') {
             // Убираем параметр tab если это вкладка по умолчанию
@@ -535,7 +535,7 @@ export const useAnimePageLogic = (animeId: string) => {
     };
 
     // Обработчики для UI
-    const handleTabChange = (tab: 'screenshots' | 'details' | 'reviews' | 'comments' | 'episodes' | 'related') => {
+    const handleTabChange = (tab: 'screenshots' | 'details' | 'reviews' | 'comments' | 'episodes' | 'related' | 'similar') => {
         setActiveTab(tab);
         updateUrlWithTab(tab);
     };

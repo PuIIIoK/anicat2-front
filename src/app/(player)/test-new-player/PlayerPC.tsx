@@ -48,7 +48,7 @@ type OverlayKind = 'volume' | 'seek-forward' | 'seek-backward' | 'notice' | 'pla
 // Функция для декодирования имени озвучки из URL-кодированного формата
 function decodeVoiceName(voiceName: string | null): string | null {
     if (!voiceName) return null;
-    
+
     try {
         // Если строка содержит URL-кодированные символы - декодируем
         if (voiceName.includes('%')) {
@@ -87,14 +87,14 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
     const [showUI, setShowUI] = useState(true);
     const showUIRef = useRef<boolean>(true);
     const [isUIStable, setIsUIStable] = useState(true); // Флаг стабильности UI
-    
-    useEffect(() => { 
-        showUIRef.current = showUI; 
+
+    useEffect(() => {
+        showUIRef.current = showUI;
         // Устанавливаем стабильность UI через небольшую задержку
         const timeout = setTimeout(() => setIsUIStable(showUI), 50);
         return () => clearTimeout(timeout);
     }, [showUI]);
-    
+
     // Мемоизированные CSS классы для предотвращения лишних перерендеров
     const uiClasses = useMemo(() => ({
         topbar: `player-topbar ${showUI ? 'visible' : 'hidden'}`,
@@ -185,14 +185,14 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
     // Сохранение состояния плеера
     useEffect(() => {
         if (!animeId) return;
-        
+
         const state = {
             episode: currentEpisode,
             source: selectedSource,
             voice: selectedSource === 'kodik' ? selectedKodikVoice || undefined : (selectedSource === 'yumeko' ? selectedYumekoVoice?.name || undefined : undefined),
             time: currentTime
         };
-        
+
         savePlayerState(animeId, state);
     }, [animeId, currentEpisode, selectedSource, selectedKodikVoice, selectedYumekoVoice, currentTime]);
 
@@ -265,14 +265,14 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
             console.log('[auto] No video ref');
             return;
         }
-        
+
         // КРИТИЧНО: duration > 0 означает что таймлайн загружен
         // readyState проверяем только для логирования, но не блокируем запуск
         if (!video.duration || video.duration <= 0 || isNaN(video.duration)) {
             console.log('[auto] Duration not available yet:', video.duration);
             return;
         }
-        
+
         // Если показана плашка возобновления — ничего не запускаем до выбора пользователя
         if (resumePrompt) {
             console.log('[auto] Blocked by resume prompt');
@@ -316,14 +316,14 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
             const handler = () => {
                 try {
                     if (autoFullscreenPendingRef.current) {
-                        container?.requestFullscreen?.().catch(() => {});
+                        container?.requestFullscreen?.().catch(() => { });
                         autoFullscreenPendingRef.current = false;
                     }
                     if (autoplayMutedRef.current && !isMuted) {
-                        try { video.muted = false; } catch {}
+                        try { video.muted = false; } catch { }
                         autoplayMutedRef.current = false;
                     }
-                } catch {}
+                } catch { }
                 ensureHandlersCleared();
             };
             unmuteOnInteractHandlerRef.current = handler;
@@ -335,8 +335,8 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
         // Новый порядок: выставляем целевую громкость/мьют заранее,
         // затем пробуем сперва без mute; при неудаче — с mute и откладываем размутивание
         if (autoPlay) {
-            try { video.volume = isMuted ? 0 : volume; } catch {}
-            try { video.muted = isMuted; } catch {}
+            try { video.volume = isMuted ? 0 : volume; } catch { }
+            try { video.muted = isMuted; } catch { }
             const tryUnmuted = video.play();
             if (tryUnmuted && typeof (tryUnmuted as any).catch === 'function') {
                 (tryUnmuted as Promise<void>).then(() => {
@@ -348,7 +348,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                     // Размутивание только при взаимодействии пользователя
                 }).catch(err => {
                     console.log('[auto] unmuted play failed, fallback to muted', err);
-                    try { video.muted = true; } catch {}
+                    try { video.muted = true; } catch { }
                     autoplayMutedRef.current = true;
                     const tryMuted = video.play();
                     if (tryMuted && typeof (tryMuted as any).catch === 'function') {
@@ -358,7 +358,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                             setIsPlaying(true);
                             setIsBuffering(false); // Сбрасываем буферизацию
                             if (!isMuted) registerFirstGestureHandler();
-                        }).catch(() => {});
+                        }).catch(() => { });
                     }
                 });
             }
@@ -394,13 +394,13 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
     const [availableVoices, setAvailableVoices] = useState<string[]>([]);
     const [playlistEpisodes, setPlaylistEpisodes] = useState<Array<{ id: number; title: string; duration?: string; raw?: unknown }>>([]);
     const [, setInitialLoading] = useState(true);
-    
+
     // Обновление заголовка вкладки браузера
     useEffect(() => {
         const currentEp = playlistEpisodes.find(ep => ep.id === currentEpisode);
         const episodeTitle = currentEp?.title || `Эпизод ${currentEpisode}`;
         const animeTitle = animeMeta?.title || animeMeta?.name || animeMeta?.ru || 'AniCat';
-        
+
         // Добавляем декодированное название озвучки в заголовок
         let voiceTitle = '';
         if (selectedSource === 'yumeko' && selectedYumekoVoice?.name) {
@@ -411,9 +411,9 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
         } else if (selectedSource === 'kodik' && selectedKodikVoice) {
             voiceTitle = ` (${selectedKodikVoice})`;
         }
-        
+
         document.title = `${episodeTitle}${voiceTitle} | ${animeTitle}`;
-        
+
         // Восстановление оригинального заголовка при размонтировании
         return () => {
             document.title = 'AniCat';
@@ -457,9 +457,9 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
         });
         setEpisodeProgressMap(map);
         // Try initial fetch/merge from server for this anime (fire-and-forget)
-        try { fetchAndMergeFromServer(animeId); } catch {}
+        try { fetchAndMergeFromServer(animeId); } catch { }
         // Push all local cache for this anime to server as bulk (ensure server has our local data)
-        try { pushAllCacheForAnimeToServer(animeId); } catch {}
+        try { pushAllCacheForAnimeToServer(animeId); } catch { }
     }, [animeId, selectedSource, selectedKodikVoice, selectedYumekoVoice, playlistEpisodes, episodes, getVoiceForProgress]);
 
     // Автоматическое открытие плейлиста при загрузке серий
@@ -498,7 +498,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                     }
                     video.removeEventListener('loadedmetadata', handleLoadedMetadata);
                 };
-                
+
                 if (video.readyState >= 1) {
                     // Метаданные уже загружены
                     if (video.duration && timeToSet < video.duration) {
@@ -514,7 +514,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
 
     // При смене источника сбрасываем плашку возобновления, чтобы не тянуть её между источниками
     useEffect(() => {
-        try { setResumePrompt(null); } catch {}
+        try { setResumePrompt(null); } catch { }
         resumeCandidateRef.current = null;
     }, [selectedSource]);
 
@@ -528,7 +528,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
     const chooseLibriaKey = (qlist: Array<{ key: string; label: string; url: string }>) => {
         if (!qlist || !qlist.length) return null;
         const et = getEffectiveNetworkType();
-        const priority = et.includes('2g') ? ['360','480','720','1080'] : et.includes('3g') ? ['480','720','1080'] : ['1080','720','480','360'];
+        const priority = et.includes('2g') ? ['360', '480', '720', '1080'] : et.includes('3g') ? ['480', '720', '1080'] : ['1080', '720', '480', '360'];
         for (const pref of priority) {
             const found = qlist.find(q => q.key.toLowerCase().includes(pref) || q.label.toLowerCase().includes(pref));
             if (found) return found.key;
@@ -564,11 +564,11 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
     }, [animeMeta]);
 
     useEffect(() => {
-        console.log('[Init-Debug] Standard init useEffect started', { 
-            animeMetaSource: animeMeta?.source, 
-            selectedSource, 
+        console.log('[Init-Debug] Standard init useEffect started', {
+            animeMetaSource: animeMeta?.source,
+            selectedSource,
             hasPlayerParamsInURL,
-            animeId 
+            animeId
         });
         let mounted = true;
         // Если src передан пропсом — не нужно ничего запрашивать
@@ -576,13 +576,13 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
         if (!animeId) return;
         // Используем уже переданный animeMeta из страницы; если его нет — ждём
         if (!animeMeta) return;
-        
+
         // Для Yumeko или Libria источника пропускаем этот useEffect полностью
         if (animeMeta.source === 'yumeko' || animeMeta.source === 'libria' || selectedSource !== 'kodik') {
             console.log('[Init] Yumeko/Libria source detected or non-Kodik source, skipping standard initialization');
             return;
         }
-        
+
         // Если есть базовые параметры (kodik/title) - пропускаем обычную инициализацию
         // Вместо этого будет использоваться инициализация с прогрессом с сервера
         if (hasPlayerParamsInURL) return;
@@ -596,7 +596,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                     const kodikTitle = meta?.kodik ?? meta?.title ?? null;
                     if (kodikTitle) {
                         console.log('[Init] Step 1: Fetching Kodik voices for:', kodikTitle);
-                        
+
                         // ЭТАП 1: Получаем список озвучек
                         const searchRes = await fetchKodikSearch(kodikTitle);
                         const items = await fetchKodikEpisodesFromSearch(searchRes);
@@ -638,7 +638,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                         });
 
                         const voices = Array.from(voicesSet).map(v => String(v).trim()).filter(Boolean);
-                        
+
                         // ЭТАП 2: Устанавливаем доступные озвучки
                         setAvailableVoices(voices.length ? voices : ['Default']);
                         console.log('[Init] Step 2: Available voices loaded:', voices);
@@ -649,34 +649,34 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                             console.log('[Init] No voices found, skipping stream fetch');
                             return;
                         }
-                        
+
                         const defaultVoice = voices[0] ?? (items[0]?.translations?.[0]?.title) ?? null;
                         if (defaultVoice && !selectedKodikVoice && !hasPlayerParamsInURL) {
                             console.log('[Init] Step 3: Setting default voice and episodes list');
-                            
+
                             // ЭТАП 3: Устанавливаем озвучку и список серий
                             setSelectedKodikVoice(defaultVoice);
                             const mapped = map[defaultVoice] ?? [];
                             setPlaylistEpisodes(mapped);
                             const firstId = mapped[0]?.id ?? 1;
                             setCurrentEpisode(firstId);
-                            
+
                             console.log('[Init] Step 4: Episodes list loaded, starting stream fetch');
-                            
+
                             // ЭТАП 4: Загружаем стрим для выбранной озвучки и серии
                             const res = await fetchKodikStream(kodikTitle, defaultVoice, firstId, true);
                             const links = res?.links as Record<string, { Src?: string }> | undefined;
                             const hlsUrl = links
                                 ? (links['720']?.Src ?? links['480']?.Src ?? links['360']?.Src ?? links['240']?.Src)
                                 : (res?.link ?? res?.hls ?? res?.url ?? null);
-                            
+
                             // Store segments from Kodik response
                             if (res?.segments) {
                                 setKodikSegments(res.segments);
                                 // Clear previously auto-skipped segments for new episode
                                 autoSkippedAdSegments.current.clear();
                             }
-                            
+
                             console.log('[Init] Step 5: Stream loaded, setting video source');
                             if (mounted) setFetchedSrc(hlsUrl ?? null);
                         }
@@ -688,8 +688,8 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                         setIsLibriaAvailable(true);
                         // Use numeric ordinal as episode id (API returns UUID in `id`) to ensure numeric navigation works
                         const mapped = eps.map((e: any, idx: number) => ({
-                            id: Number(e.ordinal ?? e.number ?? idx+1),
-                            title: e.name ?? `Эпизод ${e.ordinal ?? e.number ?? idx+1}`,
+                            id: Number(e.ordinal ?? e.number ?? idx + 1),
+                            title: e.name ?? `Эпизод ${e.ordinal ?? e.number ?? idx + 1}`,
                             duration: typeof e.duration === 'number'
                                 ? formatEpisodeDurationNumber(normalizeDurationToSeconds(e.duration))
                                 : (typeof e.duration === 'string' ? e.duration : undefined),
@@ -711,9 +711,9 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                             // choose default quality based on network
                             const chooseDefault = () => {
                                 const et = getEffectiveNetworkType();
-                                const priority = et.includes('2g') ? ['hls_360','hls_480','hls_720','hls_1080'] : et.includes('3g') ? ['hls_480','hls_720','hls_1080'] : ['hls_1080','hls_720','hls_480','hls_360'];
+                                const priority = et.includes('2g') ? ['hls_360', 'hls_480', 'hls_720', 'hls_1080'] : et.includes('3g') ? ['hls_480', 'hls_720', 'hls_1080'] : ['hls_1080', 'hls_720', 'hls_480', 'hls_360'];
                                 for (const pref of priority) {
-                                    const found = qlist.find(q => q.key.toLowerCase().includes(pref.replace('hls_','')) || q.key.toLowerCase() === pref);
+                                    const found = qlist.find(q => q.key.toLowerCase().includes(pref.replace('hls_', '')) || q.key.toLowerCase() === pref);
                                     if (found) return found.key;
                                 }
                                 return qlist[0]?.key ?? null;
@@ -730,49 +730,49 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                     // Yumeko source - загружаем озвучки и эпизоды
                     console.log('[Init] Loading Yumeko voices for anime:', animeId);
                     const voices = await fetchYumekoVoices(animeId);
-                    
+
                     if (voices && voices.length > 0) {
                         console.log('[Init] Yumeko voices loaded:', voices);
                         setYumekoVoices(voices);
-                        
+
                         // Если есть voiceId в meta - используем его, иначе первую озвучку
-                        const targetVoice = animeMeta.voiceId 
+                        const targetVoice = animeMeta.voiceId
                             ? voices.find(v => v.id === animeMeta.voiceId) || voices[0]
                             : voices[0];
-                        
+
                         setSelectedYumekoVoice(targetVoice);
-                        
+
                         // Загружаем эпизоды для выбранной озвучки
                         console.log('[Init] Loading Yumeko episodes for voice:', targetVoice.id);
                         const episodes = await fetchYumekoEpisodes(targetVoice.id);
-                        
+
                         if (episodes && episodes.length > 0) {
                             console.log('[Init] Yumeko episodes loaded:', episodes);
                             setYumekoEpisodes(episodes);
-                            
+
                             // Маппим эпизоды в формат плейлиста
                             const mapped = episodes.map(e => ({
                                 id: e.episodeNumber,
                                 title: e.title || `Эпизод ${e.episodeNumber}`,
-                                duration: e.durationSeconds > 0 
+                                duration: e.durationSeconds > 0
                                     ? formatEpisodeDurationNumber(e.durationSeconds)
                                     : undefined,
                                 raw: e
                             }));
                             setPlaylistEpisodes(mapped);
-                            
+
                             // Если есть episodeNumber в meta - используем его, иначе первый эпизод
                             const targetEpisodeNumber = animeMeta.episodeNumber || episodes[0].episodeNumber;
                             const targetEpisode = episodes.find(e => e.episodeNumber === targetEpisodeNumber) || episodes[0];
-                            
+
                             if (!hasPlayerParamsInURL) {
                                 setCurrentEpisode(targetEpisodeNumber);
                             }
-                            
+
                             // Загружаем HLS поток для выбранного эпизода
                             console.log('[Init] Loading Yumeko stream for episode:', targetEpisode.id);
                             const hlsUrl = await fetchYumekoEpisodeStream(targetEpisode.id);
-                            
+
                             if (hlsUrl && mounted) {
                                 console.log('[Init] Yumeko stream loaded:', hlsUrl);
                                 setFetchedSrc(hlsUrl);
@@ -799,7 +799,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
     useEffect(() => {
         if (animeMeta) {
             setInitialLoading(false);
-            
+
             // Устанавливаем источник из animeMeta
             if (animeMeta.source === 'yumeko') {
                 console.log('[Init] Setting source to Yumeko from animeMeta');
@@ -816,16 +816,16 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
 
     // Последовательная инициализация плеера на основе прогресса с сервера
     useEffect(() => {
-        console.log('[Server-Debug] Server init useEffect started', { 
-            animeMetaSource: animeMeta?.source, 
-            selectedSource, 
+        console.log('[Server-Debug] Server init useEffect started', {
+            animeMetaSource: animeMeta?.source,
+            selectedSource,
             hasPlayerParamsInURL,
-            animeId 
+            animeId
         });
         if (!animeMeta || !hasPlayerParamsInURL || !animeId) return;
-        
+
         console.log('[Server-init] Starting player initialization from server progress');
-        
+
         const initializeFromServerProgress = async () => {
             try {
                 // ВАЖНО: Если явно указан источник Yumeko или Libria в URL - инициализируем только его
@@ -833,52 +833,52 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                     console.log('[Server-init] Yumeko source detected in URL, initializing Yumeko directly');
                     setSelectedSource('yumeko');
                     await new Promise(resolve => setTimeout(resolve, 100));
-                    
+
                     // ЭТАП 1: Загружаем озвучки для аниме
                     const voices = await fetchYumekoVoices(animeId);
-                    
+
                     if (voices && voices.length > 0) {
                         setYumekoVoices(voices);
-                        
+
                         // ЭТАП 2: Определяем целевую озвучку (из meta или первую)
-                        const targetVoice = animeMeta.voiceId 
+                        const targetVoice = animeMeta.voiceId
                             ? voices.find(v => v.id === animeMeta.voiceId) || voices[0]
                             : voices[0];
-                        
+
                         setSelectedYumekoVoice(targetVoice);
                         console.log('[Server-init] Selected Yumeko voice:', targetVoice.name);
-                        
+
                         // ЭТАП 3: Загружаем эпизоды для выбранной озвучки
                         const episodes = await fetchYumekoEpisodes(targetVoice.id);
-                        
+
                         if (episodes && episodes.length > 0) {
                             setYumekoEpisodes(episodes);
-                            
+
                             // Маппим эпизоды в формат плейлиста
                             const mapped = episodes.map(e => ({
                                 id: e.episodeNumber,
                                 title: e.title || `Эпизод ${e.episodeNumber}`,
-                                duration: e.durationSeconds > 0 
+                                duration: e.durationSeconds > 0
                                     ? formatEpisodeDurationNumber(e.durationSeconds)
                                     : undefined,
                                 raw: e
                             }));
                             setPlaylistEpisodes(mapped);
-                            
+
                             // ЭТАП 4: Определяем целевой эпизод (из meta или первый)
                             const targetEpisodeNumber = animeMeta.episodeNumber || episodes[0].episodeNumber;
                             const targetEpisode = episodes.find(e => e.episodeNumber === targetEpisodeNumber) || episodes[0];
-                            
+
                             setCurrentEpisode(targetEpisodeNumber);
                             console.log('[Server-init] Selected Yumeko episode:', targetEpisodeNumber);
-                            
+
                             // ЭТАП 5: Загружаем HLS поток для выбранного эпизода
                             const hlsUrl = await fetchYumekoEpisodeStream(targetEpisode.id);
-                            
+
                             if (hlsUrl) {
                                 console.log('[Server-init] Yumeko stream loaded from backend API');
                                 setFetchedSrc(hlsUrl);
-                                
+
                                 // ЭТАП 6: Включаем автозапуск
                                 setAutoPlay(true);
                                 setResumePrompt(null);
@@ -886,16 +886,16 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                             }
                         }
                     }
-                    
+
                     return;
                 }
-                
+
                 // ВАЖНО: Если явно указан источник Libria в URL - инициализируем только его
                 if (animeMeta.source === 'libria') {
                     console.log('[Server-init] Libria source detected in URL, initializing Libria directly');
                     setSelectedSource('libria');
                     await new Promise(resolve => setTimeout(resolve, 100));
-                    
+
                     // ЭТАП 1: Инициализируем Libria эпизоды
                     const eps = await fetchLibriaEpisodes(animeId);
                     if (eps && Array.isArray(eps)) {
@@ -907,14 +907,14 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                             raw: e
                         }));
                         setPlaylistEpisodes(mapped);
-                        
+
                         // Определяем целевой эпизод (из meta или первый)
                         const targetEpisodeNumber = animeMeta.episodeNumber || 1;
                         const targetEpisode = eps.find((e: any) => e.ordinal === targetEpisodeNumber) || eps[0];
-                        
+
                         setCurrentEpisode(targetEpisodeNumber);
                         console.log('[Server-init] Selected Libria episode:', targetEpisodeNumber);
-                        
+
                         // Устанавливаем качество по умолчанию
                         const qlist = [
                             { key: 'auto', label: 'Авто', url: '' as string },
@@ -922,43 +922,43 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                             { key: '720', label: '720p', url: (targetEpisode?.hls_720 || '') as string },
                             { key: '480', label: '480p', url: (targetEpisode?.hls_480 || '') as string }
                         ].filter(q => q.key === 'auto' || q.url);
-                        
+
                         setLibriaQualities(qlist);
-                        
+
                         // Выбираем лучшее качество
                         const defaultKey = qlist.length > 1 ? '1080' : 'auto';
                         setLibriaSelectedQualityKey(defaultKey);
                         setLibriaCurrentActiveKey(defaultKey);
-                        
+
                         const chosen = qlist.find(q => q.key === defaultKey) ?? qlist[0];
                         if (chosen && chosen.url && chosen.url !== '') {
                             setFetchedSrc(chosen.url);
                             console.log('[Server-init] Libria stream loaded:', chosen.url);
                         }
                     }
-                    
+
                     return;
                 }
-                
+
                 // 1. Получаем последний прогресс с сервера (только для Kodik)
                 const lastProgress = await fetchLastWatchedProgress(animeId);
                 console.log('[Server-init] Fetched last progress from server:', lastProgress);
-                
+
                 // 2. Если прогресс найден - используем его для инициализации
                 if (lastProgress && lastProgress.source) {
                     const targetSource = lastProgress.source as 'kodik' | 'libria' | 'yumeko';
                     console.log('[Server-init] Setting source from progress:', targetSource);
                     setSelectedSource(targetSource);
-                    
+
                     // Ждем немного чтобы источник установился
                     await new Promise(resolve => setTimeout(resolve, 100));
-                    
+
                     // 3. Если Kodik - получаем список озвучек и устанавливаем нужную
                     if (targetSource === 'kodik') {
                         const kodikTitle = animeMeta?.kodik ?? animeMeta?.title ?? null;
                         if (kodikTitle) {
                             console.log('[Server-init] Step 1: Fetching Kodik voices for:', kodikTitle);
-                            
+
                             // ЭТАП 1: Получаем список озвучек
                             const searchRes = await fetchKodikSearch(kodikTitle);
                             const items = await fetchKodikEpisodesFromSearch(searchRes);
@@ -1019,14 +1019,14 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                             } else {
                                 console.log('[Server-init] Step 3: Using voice from progress:', targetVoice);
                             }
-                            
+
                             if (!targetVoice) {
                                 console.log('[Server-init] No valid voice found, skipping stream fetch');
                                 return;
                             }
-                            
+
                             const mapped = map[targetVoice] ?? [];
-                            
+
                             // ЭТАП 4: Устанавливаем выбранную озвучку и список серий
                             setSelectedKodikVoice(targetVoice);
                             setPlaylistEpisodes(mapped);
@@ -1039,7 +1039,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                             // ЭТАП 6: Загружаем стрим для выбранной озвучки и серии
                             console.log('[Server-init] Step 5: Starting stream fetch for voice:', targetVoice, 'episode:', targetEpisode);
                             const res = await fetchKodikStream(kodikTitle, targetVoice, targetEpisode, true);
-                            
+
                             if (res?.segments) {
                                 setKodikSegments(res.segments);
                                 autoSkippedAdSegments.current.clear();
@@ -1051,9 +1051,9 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                                 const qlist: Array<{ key: string; label: string; url: string }> = Object.keys(links)
                                     .filter(k => links[k]?.Src)
                                     .map(k => ({ key: k, label: `${k}p`, url: links[k].Src! }));
-                                
+
                                 setKodikQualities(qlist);
-                                
+
                                 if (qlist.length > 0) {
                                     setKodikSelectedQualityKey('auto');
                                     setKodikCurrentActiveKey(qlist[0].key);
@@ -1069,7 +1069,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                         }
                     } else if (targetSource === 'libria') {
                         console.log('[Server-init] Step 1: Initializing Libria from server progress');
-                        
+
                         // ЭТАП 1: Инициализируем Libria эпизоды
                         const eps = await fetchLibriaEpisodes(animeId);
                         if (eps && Array.isArray(eps)) {
@@ -1083,12 +1083,12 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                                 raw: e
                             }));
                             setPlaylistEpisodes(mapped);
-                            
+
                             // ЭТАП 2: Устанавливаем серию из прогресса
                             const targetEpisode = lastProgress.episodeId || mapped[0]?.id || 1;
                             console.log('[Server-init] Step 2: Setting Libria episode from progress:', targetEpisode);
                             setCurrentEpisode(targetEpisode);
-                            
+
                             // ЭТАП 3: Настраиваем качества и стрим
                             const firstRaw = mapped.find(ep => ep.id === targetEpisode)?.raw ?? mapped[0]?.raw ?? null;
                             if (firstRaw) {
@@ -1102,7 +1102,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                                 const chosen = qlist.find(q => q.key === defaultKey) ?? qlist[0];
                                 if (chosen) setFetchedSrc(chosen.url);
                             }
-                            
+
                             // ЭТАП 4: Включаем автозапуск и отключаем плашку возобновления
                             console.log('[Server-init] Step 3: Libria initialized, enabling autoplay');
                             setAutoPlay(true);
@@ -1114,13 +1114,13 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                         }
                     } else if (targetSource === 'yumeko') {
                         console.log('[Server-init] Step 1: Initializing Yumeko from server progress or URL params');
-                        
+
                         // ЭТАП 1: Загружаем озвучки для аниме
                         const voices = await fetchYumekoVoices(animeId);
-                        
+
                         if (voices && voices.length > 0) {
                             setYumekoVoices(voices);
-                            
+
                             // ЭТАП 2: Определяем целевую озвучку (из meta или из прогресса)
                             let targetVoice: YumekoVoice | null = null;
                             if (animeMeta.voiceId) {
@@ -1133,27 +1133,27 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                             if (!targetVoice) {
                                 targetVoice = voices[0];
                             }
-                            
+
                             setSelectedYumekoVoice(targetVoice);
                             console.log('[Server-init] Step 2: Selected Yumeko voice:', targetVoice.name);
-                            
+
                             // ЭТАП 3: Загружаем эпизоды для выбранной озвучки
                             const episodes = await fetchYumekoEpisodes(targetVoice.id);
-                            
+
                             if (episodes && episodes.length > 0) {
                                 setYumekoEpisodes(episodes);
-                                
+
                                 // Маппим эпизоды в формат плейлиста
                                 const mapped = episodes.map(e => ({
                                     id: e.episodeNumber,
                                     title: e.title || `Эпизод ${e.episodeNumber}`,
-                                    duration: e.durationSeconds > 0 
+                                    duration: e.durationSeconds > 0
                                         ? formatEpisodeDurationNumber(e.durationSeconds)
                                         : undefined,
                                     raw: e
                                 }));
                                 setPlaylistEpisodes(mapped);
-                                
+
                                 // ЭТАП 4: Определяем целевой эпизод (из meta или из прогресса)
                                 let targetEpisodeNumber = 1;
                                 if (animeMeta.episodeNumber) {
@@ -1161,18 +1161,18 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                                 } else if (lastProgress.episodeId) {
                                     targetEpisodeNumber = lastProgress.episodeId;
                                 }
-                                
+
                                 const targetEpisode = episodes.find(e => e.episodeNumber === targetEpisodeNumber) || episodes[0];
                                 setCurrentEpisode(targetEpisodeNumber);
                                 console.log('[Server-init] Step 3: Selected Yumeko episode:', targetEpisodeNumber);
-                                
+
                                 // ЭТАП 5: Загружаем HLS поток для выбранного эпизода
                                 const hlsUrl = await fetchYumekoEpisodeStream(targetEpisode.id);
-                                
+
                                 if (hlsUrl) {
                                     console.log('[Server-init] Step 4: Yumeko stream loaded');
                                     setFetchedSrc(hlsUrl);
-                                    
+
                                     // ЭТАП 6: Включаем автозапуск и отключаем плашку возобновления
                                     setAutoPlay(true);
                                     setResumePrompt(null);
@@ -1184,79 +1184,79 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                 } else {
                     // Если прогресс не найден - инициализируем обычным образом (первая серия, первая озвучка)
                     console.log('[Server-init] No progress found, initializing with default settings');
-                    
+
                     // Устанавливаем источник по умолчанию (из meta или Kodik)
                     const defaultSource = (animeMeta.source || 'kodik') as 'kodik' | 'libria' | 'yumeko';
                     setSelectedSource(defaultSource);
-                    
+
                     // Ждем немного чтобы источник установился
                     await new Promise(resolve => setTimeout(resolve, 100));
-                    
+
                     // Для Yumeko - инициализируем из параметров URL
                     if (defaultSource === 'yumeko') {
                         console.log('[Server-init] Initializing Yumeko from URL params');
-                        
+
                         // Загружаем озвучки
                         const voices = await fetchYumekoVoices(animeId);
-                        
+
                         if (voices && voices.length > 0) {
                             setYumekoVoices(voices);
-                            
+
                             // Определяем целевую озвучку (из meta или первую)
-                            const targetVoice = animeMeta.voiceId 
+                            const targetVoice = animeMeta.voiceId
                                 ? voices.find(v => v.id === animeMeta.voiceId) || voices[0]
                                 : voices[0];
-                            
+
                             setSelectedYumekoVoice(targetVoice);
                             console.log('[Server-init] Selected Yumeko voice:', targetVoice.name);
-                            
+
                             // Загружаем эпизоды
                             const episodes = await fetchYumekoEpisodes(targetVoice.id);
-                            
+
                             if (episodes && episodes.length > 0) {
                                 setYumekoEpisodes(episodes);
-                                
+
                                 // Маппим эпизоды в формат плейлиста
                                 const mapped = episodes.map(e => ({
                                     id: e.episodeNumber,
                                     title: e.title || `Эпизод ${e.episodeNumber}`,
-                                    duration: e.durationSeconds > 0 
+                                    duration: e.durationSeconds > 0
                                         ? formatEpisodeDurationNumber(e.durationSeconds)
                                         : undefined,
                                     raw: e
                                 }));
                                 setPlaylistEpisodes(mapped);
-                                
+
                                 // Определяем целевой эпизод (из meta или первый)
                                 const targetEpisodeNumber = animeMeta.episodeNumber || episodes[0].episodeNumber;
                                 const targetEpisode = episodes.find(e => e.episodeNumber === targetEpisodeNumber) || episodes[0];
-                                
+
                                 setCurrentEpisode(targetEpisodeNumber);
                                 console.log('[Server-init] Selected Yumeko episode:', targetEpisodeNumber);
-                                
+
                                 // Загружаем HLS поток
                                 const hlsUrl = await fetchYumekoEpisodeStream(targetEpisode.id);
-                                
+
                                 if (hlsUrl) {
                                     console.log('[Server-init] Yumeko stream loaded:', hlsUrl);
                                     setFetchedSrc(hlsUrl);
                                 }
                             }
                         }
-                        
+
                         return;
                     }
-                    
+
                     // Для Libria - инициализируем эпизоды
                     if (defaultSource === 'libria') {
                         console.log('[Server-init] Initializing Libria from URL params');
-                        
+
                         // Загружаем эпизоды
                         const eps = await fetchLibriaEpisodes(animeId);
-                        
+
                         if (eps && eps.length > 0) {
                             setIsLibriaAvailable(true);
-                            
+
                             // Маппим эпизоды в формат плейлиста
                             const mapped = eps.map((ep: any) => ({
                                 id: ep.ordinal,
@@ -1265,14 +1265,14 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                                 raw: ep
                             }));
                             setPlaylistEpisodes(mapped);
-                            
+
                             // Определяем целевой эпизод (из meta или первый)
                             const targetEpisodeNumber = animeMeta.episodeNumber || 1;
                             const targetEpisode = eps.find((e: any) => e.ordinal === targetEpisodeNumber) || eps[0];
-                            
+
                             setCurrentEpisode(targetEpisodeNumber);
                             console.log('[Server-init] Selected Libria episode:', targetEpisodeNumber);
-                            
+
                             // Устанавливаем качество по умолчанию
                             const qlist = [
                                 { key: 'auto', label: 'Авто', url: '' as string },
@@ -1280,29 +1280,29 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                                 { key: '720', label: '720p', url: (targetEpisode?.hls_720 || '') as string },
                                 { key: '480', label: '480p', url: (targetEpisode?.hls_480 || '') as string }
                             ].filter(q => q.key === 'auto' || q.url);
-                            
+
                             setLibriaQualities(qlist);
-                            
+
                             // Выбираем лучшее качество
                             const defaultKey = qlist.length > 1 ? '1080' : 'auto';
                             setLibriaSelectedQualityKey(defaultKey);
                             setLibriaCurrentActiveKey(defaultKey);
-                            
+
                             const chosen = qlist.find(q => q.key === defaultKey) ?? qlist[0];
                             if (chosen && chosen.url && chosen.url !== '') {
                                 setFetchedSrc(chosen.url);
                                 console.log('[Server-init] Libria stream loaded:', chosen.url);
                             }
                         }
-                        
+
                         return;
                     }
-                    
+
                     // Инициализируем Kodik с параметрами из URL
                     const kodikTitle = animeMeta?.kodik ?? animeMeta?.title ?? null;
                     if (kodikTitle) {
                         console.log('[Server-init] Step 1: Fetching Kodik voices for:', kodikTitle);
-                        
+
                         // ЭТАП 1: Получаем список озвучек
                         const searchRes = await fetchKodikSearch(kodikTitle);
                         const items = await fetchKodikEpisodesFromSearch(searchRes);
@@ -1359,28 +1359,28 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                         const defaultVoice = voices[0] ?? null;
                         if (defaultVoice) {
                             console.log('[Server-init] Step 3: Setting default voice and episodes list');
-                            
+
                             setSelectedKodikVoice(defaultVoice);
                             const mapped = map[defaultVoice] ?? [];
                             setPlaylistEpisodes(mapped);
                             const firstId = mapped[0]?.id ?? 1;
                             setCurrentEpisode(firstId);
-                            
+
                             console.log('[Server-init] Step 4: Episodes list loaded, starting stream fetch');
-                            
+
                             // ЭТАП 4: Загружаем стрим для выбранной озвучки и серии
                             const res = await fetchKodikStream(kodikTitle, defaultVoice, firstId, true);
                             const links = res?.links as Record<string, { Src?: string }> | undefined;
                             const hlsUrl = links
                                 ? (links['720']?.Src ?? links['480']?.Src ?? links['360']?.Src ?? links['240']?.Src)
                                 : (res?.link ?? res?.hls ?? res?.url ?? null);
-                            
+
                             // Store segments from Kodik response
                             if (res?.segments) {
                                 setKodikSegments(res.segments);
                                 autoSkippedAdSegments.current.clear();
                             }
-                            
+
                             console.log('[Server-init] Step 5: Stream loaded, setting video source');
                             setFetchedSrc(hlsUrl ?? null);
                         }
@@ -1401,7 +1401,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                                 }));
                                 setPlaylistEpisodes(mapped);
                                 setCurrentEpisode(mapped[0]?.id ?? 1);
-                                
+
                                 const firstRaw = mapped[0]?.raw ?? null;
                                 if (firstRaw) {
                                     const fr = firstRaw as Record<string, unknown>;
@@ -1451,13 +1451,13 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
         setEpisodeProgressMap(map);
         (async () => {
             if (!animeId) return;
-            
+
             // Для Yumeko источника не проверяем доступность Libria
             if (selectedSource === 'yumeko') {
                 console.log('[Libria-Check] Skipping Libria availability check for Yumeko source');
                 return;
             }
-            
+
             try {
                 const eps = await fetchLibriaEpisodes(animeId);
                 const available = Array.isArray(eps) && eps.length > 0;
@@ -1481,37 +1481,37 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
     // Реинициализация источника при переключении
     useEffect(() => {
         let mounted = true;
-        
+
         const reinitializeSource = async () => {
             if (!animeId || !animeMeta) return;
-            
+
             // Если в URL явно указан источник Yumeko или Libria - не пытаемся переключиться на другие
-            if ((animeMeta.source === 'yumeko' && selectedSource !== 'yumeko') || 
+            if ((animeMeta.source === 'yumeko' && selectedSource !== 'yumeko') ||
                 (animeMeta.source === 'libria' && selectedSource !== 'libria') ||
                 (animeMeta.source === 'kodik' && selectedSource !== 'kodik')) {
                 console.log('[Source-Switch] Skipping reinit - source is set in URL');
                 return;
             }
-            
+
             console.log('[Source-Switch] Reinitializing source:', selectedSource);
-            
+
             // Пауза плеера на время переключения
-            try { videoRef.current?.pause(); } catch {}
+            try { videoRef.current?.pause(); } catch { }
             setIsPlaying(false);
             setIsBuffering(true);
-            
+
             if (selectedSource === 'kodik') {
                 // Реинициализация Kodik
                 console.log('[Source-Switch] Reinitializing Kodik');
                 const kodikTitle = animeMeta.kodik || animeMeta.title;
                 if (!kodikTitle) return;
-                
+
                 try {
                     // ЭТАП 1: Получаем озвучки
                     const searchRes = await fetchKodikSearch(kodikTitle);
                     const items = await fetchKodikEpisodesFromSearch(searchRes);
                     if (!mounted) return;
-                    
+
                     // Build map: translation/title -> episodes array
                     const map: Record<string, Array<{ id: number; title: string; duration?: string; raw?: unknown }>> = {};
                     const voicesSet = new Set<string>();
@@ -1544,38 +1544,38 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                     });
 
                     const voices = Array.from(voicesSet);
-                    
+
                     if (voices.length === 0) {
                         console.log('[Source-Switch] No Kodik voices found');
                         setIsBuffering(false);
                         return;
                     }
-                    
+
                     // ЭТАП 2: Устанавливаем озвучки и плейлист
                     setAvailableVoices(voices);
                     setKodikPlaylistMap(map);
-                    
+
                     // ЭТАП 3: Выбираем первую озвучку и эпизоды
                     const firstVoice = voices[0];
                     setSelectedKodikVoice(firstVoice);
                     const episodes = map[firstVoice] || [];
                     setPlaylistEpisodes(episodes);
-                    
+
                     // ЭТАП 4: Устанавливаем первый эпизод
                     const firstEpisode = episodes[0]?.id || 1;
                     setCurrentEpisode(firstEpisode);
-                    
+
                     // ЭТАП 5: Загружаем стрим
                     const res = await fetchKodikStream(kodikTitle, firstVoice, firstEpisode, false);
                     if (!mounted) return;
-                    
+
                     if (res?.segments) {
                         setKodikSegments(res.segments);
                         autoSkippedAdSegments.current.clear();
                     }
-                    
+
                     const hlsUrl = res ? (res.links ? (((res.links as Record<string, unknown>)['720'] as Record<string, unknown>)?.['Src'] as string ?? ((res.links as Record<string, unknown>)['480'] as Record<string, unknown>)?.['Src'] as string) : (res.link ?? res.hls ?? res.url ?? null)) : null;
-                    
+
                     setFetchedSrc(hlsUrl ?? null);
                     setIsBuffering(false);
                     console.log('[Source-Switch] Kodik reinitialized successfully');
@@ -1586,18 +1586,18 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
             } else if (selectedSource === 'libria') {
                 // Реинициализация Libria
                 console.log('[Source-Switch] Reinitializing Libria');
-                
+
                 try {
                     const eps = await fetchLibriaEpisodes(animeId);
                     if (!mounted) return;
-                    
+
                     if (!eps || !Array.isArray(eps)) {
                         console.log('[Source-Switch] No Libria episodes found');
                         setIsLibriaAvailable(false);
                         setSelectedSource('kodik');
                         return;
                     }
-                    
+
                     setIsLibriaAvailable(true);
                     const mapped = eps.map((e: any, idx: number) => ({
                         id: Number(e.ordinal ?? e.number ?? idx + 1),
@@ -1608,11 +1608,11 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                         raw: e
                     }));
                     setPlaylistEpisodes(mapped);
-                    
+
                     // Устанавливаем первый эпизод
                     const firstEpisode = mapped[0]?.id || 1;
                     setCurrentEpisode(firstEpisode);
-                    
+
                     // Настраиваем качества и стрим
                     const firstRaw = mapped[0]?.raw ?? null;
                     if (firstRaw) {
@@ -1637,59 +1637,59 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
             } else if (selectedSource === 'yumeko') {
                 // Реинициализация Yumeko
                 console.log('[Source-Switch] Reinitializing Yumeko');
-                
+
                 try {
                     // ЭТАП 1: Загружаем озвучки
                     const voices = await fetchYumekoVoices(animeId);
                     if (!mounted) return;
-                    
+
                     if (!voices || voices.length === 0) {
                         console.log('[Source-Switch] No Yumeko voices found');
                         setIsBuffering(false);
                         return;
                     }
-                    
+
                     setYumekoVoices(voices);
-                    
+
                     // ЭТАП 2: Выбираем первую озвучку (или из animeMeta если есть)
-                    const targetVoice = animeMeta.voiceId 
+                    const targetVoice = animeMeta.voiceId
                         ? voices.find(v => v.id === animeMeta.voiceId) || voices[0]
                         : voices[0];
-                    
+
                     setSelectedYumekoVoice(targetVoice);
-                    
+
                     // ЭТАП 3: Загружаем эпизоды для выбранной озвучки
                     const episodes = await fetchYumekoEpisodes(targetVoice.id);
                     if (!mounted) return;
-                    
+
                     if (!episodes || episodes.length === 0) {
                         console.log('[Source-Switch] No Yumeko episodes found');
                         setIsBuffering(false);
                         return;
                     }
-                    
+
                     setYumekoEpisodes(episodes);
-                    
+
                     // ЭТАП 4: Маппим эпизоды в формат плейлиста
                     const mapped = episodes.map(e => ({
                         id: e.episodeNumber,
                         title: e.title || `Эпизод ${e.episodeNumber}`,
-                        duration: e.durationSeconds > 0 
+                        duration: e.durationSeconds > 0
                             ? formatEpisodeDurationNumber(e.durationSeconds)
                             : undefined,
                         raw: e
                     }));
                     setPlaylistEpisodes(mapped);
-                    
+
                     // ЭТАП 5: Устанавливаем первый эпизод (или из animeMeta если есть)
                     const targetEpisodeNumber = animeMeta.episodeNumber || episodes[0].episodeNumber;
                     const targetEpisode = episodes.find(e => e.episodeNumber === targetEpisodeNumber) || episodes[0];
                     setCurrentEpisode(targetEpisodeNumber);
-                    
+
                     // ЭТАП 6: Загружаем HLS поток
                     const hlsUrl = await fetchYumekoEpisodeStream(targetEpisode.id);
                     if (!mounted) return;
-                    
+
                     if (hlsUrl) {
                         setFetchedSrc(hlsUrl);
                         setIsBuffering(false);
@@ -1704,9 +1704,9 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                 }
             }
         };
-        
+
         reinitializeSource();
-        
+
         return () => { mounted = false; };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedSource]);
@@ -1716,7 +1716,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
         // ВАЖНО: Сбрасываем флаги при смене эпизода
         didAutoStartRef.current = false;
         onLoadedProcessedRef.current = false;
-        
+
         let mounted = true;
         (async () => {
             if (!animeId) return;
@@ -1724,7 +1724,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
             console.log('[Episode-Switch] currentEpisode changed:', currentEpisode, 'isSwitching:', isEpisodeSwitchingRef.current);
             if (isEpisodeSwitchingRef.current) {
                 console.log('[Episode-Switch] Pausing video for episode switch');
-                try { videoRef.current?.pause(); } catch {}
+                try { videoRef.current?.pause(); } catch { }
                 setIsPlaying(false);
             }
             setIsBuffering(true);
@@ -1734,7 +1734,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                 const raw = (ep.raw ?? {}) as Record<string, string>;
                 // collect available hls keys for this episode
                 const epKeys = Object.keys(raw).filter(k => /^hls_?/i.test(k));
-                
+
                 // Обновляем список качеств для текущей серии
                 const qlist = epKeys.map(k => ({ key: k, label: k.replace(/hls_?/i, '') + 'p', url: raw[k] as string })).filter(q => q.url);
                 setLibriaQualities(qlist);
@@ -1756,9 +1756,9 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                 const chooseForEpisode = () => {
                     if (!epKeys.length) return null;
                     const et = getEffectiveNetworkType();
-                    const priority = et.includes('2g') ? ['360','480','720','1080'] : et.includes('3g') ? ['480','720','1080'] : ['1080','720','480','360'];
+                    const priority = et.includes('2g') ? ['360', '480', '720', '1080'] : et.includes('3g') ? ['480', '720', '1080'] : ['1080', '720', '480', '360'];
                     for (const pref of priority) {
-                        const key = epKeys.find(k => k.toLowerCase().includes(pref) || k.toLowerCase().includes(pref.replace('p','')) );
+                        const key = epKeys.find(k => k.toLowerCase().includes(pref) || k.toLowerCase().includes(pref.replace('p', '')));
                         if (key && raw[key]) return key;
                     }
                     return epKeys[0];
@@ -1780,19 +1780,19 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                 const epNumber = typeof currentEpisode === 'number' ? currentEpisode : Number(currentEpisode);
                 if (kodikTitle && epNumber && chosenVoice) {
                     const res = await fetchKodikStream(kodikTitle, chosenVoice, epNumber, true);
-                    
+
                     // Store segments from Kodik response
                     if (res?.segments) {
                         setKodikSegments(res.segments);
                         // Clear previously auto-skipped segments for new episode
                         autoSkippedAdSegments.current.clear();
                     }
-                    
+
                     // Build qualities from API response
                     if (res && res.links) {
                         const links = res.links as Record<string, { Src?: string }>;
                         const qlist: Array<{ key: string; label: string; url: string }> = Object.keys(links)
-                            .sort((a,b) => Number(b) - Number(a))
+                            .sort((a, b) => Number(b) - Number(a))
                             .map(k => ({ key: k, label: `${k}p`, url: links[k]?.Src || '' }))
                             .filter(q => !!q.url);
                         setKodikQualities(qlist);
@@ -1830,10 +1830,10 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                 // For yumeko, load stream for selected episode
                 const ep = playlistEpisodes.find(p => p.id === currentEpisode);
                 if (!ep || !ep.raw) return;
-                
+
                 const yumekoEp = ep.raw as YumekoEpisode;
                 const hlsUrl = await fetchYumekoEpisodeStream(yumekoEp.id);
-                
+
                 if (hlsUrl && mounted) {
                     setFetchedSrc(hlsUrl);
                     console.log('[Episode-Switch] Yumeko stream loaded for episode:', yumekoEp.episodeNumber);
@@ -1854,10 +1854,10 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
             window.clearTimeout(libriaLoadingTimerRef.current);
             libriaLoadingTimerRef.current = null;
         }
-        
+
         // Сбрасываем ошибку при смене источника или эпизода
         setLibriaLoadingError(false);
-        
+
         // Если выбран Libria и есть sourceUrl, запускаем таймер на 3 минуты
         if (selectedSource === 'libria' && sourceUrl) {
             libriaLoadingTimerRef.current = window.setTimeout(() => {
@@ -1869,7 +1869,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                 }
             }, 180000); // 3 минуты
         }
-        
+
         return () => {
             if (libriaLoadingTimerRef.current !== null) {
                 window.clearTimeout(libriaLoadingTimerRef.current);
@@ -1883,12 +1883,12 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
         // ВАЖНО: Сбрасываем флаги при смене источника видео
         didAutoStartRef.current = false;
         onLoadedProcessedRef.current = false;
-        
+
         const video = videoRef.current;
         if (!video || !sourceUrl) return;
 
         if (Hls.isSupported()) {
-            const hls = new Hls({ 
+            const hls = new Hls({
                 enableWorker: true,
                 // Настройки для поддержки длинных видео (фильмов)
                 maxBufferLength: 60, // Максимум 60 секунд буфера
@@ -1902,7 +1902,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                 backBufferLength: 30, // Храним 30 секунд назад для перемотки
             });
             // Allow cross-origin loading of HLS manifests/segments when server provides CORS headers
-            try { video.crossOrigin = 'anonymous'; } catch {}
+            try { video.crossOrigin = 'anonymous'; } catch { }
             // Ensure XHR for HLS does not send credentials by default (helps with some CORS setups)
             hls.config.xhrSetup = (xhr: XMLHttpRequest) => { xhr.withCredentials = false; };
             hlsRef.current = hls;
@@ -1938,7 +1938,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                         } else {
                             console.warn('HLS fatal error — destroying Hls and setting video.src fallback');
                             hls.destroy();
-                            try { 
+                            try {
                                 // Исправляем кодировку и для fallback
                                 let fallbackUrl = sourceUrl as string;
                                 if (fallbackUrl && (fallbackUrl.includes('%D0%A0') || fallbackUrl.includes('%D1%80'))) {
@@ -1994,17 +1994,17 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
     useEffect(() => {
         const video = videoRef.current;
         if (!video) return;
-        try { video.volume = isMuted ? 0 : volume; } catch {}
-        
+        try { video.volume = isMuted ? 0 : volume; } catch { }
+
         // Логика muted:
         // 1. Если пользователь явно замутил (isMuted = true) - мутим
         // 2. НЕ пытаемся автоматически размутить - браузер паузит видео!
         // 3. Размутивание только при взаимодействии пользователя (через toggleMute/changeVolume)
         if (isMuted) {
-            try { video.muted = true; } catch {}
+            try { video.muted = true; } catch { }
         } else {
             // Применяем только если это явный mute от autoplay ИЛИ пользователь размутил вручную
-            try { video.muted = autoplayMutedRef.current; } catch {}
+            try { video.muted = autoplayMutedRef.current; } catch { }
         }
     }, [volume, isMuted]);
 
@@ -2015,9 +2015,9 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
         // Применяем playbackRate только если он не равен 1
         // И только после того как пользователь взаимодействовал с плеером
         if (playbackSpeed !== 1) {
-            try { video.playbackRate = playbackSpeed; } catch {}
+            try { video.playbackRate = playbackSpeed; } catch { }
         } else {
-            try { video.playbackRate = 1; } catch {}
+            try { video.playbackRate = 1; } catch { }
         }
     }, [playbackSpeed]);
 
@@ -2025,11 +2025,11 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
     const persistProgress = useCallback(() => {
         const video = videoRef.current;
         if (!video) return;
-        
+
         // Троттлинг: не сохраняем чаще чем раз в 3 секунды
         const now = Date.now();
         if (now - lastPersistAtRef.current < 3000) return;
-        
+
         // Если висит плашка возобновления для текущей серии — не перетирать прогресс нулями
         if (resumePrompt && resumePrompt.epId === currentEpisode) return;
         // Если серия только что переключается — тоже не перетираем (ждём onLoaded)
@@ -2038,11 +2038,11 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
         const t = video.currentTime || 0;
         const dur = (video.duration || duration || 0);
         if (t < 3 && dur === 0) return; // Не сохраняем если видео только начало загружаться
-        
+
         const voice = getVoiceForProgress();
         try { upsertEpisodeProgressWithSync({ animeId, source: selectedSource, voice, episodeId: currentEpisode }, t, dur); } catch {
             // fallback to local only
-            try { upsertEpisodeProgress({ animeId, source: selectedSource, voice, episodeId: currentEpisode }, t, dur); } catch {}
+            try { upsertEpisodeProgress({ animeId, source: selectedSource, voice, episodeId: currentEpisode }, t, dur); } catch { }
         }
         lastPersistAtRef.current = now;
         setEpisodeProgressMap(prev => (dur > 0 ? { ...prev, [currentEpisode]: { time: t, ratio: Math.max(0, Math.min(1, t / dur)) } } : prev));
@@ -2069,21 +2069,21 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
         const tryAutoStart = attemptAutoStart;
 
         const onLoaded = async () => {
-            try { await fetchAndMergeFromServer(animeId); } catch {}
+            try { await fetchAndMergeFromServer(animeId); } catch { }
             const dur = video.duration || 0;
-            
+
             // КРИТИЧНО: Не продолжаем если duration не готова (таймлайн не загружен)
             if (!dur || dur <= 0 || isNaN(dur)) {
                 console.log('[onLoaded] Duration not ready yet, skipping initialization:', dur);
                 return;
             }
-            
+
             // ВАЖНО: Защита от повторной обработки onLoaded для одного эпизода
             if (onLoadedProcessedRef.current) {
                 console.log('[onLoaded] Already processed for this episode, skipping');
                 return;
             }
-            
+
             console.log('[onLoaded] Duration ready, initializing player:', dur);
             onLoadedProcessedRef.current = true; // Отмечаем что начали обработку
             setDuration(dur);
@@ -2094,14 +2094,14 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                 : getEpisodeProgress({ animeId, source: selectedSource, voice: voiceKey, episodeId: currentEpisode });
             if (saved && saved.time > 0 && saved.time < (saved.duration || dur || 1)) {
                 resumeCandidateRef.current = { epId: currentEpisode, time: saved.time, duration: saved.duration };
-                
+
                 // Проверяем, показывалась ли уже плашка для этого эпизода в текущей сессии
                 const alreadyShown = resumePromptShownForEpisodeRef.current.has(currentEpisode);
-                
+
                 if (autoPlay && !userInteractedRef.current) {
                     // Автоплей включён и пользователь не взаимодействовал → применяем сохранённую позицию
                     console.log('[onLoaded] ✅ Autoplay enabled - restoring progress and starting:', saved.time);
-                    try { 
+                    try {
                         if (video.readyState >= 1) {
                             video.currentTime = saved.time;
                             setCurrentTime(saved.time);
@@ -2111,12 +2111,12 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                                 try {
                                     video.currentTime = saved.time;
                                     setCurrentTime(saved.time);
-                                } catch {}
+                                } catch { }
                                 video.removeEventListener('canplay', onCanPlay);
                             };
                             video.addEventListener('canplay', onCanPlay, { once: true });
                         }
-                    } catch {}
+                    } catch { }
                     // ВАЖНО: Запускаем автоплей сразу как duration готова
                     tryAutoStart();
                 } else if (!alreadyShown) {
@@ -2124,7 +2124,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                     console.log('[onLoaded] ⏸️ Showing resume prompt - pausing video');
                     setResumePrompt({ epId: currentEpisode, time: saved.time, duration: saved.duration });
                     resumePromptShownForEpisodeRef.current.add(currentEpisode);
-                    try { video.pause(); } catch {}
+                    try { video.pause(); } catch { }
                     setIsPlaying(false);
                 } else {
                     // Если плашка уже показывалась - запускаем автоплей если он включен
@@ -2140,7 +2140,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                     tryAutoStart();
                 }
             }
-            
+
             // ВАЖНО: Добавляем повторную попытку автозапуска через задержку
             // на случай если первая попытка была слишком ранней
             if (!userInteractedRef.current && autoPlay) {
@@ -2151,7 +2151,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                     }
                 }, 500);
             }
-            
+
             // Сбросим флаг переключения серии после обработки loaded
             isEpisodeSwitchingRef.current = false;
             // помечаем серию как открытую
@@ -2194,7 +2194,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                     if (inOpening || inEnding) {
                         const kind: 'opening' | 'ending' = inOpening ? 'opening' : 'ending';
                         const allowed = (kind === 'opening' ? skipOpening : skipEnding);
-                        
+
                         // Обрабатываем сегмент только если соответствующий тумблер включен
                         if (allowed) {
                             if (skipAutoKindRef.current !== kind) {
@@ -2242,10 +2242,10 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
 
                     // Авто-пропуск после 5с накопленного воспроизведения
                     if (inOpening && skipOpening && !hasSkippedOpeningRef.current) {
-                        console.log('[skip] checking auto-skip opening', { 
-                            elapsed: skipElapsedRef.current, 
-                            threshold: 5, 
-                            opEnd, 
+                        console.log('[skip] checking auto-skip opening', {
+                            elapsed: skipElapsedRef.current,
+                            threshold: 5,
+                            opEnd,
                             canSkip: skipElapsedRef.current >= 5 && opEnd !== null,
                             skipOpening,
                             hasSkipped: hasSkippedOpeningRef.current
@@ -2259,10 +2259,10 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                         }
                     }
                     if (inEnding && skipEnding && !hasSkippedEndingRef.current) {
-                        console.log('[skip] checking auto-skip ending', { 
-                            elapsed: skipElapsedRef.current, 
-                            threshold: 5, 
-                            edEnd, 
+                        console.log('[skip] checking auto-skip ending', {
+                            elapsed: skipElapsedRef.current,
+                            threshold: 5,
+                            edEnd,
                             canSkip: skipElapsedRef.current >= 5 && edEnd !== null,
                             skipEnding,
                             hasSkipped: hasSkippedEndingRef.current
@@ -2277,13 +2277,13 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                     }
                 } else if (selectedSource === 'kodik' && kodikSegments) {
                     const t = video.currentTime || 0;
-                    
+
                     // Handle automatic ad skip (ad segments)
                     if (kodikSegments.ad) {
                         kodikSegments.ad.forEach((adSegment, index) => {
                             const segmentKey = `ad-${index}-${adSegment.start}-${adSegment.end}`;
                             const inAdSegment = t >= adSegment.start && t < adSegment.end;
-                            
+
                             if (inAdSegment && !autoSkippedAdSegments.current.has(segmentKey)) {
                                 // Automatically skip ad segment
                                 video.currentTime = Math.min(adSegment.end, video.duration || adSegment.end);
@@ -2292,18 +2292,18 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                             }
                         });
                     }
-                    
+
                     // Handle optional skip segments (opening/ending - same as Libria logic)
                     if (kodikSegments.skip) {
-                        const currentSkipSegment = kodikSegments.skip.find(segment => 
+                        const currentSkipSegment = kodikSegments.skip.find(segment =>
                             t >= segment.start && t < segment.end
                         );
-                        
+
                         if (currentSkipSegment) {
                             const inOpening = currentSkipSegment.start < 300; // Assume opening if within first 5 minutes
                             const kind: 'opening' | 'ending' = inOpening ? 'opening' : 'ending';
                             const allowed = (kind === 'opening' ? skipOpening : skipEnding);
-                            
+
                             if (allowed) {
                                 if (skipAutoKindRef.current !== kind) {
                                     skipAutoKindRef.current = kind;
@@ -2320,7 +2320,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                                         console.log('[kodik-skip] progress', { kind, t, delta, elapsed: skipElapsedRef.current });
                                     }
                                 }
-                                
+
                                 // Auto-skip after 5 seconds
                                 if (skipElapsedRef.current >= 5) {
                                     const hasSkipped = inOpening ? hasSkippedOpeningRef.current : hasSkippedEndingRef.current;
@@ -2357,10 +2357,10 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                         }
                     }
                 }
-            } catch {}
+            } catch { }
         };
         const onSeeking = () => {
-            try { lastVideoTimeRef.current = video.currentTime || 0; } catch {}
+            try { lastVideoTimeRef.current = video.currentTime || 0; } catch { }
         };
         const onSeeked = () => {
             try {
@@ -2394,7 +2394,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                         }
                     }
                 }
-            } catch {}
+            } catch { }
         };
         const onProgress = () => {
             try {
@@ -2439,7 +2439,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
             // Видео начало воспроизводиться - точно убираем буферизацию
             setIsBuffering(false);
             setIsPlaying(true);
-            
+
             // НЕ размучиваем здесь - браузер паузит видео!
             // Размутивание произойдет только при первом взаимодействии пользователя
         };
@@ -2453,12 +2453,12 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
             // Автоматический переход на следующий эпизод при завершении текущего
             const currentIdx = playlistEpisodes.findIndex(p => p.id === currentEpisode);
             const hasNextEpisode = currentIdx !== -1 && currentIdx < playlistEpisodes.length - 1;
-            
+
             if (hasNextEpisode) {
                 // Логика переключения на следующий эпизод
                 const newIdx = Math.min(playlistEpisodes.length - 1, currentIdx + 1);
                 const newId = playlistEpisodes[newIdx].id;
-                
+
                 // Перед переключением — сохранить текущий прогресс с синхронизацией
                 try {
                     const v = videoRef.current;
@@ -2466,21 +2466,21 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                     const d = (v?.duration ?? duration) || 0;
                     const voice = getVoiceForProgress();
                     if (d >= 0) {
-                        try { 
-                            upsertEpisodeProgressWithSync({ animeId, source: selectedSource, voice, episodeId: currentEpisode }, t, d); 
+                        try {
+                            upsertEpisodeProgressWithSync({ animeId, source: selectedSource, voice, episodeId: currentEpisode }, t, d);
                         } catch {
-                            try { 
-                                upsertEpisodeProgress({ animeId, source: selectedSource, voice, episodeId: currentEpisode }, t, d); 
-                            } catch {}
+                            try {
+                                upsertEpisodeProgress({ animeId, source: selectedSource, voice, episodeId: currentEpisode }, t, d);
+                            } catch { }
                         }
                     }
-                } catch {}
-                
+                } catch { }
+
                 isEpisodeSwitchingRef.current = true;
                 // Сбрасываем флаг пользовательского взаимодействия для новой серии
                 userInteractedRef.current = false;
                 setCurrentEpisode(newId);
-                
+
                 // Если включен авто-запуск, запускаем новый эпизод после переключения
                 if (autoPlay) {
                     setTimeout(() => {
@@ -2497,8 +2497,8 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                     }, 1000); // Задержка для корректной загрузки нового эпизода
                 }
             }
-        }; 
-        
+        };
+
         video.addEventListener('loadedmetadata', onLoaded);
         video.addEventListener('durationchange', onLoaded);
         video.addEventListener('timeupdate', onTime);
@@ -2511,7 +2511,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
         video.addEventListener('playing', onPlaying);
         video.addEventListener('pause', onPause);
         video.addEventListener('ended', onEnded);
-        
+
         // Убрали ранний вызов tryAutoStart() - запуск будет только в canplaythrough
 
         return () => {
@@ -2553,19 +2553,19 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
     const togglePlay = () => {
         const video = videoRef.current;
         if (!video) return;
-        
+
         // КРИТИЧНО: Блокируем воспроизведение если duration не загружена
         if (!video.duration || video.duration <= 0 || isNaN(video.duration)) {
             console.log('[togglePlay] Blocked - duration not ready:', video.duration);
             return;
         }
-        
+
         // Если висит плашка "Продолжить" — блокируем старт до выбора
         if (resumePrompt) return;
-        
+
         // Помечаем, что пользователь взаимодействовал с плеером
         userInteractedRef.current = true;
-        
+
         if (video.paused) {
             // Старт воспроизведения → стабильно показываем UI, затем плавно скрываем
             video.play();
@@ -2590,6 +2590,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
 
     // Prev/Next handlers that update currentEpisode and keep quality selection
     const handlePrevEpisodeInternal = () => {
+        console.log('[Player] handlePrevEpisodeInternal called, playlistEpisodes.length:', playlistEpisodes.length);
         if (!playlistEpisodes.length) return;
         const idx = playlistEpisodes.findIndex(p => p.id === currentEpisode);
         const currentIdx = idx === -1 ? 0 : idx;
@@ -2603,10 +2604,10 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
             const voice = getVoiceForProgress();
             if (d >= 0) {
                 try { upsertEpisodeProgressWithSync({ animeId, source: selectedSource, voice, episodeId: currentEpisode }, t, d); } catch {
-                    try { upsertEpisodeProgress({ animeId, source: selectedSource, voice, episodeId: currentEpisode }, t, d); } catch {}
+                    try { upsertEpisodeProgress({ animeId, source: selectedSource, voice, episodeId: currentEpisode }, t, d); } catch { }
                 }
             }
-        } catch {}
+        } catch { }
         // СНАЧАЛА помечаем, что идёт смена серии, чтобы блокировать параллельные сохранения
         isEpisodeSwitchingRef.current = true;
         // Сбрасываем флаг пользовательского взаимодействия для новой серии
@@ -2615,6 +2616,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
     };
 
     const handleNextEpisodeInternal = () => {
+        console.log('[Player] handleNextEpisodeInternal called, playlistEpisodes.length:', playlistEpisodes.length);
         if (!playlistEpisodes.length) return;
         const idx = playlistEpisodes.findIndex(p => p.id === currentEpisode);
         const currentIdx = idx === -1 ? 0 : idx;
@@ -2628,10 +2630,10 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
             const voice = getVoiceForProgress();
             if (d >= 0) {
                 try { upsertEpisodeProgressWithSync({ animeId, source: selectedSource, voice, episodeId: currentEpisode }, t, d); } catch {
-                    try { upsertEpisodeProgress({ animeId, source: selectedSource, voice, episodeId: currentEpisode }, t, d); } catch {}
+                    try { upsertEpisodeProgress({ animeId, source: selectedSource, voice, episodeId: currentEpisode }, t, d); } catch { }
                 }
             }
-        } catch {}
+        } catch { }
         // СНАЧАЛА помечаем, что идёт смена серии, чтобы блокировать параллельные сохранения
         isEpisodeSwitchingRef.current = true;
         // Сбрасываем флаг пользовательского взаимодействия для новой серии
@@ -2644,7 +2646,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
         userInteractedRef.current = true;
         // Снимаем флаг принудительного mute от autoplay
         autoplayMutedRef.current = false;
-        
+
         setIsMuted(false);
         setVolume(prev => {
             const next = Math.max(0, Math.min(1, prev + delta));
@@ -2665,14 +2667,14 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
             document.removeEventListener('keydown', unmuteOnInteractHandlerRef.current as any);
             unmuteOnInteractHandlerRef.current = null;
         }
-        
+
         setIsMuted(m => {
             const next = !m;
             showVolumeOverlay(next ? 0 : volume, 'mute');
             // Принудительно применяем muted к видео элементу
             const video = videoRef.current;
             if (video) {
-                try { video.muted = next; } catch {}
+                try { video.muted = next; } catch { }
             }
             return next;
         });
@@ -2727,37 +2729,37 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
             const key = e.key.toLowerCase();
             // Вспомогательные наборы: RU/EN и символы
             const isAny = (...ks: string[]) => ks.includes(key);
-            
+
             // Пробел: если зажат 1.5 секунды - ускорение 2x, иначе плей/пауза
-            if (isAny(' ', 'space')) { 
+            if (isAny(' ', 'space')) {
                 e.preventDefault();
-                
+
                 // Если это повторное нажатие (клавиша уже зажата), игнорируем
                 if (e.repeat) return;
-                
+
                 const video = videoRef.current;
                 if (!video) return;
-                
+
                 // Запоминаем время начала зажатия
                 spaceHoldStartRef.current = Date.now();
-                
+
                 // Если видео играет (проверяем актуальное состояние видео), запускаем таймер на 0.3 секунды для ускорения
                 if (!video.paused) {
                     spaceHoldTimerRef.current = window.setTimeout(() => {
                         // Через 0.3 секунды включаем ускорение
                         const currentVideo = videoRef.current;
                         if (!currentVideo) return;
-                        
+
                         normalSpeedRef.current = playbackSpeed;
                         speedBoostRef.current = true;
                         setIsSpeedBoost(true);
                         currentVideo.playbackRate = 2;
-                        
+
                         console.log('[Speed Boost] Activated - 2x speed');
                     }, 300);
                 }
-                
-                return; 
+
+                return;
             }
             // 1) F/А — fullscreen
             if (isAny('f', 'а')) { e.preventDefault(); const prev = isFullscreen; toggleFullscreen(); showNotice(prev ? 'Выход из полноэкранного режима' : 'Полноэкранный режим'); return; }
@@ -2768,7 +2770,8 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
             // 4) O/Щ — настройки
             if (isAny('o', 'щ')) { e.preventDefault(); setShowSettings(v => !v); setSettingsSection('main'); showNotice('Меню настроек'); return; }
             // 5) Y/Н — авто-качество
-            if (isAny('y', 'н')) { e.preventDefault();
+            if (isAny('y', 'н')) {
+                e.preventDefault();
                 if (selectedSource === 'libria') {
                     setLibriaSelectedQualityKey('auto');
                     const activeKey = libriaCurrentActiveKey ?? chooseLibriaKey(libriaQualities) ?? (libriaQualities[0]?.key ?? null);
@@ -2788,12 +2791,13 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                 return;
             }
             // 6) J/О — максимум качества
-            if (isAny('j', 'о')) { e.preventDefault();
+            if (isAny('j', 'о')) {
+                e.preventDefault();
                 if (selectedSource === 'libria' && libriaQualities.length) {
-                    const best = [...libriaQualities].sort((a,b)=>parseInt(b.key)-parseInt(a.key))[0];
+                    const best = [...libriaQualities].sort((a, b) => parseInt(b.key) - parseInt(a.key))[0];
                     setLibriaSelectedQualityKey(best.key); setLibriaCurrentActiveKey(best.key); setFetchedSrc(best.url);
                 } else if (selectedSource === 'kodik' && kodikQualities.length) {
-                    const best = [...kodikQualities].sort((a,b)=>parseInt(b.key)-parseInt(a.key))[0];
+                    const best = [...kodikQualities].sort((a, b) => parseInt(b.key) - parseInt(a.key))[0];
                     setKodikSelectedQualityKey(best.key); setKodikCurrentActiveKey(best.key); setFetchedSrc(best.url);
                 } else {
                     setCurrentLevel(0); // fallback
@@ -2802,12 +2806,13 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                 return;
             }
             // 7) N/Т — минимум качества
-            if (isAny('n', 'т')) { e.preventDefault();
+            if (isAny('n', 'т')) {
+                e.preventDefault();
                 if (selectedSource === 'libria' && libriaQualities.length) {
-                    const worst = [...libriaQualities].sort((a,b)=>parseInt(a.key)-parseInt(b.key))[0];
+                    const worst = [...libriaQualities].sort((a, b) => parseInt(a.key) - parseInt(b.key))[0];
                     setLibriaSelectedQualityKey(worst.key); setLibriaCurrentActiveKey(worst.key); setFetchedSrc(worst.url);
                 } else if (selectedSource === 'kodik' && kodikQualities.length) {
-                    const worst = [...kodikQualities].sort((a,b)=>parseInt(a.key)-parseInt(b.key))[0];
+                    const worst = [...kodikQualities].sort((a, b) => parseInt(a.key) - parseInt(b.key))[0];
                     setKodikSelectedQualityKey(worst.key); setKodikCurrentActiveKey(worst.key); setFetchedSrc(worst.url);
                 } else {
                     setCurrentLevel(0);
@@ -2827,38 +2832,40 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
             // Стрелки и volume на RU
             if (isAny('arrowup', 'ц')) { e.preventDefault(); changeVolume(0.1, 'up'); return; }
             if (isAny('arrowdown', 'в')) { e.preventDefault(); changeVolume(-0.1, 'down'); return; }
-            if (isAny('arrowright', 'к')) { e.preventDefault();
+            if (isAny('arrowright', 'к')) {
+                e.preventDefault();
                 seekBy(10);
                 setShowOverlays({ kind: 'seek-forward' });
                 window.setTimeout(() => setShowOverlays(o => (o?.kind === 'seek-forward' ? null : o)), 600);
                 return;
             }
-            if (isAny('arrowleft', 'ф')) { e.preventDefault();
+            if (isAny('arrowleft', 'ф')) {
+                e.preventDefault();
                 seekBy(-10);
                 setShowOverlays({ kind: 'seek-backward' });
                 window.setTimeout(() => setShowOverlays(o => (o?.kind === 'seek-backward' ? null : o)), 600);
                 return;
             }
         };
-        
+
         const onKeyUp = (e: KeyboardEvent) => {
             if (isInput(e.target as Element | null)) return;
             const key = e.key.toLowerCase();
             const isAny = (...ks: string[]) => ks.includes(key);
-            
+
             // Отпускание пробела
             if (isAny(' ', 'space')) {
                 e.preventDefault();
-                
+
                 const holdDuration = Date.now() - spaceHoldStartRef.current;
                 const video = videoRef.current;
-                
+
                 // Отменяем таймер если он еще не сработал
                 if (spaceHoldTimerRef.current !== null) {
                     window.clearTimeout(spaceHoldTimerRef.current);
                     spaceHoldTimerRef.current = null;
                 }
-                
+
                 // Если было ускорение - возвращаем к нормальной скорости
                 if (speedBoostRef.current) {
                     if (video) {
@@ -2875,11 +2882,11 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                         togglePlay();
                     }
                 }
-                
+
                 return;
             }
         };
-        
+
         window.addEventListener('keydown', onKey);
         window.addEventListener('keyup', onKeyUp);
         return () => {
@@ -2891,30 +2898,30 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                 spaceHoldTimerRef.current = null;
             }
         };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [volume, isMuted, isPlaying, isFullscreen, skipOpening, skipEnding, selectedSource, libriaQualities, libriaCurrentActiveKey, kodikQualities, kodikCurrentActiveKey, playbackSpeed]);
 
     // Автоскрытие UI при бездействии с улучшенной стабильностью
     const lastPokeTime = useRef<number>(0);
     const isPoking = useRef<boolean>(false);
-    
+
     const pokeUi = useCallback(() => {
         const now = Date.now();
-        
+
         // Предотвращаем множественные вызовы
         if (isPoking.current) return;
-        
+
         // Debounce: не обновлять чаще чем раз в 200мс
         if (now - lastPokeTime.current < 200) return;
         lastPokeTime.current = now;
-        
+
         isPoking.current = true;
-        
+
         // Показать UI только если он действительно скрыт
         if (!showUIRef.current) {
             setShowUI(true);
         }
-        
+
         // Сбросить таймер скрытия
         if (hideUiTimeoutRef.current) window.clearTimeout(hideUiTimeoutRef.current);
         const video = videoRef.current;
@@ -2923,26 +2930,26 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                 setShowUI(false);
             }, 3500); // Увеличен таймер для большей стабильности
         }
-        
+
         // Сбрасываем флаг через короткое время
         setTimeout(() => { isPoking.current = false; }, 100);
     }, []);
-    
+
     // Супер-стабильный обработчик движения мыши
     const lastMouseMoveTime = useRef<number>(0);
     const mouseMovePending = useRef<boolean>(false);
-    
+
     const handleMouseMove = useCallback(() => {
         const now = Date.now();
-        
+
         // Предотвращаем избыточные вызовы
         if (mouseMovePending.current) return;
-        
+
         // Если UI уже показан, очень редко обновляем таймер
         if (showUIRef.current) {
             if (now - lastMouseMoveTime.current < 800) return; // Увеличено до 800мс
             lastMouseMoveTime.current = now;
-            
+
             const video = videoRef.current;
             if (video && !video.paused) {
                 // Только сбрасываем таймер скрытия, НЕ меняем состояние
@@ -2951,12 +2958,12 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                 return;
             }
         }
-        
+
         // Если UI скрыт, показываем с большой задержкой для стабильности
         if (now - lastMouseMoveTime.current > 300) { // Увеличено до 300мс
             lastMouseMoveTime.current = now;
             mouseMovePending.current = true;
-            
+
             // Используем requestAnimationFrame для плавности
             requestAnimationFrame(() => {
                 pokeUi();
@@ -3001,7 +3008,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
             const s = { skipOpening, skipEnding, autoPlay, autoFullscreen, playbackSpeed, volume, isMuted };
             localStorage.setItem('player.settings', JSON.stringify(s));
             console.debug('[settings] saved to storage', s);
-        } catch {}
+        } catch { }
     }, [skipOpening, skipEnding, autoPlay, autoFullscreen, playbackSpeed, volume, isMuted]);
 
     // Выбор качества
@@ -3080,10 +3087,10 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
 
     const IconButton: React.FC<{ label: string; onClick?: () => void; disabled?: boolean; className?: string; children: React.ReactNode; onMouseEnter?: () => void; onMouseLeave?: () => void }>
         = ({ label, onClick, disabled, className, children, onMouseEnter, onMouseLeave }) => (
-        <button onClick={onClick} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} aria-label={label} className={`player-icon-button${className ? ' ' + className : ''}`} style={{ opacity: disabled ? 0.5 : 1, cursor: disabled ? 'not-allowed' : 'pointer' }} disabled={disabled}>
-            <span className="player-icon-wrap" style={{ color: iconColor }}>{children}</span>
-        </button>
-    );
+            <button onClick={onClick} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} aria-label={label} className={`player-icon-button${className ? ' ' + className : ''}`} style={{ opacity: disabled ? 0.5 : 1, cursor: disabled ? 'not-allowed' : 'pointer' }} disabled={disabled}>
+                <span className="player-icon-wrap" style={{ color: iconColor }}>{children}</span>
+            </button>
+        );
     const formatTime = (s: number) => {
         if (!isFinite(s)) return '00:00';
         const total = Math.max(0, Math.floor(s));
@@ -3157,15 +3164,15 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
         const bar = hotbarRef.current;
         const video = videoRef.current;
         if (!bar || !video || duration <= 0) return;
-        
+
         // При клике по прогресс-бару - пользователь взаимодействовал с плеером
         userInteractedRef.current = true;
         // Снимаем флаг принудительного mute от autoplay
         if (autoplayMutedRef.current && !isMuted) {
             autoplayMutedRef.current = false;
-            try { video.muted = false; } catch {}
+            try { video.muted = false; } catch { }
         }
-        
+
         const rect = bar.getBoundingClientRect();
         const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
         const newTime = ratio * duration;
@@ -3208,15 +3215,15 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
         window.addEventListener('touchcancel', onEnd);
     };
 
-    
+
     const handleVideoDoubleClick = useCallback(() => {
         toggleFullscreen();
     }, [toggleFullscreen]);
-    
+
     const handleVideoClick = useCallback((e: React.MouseEvent) => {
         const now = Date.now();
         const timeDiff = now - lastClickTimeRef.current;
-        
+
         // Двойной клик (менее 300ms между кликами)
         if (timeDiff < 300) {
             e.stopPropagation();
@@ -3224,9 +3231,9 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
             lastClickTimeRef.current = 0; // Сбрасываем чтобы не было тройного клика
             return;
         }
-        
+
         lastClickTimeRef.current = now;
-        
+
         // Одиночный клик - плей/пауза
         if (!showUIRef.current) {
             e.stopPropagation();
@@ -3237,7 +3244,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
         showPlayPauseIcon(isPlaying);
         togglePlay();
     }, [handleVideoDoubleClick, pokeUi, isPlaying, showPlayPauseIcon, togglePlay]);
-    
+
     const handleContainerClick: React.MouseEventHandler<HTMLDivElement> = useCallback((e) => {
         // Проверяем, не кликнули ли по кнопке или интерактивному элементу
         const target = e.target as HTMLElement;
@@ -3246,7 +3253,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
             pokeUi();
             return;
         }
-        
+
         const wasHidden = !showUIRef.current;
         if (wasHidden) {
             pokeUi();
@@ -3258,13 +3265,13 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
     return (
         <div ref={containerRef} className="player-pc" style={{ ...containerStyle, cursor: isUIStable && showUI ? 'default' : 'none', pointerEvents: 'auto' }} onMouseMove={handleMouseMove} onClick={handleContainerClick}>
             {/* Видео */}
-            <video 
-                ref={videoRef} 
-                className="player-video" 
-                style={videoStyle} 
-                onClick={handleVideoClick} 
-                onPlay={() => setIsPlaying(true)} 
-                onPause={() => setIsPlaying(false)} 
+            <video
+                ref={videoRef}
+                className="player-video"
+                style={videoStyle}
+                onClick={handleVideoClick}
+                onPlay={() => setIsPlaying(true)}
+                onPause={() => setIsPlaying(false)}
                 onCanPlay={() => {
                     // Скрываем ошибку Libria когда видео загрузилось
                     if (libriaLoadingError && selectedSource === 'libria') {
@@ -3279,24 +3286,24 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                         console.log('[Libria] Video loading error');
                     }
                 }}
-                playsInline 
-                controls={false} 
+                playsInline
+                controls={false}
             />
 
             {/* Верхняя панель */}
             <div className={uiClasses.topbar}>
                 <div className="player-topbar__left">
                     <div className="player-episode-title-main">{displayedTitle}</div>
-                    { (displayedSubtitle ?? '').length > 0 && (
+                    {(displayedSubtitle ?? '').length > 0 && (
                         <div className="player-episode-sub">{displayedSubtitle}</div>
                     )}
                 </div>
                 <div className="player-topbar__right">
                     {/* Кнопка выбора источника скрыта для Yumeko и по параметру showSourceButton */}
                     {selectedSource !== 'yumeko' && showSourceButton && (
-                        <IconButton 
-                            label="Источник видео" 
-                            onClick={() => setShowSourceDropdown(!showSourceDropdown)} 
+                        <IconButton
+                            label="Источник видео"
+                            onClick={() => setShowSourceDropdown(!showSourceDropdown)}
                             className="player-source-toggle"
                         >
                             {showSourceDropdown ? (
@@ -3363,12 +3370,12 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
             {selectedSource === 'kodik' && kodikSegments && kodikSegments.skip && (
                 (() => {
                     const t = currentTime;
-                    const currentSkipSegment = kodikSegments.skip.find(segment => 
+                    const currentSkipSegment = kodikSegments.skip.find(segment =>
                         t >= segment.start && t < segment.end
                     );
-                    
+
                     if (!currentSkipSegment) return null;
-                    
+
                     const isOpening = currentSkipSegment.start < 300; // Assume opening if within first 5 minutes
                     const label = isOpening ? 'Пропустить Опенинг' : 'Пропустить Эндинг';
                     const handleSkip = () => {
@@ -3381,7 +3388,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                             hasSkippedEndingRef.current = true;
                         }
                     };
-                    
+
                     return (
                         <button className={`player-skip-button ${((isOpening && skipOpening) || (!isOpening && skipEnding)) ? 'has-auto' : ''}`} onClick={handleSkip} aria-label={label}>
                             <span className="player-skip-label">{label}</span>
@@ -3718,10 +3725,10 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                                             { key: 'auto', label: 'Авто', url: '' },
                                             ...libriaQualities
                                         ].map(q => {
-                                            const isActive = q.key === 'auto' 
+                                            const isActive = q.key === 'auto'
                                                 ? libriaSelectedQualityKey === 'auto'
                                                 : libriaSelectedQualityKey === q.key;
-                                            
+
                                             return (
                                                 <div
                                                     key={q.key}
@@ -3879,12 +3886,12 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                                     className={`player-playlist-item ${currentEpisode === ep.id ? 'active' : ''}`}
                                     onClick={() => {
                                         // Внутри плейлиста: не закрываем список
-                        // СНАЧАЛА отмечаем переключение серии, чтобы временно не перетирать прогресс
-                        isEpisodeSwitchingRef.current = true;
+                                        // СНАЧАЛА отмечаем переключение серии, чтобы временно не перетирать прогресс
+                                        isEpisodeSwitchingRef.current = true;
                                         // Затем сохраним прогресс текущей серии (не трогаем будущую полосу новой серии)
-                                        try { persistProgress(); } catch {}
-                        // Сбрасываем флаг пользовательского взаимодействия для новой серии
-                        userInteractedRef.current = false;
+                                        try { persistProgress(); } catch { }
+                                        // Сбрасываем флаг пользовательского взаимодействия для новой серии
+                                        userInteractedRef.current = false;
                                         const prog = selectedSource === 'libria'
                                             ? getEpisodeProgressLibriaAnyVoice(animeId, ep.id)
                                             : getEpisodeProgress({ animeId, source: selectedSource, voice: getVoiceForProgress(), episodeId: ep.id });
@@ -3910,7 +3917,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                                     {currentEpisode === ep.id && (
                                         <div className="player-playlist-current-indicator" />
                                     )}
-                                    
+
                                     <div className="player-playlist-item-info">
                                         <span className="player-playlist-item-title">{ep.title}</span>
                                         <span className="player-playlist-item-duration">{ep.duration}</span>
@@ -3947,18 +3954,18 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                                         if (videoRef.current) {
                                             videoRef.current.currentTime = r.time;
                                         }
-                                    } catch {}
+                                    } catch { }
                                     persistProgress();
                                     try {
                                         // Пользовательский клик → можно воспроизводить сразу
                                         (v ?? videoRef.current)?.play?.();
                                         setIsPlaying(true);
-                                    } catch {}
+                                    } catch { }
                                 };
                                 if (v) {
                                     if (v.readyState >= 1) apply();
                                     else {
-                                        const handler = () => { try { apply(); } catch {} };
+                                        const handler = () => { try { apply(); } catch { } };
                                         v.addEventListener('loadedmetadata', handler, { once: true } as any);
                                     }
                                 }
@@ -3967,20 +3974,20 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                                 // Полный сброс прогресса для серии и мгновенный старт с начала
                                 const epId = resumePrompt.epId;
                                 const voice = getVoiceForProgress();
-                                try { setEpisodeProgress({ animeId, source: selectedSource, voice, episodeId: epId }, { time: 0, duration: 0, updatedAt: Date.now(), opened: true }); } catch {}
+                                try { setEpisodeProgress({ animeId, source: selectedSource, voice, episodeId: epId }, { time: 0, duration: 0, updatedAt: Date.now(), opened: true }); } catch { }
                                 setCurrentEpisode(epId);
                                 resumeCandidateRef.current = { epId, time: 0, duration: 0 };
                                 setResumePrompt(null);
                                 const v = videoRef.current;
                                 const apply = () => {
-                                    try { if (videoRef.current) videoRef.current.currentTime = 0; } catch {}
+                                    try { if (videoRef.current) videoRef.current.currentTime = 0; } catch { }
                                     persistProgress();
-                                    try { (v ?? videoRef.current)?.play?.(); setIsPlaying(true); } catch {}
+                                    try { (v ?? videoRef.current)?.play?.(); setIsPlaying(true); } catch { }
                                 };
                                 if (v) {
                                     if (v.readyState >= 1) apply();
                                     else {
-                                        const handler = () => { try { apply(); } catch {} };
+                                        const handler = () => { try { apply(); } catch { } };
                                         v.addEventListener('loadedmetadata', handler, { once: true } as any);
                                     }
                                 }
@@ -4003,7 +4010,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                         </button>
                     </div>
                     <div className="player-source-options">
-                        <div 
+                        <div
                             className={`player-source-option ${selectedSource === 'kodik' ? 'active' : ''}`}
                             onClick={() => {
                                 if (selectedSource !== 'kodik') {
@@ -4018,7 +4025,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                             {selectedSource === 'kodik' && <div className="player-source-check" />}
                         </div>
                         {isLibriaAvailable && (
-                            <div 
+                            <div
                                 className={`player-source-option ${selectedSource === 'libria' ? 'active' : ''}`}
                                 onClick={() => {
                                     if (selectedSource !== 'libria') {
@@ -4034,7 +4041,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                             </div>
                         )}
                     </div>
-                    
+
                     {/* Список озвучек только для Kodik */}
                     {selectedSource === 'kodik' && (
                         <div className="player-voice-list">
@@ -4068,7 +4075,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                                                         epsArr = Object.keys(epsObj).map(k => ({ id: Number(k), url: (epsObj as Record<string, unknown>)[k] }));
                                                     }
                                                 }
-                                                mapped = Array.isArray(epsArr) ? epsArr.map((e: any, idx: number) => ({ id: Number(e.id ?? e.ordinal ?? e.number ?? idx+1), title: e.title ?? `Серия ${e.id ?? idx+1}`, duration: typeof e.duration === 'number' ? `${Math.floor((e.duration as number)/60)}:${String((e.duration as number)%60).padStart(2,'0')}` : (e.duration as string | undefined), raw: e })) : [];
+                                                mapped = Array.isArray(epsArr) ? epsArr.map((e: any, idx: number) => ({ id: Number(e.id ?? e.ordinal ?? e.number ?? idx + 1), title: e.title ?? `Серия ${e.id ?? idx + 1}`, duration: typeof e.duration === 'number' ? `${Math.floor((e.duration as number) / 60)}:${String((e.duration as number) % 60).padStart(2, '0')}` : (e.duration as string | undefined), raw: e })) : [];
                                                 setKodikPlaylistMap(prev => ({ ...prev, [voice]: mapped! }));
                                             }
                                             setPlaylistEpisodes(mapped ?? []);
@@ -4078,14 +4085,14 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
 
                                             // fetch stream for first episode of chosen voice
                                             const res = await fetchKodikStream(kodikTitle, voice, firstId, true);
-                                            
+
                                             // Store segments from Kodik response
                                             if (res?.segments) {
                                                 setKodikSegments(res.segments);
                                                 // Clear previously auto-skipped segments for new episode
                                                 autoSkippedAdSegments.current.clear();
                                             }
-                                            
+
                                             const links = res?.links as Record<string, { Src?: string }> | undefined;
                                             const hlsUrl = links ? (links['720']?.Src ?? links['480']?.Src ?? links['360']?.Src ?? links['240']?.Src) : (res?.link ?? res?.hls ?? res?.url ?? null);
                                             if (hlsUrl) setFetchedSrc(hlsUrl);
@@ -4109,10 +4116,10 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
 
             {/* Сообщение об ошибке загрузки Libria */}
             {libriaLoadingError && selectedSource === 'libria' && (
-                <div 
-                    className="player-osd-center" 
-                    style={{ 
-                        fontSize: 15, 
+                <div
+                    className="player-osd-center"
+                    style={{
+                        fontSize: 15,
                         fontWeight: 600,
                         padding: '16px 24px',
                         maxWidth: '500px',

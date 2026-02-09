@@ -1,12 +1,22 @@
-import {API_SERVER} from '@/hosts/constants';
+import { API_SERVER } from '@/hosts/constants';
 
 
 export async function fetchLibriaEpisodes(animeId: string): Promise<LibriaEpisode[]> {
-    const response = await fetch(`${API_SERVER}/api/libria/episodes/${animeId}`);
-    if (!response.ok) {
-        throw new Error("Ошибка загрузки эпизодов");
+    // Шаг 1: Получаем alias от бэкенда
+    const backendResponse = await fetch(`${API_SERVER}/api/libria/episodes/${animeId}`);
+    if (!backendResponse.ok) {
+        throw new Error("Ошибка получения alias");
     }
-    return response.json();
+    const { apiUrl } = await backendResponse.json();
+
+    // Шаг 2: Используем apiUrl для прямого запроса к AniLibria
+    const libraResponse = await fetch(apiUrl);
+    if (!libraResponse.ok) {
+        throw new Error("Ошибка загрузки эпизодов из AniLibria");
+    }
+
+    const data = await libraResponse.json();
+    return data.episodes || [];
 }
 
 export interface LibriaEpisode {
