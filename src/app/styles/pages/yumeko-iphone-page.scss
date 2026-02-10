@@ -1,0 +1,419 @@
+@import '../components/theme-variables';
+
+.yumeko-iphone-page {
+    min-height: 100vh;
+    background: linear-gradient(180deg,
+            rgba(30, 10, 50, 0.95) 0%,
+            rgba(15, 5, 30, 0.98) 100%);
+    padding: 2rem 1rem;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 800px;
+        height: 800px;
+        background: radial-gradient(circle, rgba(236, 72, 153, 0.15) 0%, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+        animation: pulse 8s ease-in-out infinite;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -10%;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+        animation: pulse 10s ease-in-out infinite reverse;
+    }
+}
+
+.iphone-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+/* Hero Section */
+.yumeko-iphone-page .hero-section {
+    text-align: center;
+    padding: 4rem 2rem;
+    margin-bottom: 3rem;
+
+    .hero-content {
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .app-badge {
+        display: inline-block;
+        padding: 0.5rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        letter-spacing: 1px;
+        margin-bottom: 2rem;
+        backdrop-filter: blur(10px);
+
+        &.unavailable {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(185, 28, 28, 0.2));
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+        }
+    }
+
+    .hero-title {
+        font-size: 4rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        line-height: 1.1;
+        color: #fff;
+
+        .gradient-text {
+            background: linear-gradient(135deg, #ec4899 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    }
+
+    .hero-description {
+        font-size: 1.25rem;
+        line-height: 1.8;
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 3rem;
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 2.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1.125rem;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.9);
+        position: relative;
+        overflow: hidden;
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        &:hover::before {
+            left: 100%;
+        }
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+    }
+}
+
+/* Explanation Section */
+.explanation-section {
+    margin-bottom: 4rem;
+
+    .explanation-card {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 2.5rem;
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: center;
+
+        h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 1.5rem;
+        }
+
+        .main-message {
+            font-size: 1.25rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1.5rem;
+        }
+
+        .apology {
+            font-size: 1.125rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin: 0;
+        }
+    }
+}
+
+/* Reasons Section */
+.reasons-section {
+    margin-bottom: 4rem;
+
+    .section-title {
+        text-align: center;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 3rem;
+    }
+
+    .reasons-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .reason-card {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 2rem;
+        transition: all 0.3s ease;
+
+        &:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(236, 72, 153, 0.3);
+            box-shadow: 0 20px 40px rgba(236, 72, 153, 0.15);
+        }
+
+        .reason-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(168, 85, 247, 0.2));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: #f9a8d4;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 0.75rem;
+        }
+
+        p {
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.7;
+            margin: 0;
+        }
+    }
+}
+
+/* Alternative Section */
+.alternative-section {
+    margin-bottom: 4rem;
+
+    .alternative-card {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 3rem;
+        max-width: 800px;
+        margin: 0 auto;
+        display: flex;
+        gap: 2rem;
+        align-items: flex-start;
+
+        .alt-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(168, 85, 247, 0.2));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: #f9a8d4;
+        }
+
+        .alt-content {
+            flex: 1;
+
+            h3 {
+                font-size: 2rem;
+                font-weight: 700;
+                color: #fff;
+                margin-bottom: 1rem;
+            }
+
+            h4 {
+                font-size: 1.5rem;
+                font-weight: 600;
+                color: #f9a8d4;
+                margin-bottom: 1rem;
+            }
+
+            p {
+                font-size: 1.125rem;
+                line-height: 1.8;
+                color: rgba(255, 255, 255, 0.7);
+                margin-bottom: 1.5rem;
+            }
+
+            .instruction {
+                background: rgba(255, 255, 255, 0.02);
+                border: 1px solid rgba(255, 255, 255, 0.05);
+                border-radius: 12px;
+                padding: 1.5rem;
+
+                strong {
+                    display: block;
+                    color: #f9a8d4;
+                    font-size: 1.125rem;
+                    margin-bottom: 1rem;
+                }
+
+                ol {
+                    margin: 0;
+                    padding-left: 1.5rem;
+                    color: rgba(255, 255, 255, 0.7);
+
+                    li {
+                        padding: 0.5rem 0;
+                        font-size: 1rem;
+                        line-height: 1.6;
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* Future Section */
+.future-section {
+    text-align: center;
+    margin-bottom: 3rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+
+    .section-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 1.5rem;
+    }
+
+    p {
+        font-size: 1.125rem;
+        line-height: 1.8;
+        color: rgba(255, 255, 255, 0.7);
+    }
+}
+
+/* Animations */
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .yumeko-iphone-page .hero-section {
+        padding: 2rem 1rem;
+
+        .hero-title {
+            font-size: 2.5rem;
+        }
+
+        .hero-description {
+            font-size: 1.125rem;
+        }
+
+        .btn-secondary {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    .explanation-section .explanation-card {
+        padding: 2rem 1.5rem;
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        .main-message {
+            font-size: 1.125rem;
+        }
+    }
+
+    .reasons-section {
+        .section-title {
+            font-size: 2rem;
+        }
+
+        .reasons-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .alternative-section .alternative-card {
+        flex-direction: column;
+        padding: 2rem;
+
+        .alt-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto;
+        }
+
+        .alt-content {
+            text-align: center;
+
+            .instruction {
+                text-align: left;
+            }
+        }
+    }
+}
