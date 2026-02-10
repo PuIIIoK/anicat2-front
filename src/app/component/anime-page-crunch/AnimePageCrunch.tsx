@@ -8,6 +8,7 @@ import '@/styles/components/anime-page-crunch.scss';
 import { API_SERVER } from '@/hosts/constants';
 import { getEpisodeProgress } from '@/utils/player/progressCache';
 import { fetchProgressForAnime } from '@/app/(player)/test-new-player/playerApi';
+import { hasToken, getAuthToken } from '../../utils/auth';
 import ScreenshotItem from '../anime-page-new/ScreenshotItem';
 import { useAnimePageLogic } from '../../hooks/useAnimePageLogic';
 import AnimePageCrunchSkeleton from './AnimePageCrunchSkeleton';
@@ -61,6 +62,17 @@ interface LibriaEpisode {
         src: string;
         thumbnail: string;
     };
+}
+
+interface FranchiseItem {
+    id: number;
+    title: string;
+    alttitle?: string;
+    year?: string | number;
+    status?: string;
+    type?: string;
+    position?: number;
+    imageUrl?: string;
 }
 
 const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
@@ -117,15 +129,29 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
     const [isYumekoAvailable, setIsYumekoAvailable] = useState(false);
     const [libriaProgress, setLibriaProgress] = useState<Record<number, { time: number; ratio: number }>>({});
 
-    // Franchise State
+    // Franchise/Season State
     const [hasFranchise, setHasFranchise] = useState(false);
+    const [franchiseItems, setFranchiseItems] = useState<FranchiseItem[]>([]);
+    const [selectedSeasonId, setSelectedSeasonId] = useState<number>(parseInt(animeId));
+
+    // Store original (current anime) episodes for quick restore
+    const [originalLibriaEpisodes, setOriginalLibriaEpisodes] = useState<LibriaEpisode[]>([]);
+    const [originalYumekoVoices, setOriginalYumekoVoices] = useState<YumekoVoice[]>([]);
+    const [originalYumekoEpisodes, setOriginalYumekoEpisodes] = useState<YumekoEpisode[]>([]);
+    const [originalLibriaAvailable, setOriginalLibriaAvailable] = useState(false);
+    const [originalYumekoAvailable, setOriginalYumekoAvailable] = useState(false);
+
+    // Per-season collection override
+    const [seasonFavorites, setSeasonFavorites] = useState<boolean | null>(null);
+    const [seasonSelectedStatus, setSeasonSelectedStatus] = useState<string | null>(null);
 
     // Функция загрузки прогресса для эпизодов Yumeko
-    const loadEpisodeProgress = (episodes: YumekoEpisode[], voiceName: string) => {
+    const loadEpisodeProgress = (episodes: YumekoEpisode[], voiceName: string, targetAnimeId?: string) => {
+        const id = targetAnimeId || animeId;
         const progressMap: Record<number, { time: number; ratio: number }> = {};
         episodes.forEach(ep => {
             const prog = getEpisodeProgress({
-                animeId,
+                animeId: id,
                 source: 'yumeko',
                 voice: voiceName,
                 episodeId: ep.episodeNumber
@@ -139,9 +165,10 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
     };
 
     // Функция загрузки прогресса для эпизодов Libria с сервера
-    const loadLibriaProgress = async (episodes: LibriaEpisode[]) => {
+    const loadLibriaProgress = async (episodes: LibriaEpisode[], targetAnimeId?: string) => {
         try {
-            const serverProgress = await fetchProgressForAnime(animeId);
+            const id = targetAnimeId || animeId;
+            const serverProgress = await fetchProgressForAnime(id);
             const progressMap: Record<number, { time: number; ratio: number }> = {};
 
             episodes.forEach(ep => {
@@ -173,19 +200,23 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                     .then(res => res.ok ? res.json() : [])
                     .then((voices: YumekoVoice[]) => {
                         setYumekoVoices(voices);
+                        setOriginalYumekoVoices(voices);
                         if (voices.length > 0) {
                             setIsYumekoAvailable(true);
+                            setOriginalYumekoAvailable(true);
                             setSelectedVoice(voices[0]);
                             voiceName = voices[0].name;
                             return fetch(`${API_SERVER}/api/yumeko/voices/${voices[0].id}/episodes`);
                         }
                         setIsYumekoAvailable(false);
+                        setOriginalYumekoAvailable(false);
                         return null;
                     })
                     .then(res => res?.ok ? res.json() : [])
                     .then((episodes: YumekoEpisode[]) => {
                         if (episodes) {
                             setYumekoEpisodes(episodes);
+                            setOriginalYumekoEpisodes(episodes);
                             loadEpisodeProgress(episodes, voiceName);
                         }
                     })
@@ -205,32 +236,226 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                             const libriaData = await libriaRes.json();
                             if (libriaData.episodes && Array.isArray(libriaData.episodes)) {
                                 setLibriaEpisodes(libriaData.episodes);
+                                setOriginalLibriaEpisodes(libriaData.episodes);
                                 setIsLibriaAvailable(true);
+                                setOriginalLibriaAvailable(true);
                                 setEpisodeSource('libria');
                                 loadLibriaProgress(libriaData.episodes);
+                            } else {
+                                setOriginalLibriaAvailable(false);
                             }
+                        } else {
+                            setOriginalLibriaAvailable(false);
                         }
                     })
-                    .catch(() => setIsLibriaAvailable(false))
+                    .catch(() => {
+                        setIsLibriaAvailable(false);
+                        setOriginalLibriaAvailable(false);
+                    })
                     .finally(() => setLibriaLoading(false));
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeTab, animeId, yumekoVoices.length, libriaEpisodes.length]);
 
-    // Check franchise availability on mount
+    // Franchise Check and Load on mount
     useEffect(() => {
         fetch(`${API_SERVER}/api/anime/franchise-chain/anime/${animeId}`)
             .then(res => res.ok ? res.json() : [])
-            .then((data) => {
+            .then((data: FranchiseItem[]) => {
                 if (Array.isArray(data) && data.length > 0) {
                     setHasFranchise(true);
+                    const sorted = [...data].sort((a, b) => {
+                        if (a.position !== undefined && b.position !== undefined) {
+                            return a.position - b.position;
+                        }
+                        return 0;
+                    });
+                    setFranchiseItems(sorted);
                 } else {
                     setHasFranchise(false);
+                    setFranchiseItems([]);
                 }
             })
-            .catch(() => setHasFranchise(false));
+            .catch(() => {
+                setHasFranchise(false);
+                setFranchiseItems([]);
+            });
     }, [animeId]);
+
+    // Load episodes when season changes (franchise browsing)
+    useEffect(() => {
+        const seasonId = selectedSeasonId.toString();
+        if (seasonId !== animeId) {
+            // Сбрасываем прогресс перед загрузкой нового сезона
+            setLibriaProgress({});
+            setEpisodeProgress({});
+
+            // Reload Libria episodes for new season
+            setLibriaLoading(true);
+            fetch(`${API_SERVER}/api/libria/episodes/${selectedSeasonId}`)
+                .then(res => res.ok ? res.json() : null)
+                .then(async (data) => {
+                    if (data?.apiUrl && data?.alias) {
+                        setLibriaAlias(data.alias);
+                        const libriaRes = await fetch(data.apiUrl);
+                        const libriaData = await libriaRes.json();
+                        if (libriaData.episodes && Array.isArray(libriaData.episodes)) {
+                            setLibriaEpisodes(libriaData.episodes);
+                            setIsLibriaAvailable(true);
+                            loadLibriaProgress(libriaData.episodes, seasonId);
+                        } else {
+                            setIsLibriaAvailable(false);
+                            setLibriaEpisodes([]);
+                        }
+                    } else {
+                        setIsLibriaAvailable(false);
+                        setLibriaEpisodes([]);
+                    }
+                })
+                .catch(() => {
+                    setIsLibriaAvailable(false);
+                    setLibriaEpisodes([]);
+                })
+                .finally(() => setLibriaLoading(false));
+
+            // Reload Yumeko voices/episodes for new season
+            fetch(`${API_SERVER}/api/yumeko/anime/${selectedSeasonId}/voices`)
+                .then(res => res.ok ? res.json() : [])
+                .then((voices: YumekoVoice[]) => {
+                    if (voices.length > 0) {
+                        setIsYumekoAvailable(true);
+                        setYumekoVoices(voices);
+                        setSelectedVoice(voices[0]);
+                        return fetch(`${API_SERVER}/api/yumeko/voices/${voices[0].id}/episodes`)
+                            .then(res => res?.ok ? res.json() : [])
+                            .then((episodes: YumekoEpisode[]) => {
+                                if (episodes && episodes.length > 0) {
+                                    setYumekoEpisodes(episodes);
+                                    loadEpisodeProgress(episodes, voices[0].name, seasonId);
+                                }
+                            });
+                    } else {
+                        setIsYumekoAvailable(false);
+                        setYumekoVoices([]);
+                        setYumekoEpisodes([]);
+                        return null;
+                    }
+                })
+                .catch(() => {
+                    setIsYumekoAvailable(false);
+                    setYumekoVoices([]);
+                    setYumekoEpisodes([]);
+                });
+        } else if (originalLibriaEpisodes.length > 0 || originalYumekoVoices.length > 0 || originalLibriaAvailable || originalYumekoAvailable) {
+            // Restore original episodes when returning to current season
+            setLibriaEpisodes(originalLibriaEpisodes);
+            setYumekoVoices(originalYumekoVoices);
+            setYumekoEpisodes(originalYumekoEpisodes);
+            setIsLibriaAvailable(originalLibriaAvailable);
+            setIsYumekoAvailable(originalYumekoAvailable);
+            if (originalYumekoVoices.length > 0) {
+                setSelectedVoice(originalYumekoVoices[0]);
+            }
+            // Восстанавливаем прогресс для оригинального сезона
+            if (originalLibriaEpisodes.length > 0) {
+                loadLibriaProgress(originalLibriaEpisodes, animeId);
+            }
+            if (originalYumekoVoices.length > 0 && originalYumekoEpisodes.length > 0) {
+                loadEpisodeProgress(originalYumekoEpisodes, originalYumekoVoices[0].name, animeId);
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedSeasonId, animeId]);
+
+    // Fetch collection status when season changes
+    useEffect(() => {
+        const seasonId = selectedSeasonId.toString();
+        if (seasonId !== animeId) {
+            const token = localStorage.getItem('token');
+            if (token) {
+                Promise.all([
+                    fetch(`${API_SERVER}/api/anime/optimized/get-anime/${selectedSeasonId}/collection-status`, {
+                        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+                    }),
+                    fetch(`${API_SERVER}/api/collection/favorites`, {
+                        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+                    })
+                ]).then(async ([collectionRes, favoritesRes]) => {
+                    if (collectionRes.ok) {
+                        const collectionData = await collectionRes.json();
+                        setSeasonSelectedStatus(collectionData.hasStatus === 'true' ? collectionData.status.toLowerCase() : 'none');
+                    } else {
+                        setSeasonSelectedStatus('none');
+                    }
+                    if (favoritesRes.ok) {
+                        const favoritesData = await favoritesRes.json();
+                        const isFav = favoritesData.some((item: Record<string, unknown>) => (item.anime as Record<string, unknown>)?.id === selectedSeasonId);
+                        setSeasonFavorites(isFav);
+                    } else {
+                        setSeasonFavorites(false);
+                    }
+                }).catch(() => {
+                    setSeasonSelectedStatus('none');
+                    setSeasonFavorites(false);
+                });
+            } else {
+                setSeasonSelectedStatus('none');
+                setSeasonFavorites(false);
+            }
+        } else {
+            setSeasonSelectedStatus(null);
+            setSeasonFavorites(null);
+        }
+    }, [selectedSeasonId, animeId]);
+
+    const displayFavorites = seasonFavorites !== null ? seasonFavorites : favorites;
+    const displaySelectedStatus = seasonSelectedStatus !== null ? seasonSelectedStatus : selectedStatus;
+    const currentStatus = statusOptions.find(opt => opt.value === selectedStatus);
+
+    const handleSeasonToggleFavorite = async () => {
+        if (!hasToken()) {
+            setShowAuthPrompt(true);
+            return;
+        }
+        const newFavorite = !displayFavorites;
+        if (seasonFavorites !== null) setSeasonFavorites(newFavorite);
+        try {
+            const token = getAuthToken();
+            const res = await fetch(`${API_SERVER}/api/collection/${newFavorite ? 'set' : 'remove'}?animeId=${selectedSeasonId}&type=FAVORITE`, {
+                method: newFavorite ? 'POST' : 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+            });
+            if (!res.ok) throw new Error('Error');
+            console.log(`"${anime?.title}" ${newFavorite ? 'added to' : 'removed from'} favorites`);
+            if (selectedSeasonId.toString() === animeId) toggleFavorite();
+        } catch (error) {
+            console.error(error);
+            console.error(error);
+            if (seasonFavorites !== null) setSeasonFavorites(!newFavorite);
+        }
+    };
+
+    const handleSeasonStatusSelect = async (value: string) => {
+        if (!hasToken()) {
+            setShowAuthPrompt(true);
+            return;
+        }
+        handleToggleStatusDropdown();
+        try {
+            const token = getAuthToken();
+            const endpoint = value === 'none' ? `${API_SERVER}/api/collection/remove?animeId=${selectedSeasonId}` : `${API_SERVER}/api/collection/set?animeId=${selectedSeasonId}&type=${value.toUpperCase()}`;
+            const method = value === 'none' ? 'DELETE' : 'POST';
+            const res = await fetch(endpoint, { method, headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' } });
+            if (!res.ok) throw new Error('Error');
+            if (seasonSelectedStatus !== null) setSeasonSelectedStatus(value);
+            console.log(`Status updated`);
+            if (selectedSeasonId.toString() === animeId) handleStatusSelect(value);
+        } catch (error) {
+            console.error(error);
+            console.error(error);
+        }
+    };
 
     // Загрузка эпизодов при смене озвучки (без полной перезагрузки блока)
     const handleVoiceChange = async (voice: YumekoVoice) => {
@@ -285,7 +510,6 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
         return null;
     };
 
-    const currentStatus = statusOptions.find(opt => opt.value === selectedStatus);
 
     useEffect(() => {
         if (!anime) {
@@ -591,6 +815,21 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                     </div>
                                 ) : (isLibriaAvailable || isYumekoAvailable) ? (
                                     <div className="episodes-content">
+                                        {/* Season Selector (franchise) */}
+                                        {franchiseItems.length > 1 && (
+                                            <div className="source-tabs" style={{ marginBottom: '8px' }}>
+                                                {franchiseItems.map((item, idx) => (
+                                                    <button
+                                                        key={item.id}
+                                                        className={`source-tab ${selectedSeasonId === item.id ? 'active' : ''}`}
+                                                        onClick={() => setSelectedSeasonId(item.id)}
+                                                    >
+                                                        Сезон {idx + 1}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        )}
+
                                         {/* Source Sub-tabs */}
                                         {isLibriaAvailable && isYumekoAvailable && (
                                             <div className="source-tabs">
@@ -626,7 +865,7 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                                     return (
                                                         <Link
                                                             key={episode.id}
-                                                            href={`/watch/anime/${animeId}?source=libria&alias=${encodeURIComponent(libriaAlias)}&episode=${episode.ordinal}&title=${encodeURIComponent(anime.title || '')}&cover=${anime.coverUrl || ''}`}
+                                                            href={`/watch/anime/${selectedSeasonId}?source=libria&alias=${encodeURIComponent(libriaAlias)}&episode=${episode.ordinal}&title=${encodeURIComponent(anime.title || '')}&cover=${anime.coverUrl || ''}`}
                                                             className="episode-card"
                                                         >
                                                             <div className="episode-thumbnail">
@@ -708,7 +947,7 @@ const AnimePageCrunch: React.FC<AnimePageCrunchProps> = ({ animeId }) => {
                                                         return (
                                                             <Link
                                                                 key={episode.id}
-                                                                href={`/watch/anime/${animeId}?source=yumeko&voiceId=${selectedVoice?.id}&voiceName=${encodeURIComponent(selectedVoice?.name || '')}&episodeId=${episode.id}&episodeNumber=${episode.episodeNumber}&title=${encodeURIComponent(anime.title || '')}&cover=${anime.coverUrl || ''}`}
+                                                                href={`/watch/anime/${selectedSeasonId}?source=yumeko&voiceId=${selectedVoice?.id}&voiceName=${encodeURIComponent(selectedVoice?.name || '')}&episodeId=${episode.id}&episodeNumber=${episode.episodeNumber}&title=${encodeURIComponent(anime.title || '')}&cover=${anime.coverUrl || ''}`}
                                                                 className="episode-card"
                                                             >
                                                                 <div className="episode-thumbnail">

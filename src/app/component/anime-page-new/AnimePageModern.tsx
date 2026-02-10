@@ -12,6 +12,7 @@ import {
 import { API_SERVER } from '@/hosts/constants';
 import { getEpisodeProgress } from '@/utils/player/progressCache';
 import { fetchProgressForAnime } from '@/app/(player)/test-new-player/playerApi';
+import { hasToken, getAuthToken } from '../../utils/auth';
 import ScreenshotItem from './ScreenshotItem';
 import { useAnimePageLogic } from '../../hooks/useAnimePageLogic';
 import AnimePageSkeleton from './AnimePageSkeleton';
@@ -134,6 +135,7 @@ const AnimePageModern: React.FC<AnimePageModernProps> = ({ animeId }) => {
     const [franchiseItems, setFranchiseItems] = useState<FranchiseItem[]>([]);
     const [selectedSeasonId, setSelectedSeasonId] = useState<number>(parseInt(animeId));
     const [showCollectionDropdown, setShowCollectionDropdown] = useState(false);
+    const [isCollectionLoading, setIsCollectionLoading] = useState(false);
     const [isMarkingWatched, setIsMarkingWatched] = useState(false);
 
     // Store original (current anime) episodes for quick restore
@@ -149,11 +151,16 @@ const AnimePageModern: React.FC<AnimePageModernProps> = ({ animeId }) => {
     // Initial load tracking
     const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-    const loadEpisodeProgress = (episodes: YumekoEpisode[], voiceName: string) => {
+    // Per-season collection override (when browsing franchise)
+    const [seasonFavorites, setSeasonFavorites] = useState<boolean | null>(null);
+    const [seasonSelectedStatus, setSeasonSelectedStatus] = useState<string | null>(null);
+
+    const loadEpisodeProgress = (episodes: YumekoEpisode[], voiceName: string, targetAnimeId?: string) => {
+        const id = targetAnimeId || animeId;
         const progressMap: Record<number, { time: number; ratio: number }> = {};
         episodes.forEach(ep => {
             const prog = getEpisodeProgress({
-                animeId,
+                animeId: id,
                 source: 'yumeko',
                 voice: voiceName,
                 episodeId: ep.episodeNumber
@@ -305,8 +312,13 @@ const AnimePageModern: React.FC<AnimePageModernProps> = ({ animeId }) => {
 
     // Load episodes when season changes (for franchise browsing)
     useEffect(() => {
+        const seasonId = selectedSeasonId.toString();
         // Only reload if selectedSeasonId differs from current animeId
-        if (selectedSeasonId.toString() !== animeId) {
+        if (seasonId !== animeId) {
+            // Сбрасываем прогресс перед загрузкой нового сезона
+            setLibriaProgress({});
+            setEpisodeProgress({});
+
             // Reload Libria episodes for new season
             setLibriaLoading(true);
             fetch(`${API_SERVER}/api/libria/episodes/${selectedSeasonId}`)
@@ -319,6 +331,8 @@ const AnimePageModern: React.FC<AnimePageModernProps> = ({ animeId }) => {
                         if (libriaData.episodes && Array.isArray(libriaData.episodes)) {
                             setLibriaEpisodes(libriaData.episodes);
                             setIsLibriaAvailable(true);
+                            // Загружаем прогресс для нового сезона
+                            loadLibriaProgress(libriaData.episodes, seasonId);
                         } else {
                             setIsLibriaAvailable(false);
                             setLibriaEpisodes([]);
@@ -343,18 +357,20 @@ const AnimePageModern: React.FC<AnimePageModernProps> = ({ animeId }) => {
                         setYumekoVoices(voices);
                         setSelectedVoice(voices[0]);
                         // Load episodes for first voice
-                        return fetch(`${API_SERVER}/api/yumeko/voices/${voices[0].id}/episodes`);
+                        return fetch(`${API_SERVER}/api/yumeko/voices/${voices[0].id}/episodes`)
+                            .then(res => res?.ok ? res.json() : [])
+                            .then((episodes: YumekoEpisode[]) => {
+                                if (episodes && episodes.length > 0) {
+                                    setYumekoEpisodes(episodes);
+                                    // Загружаем прогресс Yumeko для нового сезона
+                                    loadEpisodeProgress(episodes, voices[0].name, seasonId);
+                                }
+                            });
                     } else {
                         setIsYumekoAvailable(false);
                         setYumekoVoices([]);
                         setYumekoEpisodes([]);
                         return null;
-                    }
-                })
-                .then(res => res?.ok ? res.json() : [])
-                .then((episodes: YumekoEpisode[] | null) => {
-                    if (episodes && episodes.length > 0) {
-                        setYumekoEpisodes(episodes);
                     }
                 })
                 .catch(() => {
@@ -372,10 +388,105 @@ const AnimePageModern: React.FC<AnimePageModernProps> = ({ animeId }) => {
             if (originalYumekoVoices.length > 0) {
                 setSelectedVoice(originalYumekoVoices[0]);
             }
+            // Восстанавливаем прогресс для оригинального сезона
+            if (originalLibriaEpisodes.length > 0) {
+                loadLibriaProgress(originalLibriaEpisodes, animeId);
+            }
+            if (originalYumekoVoices.length > 0 && originalYumekoEpisodes.length > 0) {
+                loadEpisodeProgress(originalYumekoEpisodes, originalYumekoVoices[0].name, animeId);
+            }
         }
         // If none of the above - do nothing, let the initial load useEffect handle it
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedSeasonId, animeId]);
+
+    // Fetch collection status when season changes
+    useEffect(() => {
+        const seasonId = selectedSeasonId.toString();
+        if (seasonId !== animeId) {
+            const token = localStorage.getItem('token');
+            if (token) {
+                Promise.all([
+                    fetch(`${API_SERVER}/api/anime/optimized/get-anime/${selectedSeasonId}/collection-status`, {
+                        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+                    }),
+                    fetch(`${API_SERVER}/api/collection/favorites`, {
+                        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+                    })
+                ]).then(async ([collectionRes, favoritesRes]) => {
+                    if (collectionRes.ok) {
+                        const collectionData = await collectionRes.json();
+                        setSeasonSelectedStatus(collectionData.hasStatus === 'true' ? collectionData.status.toLowerCase() : 'none');
+                    } else {
+                        setSeasonSelectedStatus('none');
+                    }
+                    if (favoritesRes.ok) {
+                        const favoritesData = await favoritesRes.json();
+                        const isFav = favoritesData.some((item: Record<string, unknown>) => (item.anime as Record<string, unknown>)?.id === selectedSeasonId);
+                        setSeasonFavorites(isFav);
+                    } else {
+                        setSeasonFavorites(false);
+                    }
+                }).catch(() => {
+                    setSeasonSelectedStatus('none');
+                    setSeasonFavorites(false);
+                });
+            } else {
+                setSeasonSelectedStatus('none');
+                setSeasonFavorites(false);
+            }
+        } else {
+            setSeasonSelectedStatus(null);
+            setSeasonFavorites(null);
+        }
+    }, [selectedSeasonId, animeId]);
+
+    const handleSeasonToggleFavorite = async () => {
+        if (!hasToken()) {
+            setShowAuthPrompt(true);
+            return;
+        }
+        const newFavorite = !(seasonFavorites !== null ? seasonFavorites : favorites);
+        if (seasonFavorites !== null) setSeasonFavorites(newFavorite);
+        setIsCollectionLoading(true);
+        try {
+            const token = getAuthToken();
+            const res = await fetch(`${API_SERVER}/api/collection/${newFavorite ? 'set' : 'remove'}?animeId=${selectedSeasonId}&type=FAVORITE`, {
+                method: newFavorite ? 'POST' : 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+            });
+            if (!res.ok) throw new Error('Error');
+            console.log(`"${anime?.title}" ${newFavorite ? 'added to' : 'removed from'} favorites`);
+            if (selectedSeasonId.toString() === animeId) toggleFavorite();
+        } catch (error) {
+            console.error(error);
+            if (seasonFavorites !== null) setSeasonFavorites(!newFavorite);
+        } finally {
+            setIsCollectionLoading(false);
+        }
+    };
+
+    const handleSeasonStatusSelect = async (value: string) => {
+        if (!hasToken()) {
+            setShowAuthPrompt(true);
+            return;
+        }
+        setIsCollectionLoading(true);
+        try {
+            const token = getAuthToken();
+            const endpoint = value === 'none' ? `${API_SERVER}/api/collection/remove?animeId=${selectedSeasonId}` : `${API_SERVER}/api/collection/set?animeId=${selectedSeasonId}&type=${value.toUpperCase()}`;
+            const method = value === 'none' ? 'DELETE' : 'POST';
+            const res = await fetch(endpoint, { method, headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' } });
+            if (!res.ok) throw new Error('Error');
+            if (seasonSelectedStatus !== null) setSeasonSelectedStatus(value);
+            console.log(`Status updated`);
+            if (selectedSeasonId.toString() === animeId) handleStatusSelect(value);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsCollectionLoading(false);
+        }
+    };
 
     const currentStatus = statusOptions.find(opt => opt.value === selectedStatus);
 
@@ -775,70 +886,53 @@ const AnimePageModern: React.FC<AnimePageModernProps> = ({ animeId }) => {
                                             {showCollectionDropdown && (
                                                 <div className="collection-dropdown-menu">
                                                     <button
-                                                        className={`collection-item ${selectedStatus === 'completed' ? 'active' : ''}`}
-                                                        disabled={selectedStatus === 'completed'}
-                                                        onClick={() => {
-                                                            handleStatusSelect('completed');
-                                                            setShowCollectionDropdown(false);
-                                                        }}
+                                                        className={`collection-item ${(seasonSelectedStatus !== null ? seasonSelectedStatus : selectedStatus) === 'completed' ? 'active' : ''}`}
+                                                        disabled={(seasonSelectedStatus !== null ? seasonSelectedStatus : selectedStatus) === 'completed' || isCollectionLoading}
+                                                        onClick={() => handleSeasonStatusSelect('completed')}
                                                     >
-                                                        <Eye size={16} />
+                                                        {isCollectionLoading && (seasonSelectedStatus !== null ? seasonSelectedStatus : selectedStatus) !== 'completed' ? <Loader2 size={16} className="spinning" /> : <Eye size={16} />}
                                                         Просмотрено
                                                     </button>
                                                     <button
-                                                        className={`collection-item ${selectedStatus === 'planned' ? 'active' : ''}`}
-                                                        disabled={selectedStatus === 'planned'}
-                                                        onClick={() => {
-                                                            handleStatusSelect('planned');
-                                                            setShowCollectionDropdown(false);
-                                                        }}
+                                                        className={`collection-item ${(seasonSelectedStatus !== null ? seasonSelectedStatus : selectedStatus) === 'planned' ? 'active' : ''}`}
+                                                        disabled={(seasonSelectedStatus !== null ? seasonSelectedStatus : selectedStatus) === 'planned' || isCollectionLoading}
+                                                        onClick={() => handleSeasonStatusSelect('planned')}
                                                     >
-                                                        <Calendar size={16} />
+                                                        {isCollectionLoading && (seasonSelectedStatus !== null ? seasonSelectedStatus : selectedStatus) !== 'planned' ? <Loader2 size={16} className="spinning" /> : <Calendar size={16} />}
                                                         В планах
                                                     </button>
                                                     <button
-                                                        className={`collection-item ${selectedStatus === 'watching' ? 'active' : ''}`}
-                                                        disabled={selectedStatus === 'watching'}
-                                                        onClick={() => {
-                                                            handleStatusSelect('watching');
-                                                            setShowCollectionDropdown(false);
-                                                        }}
+                                                        className={`collection-item ${(seasonSelectedStatus !== null ? seasonSelectedStatus : selectedStatus) === 'watching' ? 'active' : ''}`}
+                                                        disabled={(seasonSelectedStatus !== null ? seasonSelectedStatus : selectedStatus) === 'watching' || isCollectionLoading}
+                                                        onClick={() => handleSeasonStatusSelect('watching')}
                                                     >
-                                                        <PlayCircle size={16} />
+                                                        {isCollectionLoading && (seasonSelectedStatus !== null ? seasonSelectedStatus : selectedStatus) !== 'watching' ? <Loader2 size={16} className="spinning" /> : <PlayCircle size={16} />}
                                                         Смотрю
                                                     </button>
                                                     <button
-                                                        className={`collection-item ${selectedStatus === 'paused' ? 'active' : ''}`}
-                                                        disabled={selectedStatus === 'paused'}
-                                                        onClick={() => {
-                                                            handleStatusSelect('paused');
-                                                            setShowCollectionDropdown(false);
-                                                        }}
+                                                        className={`collection-item ${(seasonSelectedStatus !== null ? seasonSelectedStatus : selectedStatus) === 'paused' ? 'active' : ''}`}
+                                                        disabled={(seasonSelectedStatus !== null ? seasonSelectedStatus : selectedStatus) === 'paused' || isCollectionLoading}
+                                                        onClick={() => handleSeasonStatusSelect('paused')}
                                                     >
-                                                        <Pause size={16} />
+                                                        {isCollectionLoading && (seasonSelectedStatus !== null ? seasonSelectedStatus : selectedStatus) !== 'paused' ? <Loader2 size={16} className="spinning" /> : <Pause size={16} />}
                                                         Отложено
                                                     </button>
                                                     <button
-                                                        className={`collection-item ${selectedStatus === 'dropped' ? 'active' : ''}`}
-                                                        disabled={selectedStatus === 'dropped'}
-                                                        onClick={() => {
-                                                            handleStatusSelect('dropped');
-                                                            setShowCollectionDropdown(false);
-                                                        }}
+                                                        className={`collection-item ${(seasonSelectedStatus !== null ? seasonSelectedStatus : selectedStatus) === 'dropped' ? 'active' : ''}`}
+                                                        disabled={(seasonSelectedStatus !== null ? seasonSelectedStatus : selectedStatus) === 'dropped' || isCollectionLoading}
+                                                        onClick={() => handleSeasonStatusSelect('dropped')}
                                                     >
-                                                        <X size={16} />
+                                                        {isCollectionLoading && (seasonSelectedStatus !== null ? seasonSelectedStatus : selectedStatus) !== 'dropped' ? <Loader2 size={16} className="spinning" /> : <X size={16} />}
                                                         Брошено
                                                     </button>
                                                     <div className="collection-divider" />
                                                     <button
-                                                        className={`collection-item favorite ${favorites ? 'active' : ''}`}
-                                                        onClick={() => {
-                                                            toggleFavorite();
-                                                            setShowCollectionDropdown(false);
-                                                        }}
+                                                        className={`collection-item favorite ${(seasonFavorites !== null ? seasonFavorites : favorites) ? 'active' : ''}`}
+                                                        disabled={isCollectionLoading}
+                                                        onClick={() => handleSeasonToggleFavorite()}
                                                     >
-                                                        <Heart size={16} fill={favorites ? 'currentColor' : 'none'} />
-                                                        {favorites ? 'Убрать из любимых' : 'В любимые'}
+                                                        {isCollectionLoading ? <Loader2 size={16} className="spinning" /> : <Heart size={16} fill={(seasonFavorites !== null ? seasonFavorites : favorites) ? 'currentColor' : 'none'} />}
+                                                        {(seasonFavorites !== null ? seasonFavorites : favorites) ? 'Убрать из любимых' : 'В любимые'}
                                                     </button>
                                                 </div>
                                             )}
