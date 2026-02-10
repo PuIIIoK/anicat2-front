@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 
 const Footer: React.FC = () => {
     return (
@@ -20,23 +19,19 @@ const Footer: React.FC = () => {
                         для общения и просмотра аниме.
                     </p>
                     <p className="footer-warning">
-                        Для правообладателей, требований что-то удалить, и прочим коммерческим, и юр вопросам —<br/>
-                        обращаться по контактам, указанным в тексте который находится справа.<br/>
+                        Для правообладателей, требований что-то удалить, и прочим коммерческим, и юр вопросам —<br />
+                        обращаться по контактам, указанным в тексте который находится справа.
                     </p>
                 </div>
 
-                {/* Справа — Контакты и реквизиты */}
+                {/* Справа — Контакты */}
                 <div className="footer-column right">
-                    <p>Telegram(по коммерчиским вопросам): <a href="https://t.me/puiiiok686" target="_blank">@puiiiok686</a></p>
-                    <p>Telegram(по вопросам о работе сайта): <a href="https://t.me/dvaceW" target="_blank">@dvaceW</a></p>
-                    <p>Если хотите помочь в развитие проекта, а так-же есть предложения по работе сайта, то пишите в <a href="https://t.me/puiiiok686" target="_blank">@puiiiok686</a></p>
-                    <p>Или писать в админнистрацию сайта <a href="https://t.me/dvaceW" target="_blank">@dvaceW</a></p>
-                    <p>Почта: <a href="mailto:puiiiokiq@ro.ru">puiiiokiq@ro.ru</a></p>
-
-                    {/* Новый блок веток */}
-                    <div className="footer-branches">
-                        Ветки сайта: <Link href="/branches" className="footer-branches-link">посмотреть</Link>
-                    </div>
+                    <p><strong>Telegram канал сайта:</strong> <a href="https://t.me/yumekoani" target="_blank" rel="noopener noreferrer">@yumekoani</a></p>
+                    <p><strong>Telegram чат сайта:</strong> <a href="https://t.me/+HrVCb-fysyk1ODBi" target="_blank" rel="noopener noreferrer">Присоединиться</a></p>
+                    <p className="footer-support">
+                        По всем вопросам обращайтесь в тех.поддержку сайта,<br />
+                        либо на почту: <a href="mailto:puiiiokiq@ro.ru">puiiiokiq@ro.ru</a>, <a href="mailto:puiiiokiq@gmail.com">puiiiokiq@gmail.com</a>
+                    </p>
                 </div>
             </div>
         </footer>
