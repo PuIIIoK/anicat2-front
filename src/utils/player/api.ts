@@ -10,7 +10,8 @@ export const fetchEpisodes = async (animeId: string): Promise<Episode[]> => {
     const { apiUrl } = await backendResponse.json();
 
     // Шаг 2: Используем apiUrl для получения эпизодов напрямую
-    const libraResponse = await fetch(apiUrl);
+    const apiUrlVal = typeof apiUrl === 'string' ? apiUrl.replace('aniliberty.top', 'anilibria.top') : apiUrl;
+    const libraResponse = await fetch(apiUrlVal);
     const data = await libraResponse.json();
     return data.episodes || [];
 };

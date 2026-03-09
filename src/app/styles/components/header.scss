@@ -7,16 +7,19 @@
   top: 0;
   left: 0;
   width: 100%;
+  max-width: 100vw;
   height: 80px;
   z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 32px;
-  background: var(--header-bg, rgba(0, 0, 0, 0.4));
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 0 24px;
+  box-sizing: border-box;
+  background: var(--bg-primary, #0e0e10);
+  backdrop-filter: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   transition: all 0.3s ease;
+  overflow: visible;
 
   .header-content {
     max-width: 100%;
@@ -27,60 +30,68 @@
     gap: 32px;
   }
 
-  // Left section: Logo + Nav
+  // Left section: Menu + Logo + Nav
   .header-left {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 40px;
+    gap: 24px;
     flex-shrink: 0;
     height: 100%;
   }
 
-  // Center section: Search
-  .header-center {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    max-width: 600px;
-  }
-
-  // Right section: Actions + Menu
+  // Right section: Search + Actions
   .header-right {
     display: flex;
     align-items: center;
     gap: 12px;
     flex-shrink: 0;
+    margin-right: 4px;
   }
 }
 
 // Logo Text
 .header-logo-text {
   display: flex;
-  align-items: baseline;
-  gap: 8px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-decoration: none;
-  transition: opacity 0.2s ease;
-  
+  transition: all 0.2s ease;
+  height: 48px;
+  padding: 0 20px;
+  border-radius: 10px;
+
   &:hover {
-    opacity: 0.85;
+    background: rgba(255, 255, 255, 0.08);
   }
-  
+
+  &.active {
+    background: rgba(var(--primary-color-rgb, 175, 82, 222), 0.15);
+
+    .logo-yumeko {
+      color: var(--primary-color);
+    }
+  }
+
   .logo-yumeko {
     font-family: 'Zen Tokyo Zoo', cursive;
-    font-size: 28px;
+    font-size: 24px;
     font-weight: 400;
     color: var(--primary-color);
     letter-spacing: 1px;
+    line-height: 1;
   }
-  
+
   .logo-animelib {
     font-family: 'Rubik', sans-serif;
-    font-size: 14px;
+    font-size: 9px;
     font-weight: 500;
     color: var(--text-muted);
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
     text-transform: uppercase;
+    line-height: 1;
+    margin-top: 2px;
   }
 }
 
@@ -93,7 +104,7 @@
   gap: 6px;
   height: 100%;
   margin-bottom: 0 !important;
-  
+
   .nav-link {
     display: inline-flex;
     align-items: center;
@@ -106,12 +117,12 @@
     text-decoration: none;
     border-radius: 10px;
     transition: all 0.2s ease;
-    
+
     &:hover {
       color: var(--text-primary);
       background: rgba(255, 255, 255, 0.08);
     }
-    
+
     &.active {
       color: var(--primary-color);
       background: rgba(var(--primary-color-rgb, 175, 82, 222), 0.15);
@@ -119,46 +130,168 @@
   }
 }
 
-// Search bar - Cinema style
-.header.yumeko-header .search-bar-anime {
-  width: 100%;
-  max-width: 500px;
+// Search Icon Button
+.header-search-icon-btn {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px 20px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 28px;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s ease;
-  
+
   svg {
-    color: var(--text-muted);
-    flex-shrink: 0;
     width: 20px;
     height: 20px;
   }
-  
-  .search-placeholder {
-    color: var(--text-muted);
-    font-size: 15px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  
+
   &:hover {
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
     border-color: rgba(255, 255, 255, 0.15);
-    
-    svg, .search-placeholder {
-      color: var(--text-secondary);
-    }
+  }
+
+  &:active {
+    transform: scale(0.96);
   }
 }
 
-// Icon buttons
+// Profile Image Button
+.header-profile-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.05);
+  flex-shrink: 0;
+
+  &:hover {
+    border-color: var(--primary-color);
+  }
+
+  .header-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+// Profile wrapper for dropdown positioning
+.header-profile-wrapper {
+  position: relative;
+}
+
+// Profile dropdown menu
+.header-profile-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 200px;
+  background: rgba(22, 22, 26, 0.97);
+  backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 6px;
+  z-index: 2000;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  animation: headerDropdownIn 0.18s cubic-bezier(0.2, 0, 0.13, 1);
+  transform-origin: top right;
+
+  .header-dropdown-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.07);
+    margin: 4px 8px;
+  }
+}
+
+@keyframes headerDropdownIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.header-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s ease;
+  white-space: nowrap;
+
+  svg {
+    flex-shrink: 0;
+    opacity: 0.55;
+    transition: opacity 0.15s ease;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.07);
+
+    svg {
+      opacity: 0.85;
+    }
+  }
+
+  &:active {
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  &.admin {
+    color: rgba(var(--primary-color-rgb, 175, 82, 222), 0.9);
+
+    svg {
+      stroke: rgba(var(--primary-color-rgb, 175, 82, 222), 0.7);
+    }
+
+    &:hover {
+      background: rgba(var(--primary-color-rgb, 175, 82, 222), 0.1);
+
+      svg {
+        opacity: 1;
+      }
+    }
+  }
+
+  &.logout {
+    color: rgba(239, 68, 68, 0.85);
+
+    svg {
+      stroke: rgba(239, 68, 68, 0.6);
+    }
+
+    &:hover {
+      background: rgba(239, 68, 68, 0.1);
+
+      svg {
+        opacity: 1;
+      }
+    }
+  }
+}
 .header-icon-btn {
   display: flex;
   align-items: center;
@@ -171,17 +304,17 @@
   color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s ease;
-  
+
   svg {
     width: 22px;
     height: 22px;
   }
-  
+
   &:hover {
     background: rgba(255, 255, 255, 0.1);
     color: var(--text-primary);
   }
-  
+
   &:active {
     transform: scale(0.95);
   }
@@ -190,7 +323,7 @@
 // Profile section
 .header-profile {
   position: relative;
-  
+
   .profile-icon {
     width: 44px;
     height: 44px;
@@ -199,12 +332,12 @@
     cursor: pointer;
     border: 2px solid transparent;
     transition: all 0.2s ease;
-    
+
     &:hover {
       border-color: var(--primary-color);
     }
   }
-  
+
   .profile-dropdown {
     position: absolute;
     top: calc(100% + 8px);
@@ -219,16 +352,17 @@
     transform: translateY(-8px);
     transition: all 0.2s ease;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    
+
     ul {
       list-style: none;
       margin: 0;
       padding: 0;
-      
+
       li {
         margin: 2px 0;
-        
-        a, button {
+
+        a,
+        button {
           display: block;
           width: 100%;
           padding: 10px 12px;
@@ -243,7 +377,7 @@
           cursor: pointer;
           transition: all 0.15s ease;
           font-family: inherit;
-          
+
           &:hover {
             background: rgba(var(--primary-color-rgb, 175, 82, 222), 0.1);
             color: var(--primary-color);
@@ -252,7 +386,7 @@
       }
     }
   }
-  
+
   &:hover .profile-dropdown {
     opacity: 1;
     visibility: visible;
@@ -260,34 +394,31 @@
   }
 }
 
-// Menu button - Opens sidebar
+// Menu button - Opens sidebar (left)
 .header-menu-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 50px;
-  height: 50px;
-  background: rgba(var(--primary-color-rgb, 175, 82, 222), 0.15);
-  border: 2px solid rgba(var(--primary-color-rgb, 175, 82, 222), 0.4);
-  border-radius: 14px;
-  color: var(--primary-color);
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  color: var(--text-primary);
   cursor: pointer;
   transition: all 0.2s ease;
-  margin-left: 8px;
-  
+
   svg {
     width: 24px;
     height: 24px;
   }
-  
+
   &:hover {
-    background: rgba(var(--primary-color-rgb, 175, 82, 222), 0.25);
-    border-color: var(--primary-color);
-    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.05);
   }
-  
+
   &:active {
-    transform: scale(0.98);
+    transform: scale(0.96);
   }
 }
 
@@ -298,16 +429,16 @@
 @media (max-width: 1024px) {
   .header.yumeko-header {
     padding: 0 20px;
-    
+
     .header-left {
       gap: 24px;
     }
-    
+
     .header-center {
       max-width: 350px;
     }
   }
-  
+
   .header-nav {
     display: none;
   }
@@ -317,75 +448,72 @@
   .header.yumeko-header {
     height: 56px;
     padding: 0 12px;
-    
+
     .header-content {
       gap: 10px;
     }
-    
+
     .header-left {
       gap: 0;
       flex-shrink: 0;
     }
-    
+
     // Скрываем навигацию на мобильных
     .header-nav {
       display: none !important;
     }
-    
-    .header-center {
-      flex: 1;
-      max-width: 180px;
+
+    // Right Actions
+    .header-right {
+      gap: 8px;
     }
-    
-    .search-bar-anime {
-      padding: 6px 12px;
-      border-radius: 16px;
-      min-width: 0;
-      
+
+    .header-search-icon-btn {
+      width: 36px;
+      height: 36px;
+
       svg {
-        width: 16px;
-        height: 16px;
-        flex-shrink: 0;
-      }
-      
-      .search-placeholder {
-        font-size: 12px;
+        width: 18px;
+        height: 18px;
       }
     }
   }
-  
+
   .header-logo-text {
-    gap: 4px;
-    
+    height: 40px;
+    padding: 0 12px;
+
     .logo-yumeko {
-      font-size: 20px;
+      font-size: 18px;
     }
-    
+
     .logo-animelib {
-      font-size: 9px;
+      font-size: 8px;
+      margin-top: 1px;
     }
   }
-  
-  .header-icon-btn {
+
+  .header-icon-btn,
+  .header-search-icon-btn,
+  .header-profile-btn {
     width: 36px;
     height: 36px;
-    
+
     svg {
       width: 18px;
       height: 18px;
     }
   }
-  
+
   .header-profile .profile-icon {
     width: 34px;
     height: 34px;
   }
-  
+
   .header-menu-btn {
-    width: 40px;
-    height: 40px;
-    margin-left: 4px;
-    
+    width: 36px;
+    height: 36px;
+
     svg {
       width: 20px;
       height: 20px;
@@ -397,34 +525,34 @@
 @media (max-width: 400px) {
   .header.yumeko-header {
     padding: 0 8px;
-    
+
     .header-content {
       gap: 8px;
     }
-    
+
     .header-center {
       max-width: 140px;
     }
-    
+
     .search-bar-anime {
       padding: 6px 10px;
-      
+
       .search-placeholder {
         font-size: 11px;
       }
     }
   }
-  
+
   .header-logo-text {
     .logo-yumeko {
       font-size: 18px;
     }
-    
+
     .logo-animelib {
       display: none;
     }
   }
-  
+
   .header-menu-btn {
     width: 34px;
     height: 34px;
@@ -437,26 +565,26 @@
 
   .logo {
     position: relative;
-    width: 145px;          // ширина логотипа
-    height: 60px;          // высота логотипа
+    width: 145px; // ширина логотипа
+    height: 60px; // высота логотипа
     display: flex;
     align-items: center;
     justify-content: center;
 
     .logo-img {
-      position: absolute;      // занимает всё пространство .logo
+      position: absolute; // занимает всё пространство .logo
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      object-fit: contain;     // сохраняет пропорции
-      pointer-events: none;    // логотип не перехватывает клики
-      user-select: none;       // запрет выделения
-      border-radius: 30%;      // круглая форма
+      object-fit: contain; // сохраняет пропорции
+      pointer-events: none; // логотип не перехватывает клики
+      user-select: none; // запрет выделения
+      border-radius: 30%; // круглая форма
     }
 
 
-  .logo-dropdown {
+    .logo-dropdown {
       position: absolute;
       top: 130%;
       left: 50%;
@@ -537,7 +665,7 @@
     display: flex;
     align-items: center;
     cursor: pointer;
-    
+
     .our-apps-title {
       color: var(--text-secondary);
       font-size: 16px;
@@ -672,35 +800,35 @@
     justify-content: center;
     transition: all 0.3s ease;
     position: relative;
-    
+
     &:hover {
       background: rgba(255, 255, 255, 0.1);
       color: var(--primary-color, var(--primary-color));
     }
-    
+
     svg {
       width: 24px;
       height: 24px;
     }
-    
+
     &:active {
       transform: scale(0.95);
     }
-    
+
     @media (max-width: 480px) {
       padding: 6px;
-      
+
       svg {
         width: 20px;
         height: 20px;
       }
     }
   }
-  
+
   .theme-button:hover {
     transform: rotate(180deg);
   }
-  
+
   .theme-button:active {
     transform: scale(0.95) rotate(180deg);
   }
@@ -719,7 +847,7 @@
       object-fit: cover;
       object-position: center;
       background: rgba(40, 40, 40, 0.8);
-      
+
       &:hover {
         border-color: var(--profile-icon-hover-border, var(--primary-color, rgba(255, 165, 0, 0.5)));
         box-shadow: 0 4px 16px var(--profile-icon-hover-shadow, rgba(255, 165, 0, 0.15));
@@ -820,7 +948,7 @@
 .mobile-apps-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
   z-index: 2000;
   display: flex;
   justify-content: center;
@@ -829,9 +957,9 @@
 
 .mobile-apps-modal {
   background: var(--bg-secondary);
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   width: 90vw;
   max-width: 360px;
   padding: 16px 14px 12px;
@@ -858,7 +986,7 @@
   justify-content: center;
   gap: 6px;
   background: var(--bg-secondary);
-  border: 1px solid rgba(255,255,255,0.06);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 10px;
   padding: 12px 10px;
   color: var(--text-secondary);
@@ -879,7 +1007,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 10px;
-  background: rgba(255,255,255,0.04);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .mobile-app-name {
@@ -896,7 +1024,7 @@
   margin-top: 12px;
   background: var(--bg-tertiary);
   color: var(--primary-light);
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
   padding: 8px 12px;
 }
@@ -905,38 +1033,38 @@
   .header {
     padding: 6px 10px;
     height: 56px;
-    
+
     .header-content {
       gap: 0.5rem;
     }
-    
+
     .header-left {
       gap: 0.75rem;
       flex: 1;
-      
+
       .our-apps {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        
+
         .our-apps-title {
           font-size: 0.8rem;
           padding: 4px 0;
           white-space: nowrap;
         }
       }
-      
+
       .logo {
         width: 100px;
         height: 28px;
         flex-shrink: 0;
-        
+
         .logo-left {
           width: 100px;
           height: 28px;
         }
       }
-      
+
       .search-bar-anime {
         width: 120px;
         padding: 8px 12px;
@@ -970,25 +1098,25 @@
 @media (max-width: 480px) {
   .header {
     padding: 6px 10px;
-    
+
     .header-content {
       max-width: 100%;
       padding: 0;
     }
-    
+
     .header-left {
       gap: 0.5rem;
-      
+
       .logo {
         width: 100px;
         height: 25px;
-        
+
         .logo-left {
           width: 100px;
           height: 25px;
         }
       }
-      
+
       .our-apps {
         .our-apps-title {
           font-size: 12px;
@@ -998,7 +1126,7 @@
 
     .header-right {
       gap: 0.8rem;
-      
+
       .search-bar-anime {
         width: 180px !important;
         margin-right: -10px;
@@ -1102,32 +1230,50 @@
     }
   }
 }
+
 /* HTML: <div class="loader"></div> */
 .loader-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 10vh; /* или 100% для вложенных блоков */
+  height: 10vh;
+  /* или 100% для вложенных блоков */
 }
 
 .loader-modal-input {
-    width: 45px;
-    aspect-ratio: 1;
-    --c: no-repeat linear-gradient(#ac6500 0 0);
-    background:
-            var(--c) 0%   50%,
-            var(--c) 50%  50%,
-            var(--c) 100% 50%;
-    background-size: 20% 100%;
-    animation: l3 1s infinite linear;
+  width: 45px;
+  aspect-ratio: 1;
+  --c: no-repeat linear-gradient(#ac6500 0 0);
+  background:
+    var(--c) 0% 50%,
+    var(--c) 50% 50%,
+    var(--c) 100% 50%;
+  background-size: 20% 100%;
+  animation: l3 1s infinite linear;
+}
+
+@keyframes l3 {
+  0% {
+    background-size: 20% 100%, 20% 100%, 20% 100%
   }
-  @keyframes l3 {
-    0%  {background-size: 20% 100%,20% 100%,20% 100%}
-    33% {background-size: 20% 10% ,20% 100%,20% 100%}
-    50% {background-size: 20% 100%,20% 10% ,20% 100%}
-    66% {background-size: 20% 100%,20% 100%,20% 10% }
-    100%{background-size: 20% 100%,20% 100%,20% 100%}
+
+  33% {
+    background-size: 20% 10%, 20% 100%, 20% 100%
   }
+
+  50% {
+    background-size: 20% 100%, 20% 10%, 20% 100%
+  }
+
+  66% {
+    background-size: 20% 100%, 20% 100%, 20% 10%
+  }
+
+  100% {
+    background-size: 20% 100%, 20% 100%, 20% 100%
+  }
+}
+
 .add-anime-user-btn {
   background: linear-gradient(90deg, #616161 0%, #5a5a5a 100%);
   color: #18171c;
@@ -1155,9 +1301,12 @@
 
 .add-anime-user-modal-overlay {
   position: fixed;
-  top: 0; left: 0; width: 100vw; height: 100vh;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   z-index: 2000;
-  background: rgba(10,10,16,0.82);
+  background: rgba(10, 10, 16, 0.82);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1167,7 +1316,7 @@
     background: var(--bg-tertiary);
     border-radius: 12px;
     max-width: 90vw;
-    width: 265px;                  // Меньше ширина!
+    width: 265px; // Меньше ширина!
     min-width: 180px;
     box-shadow: 0 2px 18px #0008;
     padding: 1.12rem 0.6rem 0.75rem;
@@ -1184,6 +1333,7 @@
       letter-spacing: 0.01em;
       text-shadow: 0 1px 4px #0003;
     }
+
     .modal-text {
       font-size: 0.95rem;
       color: #f3f1e6;
@@ -1193,17 +1343,23 @@
         margin: 0.5em 0 0.3em 0;
         padding: 0;
         list-style: none;
+
         li {
           margin: 0.15em 0;
           font-size: 0.94em;
+
           a {
             color: var(--primary-color);
             text-decoration: underline;
             font-size: 0.96em;
-            &:hover { color: var(--primary-light); }
+
+            &:hover {
+              color: var(--primary-light);
+            }
           }
         }
       }
+
       .modal-warning {
         display: block;
         color: var(--error-color);
@@ -1213,6 +1369,7 @@
         font-weight: 500;
       }
     }
+
     .modal-close-btn {
       background: var(--bg-tertiary);
       color: var(--primary-light);
@@ -1224,6 +1381,7 @@
       cursor: pointer;
       transition: background 0.19s, color 0.18s;
       margin-top: 2px;
+
       &:hover {
         background: var(--bg-tertiary);
         color: #fff7d1;
@@ -1233,11 +1391,23 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0;}
-  to { opacity: 1;}
-}
-@keyframes popIn {
-  from { transform: scale(0.94); opacity: 0;}
-  to { transform: scale(1); opacity: 1;}
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
+@keyframes popIn {
+  from {
+    transform: scale(0.94);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

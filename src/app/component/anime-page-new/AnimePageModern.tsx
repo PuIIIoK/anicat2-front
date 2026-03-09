@@ -227,7 +227,8 @@ const AnimePageModern: React.FC<AnimePageModernProps> = ({ animeId }) => {
                 if (data?.apiUrl && data?.alias) {
                     setLibriaAlias(data.alias);
                     // Fetch episodes from Libria
-                    const libriaRes = await fetch(data.apiUrl);
+                    const apiUrlVal = typeof data.apiUrl === 'string' ? data.apiUrl.replace('aniliberty.top', 'anilibria.top') : data.apiUrl;
+                    const libriaRes = await fetch(apiUrlVal);
                     const libriaData = await libriaRes.json();
                     if (libriaData.episodes && Array.isArray(libriaData.episodes)) {
                         setLibriaEpisodes(libriaData.episodes);
@@ -326,7 +327,8 @@ const AnimePageModern: React.FC<AnimePageModernProps> = ({ animeId }) => {
                 .then(async (data) => {
                     if (data?.apiUrl && data?.alias) {
                         setLibriaAlias(data.alias);
-                        const libriaRes = await fetch(data.apiUrl);
+                        const apiUrlVal = typeof data.apiUrl === 'string' ? data.apiUrl.replace('aniliberty.top', 'anilibria.top') : data.apiUrl;
+                        const libriaRes = await fetch(apiUrlVal);
                         const libriaData = await libriaRes.json();
                         if (libriaData.episodes && Array.isArray(libriaData.episodes)) {
                             setLibriaEpisodes(libriaData.episodes);
@@ -955,7 +957,7 @@ const AnimePageModern: React.FC<AnimePageModernProps> = ({ animeId }) => {
                                                             <div className="episode-thumbnail-wrapper">
                                                                 {episode.preview?.src ? (
                                                                     <Image
-                                                                        src={`https://aniliberty.top${episode.preview.src}`}
+                                                                        src={`https://anilibria.top${episode.preview.src}`}
                                                                         alt={`Эпизод ${episode.ordinal}`}
                                                                         fill
                                                                         style={{ objectFit: 'cover' }}

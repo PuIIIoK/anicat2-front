@@ -63,6 +63,37 @@ function decodeVoiceName(voiceName: string | null): string | null {
     }
 }
 
+const YoutubeVolumeIcon = ({ volume, isMuted, size = 64 }: { volume: number, isMuted: boolean, size?: number }) => {
+    const vol = isMuted ? 0 : volume;
+    const showBar1 = vol > 0;
+    const showBar2 = vol > 0.33;
+    const showBar3 = vol > 0.66;
+
+    return (
+        <svg width={size} height={size} viewBox="0 0 36 36" fill="currentColor">
+            {/* База динамика */}
+            <path d="M8,21 L12,21 L17,26 L17,10 L12,15 L8,15 L8,21 Z" />
+
+            {/* Черточки */}
+            {!isMuted && vol > 0 && (
+                <>
+                    {/* Первая полосочка */}
+                    {showBar1 && <path d="M 19,14 L 19,22 C 20.48,21.32 21.5,19.77 21.5,18 C 21.5,16.26 20.48,14.74 19,14 Z" />}
+                    {/* Вторая полосочка */}
+                    {showBar2 && <path d="M 19,11.29 C 21.89,12.15 24,14.81 24,18 C 24,21.19 21.89,23.85 19,24.71 L 19,26.77 C 23.01,25.86 26,22.28 26,18 C 26,13.72 23.01,10.14 19,9.23 L 19,11.29 Z" />}
+                    {/* Третья полосочка */}
+                    {showBar3 && <path d="M 19,7.5 C 24.5,8.5 28.5,12.5 28.5,18 C 28.5,23.5 24.5,27.5 19,28.5 L 19,30.5 C 25.5,29.3 30.5,24.5 30.5,18 C 30.5,11.5 25.5,6.7 19,5.5 L 19,7.5 Z" />}
+                </>
+            )}
+
+            {/* Зачеркивание для mute */}
+            {(isMuted || vol === 0) && (
+                <path d="M 20.5,13.5 L 26.5,19.5 M 26.5,13.5 L 20.5,19.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            )}
+        </svg>
+    );
+};
+
 export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPrevEpisode, showSourceButton = true, autoShowPlaylist = false, showPlaylist: externalShowPlaylist, onPlaylistToggle }: PlayerPCProps) {
     console.log('[player] component mounted');
     // const router = useRouter(); // Не используется
@@ -79,6 +110,8 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
     const [levels, setLevels] = useState<Array<{ index: number; height?: number }>>([]);
     const [currentLevel, setCurrentLevel] = useState<number>(-1); // -1 = auto
     const [showOverlays, setShowOverlays] = useState<{ kind: OverlayKind; value?: number; mode?: 'up' | 'down' | 'mute' | 'neutral'; text?: string } | null>(null);
+    const osdCounterRef = useRef(0);
+    const [osdCounter, setOsdCounter] = useState(0);
     const [duration, setDuration] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
     const [, setBufferedEnd] = useState(0);
@@ -140,7 +173,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
     const [selectedYumekoVoice, setSelectedYumekoVoice] = useState<YumekoVoice | null>(null);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [yumekoEpisodes, setYumekoEpisodes] = useState<YumekoEpisode[]>([]);
-    const [kodikPlaylistMap, setKodikPlaylistMap] = useState<Record<string, Array<{ id: number; title: string; duration?: string; raw?: unknown }>>>({});
+    const [kodikPlaylistMap, setKodikPlaylistMap] = useState<Record<string, Array<{ id: number; title: string; episodeNum?: string; name?: string | null; duration?: string; raw?: unknown }>>>({});
     const [, setIsSwitchingSource] = useState(false);
     const switchingTimeoutRef = useRef<number | null>(null);
     const [libriaSkips, setLibriaSkips] = useState<null | { opening?: { start: number; end: number }; ending?: { start: number; end: number } }>(null);
@@ -392,7 +425,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
     // Источник: либо передан через пропсы, либо подгружается из API по animeId+selectedSource
     const [fetchedSrc, setFetchedSrc] = useState<string | null>(null);
     const [availableVoices, setAvailableVoices] = useState<string[]>([]);
-    const [playlistEpisodes, setPlaylistEpisodes] = useState<Array<{ id: number; title: string; duration?: string; raw?: unknown }>>([]);
+    const [playlistEpisodes, setPlaylistEpisodes] = useState<Array<{ id: number; title: string; episodeNum?: string; name?: string | null; duration?: string; raw?: unknown }>>([]);
     const [, setInitialLoading] = useState(true);
 
     // Обновление заголовка вкладки браузера
@@ -689,7 +722,9 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                         // Use numeric ordinal as episode id (API returns UUID in `id`) to ensure numeric navigation works
                         const mapped = eps.map((e: any, idx: number) => ({
                             id: Number(e.ordinal ?? e.number ?? idx + 1),
+                            episodeNum: `Эпизод ${e.ordinal ?? e.number ?? idx + 1}`,
                             title: e.name ?? `Эпизод ${e.ordinal ?? e.number ?? idx + 1}`,
+                            name: e.name ?? null,
                             duration: typeof e.duration === 'number'
                                 ? formatEpisodeDurationNumber(normalizeDurationToSeconds(e.duration))
                                 : (typeof e.duration === 'string' ? e.duration : undefined),
@@ -2440,8 +2475,16 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
             setIsBuffering(false);
             setIsPlaying(true);
 
-            // НЕ размучиваем здесь - браузер паузит видео!
-            // Размутивание произойдет только при первом взаимодействии пользователя
+            // Если пользователь уже взаимодействовал с плеером — гарантируем что звук не заглушен
+            if (userInteractedRef.current && autoplayMutedRef.current) {
+                console.log('[onPlaying] User interacted, clearing autoplay mute');
+                autoplayMutedRef.current = false;
+                const v = videoRef.current;
+                if (v) {
+                    try { v.muted = false; } catch { }
+                    try { v.volume = volume; } catch { }
+                }
+            }
         };
         const onPause = () => {
             console.log('[onPause] Video paused');
@@ -2565,6 +2608,25 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
 
         // Помечаем, что пользователь взаимодействовал с плеером
         userInteractedRef.current = true;
+
+        // ВАЖНО: Снимаем принудительный mute от autoplay при любом взаимодействии
+        if (autoplayMutedRef.current) {
+            autoplayMutedRef.current = false;
+            try { video.muted = isMuted; } catch { } // Восстанавливаем реальное состояние mute
+            try { video.volume = isMuted ? 0 : volume; } catch { } // Восстанавливаем реальную громкость
+        }
+
+        // Очищаем обработчики первого жеста (если были)
+        if (unmuteOnInteractHandlerRef.current) {
+            document.removeEventListener('pointerdown', unmuteOnInteractHandlerRef.current);
+            document.removeEventListener('keydown', unmuteOnInteractHandlerRef.current as any);
+            unmuteOnInteractHandlerRef.current = null;
+        }
+        if (fsOnInteractHandlerRef.current) {
+            document.removeEventListener('pointerdown', fsOnInteractHandlerRef.current);
+            document.removeEventListener('keydown', fsOnInteractHandlerRef.current as any);
+            fsOnInteractHandlerRef.current = null;
+        }
 
         if (video.paused) {
             // Старт воспроизведения → стабильно показываем UI, затем плавно скрываем
@@ -2712,9 +2774,17 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
         volumeOverlayTimeout.current = window.setTimeout(() => setShowOverlays(o => (o?.kind === 'volume' ? null : o)), 700);
     };
     // Helper kept inline inside key handlers below; outer function not used elsewhere
+    const playPauseOsdTimeout = useRef<number | null>(null);
     const showPlayPauseIcon = (isPlaying: boolean) => {
+        // Очищаем предыдущий таймаут, чтобы при быстрых нажатиях анимация не пропадала
+        if (playPauseOsdTimeout.current) window.clearTimeout(playPauseOsdTimeout.current);
+        osdCounterRef.current += 1;
+        setOsdCounter(osdCounterRef.current);
         setShowOverlays({ kind: 'play-pause', value: isPlaying ? 1 : 0 });
-        window.setTimeout(() => setShowOverlays(o => (o?.kind === 'play-pause' ? null : o)), 800);
+        playPauseOsdTimeout.current = window.setTimeout(() => {
+            setShowOverlays(o => (o?.kind === 'play-pause' ? null : o));
+            playPauseOsdTimeout.current = null;
+        }, 650);
     };
 
     // Клавиатурные шорткаты (RU/EN) + уведомления на 5с
@@ -2762,7 +2832,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                 return;
             }
             // 1) F/А — fullscreen
-            if (isAny('f', 'а')) { e.preventDefault(); const prev = isFullscreen; toggleFullscreen(); showNotice(prev ? 'Выход из полноэкранного режима' : 'Полноэкранный режим'); return; }
+            if (isAny('f', 'а')) { e.preventDefault(); toggleFullscreen(); return; }
             // 2) K/Л/Space — уже покрыт space; добавим K/Л
             if (isAny('k', 'л')) { e.preventDefault(); showPlayPauseIcon(isPlaying); togglePlay(); return; }
             // 3) P/З — плейлист (без уведомления)
@@ -3400,21 +3470,14 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                 })()
             )}
 
-            {/* Центральный OSD громкости */}
+            {/* Центральный OSD громкости (без фона, как на YouTube) */}
             {showOverlays?.kind === 'volume' && (
                 <div className="player-osd-center">
-                    {/* Иконка динамика по 3 состояниям */}
-                    {(() => {
-                        const vol = isMuted ? 0 : (showOverlays.value ?? volume);
-                        if (vol === 0 || showOverlays.mode === 'mute') {
-                            return <VolumeMuteIcon size={24} style={iconStyle} strokeWidth={2} />;
-                        }
-                        if (vol < 0.5) {
-                            return <VolumeIcon size={24} style={iconStyle} strokeWidth={2} />;
-                        }
-                        return <VolumeHighIcon size={24} style={iconStyle} strokeWidth={2} />;
-                    })()}
-                    <span style={{ fontWeight: 600 }}>{Math.round((isMuted ? 0 : volume) * 100)}%</span>
+                    <YoutubeVolumeIcon
+                        volume={showOverlays.mode === 'mute' ? 0 : (showOverlays.value ?? volume)}
+                        isMuted={isMuted || showOverlays.mode === 'mute'}
+                        size={64}
+                    />
                 </div>
             )}
 
@@ -3439,20 +3502,20 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                 </div>
             )}
 
-            {/* Центр: уведомления на 5с */}
+            {/* Уведомление снизу — тонкий pill */}
             {showOverlays?.kind === 'notice' && (
-                <div className="player-osd-center" style={{ fontSize: 16, fontWeight: 600 }}>
-                    {showOverlays.text}
+                <div className="player-osd-notice">
+                    <span className="player-osd-notice__text">{showOverlays.text}</span>
                 </div>
             )}
 
             {/* Центр: плей/пауза иконка */}
             {showOverlays?.kind === 'play-pause' && (
-                <div className="player-osd-play-pause">
+                <div className="player-osd-play-pause" key={osdCounter}>
                     {showOverlays.value === 1 ? (
-                        <Pause size={48} style={iconStyle} strokeWidth={2} fill="white" />
+                        <Pause size={36} strokeWidth={2.5} fill="white" />
                     ) : (
-                        <Play size={48} style={iconStyle} strokeWidth={2} fill="white" />
+                        <Play size={36} strokeWidth={2.5} fill="white" />
                     )}
                 </div>
             )}
@@ -3469,6 +3532,19 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                 </div>
             )}
 
+            <div className={`player-bottom-dock ${showUI ? 'visible' : 'hidden'}`}>
+            {/* Информация о текущем эпизоде над хотбаром */}
+            {(() => {
+                const ep = playlistEpisodes.find(e => e.id === currentEpisode);
+                const epLabel = ep?.episodeNum || `Эпизод ${currentEpisode}`;
+                const epName = ep?.name || (ep?.title && ep.title !== epLabel ? ep.title : null);
+                return (
+                    <div className="player-episode-label">
+                        <span className="player-episode-label__episode">{epLabel}</span>
+                        {epName && <span className="player-episode-label__name">{epName}</span>}
+                    </div>
+                );
+            })()}
             {/* Хотбар над управлением - показывается только когда duration загружен */}
             {duration > 0 && (
                 <div
@@ -3536,26 +3612,37 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                 </div>
 
                 <div className="player-controls__center">
-                    <IconButton label="Предыдущая серия" onClick={() => { (onPrevEpisode ?? handlePrevEpisodeInternal)(); }} disabled={!onPrevEpisode && !playlistEpisodes.length}>
+                    <IconButton label="Предыдущая серия" onClick={() => { (onPrevEpisode ?? handlePrevEpisodeInternal)(); }} disabled={!onPrevEpisode && (playlistEpisodes.length === 0 || playlistEpisodes[0]?.id === currentEpisode)} className="player-icon-button--secondary">
                         <SkipBack size={20} style={iconStyle} strokeWidth={2} />
                     </IconButton>
                     <IconButton label={isPlaying ? 'Пауза' : 'Воспроизвести'} onClick={togglePlay} className="player-icon-button--primary">
                         {isBuffering ? (
                             <Loader2 size={22} style={iconStyle} strokeWidth={2} className="player-buffering-spinner" />
                         ) : isPlaying ? (
-                            <Pause size={22} style={iconStyle} strokeWidth={2} />
+                            <Pause size={22} strokeWidth={2} fill="white" />
                         ) : (
-                            <Play size={22} style={iconStyle} strokeWidth={2} />
+                            <Play size={22} strokeWidth={2} fill="white" />
                         )}
                     </IconButton>
-                    <IconButton label="Следующая серия" onClick={() => { (onNextEpisode ?? handleNextEpisodeInternal)(); }} disabled={!onNextEpisode && !playlistEpisodes.length}>
+                    <IconButton label="Следующая серия" onClick={() => { (onNextEpisode ?? handleNextEpisodeInternal)(); }} disabled={!onNextEpisode && (playlistEpisodes.length === 0 || playlistEpisodes[playlistEpisodes.length - 1]?.id === currentEpisode)} className="player-icon-button--secondary">
                         <SkipForward size={20} style={iconStyle} strokeWidth={2} />
                     </IconButton>
                 </div>
 
                 <div className="player-controls__right">
 
-                    <div className="player-volume-group">
+                    <div className="player-time-label" style={{ fontWeight: 600, fontSize: 13, marginRight: 8, opacity: 0.9 }}>
+                        {formatTime(currentTime)} / {formatTime(duration)}
+                    </div>
+
+                    <div className="player-volume-group"
+                        onMouseLeave={() => {
+                            if (!isDraggingVolume) {
+                                setIsVolumeSliderActive(false);
+                                setShowVolumeSlider(false);
+                            }
+                        }}
+                    >
                         <IconButton
                             label="Выключить звук"
                             onClick={toggleMute}
@@ -3601,6 +3688,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                     </IconButton>
                 </div>
             </div>
+            </div>
 
             {/* Модальное окно настроек */}
             {showSettings && (
@@ -3613,8 +3701,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                                     className="player-settings-back"
                                     onClick={() => setSettingsSection('main')}
                                 >
-                                    <ChevronLeft size={20} style={iconStyle} strokeWidth={2} />
-                                    Назад
+                                    <ChevronLeft size={18} style={iconStyle} strokeWidth={2} />
                                 </button>
                             )}
                             <div className="player-settings-title">
@@ -3627,8 +3714,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                                 className="player-settings-close"
                                 onClick={() => setShowSettings(false)}
                             >
-                                <X size={20} style={iconStyle} strokeWidth={2} />
-                                Закрыть
+                                <X size={18} style={iconStyle} strokeWidth={2} />
                             </button>
                         </div>
 
@@ -3869,7 +3955,7 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                     <div className={`player-playlist-modal ${showPlaylist ? 'open' : ''}`} onClick={e => e.stopPropagation()}>
                         {/* Заголовок */}
                         <div className="player-playlist-header">
-                            <div className="player-playlist-title">Плейлист серий</div>
+                            <div className="player-playlist-title" data-subtitle="Список эпизодов релиза">Эпизоды</div>
                             <button
                                 className="player-playlist-close"
                                 onClick={() => setShowPlaylist(false)}
@@ -3919,9 +4005,12 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                                     )}
 
                                     <div className="player-playlist-item-info">
-                                        <span className="player-playlist-item-title">{ep.title}</span>
-                                        <span className="player-playlist-item-duration">{ep.duration}</span>
+                                        <span className="player-playlist-item-episode">{ep.episodeNum || `Эпизод ${ep.id}`}</span>
+                                        <span className="player-playlist-item-title">{ep.name || ep.title}</span>
                                     </div>
+                                    {ep.duration && (
+                                        <span className="player-playlist-item-right-duration">{ep.duration}</span>
+                                    )}
                                     {episodeProgressMap[ep.id] && (
                                         <div className="player-playlist-progress">
                                             <div className="player-playlist-progress__bar" style={{ width: `${Math.round(episodeProgressMap[ep.id].ratio * 100)}%` }} />
@@ -3945,6 +4034,8 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                             <button className="player-resume-btn primary" onClick={() => {
                                 const r = resumePrompt; if (!r) return;
                                 setResumePrompt(null);
+                                userInteractedRef.current = true;
+                                autoplayMutedRef.current = false;
                                 if (currentEpisode !== r.epId) setCurrentEpisode(r.epId);
                                 const v = videoRef.current;
                                 const apply = () => {
@@ -3958,7 +4049,12 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                                     persistProgress();
                                     try {
                                         // Пользовательский клик → можно воспроизводить сразу
-                                        (v ?? videoRef.current)?.play?.();
+                                        const vid = (v ?? videoRef.current);
+                                        if (vid) {
+                                            vid.muted = false;
+                                            vid.volume = isMuted ? 0 : volume;
+                                            vid.play?.();
+                                        }
                                         setIsPlaying(true);
                                     } catch { }
                                 };
@@ -3974,6 +4070,8 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                                 // Полный сброс прогресса для серии и мгновенный старт с начала
                                 const epId = resumePrompt.epId;
                                 const voice = getVoiceForProgress();
+                                userInteractedRef.current = true;
+                                autoplayMutedRef.current = false;
                                 try { setEpisodeProgress({ animeId, source: selectedSource, voice, episodeId: epId }, { time: 0, duration: 0, updatedAt: Date.now(), opened: true }); } catch { }
                                 setCurrentEpisode(epId);
                                 resumeCandidateRef.current = { epId, time: 0, duration: 0 };
@@ -3982,7 +4080,15 @@ export default function PlayerPC({ animeId, animeMeta, src, onNextEpisode, onPre
                                 const apply = () => {
                                     try { if (videoRef.current) videoRef.current.currentTime = 0; } catch { }
                                     persistProgress();
-                                    try { (v ?? videoRef.current)?.play?.(); setIsPlaying(true); } catch { }
+                                    try {
+                                        const vid = (v ?? videoRef.current);
+                                        if (vid) {
+                                            vid.muted = false;
+                                            vid.volume = isMuted ? 0 : volume;
+                                            vid.play?.();
+                                        }
+                                        setIsPlaying(true);
+                                    } catch { }
                                 };
                                 if (v) {
                                     if (v.readyState >= 1) apply();

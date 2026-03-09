@@ -2,36 +2,36 @@
 // YUMEKO MAIN LAYOUT STYLES
 // ===================================
 
-$sidebar-width: 260px;
+$sidebar-width: 220px;
 $header-height: 70px;
 $transition-speed: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-// Main wrapper - shifts left when sidebar is open
+// Main wrapper - shifts right when sidebar is open
 .main-wrapper {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    transition: margin-right $transition-speed;
+    transition: margin-left $transition-speed;
     padding-top: $header-height;
     background: var(--body-bg, var(--bg-primary));
     color: var(--text-primary);
 
     // Sidebar closed - full width
     &.sidebar-closed {
-        margin-right: 0;
+        margin-left: 0;
 
         .header {
-            right: 0;
+            left: 0;
             width: 100%;
         }
     }
 
-    // Sidebar open - shift content left
+    // Sidebar open - shift content right
     &.sidebar-open {
-        margin-right: var(--sidebar-width, $sidebar-width);
+        margin-left: var(--sidebar-width, $sidebar-width);
 
         .header {
-            right: var(--sidebar-width, $sidebar-width);
+            left: var(--sidebar-width, $sidebar-width);
             width: calc(100% - var(--sidebar-width, #{$sidebar-width}));
         }
     }
@@ -43,10 +43,10 @@ $transition-speed: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
         &.sidebar-open,
         &.sidebar-closed {
-            margin-right: 0;
+            margin-left: 0;
 
             .header {
-                right: 0;
+                left: 0;
                 width: 100%;
             }
         }
@@ -127,6 +127,14 @@ $transition-speed: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
 // Centered layout mode - apply max-width and center content
 body.layout-centered {
+    .header {
+        .header-content {
+            max-width: 1530px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    }
+
     .yumeko-main {
         .yumeko-home {
             max-width: 1600px;

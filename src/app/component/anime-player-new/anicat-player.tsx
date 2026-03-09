@@ -108,7 +108,8 @@ const AnimePlayer: React.FC<AnimePlayerProps> = ({ animeId }) => {
             .then((res) => res.json())
             .then(async ({ apiUrl }) => {
                 // Шаг 2: Используем apiUrl для получения эпизодов напрямую от AniLibria
-                const libraResponse = await fetch(apiUrl);
+                const apiUrlVal = typeof apiUrl === 'string' ? apiUrl.replace('aniliberty.top', 'anilibria.top') : apiUrl;
+                const libraResponse = await fetch(apiUrlVal);
                 if (!libraResponse.ok) {
                     throw new Error("Ошибка загрузки эпизодов из AniLibria");
                 }

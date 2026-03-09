@@ -69,7 +69,8 @@ export const usePlayerData = (
                     const { apiUrl } = await backendRes.json();
 
                     // Шаг 2: Используем apiUrl для получения эпизодов напрямую
-                    const libraRes = await fetch(apiUrl);
+                    const apiUrlVal = typeof apiUrl === 'string' ? apiUrl.replace('aniliberty.top', 'anilibria.top') : apiUrl;
+                    const libraRes = await fetch(apiUrlVal);
                     if (!libraRes.ok) return;
                     const libraData = await libraRes.json();
                     const data: LibriaEpisode[] = libraData.episodes || [];

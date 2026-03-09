@@ -197,7 +197,8 @@ export async function fetchLibriaEpisodes(animeId: string): Promise<LibriaEpisod
         }
 
         // Step 2: Fetch full data from Libria API
-        const libriaRes = await fetch(data.apiUrl);
+        const apiUrlVal = typeof data.apiUrl === 'string' ? data.apiUrl.replace('aniliberty.top', 'anilibria.top') : data.apiUrl;
+        const libriaRes = await fetch(apiUrlVal);
         if (!libriaRes.ok) return null;
 
         const libriaData = await libriaRes.json() as LibriaFullResponse;

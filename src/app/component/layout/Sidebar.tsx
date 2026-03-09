@@ -14,7 +14,7 @@ import { getProfile } from '@/utils/profileCache';
 
 const MIN_SIDEBAR_WIDTH = 60;
 const MAX_SIDEBAR_WIDTH = 400;
-const DEFAULT_SIDEBAR_WIDTH = 260;
+const DEFAULT_SIDEBAR_WIDTH = 220;
 const COLLAPSED_WIDTH = 60;
 
 interface Category {
@@ -503,56 +503,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
                         </div>
                     )}
 
-                    {/* Categories */}
-                    <div className="sidebar-section sidebar-categories">
-                        <button
-                            className={`sidebar-section-header ${expandedSection === 'categories' ? 'expanded' : ''}`}
-                            onClick={() => toggleSection('categories')}
-                        >
-                            <span className="sidebar-section-icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                    <rect x="3" y="3" width="7" height="7" />
-                                    <rect x="14" y="3" width="7" height="7" />
-                                    <rect x="14" y="14" width="7" height="7" />
-                                    <rect x="3" y="14" width="7" height="7" />
-                                </svg>
-                            </span>
-                            <span className="sidebar-section-title">Категории</span>
-                            <svg className="sidebar-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <polyline points="6 9 12 15 18 9" />
-                            </svg>
-                        </button>
-                        <ul className={`sidebar-menu collapsible ${expandedSection === 'categories' ? 'expanded' : ''}`}>
-                            {loadingCategories ? (
-                                <li className="sidebar-loading">
-                                    <div className="sidebar-loading-spinner" />
-                                    <span>Загрузка...</span>
-                                </li>
-                            ) : (
-                                categories.slice(0, 10).map((category) => (
-                                    <li key={category.id}>
-                                        <Link
-                                            href={`/anime-category/${category.id}`}
-                                            className="sidebar-menu-item"
-                                            onClick={() => {
-                                                if (window.innerWidth <= 1024) onToggle();
-                                            }}
-                                        >
-                                            <span className="sidebar-category-dot" />
-                                            <span className="sidebar-menu-label">{category.name}</span>
-                                        </Link>
-                                    </li>
-                                ))
-                            )}
-                            {categories.length > 10 && (
-                                <li>
-                                    <Link href="/all-anime" className="sidebar-menu-item sidebar-see-all">
-                                        <span className="sidebar-menu-label">Показать все →</span>
-                                    </Link>
-                                </li>
-                            )}
-                        </ul>
-                    </div>
+
 
                     {/* Platforms */}
                     <div className="sidebar-section">

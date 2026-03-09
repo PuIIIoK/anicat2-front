@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 
 import YumekoCategorySection from '@/component/anime-structure/YumekoCategorySection';
+import YumekoCategorySkeleton from '@/component/anime-structure/YumekoCategorySkeleton';
 import RecentlyUpdatedSection from '@/component/anime-structure/RecentlyUpdatedSection';
 import YumekoMobileIndex from '@/component/mobile-navigation/YumekoMobileIndex';
 import ServerErrorPage from '@/component/common/ServerErrorPage';
@@ -78,15 +79,6 @@ const CategoryList: React.FC = () => {
         fetchCategories();
     }, []);
 
-    // Спиннер для загрузки
-    if (loadingCategories) {
-        return (
-            <div className="loader-container-category">
-                <div className="loader-category"></div>
-            </div>
-        );
-    }
-
     if (error) {
         return (
             <ServerErrorPage
@@ -149,7 +141,14 @@ const CategoryList: React.FC = () => {
 
                 {/* Categories grid */}
                 <div className="yumeko-categories-grid desktop-only">
-                    {categories.length > 0 ? (
+                    {loadingCategories ? (
+                        <>
+                            <YumekoCategorySkeleton />
+                            <YumekoCategorySkeleton />
+                            <YumekoCategorySkeleton />
+                            <YumekoCategorySkeleton />
+                        </>
+                    ) : categories.length > 0 ? (
                         categories.map(category => (
                             <YumekoCategorySection
                                 key={category.id}

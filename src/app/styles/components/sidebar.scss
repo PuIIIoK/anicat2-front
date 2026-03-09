@@ -2,7 +2,7 @@
 // YUMEKO SIDEBAR STYLES
 // ===================================
 
-$sidebar-width: 260px;
+$sidebar-width: 220px;
 $sidebar-collapsed-width: 0px;
 $sidebar-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -31,30 +31,30 @@ $sidebar-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 }
 
-// Main Sidebar - Opens from RIGHT
+// Main Sidebar - Opens from LEFT
 .yumeko-sidebar {
     position: fixed;
     top: 0;
-    right: 0;
+    left: 0;
     width: var(--sidebar-width, $sidebar-width);
     height: 100vh;
     padding-top: 20px;
     background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
-    border-left: 1px solid rgba(255, 255, 255, 0.06);
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
     z-index: 1100;
     display: flex;
     flex-direction: column;
-    transform: translateX(100%);
+    transform: translateX(-100%);
     transition: transform $sidebar-transition, width 0s;
     overflow: hidden;
-    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.3);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
 
     &.open {
         transform: translateX(0);
     }
 
     &.closed {
-        transform: translateX(100%);
+        transform: translateX(-100%);
     }
 
     &.resizing {
@@ -102,7 +102,7 @@ $sidebar-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 // Resize Handle
 .sidebar-resize-handle {
     position: absolute;
-    left: 0;
+    right: 0;
     top: 0;
     width: 6px;
     height: 100%;
@@ -209,8 +209,8 @@ $sidebar-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 .sidebar-profile-card {
     position: absolute;
     top: 70px;
-    right: 100%;
-    margin-right: 12px;
+    left: 100%;
+    margin-left: 12px;
     width: 240px;
     background: var(--bg-secondary);
     border: 1px solid rgba(255, 255, 255, 0.1);

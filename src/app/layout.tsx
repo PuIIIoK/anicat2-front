@@ -21,6 +21,21 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                 />
             </head>
             <body suppressHydrationWarning style={{ margin: 0, padding: 0, background: '#0a0a0a' }}>
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `
+                            try {
+                                const theme = localStorage.getItem('theme') || 'dark';
+                                const scheme = localStorage.getItem('colorScheme') || 'orange';
+                                const layout = localStorage.getItem('layoutMode') || 'centered';
+                                document.body.classList.add('theme-'+theme, 'color-'+scheme, 'layout-'+layout);
+                                document.documentElement.setAttribute('data-theme', theme);
+                                document.documentElement.setAttribute('data-color', scheme);
+                                document.documentElement.setAttribute('data-layout', layout);
+                            } catch (e) {}
+                        `,
+                    }}
+                />
                 {children}
             </body>
         </html>

@@ -116,7 +116,7 @@
             }
 
             &.active {
-                background: linear-gradient(135deg, var(--primary-bg) 0%, rgba(168, 85, 247, 0.3) 100%);
+                background: rgba(var(--primary-color-rgb, 175, 82, 222), 0.15);
                 border-color: var(--primary-color);
                 color: var(--primary-color);
             }
@@ -217,10 +217,7 @@
         .logo-gradient {
             font-size: 20px;
             font-weight: 600;
-            background: linear-gradient(135deg, var(--primary-color) 0%, #a855f7 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--primary-color);
         }
     }
 
@@ -263,8 +260,7 @@
 
         &:focus-within {
             background: rgba(255, 255, 255, 0.08);
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.12);
+            border-color: rgba(255, 255, 255, 0.3);
         }
 
         .search-icon {
@@ -333,7 +329,7 @@
             }
 
             &.active {
-                background: linear-gradient(135deg, var(--primary-bg) 0%, rgba(168, 85, 247, 0.2) 100%);
+                background: rgba(var(--primary-color-rgb, 175, 82, 222), 0.15);
                 border-color: var(--primary-color);
                 color: var(--primary-color);
 
@@ -473,10 +469,10 @@
     transition: all 0.25s ease;
 
     &:hover {
-        transform: translateY(-4px);
+        transform: translateY(-2px); // Subtle lift
 
         .anime-search-card__cover {
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3); // Softer shadow
         }
 
         .anime-search-card__title {

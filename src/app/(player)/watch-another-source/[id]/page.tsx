@@ -173,7 +173,8 @@ export default function WatchAnotherSourcePage() {
                     // Check if it's new format with apiUrl
                     if (apiData?.apiUrl) {
                         // Step 2: Fetch full data from Libria API
-                        const libriaRes = await fetch(apiData.apiUrl);
+                        const apiUrlVal = typeof apiData.apiUrl === 'string' ? apiData.apiUrl.replace('aniliberty.top', 'anilibria.top') : apiData.apiUrl;
+                        const libriaRes = await fetch(apiUrlVal);
                         if (!libriaRes.ok) {
                             setSourceError(true);
                             setLibriaEpisodes([]);
@@ -385,6 +386,7 @@ export default function WatchAnotherSourcePage() {
                 {/* Правая панель переключения источников */}
                 <div
                     style={{
+                        display: 'none', /* Hidden: source selector panel */
                         position: 'absolute',
                         top: '20px',
                         right: isSourcePanelCollapsed ? '-220px' : '20px',
@@ -471,65 +473,6 @@ export default function WatchAnotherSourcePage() {
                     </div>
                 </div>
 
-                {/* Кнопка возврата в углу */}
-                {isPlayerUIVisible && (
-                    <Link
-                        href={`/anime-page/${animeId}`}
-                        style={{
-                            position: 'absolute',
-                            top: '20px',
-                            left: '20px',
-                            zIndex: 1000,
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: isMobile ? '0' : '10px',
-                            background: 'rgba(0, 0, 0, 0.8)',
-                            border: `1px solid ${colors.primaryBorder}`,
-                            borderRadius: isMobile ? '50%' : '10px',
-                            padding: isMobile ? '10px' : '12px',
-                            textDecoration: 'none',
-                            transition: 'all 0.2s ease',
-                            cursor: 'pointer',
-                            backdropFilter: 'blur(10px)',
-                            width: isMobile ? '44px' : 'auto',
-                            height: isMobile ? '44px' : 'auto',
-                            justifyContent: 'center'
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.background = colors.primaryBg;
-                            e.currentTarget.style.borderColor = colors.primaryBorder;
-                            if (!isMobile) e.currentTarget.style.transform = 'translateX(-4px)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.background = 'rgba(0, 0, 0, 0.8)';
-                            e.currentTarget.style.borderColor = colors.primaryBorder;
-                            e.currentTarget.style.transform = 'translateX(0)';
-                        }}
-                    >
-                        {isMobile ? (
-                            <ArrowLeft size={20} strokeWidth={2.5} color={colors.primary} />
-                        ) : (
-                            <>
-                                <div style={{
-                                    width: '24px',
-                                    height: '24px',
-                                    borderRadius: '6px',
-                                    background: colors.primaryBg,
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    color: colors.primary,
-                                    flexShrink: 0
-                                }}>
-                                    <ArrowLeft size={14} strokeWidth={2.5} />
-                                </div>
-                                <div style={{ color: '#fff', fontSize: '12px', fontWeight: '600' }}>
-                                    {animeTitle}
-                                </div>
-                            </>
-                        )}
-                    </Link>
-                )}
 
                 {/* Плеер на полный экран */}
                 <div style={{
@@ -546,85 +489,86 @@ export default function WatchAnotherSourcePage() {
                             flexDirection: 'column',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            gap: '24px'
+                            gap: '20px'
                         }}>
                             <style>{`
-                                @keyframes libriaRingPulse {
-                                    0% {
-                                        transform: translate(-50%, -50%) scale(0.3);
-                                        opacity: 0;
-                                    }
-                                    50% {
-                                        opacity: 0.8;
-                                    }
-                                    100% {
-                                        transform: translate(-50%, -50%) scale(1.2);
-                                        opacity: 0;
-                                    }
+                                @keyframes arcSpin {
+                                    0% { transform: rotate(0deg); }
+                                    100% { transform: rotate(360deg); }
                                 }
-                                @keyframes libriaLoadingPulse {
-                                    0%, 100% { opacity: 0.5; }
+                                @keyframes loadingBarSlide {
+                                    0% { left: -40%; width: 40%; }
+                                    50% { left: 30%; width: 60%; }
+                                    100% { left: 110%; width: 40%; }
+                                }
+                                @keyframes initFade {
+                                    0%, 100% { opacity: 0.45; }
                                     50% { opacity: 1; }
                                 }
                             `}</style>
-                            {/* 3 концентрических кольца от центра */}
-                            <div style={{
-                                position: 'relative',
-                                width: '100px',
-                                height: '100px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                            }}>
-                                {/* Кольцо 1 - внутреннее */}
+
+                            {/* Спиннер */}
+                            <div style={{ position: 'relative', width: '56px', height: '56px' }}>
+                                {/* Фоновая дорожка */}
+                                <div style={{
+                                    position: 'absolute', inset: 0,
+                                    borderRadius: '50%',
+                                    border: '3px solid rgba(255,255,255,0.08)'
+                                }} />
+                                {/* Вращающаяся дуга */}
+                                <div style={{
+                                    position: 'absolute', inset: 0,
+                                    borderRadius: '50%',
+                                    border: '3px solid transparent',
+                                    borderTopColor: '#e74c3c',
+                                    borderRightColor: 'rgba(231,76,60,0.4)',
+                                    animation: 'arcSpin 0.85s linear infinite'
+                                }} />
+                                {/* Центральная точка */}
                                 <div style={{
                                     position: 'absolute',
-                                    top: '50%',
-                                    left: '50%',
-                                    width: '40px',
-                                    height: '40px',
+                                    top: '50%', left: '50%',
+                                    transform: 'translate(-50%,-50%)',
+                                    width: '6px', height: '6px',
                                     borderRadius: '50%',
-                                    border: `3px solid ${colors.primary}`,
-                                    boxShadow: `0 0 8px ${colors.primary}60`,
-                                    animation: 'libriaRingPulse 1.5s ease-out infinite',
-                                    animationDelay: '0s'
-                                }}></div>
-                                {/* Кольцо 2 - среднее */}
-                                <div style={{
-                                    position: 'absolute',
-                                    top: '50%',
-                                    left: '50%',
-                                    width: '60px',
-                                    height: '60px',
-                                    borderRadius: '50%',
-                                    border: `3px solid ${colors.primary}`,
-                                    boxShadow: `0 0 8px ${colors.primary}60`,
-                                    animation: 'libriaRingPulse 1.5s ease-out infinite',
-                                    animationDelay: '0.3s'
-                                }}></div>
-                                {/* Кольцо 3 - внешнее */}
-                                <div style={{
-                                    position: 'absolute',
-                                    top: '50%',
-                                    left: '50%',
-                                    width: '80px',
-                                    height: '80px',
-                                    borderRadius: '50%',
-                                    border: `3px solid ${colors.primary}`,
-                                    boxShadow: `0 0 8px ${colors.primary}60`,
-                                    animation: 'libriaRingPulse 1.5s ease-out infinite',
-                                    animationDelay: '0.6s'
-                                }}></div>
+                                    background: '#e74c3c',
+                                    boxShadow: '0 0 8px #e74c3c'
+                                }} />
                             </div>
+
                             {/* Текст */}
                             <div style={{
-                                color: colors.textPrimary,
-                                fontSize: '18px',
-                                fontWeight: '500',
-                                letterSpacing: '0.5px',
-                                animation: 'libriaLoadingPulse 1.5s ease-in-out infinite'
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                gap: '6px'
                             }}>
-                                Инциализация источника
+                                <div style={{
+                                    color: 'rgba(255,255,255,0.9)',
+                                    fontSize: '14px',
+                                    fontWeight: '600',
+                                    letterSpacing: '0.3px',
+                                    animation: 'initFade 2s ease-in-out infinite'
+                                }}>
+                                    Инициализация источника
+                                </div>
+                                {/* Тонкая полоска-прогресс */}
+                                <div style={{
+                                    position: 'relative',
+                                    width: '160px',
+                                    height: '2px',
+                                    borderRadius: '999px',
+                                    background: 'rgba(255,255,255,0.08)',
+                                    overflow: 'hidden'
+                                }}>
+                                    <div style={{
+                                        position: 'absolute',
+                                        top: 0, bottom: 0,
+                                        background: 'linear-gradient(90deg, transparent, #e74c3c, transparent)',
+                                        borderRadius: '999px',
+                                        animation: 'loadingBarSlide 1.4s ease-in-out infinite'
+                                    }} />
+                                </div>
                             </div>
                         </div>
                     ) : sourceError ? (
@@ -737,63 +681,6 @@ export default function WatchAnotherSourcePage() {
                     </div>
                 </div>
 
-                {/* Кнопка возврата - под кнопкой переключения на Libria */}
-                <Link
-                    href={`/anime-page/${animeId}`}
-                    style={{
-                        position: 'absolute',
-                        top: '80px',
-                        right: '20px',
-                        zIndex: 1000,
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: isMobile ? '0' : '10px',
-                        background: 'rgba(0, 0, 0, 0.8)',
-                        border: `1px solid ${colors.primaryBorder}`,
-                        borderRadius: isMobile ? '50%' : '10px',
-                        padding: isMobile ? '10px' : '12px',
-                        textDecoration: 'none',
-                        transition: 'all 0.2s ease',
-                        cursor: 'pointer',
-                        backdropFilter: 'blur(10px)',
-                        width: isMobile ? '44px' : 'auto',
-                        height: isMobile ? '44px' : 'auto',
-                        justifyContent: 'center'
-                    }}
-                    onMouseEnter={(e) => {
-                        e.currentTarget.style.background = colors.primaryBg;
-                        e.currentTarget.style.borderColor = colors.primaryBorder;
-                        if (!isMobile) e.currentTarget.style.transform = 'translateX(-4px)';
-                    }}
-                    onMouseLeave={(e) => {
-                        e.currentTarget.style.background = 'rgba(0, 0, 0, 0.8)';
-                        e.currentTarget.style.borderColor = colors.primaryBorder;
-                        e.currentTarget.style.transform = 'translateX(0)';
-                    }}
-                >
-                    {isMobile ? (
-                        <ArrowLeft size={20} strokeWidth={2.5} color={colors.primary} />
-                    ) : (
-                        <>
-                            <div style={{
-                                width: '24px',
-                                height: '24px',
-                                borderRadius: '6px',
-                                background: colors.primaryBg,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                color: colors.primary,
-                                flexShrink: 0
-                            }}>
-                                <ArrowLeft size={14} strokeWidth={2.5} />
-                            </div>
-                            <div style={{ color: '#fff', fontSize: '12px', fontWeight: '600' }}>
-                                {animeTitle}
-                            </div>
-                        </>
-                    )}
-                </Link>
 
                 {/* Kodik iframe на полный экран */}
                 <div style={{

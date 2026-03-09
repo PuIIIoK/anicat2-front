@@ -290,13 +290,13 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
                 }
             }
 
-            // Genre filter - check if anime has at least one of the selected genres
+            // Genre filter - check if anime has ALL of the selected genres
             if (selectedGenres.length > 0) {
                 const animeGenres = anime.genres?.toLowerCase() || '';
-                const hasGenre = selectedGenres.some(genre =>
+                const hasAllGenres = selectedGenres.every(genre =>
                     animeGenres.includes(genre.toLowerCase())
                 );
-                if (!hasGenre) return false;
+                if (!hasAllGenres) return false;
             }
 
             // Rating filter
@@ -601,101 +601,103 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
                                 )}
 
                                 {/* All Anime Section */}
-                                <div className="search-section">
-                                    <h3 className="search-section__title">
-                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                            <rect x="3" y="3" width="7" height="7" />
-                                            <rect x="14" y="3" width="7" height="7" />
-                                            <rect x="14" y="14" width="7" height="7" />
-                                            <rect x="3" y="14" width="7" height="7" />
-                                        </svg>
-                                        {hasActiveFilters ? `Результаты (${filteredAnime.length})` : 'Весь каталог'}
-                                    </h3>
+                                {hasActiveFilters && (
+                                    <div className="search-section">
+                                        <h3 className="search-section__title">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                <rect x="3" y="3" width="7" height="7" />
+                                                <rect x="14" y="3" width="7" height="7" />
+                                                <rect x="14" y="14" width="7" height="7" />
+                                                <rect x="3" y="14" width="7" height="7" />
+                                            </svg>
+                                            {`Результаты (${filteredAnime.length})`}
+                                        </h3>
 
-                                    {displayedAnime.length > 0 ? (
-                                        <>
-                                            <div className="search-results-grid">
-                                                {displayedAnime.map((anime, index) => (
-                                                    <Link
-                                                        href={`/anime-page/${anime.id}`}
-                                                        key={`${anime.id}-${index}`}
-                                                        className="anime-search-card"
-                                                        onClick={onClose}
-                                                    >
-                                                        <div className="anime-search-card__cover">
-                                                            {coverUrls[anime.id] ? (
-                                                                <Image
-                                                                    src={coverUrls[anime.id]}
-                                                                    alt={anime.title}
-                                                                    fill
-                                                                    sizes="140px"
-                                                                    className="anime-search-card__image"
-                                                                />
-                                                            ) : (
-                                                                <div className="anime-search-card__placeholder">
-                                                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                                                                        <rect x="3" y="3" width="18" height="18" rx="2" />
-                                                                        <circle cx="8.5" cy="8.5" r="1.5" />
-                                                                        <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
-                                                                    </svg>
-                                                                </div>
-                                                            )}
-
-                                                            <span className="anime-search-card__type">{anime.type}</span>
-
-                                                            {anime.averageRating && anime.averageRating > 0 && (
-                                                                <span className="anime-search-card__rating">
-                                                                    ★ {anime.averageRating.toFixed(1)}
-                                                                </span>
-                                                            )}
-
-                                                            {isUpcoming(anime.status) && (
-                                                                <span className="anime-search-card__anons">АНОНС</span>
-                                                            )}
-                                                        </div>
-
-                                                        <div className="anime-search-card__info">
-                                                            <h3 className="anime-search-card__title">
-                                                                {anime.title}
-                                                                {anime.season && <span className="season-tag">[{anime.season}]</span>}
-                                                            </h3>
-
-                                                            <div className="anime-search-card__meta">
-                                                                {isUpcoming(anime.status) ? (
-                                                                    <span className="anons-date">{anime.anons || 'Скоро'}</span>
+                                        {displayedAnime.length > 0 ? (
+                                            <>
+                                                <div className="search-results-grid">
+                                                    {displayedAnime.map((anime, index) => (
+                                                        <Link
+                                                            href={`/anime-page/${anime.id}`}
+                                                            key={`${anime.id}-${index}`}
+                                                            className="anime-search-card"
+                                                            onClick={onClose}
+                                                        >
+                                                            <div className="anime-search-card__cover">
+                                                                {coverUrls[anime.id] ? (
+                                                                    <Image
+                                                                        src={coverUrls[anime.id]}
+                                                                        alt={anime.title}
+                                                                        fill
+                                                                        sizes="140px"
+                                                                        className="anime-search-card__image"
+                                                                    />
                                                                 ) : (
-                                                                    <span className="episodes">{anime.current_episode || '?'} / {anime.episode_all || '?'} эп.</span>
+                                                                    <div className="anime-search-card__placeholder">
+                                                                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                                                            <rect x="3" y="3" width="18" height="18" rx="2" />
+                                                                            <circle cx="8.5" cy="8.5" r="1.5" />
+                                                                            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+                                                                        </svg>
+                                                                    </div>
                                                                 )}
-                                                                {!isUpcoming(anime.status) && anime.year && (
-                                                                    <span className="year">{anime.year}</span>
+
+                                                                <span className="anime-search-card__type">{anime.type}</span>
+
+                                                                {anime.averageRating && anime.averageRating > 0 && (
+                                                                    <span className="anime-search-card__rating">
+                                                                        ★ {anime.averageRating.toFixed(1)}
+                                                                    </span>
+                                                                )}
+
+                                                                {isUpcoming(anime.status) && (
+                                                                    <span className="anime-search-card__anons">АНОНС</span>
                                                                 )}
                                                             </div>
 
-                                                            <p className="anime-search-card__genres">{anime.genres?.split(',').slice(0, 3).join(' • ')}</p>
-                                                        </div>
-                                                    </Link>
-                                                ))}
-                                            </div>
+                                                            <div className="anime-search-card__info">
+                                                                <h3 className="anime-search-card__title">
+                                                                    {anime.title}
+                                                                    {anime.season && <span className="season-tag">[{anime.season}]</span>}
+                                                                </h3>
 
-                                            {hasMoreAnime && (
-                                                <div className="search-load-more" ref={loaderRef}>
-                                                    <div className="search-loader__spinner search-loader__spinner--small"></div>
-                                                    <span>Загрузка...</span>
+                                                                <div className="anime-search-card__meta">
+                                                                    {isUpcoming(anime.status) ? (
+                                                                        <span className="anons-date">{anime.anons || 'Скоро'}</span>
+                                                                    ) : (
+                                                                        <span className="episodes">{anime.current_episode || '?'} / {anime.episode_all || '?'} эп.</span>
+                                                                    )}
+                                                                    {!isUpcoming(anime.status) && anime.year && (
+                                                                        <span className="year">{anime.year}</span>
+                                                                    )}
+                                                                </div>
+
+                                                                <p className="anime-search-card__genres">{anime.genres?.split(',').slice(0, 3).join(' • ')}</p>
+                                                            </div>
+                                                        </Link>
+                                                    ))}
                                                 </div>
-                                            )}
-                                        </>
-                                    ) : hasActiveFilters ? (
-                                        <div className="search-empty">
-                                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" opacity="0.5">
-                                                <circle cx="12" cy="12" r="10" />
-                                                <line x1="15" y1="9" x2="9" y2="15" />
-                                                <line x1="9" y1="9" x2="15" y2="15" />
-                                            </svg>
-                                            <p>Ничего не найдено</p>
-                                            <span>Попробуйте изменить фильтры</span>
-                                        </div>
-                                    ) : null}
-                                </div>
+
+                                                {hasMoreAnime && (
+                                                    <div className="search-load-more" ref={loaderRef}>
+                                                        <div className="search-loader__spinner search-loader__spinner--small"></div>
+                                                        <span>Загрузка...</span>
+                                                    </div>
+                                                )}
+                                            </>
+                                        ) : hasActiveFilters ? (
+                                            <div className="search-empty">
+                                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" opacity="0.5">
+                                                    <circle cx="12" cy="12" r="10" />
+                                                    <line x1="15" y1="9" x2="9" y2="15" />
+                                                    <line x1="9" y1="9" x2="15" y2="15" />
+                                                </svg>
+                                                <p>Ничего не найдено</p>
+                                                <span>Попробуйте изменить фильтры</span>
+                                            </div>
+                                        ) : null}
+                                    </div>
+                                )}
                             </>
                         ) : searchMode === 'profile' ? (
                             !searchQuery ? (
